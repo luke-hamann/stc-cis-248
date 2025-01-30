@@ -36,7 +36,6 @@ Table TeamMemberShiftContextPreferences {
 Table ShiftContexts {
   id int [ pk ]
   name string [ not null ]
-  number string
   ageGroup string
   location string
   description string
