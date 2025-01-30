@@ -49,14 +49,14 @@ Table TimeSlots {
   requiresAdult bool [ not null ]
   teamMemberId int [ ref: > TeamMembers.id ]
   note string
-  noteColor int [ ref: > Colors.id ]
+  colorId int [ ref: > Colors.id ]
 }
 
 Table ShiftContextNotes {
   shiftContextId int [ pk, ref: > ShiftContexts.id ]
   date date [ pk ]
   note sting [ not null ]
-  noteColor int [ ref: > Colors.id ]
+  colorId int [ ref: > Colors.id ]
 }
 
 Table Colors {
