@@ -9,8 +9,8 @@ Table TeamMembers {
   isExternal bool [ not null ]
   maxWeeklyHours double
   maxWeeklyDays int
-  username string [ not null ]
-  password string [ not null ]
+  username string
+  password string
   isAdmin bool [ not null ]
 }
 
@@ -20,6 +20,14 @@ Table TeamMemberAvailability {
   startDateTime datetime [ not null ]
   endDateTime datetime [ not null ]
   isPreference bool [ not null ]
+}
+
+Table TeamMememberTypicalAvailability {
+  id int [ pk ]
+  dayOfWeek int [ not null ]
+  teamMember int [ not null, ref: > TeamMembers.id ]
+  startTime time [ not null ]
+  endTime time [ not null ]
 }
 
 Table Substitutes {
