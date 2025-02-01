@@ -6,7 +6,7 @@ digraph data_flow_diagram {
     Admin -> Router -> Admin
 
     subgraph controllers {
-        node [ style = filled ]
+        rank = same
         
         "Team member controller"
         "Typical availability controller"
@@ -19,7 +19,7 @@ digraph data_flow_diagram {
         "Substitute controller"
         "Schedule controller"
     }
-
+    
     Router -> {
         "Team member controller"
         "Typical availability controller"
@@ -32,8 +32,64 @@ digraph data_flow_diagram {
         "Substitute controller"
         "Schedule controller"
     } -> Router
-
-    /* Controllers */
+    
+    subgraph actions {
+        rank = same
+        
+        "List team members"
+        "View team member"
+        "Add team member"
+        "Edit team member"
+        "Delete team member"
+        
+        "View typical availability"
+        "Add typical availability"
+        "Edit typical availability"
+        "Delete typical availability"
+        
+        "View availability"
+        "Add availability"
+        "Edit availability"
+        "Delete availability"
+        "Copy typical availability to availability"
+        "Copy availability across weeks"
+        
+        "List shift contexts"
+        "View shift context"
+        "Add shift context"
+        "Edit shift context"
+        "Delete shift context"
+        
+        "List preferences"
+        "Add preference"
+        "Edit preference"
+        "Delete preference"
+        
+        "List color swatches"
+        "Add color swatch"
+        "Edit color swatch"
+        "Delete color swatch"
+        
+        "View note"
+        "Add note"
+        "Edit note"
+        "Delete note"
+        
+        "List timeslots"
+        "View timeslot"
+        "Add timeslot"
+        "Edit timeslot"
+        "Delete timeslot"
+        "Copy timeslots across days"
+        
+        "List substitutes"
+        "Add substitute"
+        "Edit substitute"
+        "Delete substitute"
+        
+        "View schedule"
+        "Export schedule"
+    }
 
     "Team member controller" -> {
         "List team members"
@@ -113,6 +169,7 @@ digraph data_flow_diagram {
 
     subgraph data_stores {
         node [ shape = underline ]
+        rank = same
         
         "Team member store"
         "Typical availability store"
@@ -200,6 +257,13 @@ digraph data_flow_diagram {
     } -> "Substitutes store"
     
     /* Logic */
+    
+    subgraph logic {
+        rank = max
+        
+        "Compile schedule data"
+        "Calculate timeslot suggestion ranking"
+    }
     
     "Compile schedule data" -> {
         "View schedule"
