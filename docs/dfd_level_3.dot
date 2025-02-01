@@ -1,0 +1,227 @@
+digraph data_flow_diagram {
+    node [ shape = circle ]
+    
+    Admin [ shape = box ]
+
+    Admin -> Router -> Admin
+
+    subgraph controllers {
+        node [ style = filled ]
+        
+        "Team member controller"
+        "Typical availability controller"
+        "Availability controller"
+        "Shift context controller"
+        "Shift context preferences controller"
+        "Color swatches controller"
+        "Daily shift context notes controller"
+        "Timeslot controller"
+        "Substitute controller"
+        "Schedule controller"
+    }
+
+    Router -> {
+        "Team member controller"
+        "Typical availability controller"
+        "Availability controller"
+        "Shift context controller"
+        "Shift context preferences controller"
+        "Color swatches controller"
+        "Daily shift context notes controller"
+        "Timeslot controller"
+        "Substitute controller"
+        "Schedule controller"
+    } -> Router
+
+    /* Controllers */
+
+    "Team member controller" -> {
+        "List team members"
+        "View team member"
+        "Add team member"
+        "Edit team member"
+        "Delete team member"
+    } -> "Team member controller"
+
+    "Typical availability controller" -> {
+        "View typical availability"
+        "Add typical availability"
+        "Edit typical availability"
+        "Delete typical availability"
+    } -> "Typical availability controller"
+
+    "Availability controller" -> {
+        "View availability"
+        "Add availability"
+        "Edit availability"
+        "Delete availability"
+        "Copy typical availability to availability"
+        "Copy availability across weeks"
+    } -> "Availability controller"
+
+    "Shift context controller" -> {
+        "List shift contexts"
+        "View shift context"
+        "Add shift context"
+        "Edit shift context"
+        "Delete shift context"
+    } -> "Shift context controller"
+
+    "Shift context preferences controller" -> {
+        "List preferences"
+        "Add preference"
+        "Edit preference"
+        "Delete preference"
+    } -> "Shift context preferences controller"
+
+    "Color swatches controller" -> {
+        "List color swatches"
+        "Add color swatch"
+        "Edit color swatch"
+        "Delete color swatch"
+    } -> "Color swatches controller"
+
+    "Daily shift context notes controller" -> {
+        "View note"
+        "Add note"
+        "Edit note"
+        "Delete note"
+    } -> "Daily shift context notes controller"
+
+    "Timeslot controller" -> {
+        "List timeslots"
+        "View timeslot"
+        "Add timeslot"
+        "Edit timeslot"
+        "Delete timeslot"
+        "Copy timeslots across days"
+    } -> "Timeslot controller"
+
+    "Substitute controller" -> {
+        "List substitutes"
+        "Add substitute"
+        "Edit substitute"
+        "Delete substitute"
+    } -> "Substitute controller"
+
+    "Schedule controller" -> {
+        "View schedule"
+        "Export schedule"
+    } -> "Schedule controller"
+
+    /* Data stores */
+
+    subgraph data_stores {
+        node [ shape = underline ]
+        
+        "Team member store"
+        "Typical availability store"
+        "Availability store"
+        "Shift context store"
+        "Shift context preferences store"
+        "Colors store"
+        "Shift context notes store"
+        "Timeslots store"
+        "Substitutes store"
+    }
+
+    "Team member store" -> {
+        "List team members"
+        "View team member"
+        "Add team member"
+        "Edit team member"
+        "Delete team member"
+    } -> "Team member store"
+    
+    "Typical availability store" -> {
+        "View typical availability"
+        "Add typical availability"
+        "Edit typical availability"
+        "Delete typical availability"
+    } -> "Typical availability store"
+    
+    "Availability store" -> {
+        "View availability"
+        "Add availability"
+        "Edit availability"
+        "Delete availability"
+    } -> "Availability store"
+    
+    "Copy typical availability to availability" -> {
+        "Typical availability store"
+        "Availability store"
+    } -> "Copy typical availability to availability"
+    
+    "Copy availability across weeks" -> "Availability store"
+    
+    "Shift context store" -> {
+        "List shift contexts"
+        "View shift context"
+        "Add shift context"
+        "Edit shift context"
+        "Delete shift context"
+    } -> "Shift context store"
+    
+    "Shift context preferences store" -> {
+        "List preferences"
+        "Add preference"
+        "Edit preference"
+        "Delete preference"
+    } -> "Shift context preferences store"
+    
+    "Colors store" -> {
+        "List color swatches"
+        "Add color swatch"
+        "Edit color swatch"
+        "Delete color swatch"
+    } -> "Colors store"
+    
+    "Shift context notes store" -> {
+        "View note"
+        "Add note"
+        "Edit note"
+        "Delete note"
+    } -> "Shift context notes store"
+    
+    "Timeslots store" -> {
+        "List timeslots"
+        "View timeslot"
+        "Add timeslot"
+        "Edit timeslot"
+        "Delete timeslot"
+        "Copy timeslots across days"
+    } -> "Timeslots store"
+    
+    "Substitutes store" -> {
+        "List substitutes"
+        "Add substitute"
+        "Edit substitute"
+        "Delete substitute"
+    } -> "Substitutes store"
+    
+    /* Logic */
+    
+    "Compile schedule data" -> {
+        "View schedule"
+        "Export schedule"
+        "Colors store"
+        "Team member store"
+        "Availability store"
+        "Shift context store"
+        "Shift context notes store"
+        "Shift context preferences store"
+        "Timeslots store"
+        "Substitutes store"
+    } -> "Compile schedule data"
+    
+    "Calculate timeslot suggestion ranking" -> {
+        "Add timeslot"
+        "Edit timeslot"
+        "Team member store"
+        "Availability store"
+        "Shift context store"
+        "Shift context preferences store"
+        "Timeslots store"
+        "Substitutes store"
+    } -> "Calculate timeslot suggestion ranking"
+}
