@@ -28,6 +28,7 @@ Table TeamMememberTypicalAvailability {
   dayOfWeek int [ not null ]
   startTime time [ not null ]
   endTime time [ not null ]
+  isPreference bool [ not null ]
 }
 
 Table Substitutes {
