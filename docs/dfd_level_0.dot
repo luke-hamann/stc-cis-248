@@ -1,0 +1,22 @@
+digraph data_flow_diagram {
+    rankdir = "LR"
+    
+    Admin [ shape = box ]
+    "Scheduler App" [ shape = circle ]
+
+    "Scheduler App" -> Admin [ label = <
+        Schedule views/exports <br />
+        Schedule warnings
+    > ]
+    Admin -> "Scheduler App" [ label = <
+        Team member info <br />
+        Team member availability <br />
+        Team member typical availability <br />
+        Team member preferences <br />
+        Shift context info <br />
+        Daily shift context notes <br />
+        Timeslot info <br />
+        Daily substitute list <br />
+        Note colors
+    > ]
+}
