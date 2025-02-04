@@ -24,7 +24,7 @@ Table TeamMemberAvailability {
 
 Table TeamMememberTypicalAvailability {
   id int [ pk ]
-  teamMember int [ not null, ref: > TeamMembers.id ]
+  teamMemberId int [ not null, ref: > TeamMembers.id ]
   dayOfWeek int [ not null ]
   startTime time [ not null ]
   endTime time [ not null ]
