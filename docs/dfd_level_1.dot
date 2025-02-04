@@ -6,10 +6,10 @@ digraph data_flow_diagram {
     
     Admin -> "Route request" [ label = "Request" ]
     "Route request" -> Admin [ label = "Response" ]
-    "Route request" -> "Control processing" [ label = "" ]
-    "Control processing" -> "Route request" [ label = "" ]
-    "Control processing" -> "Manipulate data models" [ label = "" ]
-    "Manipulate data models" -> "Control processing" [ label = "" ]
+    "Route request" -> "Control processing"
+    "Control processing" -> "Route request"
+    "Control processing" -> "Manipulate data models"
+    "Manipulate data models" -> "Control processing"
     "Manipulate data models" -> "Database"
     
     "Database" [ shape = underline ]
