@@ -1,0 +1,129 @@
+digraph data_flow_diagram {
+    rankdir = "LR"
+    node [ shape = circle ]
+    
+    Admin [ shape = box ]
+    
+    Admin -> "Route request" [ label = "Request" ]
+    "Route request" -> Admin [ label = "Response" ]
+
+    subgraph controllers {
+        rank = "same"
+        
+        "Team member controller"
+        "Typical availability controller"
+        "Availability controller"
+        "Shift context controller"
+        "Shift context preferences controller"
+        "Color swatches controller"
+        "Daily shift context notes controller"
+        "Timeslot controller"
+        "Substitute controller"
+        "Schedule controller"
+    }
+    
+    "Route request" -> {
+        "Team member controller"
+        "Typical availability controller"
+        "Availability controller"
+        "Shift context controller"
+        "Shift context preferences controller"
+        "Color swatches controller"
+        "Daily shift context notes controller"
+        "Timeslot controller"
+        "Substitute controller"
+        "Schedule controller"
+    } -> "Route request"
+    
+    /* Database APIs */
+    
+    subgraph database_api {
+        rank = "same"
+        
+        "Team member database API"
+        "Typical availability database API"
+        "Availability database API"
+        "Shift context database API"
+        "Shift context preferences database API"
+        "Color swatches database API"
+        "Daily shift context notes database API"
+        "Timeslot database API"
+        "Substitute database API"
+    }
+    
+    /* Base database connections */
+    
+    "Team member controller" ->
+        "Team member database API" ->
+        "Team member controller"
+    
+    "Typical availability controller" ->
+        "Typical availability database API" ->
+        "Typical availability controller"
+    
+    "Availability controller" ->
+        "Availability database API" ->
+        "Availability controller"
+    
+    "Shift context controller" ->
+        "Shift context database API" ->
+        "Shift context controller"
+    
+    "Shift context preferences controller" ->
+        "Shift context preferences database API" ->
+        "Shift context preferences controller"
+    
+    "Color swatches controller" ->
+        "Color swatches database API" ->
+        "Color swatches controller"
+    
+    "Daily shift context notes controller" ->
+        "Daily shift context notes database API" ->
+        "Daily shift context notes controller"
+    
+    "Timeslot controller" ->
+        "Timeslot database API" ->
+        "Timeslot controller"
+    
+    "Substitute controller" ->
+        "Substitute database API" ->
+        "Substitute controller"
+    
+    /* Additional database connections */
+    
+    "Team member database API" -> "Availability controller"
+    "Team member database API" -> "Typical availability controller"
+    "Team member database API" -> "Shift context preferences controller"
+    "Team member database API" -> "Substitute controller"
+    "Team member database API" -> "Timeslot controller"
+    "Typical availability database API" -> "Availability controller"
+    "Shift context database API" -> "Shift context preferences controller"
+    
+    {
+        "Team member database API"
+        "Typical availability database API"
+        "Availability database API"
+        "Shift context database API"
+        "Shift context preferences database API"
+        "Color swatches database API"
+        "Daily shift context notes database API"
+        "Timeslot database API"
+        "Substitute database API"
+    } -> "Schedule controller"
+    
+    /* Database */
+    
+    Database [ shape = underline ]
+    
+    Database -> {
+        "Team member database API"
+        "Typical availability database API"
+        "Availability database API"
+        "Shift context database API"
+        "Shift context preferences database API"
+        "Color swatches database API"
+        "Daily shift context notes database API"
+        "Timeslot database API"
+        "Substitute database API"
+    } -> Database
+}
