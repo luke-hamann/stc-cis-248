@@ -99,6 +99,8 @@ digraph data_flow_diagram {
     "Typical availability database API" -> "Availability controller"
     "Shift context database API" -> "Shift context preferences controller"
     
+    "Timeslot database API" -> "Substitute controller"
+    
     {
         "Team member database API"
         "Typical availability database API"
