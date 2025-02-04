@@ -165,96 +165,109 @@ digraph data_flow_diagram {
         "Export schedule"
     } -> "Schedule controller"
 
-    /* Data stores */
+    /* Database APIs */
 
-    subgraph data_stores {
-        node [ shape = underline ]
+    Database [ shape = underline ]
+
+    Database -> {
+        "Team member database API"
+        "Typical availability database API"
+        "Availability database API"
+        "Shift context database API"
+        "Shift context preferences database API"
+        "Colors database API"
+        "Shift context notes database API"
+        "Timeslots database API"
+        "Substitutes database API"
+    } -> Database
+
+    subgraph database_apis {
         rank = same
         
-        "Team member store"
-        "Typical availability store"
-        "Availability store"
-        "Shift context store"
-        "Shift context preferences store"
-        "Colors store"
-        "Shift context notes store"
-        "Timeslots store"
-        "Substitutes store"
+        "Team member database API"
+        "Typical availability database API"
+        "Availability database API"
+        "Shift context database API"
+        "Shift context preferences database API"
+        "Colors database API"
+        "Shift context notes database API"
+        "Timeslots database API"
+        "Substitutes database API"
     }
 
-    "Team member store" -> {
+    "Team member database API" -> {
         "List team members"
         "View team member"
         "Add team member"
         "Edit team member"
         "Delete team member"
-    } -> "Team member store"
+    } -> "Team member database API"
     
-    "Typical availability store" -> {
+    "Typical availability database API" -> {
         "View typical availability"
         "Add typical availability"
         "Edit typical availability"
         "Delete typical availability"
-    } -> "Typical availability store"
+    } -> "Typical availability database API"
     
-    "Availability store" -> {
+    "Availability database API" -> {
         "View availability"
         "Add availability"
         "Edit availability"
         "Delete availability"
-    } -> "Availability store"
+    } -> "Availability database API"
     
     "Copy typical availability to availability" -> {
-        "Typical availability store"
-        "Availability store"
+        "Typical availability database API"
+        "Availability database API"
     } -> "Copy typical availability to availability"
     
-    "Copy availability across weeks" -> "Availability store"
+    "Copy availability across weeks" -> "Availability database API"
     
-    "Shift context store" -> {
+    "Shift context database API" -> {
         "List shift contexts"
         "View shift context"
         "Add shift context"
         "Edit shift context"
         "Delete shift context"
-    } -> "Shift context store"
+    } -> "Shift context database API"
     
-    "Shift context preferences store" -> {
+    "Shift context preferences database API" -> {
         "List preferences"
         "Add preference"
         "Edit preference"
         "Delete preference"
-    } -> "Shift context preferences store"
+    } -> "Shift context preferences database API"
     
-    "Colors store" -> {
+    "Colors database API" -> {
         "List color swatches"
         "Add color swatch"
         "Edit color swatch"
         "Delete color swatch"
-    } -> "Colors store"
+    } -> "Colors database API"
     
-    "Shift context notes store" -> {
+    "Shift context notes database API" -> {
         "View note"
         "Add note"
         "Edit note"
         "Delete note"
-    } -> "Shift context notes store"
+    } -> "Shift context notes database API"
     
-    "Timeslots store" -> {
+    "Timeslots database API" -> {
         "List timeslots"
         "View timeslot"
         "Add timeslot"
         "Edit timeslot"
         "Delete timeslot"
         "Copy timeslots across days"
-    } -> "Timeslots store"
+    } -> "Timeslots database API"
     
-    "Substitutes store" -> {
+    "Substitutes database API" -> {
         "List substitutes"
         "Add substitute"
         "Edit substitute"
         "Delete substitute"
-    } -> "Substitutes store"
+    } -> "Substitutes database API"
     
     /* Logic */
     
@@ -268,24 +281,24 @@ digraph data_flow_diagram {
     "Compile schedule data" -> {
         "View schedule"
         "Export schedule"
-        "Colors store"
-        "Team member store"
-        "Availability store"
-        "Shift context store"
-        "Shift context notes store"
-        "Shift context preferences store"
-        "Timeslots store"
-        "Substitutes store"
+        "Colors database API"
+        "Team member database API"
+        "Availability database API"
+        "Shift context database API"
+        "Shift context notes database API"
+        "Shift context preferences database API"
+        "Timeslots database API"
+        "Substitutes database API"
     } -> "Compile schedule data"
     
     "Calculate timeslot suggestion ranking" -> {
         "Add timeslot"
         "Edit timeslot"
-        "Team member store"
-        "Availability store"
-        "Shift context store"
-        "Shift context preferences store"
-        "Timeslots store"
-        "Substitutes store"
+        "Team member database API"
+        "Availability database API"
+        "Shift context database API"
+        "Shift context preferences database API"
+        "Timeslots database API"
+        "Substitutes database API"
     } -> "Calculate timeslot suggestion ranking"
 }
