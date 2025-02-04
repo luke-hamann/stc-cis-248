@@ -10,7 +10,7 @@ digraph data_flow_diagram {
         
         "Manage team members"
         "Manage shift contexts"
-        "Manage schedules"
+        "Manage schedule"
     }
     
     subgraph data_stores {
@@ -22,13 +22,22 @@ digraph data_flow_diagram {
         "Timeslot store"
     }
     
-    Admin -> {
-        "Manage team members"
-        "Manage shift contexts"
-        "Manage schedules"
-    }
+    Admin -> "Manage team members" [ label = "Team memeber info" ]
+    Admin -> "Manage shift contexts" [ label = "Shift context info" ]
+    Admin -> "Manage schedule" [ label = "Timeslot assignees" ]
     
-    "Manage team members" -> "Team member store"
-    "Manage shift contexts" -> "Shift context store"
-    "Manage schedules" -> "Timeslot store"
+    "Manage schedule" -> Admin [ label = <
+        Suggestions <br />
+        Warnings <br />
+        Schedule output <br />
+    > ]
+    
+    "Manage team members" -> "Team member store" [ label = "Team member info" ]
+    "Team member store" -> "Manage team members"
+    "Manage shift contexts" -> "Shift context store" [ label = "Shift context info"]
+    "Shift context store" -> "Manage shift contexts"
+    "Manage schedule" -> "Timeslot store" [ label = "Timeslot info" ]
+    "Timeslot store" -> "Manage schedule"
+    
+    "Team member store" -> "Manage schedule"  [ label = "Team member availability/preferences" ]
 }
