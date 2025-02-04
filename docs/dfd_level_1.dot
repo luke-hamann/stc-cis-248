@@ -1,43 +1,18 @@
 digraph data_flow_diagram {
     rankdir = "LR"
-    
     node [ shape = circle ]
     
     Admin [ shape = box ]
     
-    subgraph controllers {
-        rank = "same"
-        
-        "Manage team members"
-        "Manage shift contexts"
-        "Manage schedule"
-    }
+    Admin -> "Route request" [ label = "Request" ]
+    "Route request" -> Admin [ label = "Response" ]
+    "Route request" -> "Control processing" [ label = "" ]
+    "Control processing" -> "Route request" [ label = "" ]
+    "Control processing" -> "Manipulate data models" [ label = "" ]
+    "Manipulate data models" -> "Control processing" [ label = "" ]
+    "Manipulate data models" -> "Database"
     
-    subgraph data_stores {
-        node [ shape = underline ]
-        rank = "same"
-        
-        "Team member store"
-        "Shift context store"
-        "Timeslot store"
-    }
+    "Database" [ shape = underline ]
     
-    Admin -> "Manage team members" [ label = "Team memeber info" ]
-    Admin -> "Manage shift contexts" [ label = "Shift context info" ]
-    Admin -> "Manage schedule" [ label = "Timeslot assignees" ]
-    
-    "Manage schedule" -> Admin [ label = <
-        Suggestions <br />
-        Warnings <br />
-        Schedule output <br />
-    > ]
-    
-    "Manage team members" -> "Team member store" [ label = "Team member info" ]
-    "Team member store" -> "Manage team members"
-    "Manage shift contexts" -> "Shift context store" [ label = "Shift context info"]
-    "Shift context store" -> "Manage shift contexts"
-    "Manage schedule" -> "Timeslot store" [ label = "Timeslot info" ]
-    "Timeslot store" -> "Manage schedule"
-    
-    "Team member store" -> "Manage schedule"  [ label = "Team member availability/preferences" ]
+    "Database" -> "Manipulate data models"
 }
