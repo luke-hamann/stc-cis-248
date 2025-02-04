@@ -1,0 +1,34 @@
+digraph data_flow_diagram {
+    rankdir = "LR"
+    
+    node [ shape = circle ]
+    
+    Admin [ shape = box ]
+    
+    subgraph controllers {
+        rank = "same"
+        
+        "Manage team members"
+        "Manage shift contexts"
+        "Manage schedules"
+    }
+    
+    subgraph data_stores {
+        node [ shape = underline ]
+        rank = "same"
+        
+        "Team member store"
+        "Shift context store"
+        "Timeslot store"
+    }
+    
+    Admin -> {
+        "Manage team members"
+        "Manage shift contexts"
+        "Manage schedules"
+    }
+    
+    "Manage team members" -> "Team member store"
+    "Manage shift contexts" -> "Shift context store"
+    "Manage schedules" -> "Timeslot store"
+}
