@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS schedulerApp;
-DROP USER IF EXISTS schedulerApp;
+DROP USER IF EXISTS 'schedulerApp'@'localhost';
 
 CREATE DATABASE schedulerApp;
 USE schedulerApp;
@@ -7,7 +7,7 @@ USE schedulerApp;
 SET default_storage_engine=INNODB;
 
 CREATE TABLE TeamMembers (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     firstName VARCHAR(500) NOT NULL,
     middleName VARCHAR(500),
     lastName VARCHAR(500) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE TeamMembers (
 );
 
 CREATE TABLE ShiftContexts (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL UNIQUE,
     ageGroup VARCHAR(500),
     location VARCHAR(500),
@@ -31,13 +31,13 @@ CREATE TABLE ShiftContexts (
 );
 
 CREATE TABLE Colors (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL UNIQUE,
     hex CHAR(6) NOT NULL
 );
 
 CREATE TABLE TeamMemberAvailability (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     teamMemberId INT NOT NULL,
     startDateTime DATETIME NOT NULL,
     endDateTime DATETIME NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE TeamMemberAvailability (
 );
 
 CREATE TABLE TeamMemberTypicalAvailability (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     teamMemberId INT NOT NULL,
     dayOfWeek TINYINT NOT NULL,
     startTime TIME NOT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE TeamMemberShiftContextPreferences (
 );
 
 CREATE TABLE Timeslots (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     shiftContextId INT NOT NULL,
     startDateTime DATETIME NOT NULL,
     endDateTime DATETIME,
