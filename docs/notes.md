@@ -1,3 +1,17 @@
+## Database APIs
+
+* Team member database API
+* Availability database API
+* Typical availability database API
+* Shift context database API
+* Shift context preferences database API
+* Time slots database API
+* Shift context notes database API
+* Substitutes database API
+* Colors database API
+
+## Actions
+
 * Team member list (GET)
 * Team member add (GET, POST)
 * Team member edit (GET, POST)
