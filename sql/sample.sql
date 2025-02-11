@@ -1,4 +1,4 @@
-
+USE schedulerApp;
 
 -- TEAM MEMBERS
 INSERT INTO teammembers 
@@ -36,7 +36,7 @@ INSERT INTO teammembers
 
 
 
---SHIFT CONTEXTS 
+-- SHIFT CONTEXTS 
 INSERT INTO shiftcontexts
 	(name, agegroup, location, description)
 	VALUES
@@ -50,7 +50,7 @@ INSERT INTO shiftcontexts
 
 
 
---COLORS
+-- COLORS
 INSERT INTO colors
 	(name, hex)
 	VALUES
@@ -81,12 +81,12 @@ INSERT INTO teammemberavailability
 INSERT INTO teammemberavailability
 	(teamMemberId, startdatetime, enddatetime, isPreference)
 	VALUES
-	(4, "2025-3-17 00:00:00", "2025-3-23 23:59:59", false)
+	(4, "2025-3-17 00:00:00", "2025-3-23 23:59:59", false);
 	
 	
 
---TYPICAL AVAILABILITY
-		--team member 1
+-- TYPICAL AVAILABILITY
+		-- team member 1
 INSERT INTO teammembertypicalavailability
 	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
 	VALUES
@@ -108,7 +108,7 @@ INSERT INTO teammembertypicalavailability
 	VALUES
 	(1, 5, "2025-3-8 08:00:00", "2025-3-8 23:59:59", true);
 
-		--team member 2
+		-- team member 2
 INSERT INTO teammembertypicalavailability
 	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
 	VALUES
@@ -129,7 +129,7 @@ INSERT INTO teammembertypicalavailability
 	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
 	VALUES
 	(2, 5, "2025-3-8 08:00:00", "2025-3-8 23:59:59", true);
-		--team member 3
+		-- team member 3
 INSERT INTO teammembertypicalavailability
 	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
 	VALUES
@@ -150,7 +150,7 @@ INSERT INTO teammembertypicalavailability
 	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
 	VALUES
 	(1, 5, "2025-3-8 08:00:00", "2025-3-8 23:59:59", true);
-		--team member 4
+		-- team member 4
 INSERT INTO teammembertypicalavailability
 	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
 	VALUES
@@ -175,7 +175,7 @@ INSERT INTO teammembertypicalavailability
 	INSERT INTO teammembertypicalavailability
 	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
 	VALUES
-		--team member 5(sub)
+		-- team member 5(sub)
 	(1, 1, "2025-3-4 08:00:00", "2025-3-4 18:00:00", true);
 INSERT INTO teammembertypicalavailability
 	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
@@ -205,7 +205,7 @@ INSERT INTO teammembertypicalavailability
 
 
 
---TEAM MEMBER CONTEXT PREFERENCES
+-- TEAM MEMBER CONTEXT PREFERENCES
 INSERT INTO teammembershiftcontextpreferences
 	(teammemberid, shiftcontextid, isPreference)
 	VALUES
@@ -217,8 +217,8 @@ INSERT INTO teammembershiftcontextpreferences
 
 
 
---TIME SLOTS
-		--1st team member, 1st context
+-- TIME SLOTS
+		-- 1st team member, 1st context
 INSERT INTO timeslots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
@@ -245,7 +245,7 @@ INSERT INTO timeslots
 	(1, "2025-3-7 08:00:00", "2025-3-7, 14:00:00:00)", true, 1, "test note", 1)
 	;
 
-		--null team member, 1st context
+		-- null team member, 1st context
 INSERT INTO timeslots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
@@ -328,8 +328,8 @@ INSERT INTO timeslots
 	;
 
 
---SUBSTITUTES
-		--5th team member is sub
+-- SUBSTITUTES
+		-- 5th team member is sub
 INSERT INTO substitutes
 	(teammemberid, date)
 	VALUES
