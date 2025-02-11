@@ -8,27 +8,21 @@ digraph data_flow_diagram {
     subgraph actions {
         rank = same
         
-        "Schedule calendar (GET)"
-        "Schedule week (GET)"
         "Schedule timeslot add (GET, POST)"
         "Schedule timeslot edit (GET, POST)"
         "Schedule timeslot delete (GET, POST)"
         "Schedule timeslot copy (GET)"
         "Schedule timeslot copy confirm (GET, POST)"
         "Schedule date range clear (GET, POST)"
-        "Schedule export (GET, POST)"
     }
     
     "Timeslot controller" -> {
-        "Schedule calendar (GET)"
-        "Schedule week (GET)"
         "Schedule timeslot add (GET, POST)"
         "Schedule timeslot edit (GET, POST)"
         "Schedule timeslot delete (GET, POST)"
         "Schedule timeslot copy (GET)"
         "Schedule timeslot copy confirm (GET, POST)"
         "Schedule date range clear (GET, POST)"
-        "Schedule export (GET, POST)"
     } -> "Timeslot controller"
     
     subgraph repositories {
@@ -46,15 +40,13 @@ digraph data_flow_diagram {
     }
     
     {
-        "Schedule calendar (GET)"
-        "Schedule week (GET)"
         "Schedule timeslot add (GET, POST)"
         "Schedule timeslot edit (GET, POST)"
         "Schedule timeslot delete (GET, POST)"
         "Schedule timeslot copy (GET)"
         "Schedule timeslot copy confirm (GET, POST)"
         "Schedule date range clear (GET, POST)"
-        "Schedule export (GET, POST)"
+        
     }
     ->
     {
@@ -70,15 +62,12 @@ digraph data_flow_diagram {
     }
     ->
     {
-        "Schedule calendar (GET)"
-        "Schedule week (GET)"
         "Schedule timeslot add (GET, POST)"
         "Schedule timeslot edit (GET, POST)"
         "Schedule timeslot delete (GET, POST)"
         "Schedule timeslot copy (GET)"
         "Schedule timeslot copy confirm (GET, POST)"
         "Schedule date range clear (GET, POST)"
-        "Schedule export (GET, POST)"
     }
     
     Database [ shape = folder ]
