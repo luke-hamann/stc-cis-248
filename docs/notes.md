@@ -1,14 +1,14 @@
 ## Repositories
 
 * Team member repository
-* Availability repository
 * Typical availability repository
+* Unavailability repository
 * Shift context repository
 * Shift context preferences repository
-* Time slots repository
-* Shift context notes repository
-* Substitutes repository
 * Colors repository
+* Shift context notes repository
+* Timeslots repository
+* Substitutes repository
 
 ## Actions
 
@@ -47,3 +47,17 @@
 * Substitute add (GET, POST)
 * Substitute delete (GET, POST)
 * Schedule export (GET, POST)
+
+## Controllers
+
+* Team member
+* Typical availability
+* Unavailability
+* Shift context
+* Shift context preferences
+* Colors
+* Shift context notes
+* Timeslots
+* Substitutes
+* Schedule
+  
