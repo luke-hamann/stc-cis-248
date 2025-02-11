@@ -8,6 +8,7 @@ digraph data_flow_diagram {
         Schedule views/exports <br />
         Schedule warnings
     > ]
+    
     Admin -> "Scheduler App" [ label = <
         Team member info <br />
         Team member availability <br />
