@@ -1,14 +1,14 @@
-## Database APIs
+## Repositories
 
-* Team member database API
-* Availability database API
-* Typical availability database API
-* Shift context database API
-* Shift context preferences database API
-* Time slots database API
-* Shift context notes database API
-* Substitutes database API
-* Colors database API
+* Team member repository
+* Availability repository
+* Typical availability repository
+* Shift context repository
+* Shift context preferences repository
+* Time slots repository
+* Shift context notes repository
+* Substitutes repository
+* Colors repository
 
 ## Actions
 
