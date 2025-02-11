@@ -33,8 +33,11 @@ digraph data_flow_diagram {
         "Timeslot repository"
     }
     
+    "Schedule calendar (GET)" -> {
+        "Timeslot repository"
+    } -> "Schedule calendar (GET)"
+    
     {
-        "Schedule calendar (GET)"
         "Schedule week (GET)"
         "Schedule export (GET, POST)"
     }
@@ -52,7 +55,6 @@ digraph data_flow_diagram {
     }
     ->
     {
-        "Schedule calendar (GET)"
         "Schedule week (GET)"
         "Schedule export (GET, POST)"
     }
