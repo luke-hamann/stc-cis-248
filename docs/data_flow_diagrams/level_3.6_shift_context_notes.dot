@@ -14,11 +14,13 @@ digraph data_flow_diagram {
         
         "Shift context repository"
         "Shift context note repository"
+        "Color repository"
     }
     
     "Shift context note edit (GET, POST)" -> {
         "Shift context repository"
         "Shift context note repository"
+        "Color repository"
     } -> "Shift context note edit (GET, POST)"
     
     Database [ shape = folder ]
@@ -26,5 +28,6 @@ digraph data_flow_diagram {
     Database -> {
         "Shift context repository"
         "Shift context note repository"
+        "Color repository"
     } -> Database
 }
