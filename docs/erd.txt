@@ -9,7 +9,7 @@ Table TeamMembers {
   isExternal bool [ not null ]
   maxWeeklyHours double
   maxWeeklyDays int
-  username string
+  username string [ unique ]
   password string
   isAdmin bool [ not null ]
 }
