@@ -101,6 +101,7 @@ digraph data_flow_diagram {
         "Typical availability repository"
         "Unavailability repository"
         "Shift context repository"
+        "Color repository"
         "Shift context preferences repository"
         "Shift context notes repository"
         "Substitute repository"
