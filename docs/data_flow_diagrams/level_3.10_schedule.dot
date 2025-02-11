@@ -1,0 +1,73 @@
+digraph data_flow_diagram {
+    node [ shape = circle ]
+    
+    "..." [ shape = none ]
+    
+    "..." -> "Schedule controller" -> "..."
+
+    subgraph actions {
+        rank = same
+        
+        "Schedule calendar (GET)"
+        "Schedule week (GET)"
+        "Schedule export (GET, POST)"
+    }
+    
+    "Schedule controller" -> {
+        "Schedule calendar (GET)"
+        "Schedule week (GET)"
+        "Schedule export (GET, POST)"
+    } -> "Schedule controller"
+    
+    subgraph repositories {
+        rank = same
+        
+        "Team member repository"
+        "Typical availability repository"
+        "Unavailability repository"
+        "Shift context repository"
+        "Shift context preferences repository"
+        "Color repository"
+        "Shift context notes repository"
+        "Substitute repository"
+        "Timeslot repository"
+    }
+    
+    {
+        "Schedule calendar (GET)"
+        "Schedule week (GET)"
+        "Schedule export (GET, POST)"
+    }
+    ->
+    {
+        "Team member repository"
+        "Typical availability repository"
+        "Unavailability repository"
+        "Shift context repository"
+        "Shift context preferences repository"
+        "Color repository"
+        "Shift context notes repository"
+        "Substitute repository"
+        "Timeslot repository"
+    }
+    ->
+    {
+        "Schedule calendar (GET)"
+        "Schedule week (GET)"
+        "Schedule export (GET, POST)"
+    }
+    
+    Database [ shape = folder ]
+    
+    Database -> {
+        "Team member repository"
+        "Typical availability repository"
+        "Unavailability repository"
+        "Shift context repository"
+        "Shift context preferences repository"
+        "Color repository"
+        "Shift context notes repository"
+        "Substitute repository"
+        "Timeslot repository"
+    } -> Database
+}
