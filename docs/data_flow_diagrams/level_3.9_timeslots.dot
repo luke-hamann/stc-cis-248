@@ -42,7 +42,6 @@ digraph data_flow_diagram {
     {
         "Schedule timeslot add (GET, POST)"
         "Schedule timeslot edit (GET, POST)"
-        "Schedule timeslot copy confirm (GET, POST)"
     }
     ->
     {
@@ -60,7 +59,6 @@ digraph data_flow_diagram {
     {
         "Schedule timeslot add (GET, POST)"
         "Schedule timeslot edit (GET, POST)"
-        "Schedule timeslot copy confirm (GET, POST)"
     }
     
     {
