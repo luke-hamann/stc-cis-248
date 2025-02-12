@@ -63,3 +63,24 @@
 * Substitutes
 * Schedule
   
+## DFDs Summary
+
+### Level 0
+
+* Scheduler App
+
+### Level 1
+
+* Router layer
+* Controller layer
+* Data layer
+* Database
+
+### Level 2
+
+* (Controllers)
+* (Data model repositories)
+
+### Level 3
+
+* (Actions)
