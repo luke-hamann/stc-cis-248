@@ -43,7 +43,7 @@
 * Schedule timeslot add (GET, POST)
 * Schedule timeslot edit (GET, POST)
 * Schedule timeslot delete (GET, POST)
-* Schedule timeslot copy (GET)
+* Schedule timeslot copy (GET, POST)
 * Schedule timeslot copy confirm (GET, POST)
 * Schedule date range clear (GET, POST)
 * Substitute add (GET, POST)

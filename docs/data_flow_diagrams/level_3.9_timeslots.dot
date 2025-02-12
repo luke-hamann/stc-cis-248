@@ -11,7 +11,7 @@ digraph data_flow_diagram {
         "Schedule timeslot add (GET, POST)"
         "Schedule timeslot edit (GET, POST)"
         "Schedule timeslot delete (GET, POST)"
-        "Schedule timeslot copy (GET)"
+        "Schedule timeslot copy (GET, POST)"
         "Schedule timeslot copy confirm (GET, POST)"
         "Schedule date range clear (GET, POST)"
     }
@@ -20,7 +20,7 @@ digraph data_flow_diagram {
         "Schedule timeslot add (GET, POST)"
         "Schedule timeslot edit (GET, POST)"
         "Schedule timeslot delete (GET, POST)"
-        "Schedule timeslot copy (GET)"
+        "Schedule timeslot copy (GET, POST)"
         "Schedule timeslot copy confirm (GET, POST)"
         "Schedule date range clear (GET, POST)"
     } -> "Timeslot controller"
@@ -42,11 +42,6 @@ digraph data_flow_diagram {
     {
         "Schedule timeslot add (GET, POST)"
         "Schedule timeslot edit (GET, POST)"
-        "Schedule timeslot delete (GET, POST)"
-        "Schedule timeslot copy (GET)"
-        "Schedule timeslot copy confirm (GET, POST)"
-        "Schedule date range clear (GET, POST)"
-        
     }
     ->
     {
@@ -64,9 +59,36 @@ digraph data_flow_diagram {
     {
         "Schedule timeslot add (GET, POST)"
         "Schedule timeslot edit (GET, POST)"
-        "Schedule timeslot delete (GET, POST)"
-        "Schedule timeslot copy (GET)"
+    }
+    
+    {
+        "Schedule timeslot copy (GET, POST)"
         "Schedule timeslot copy confirm (GET, POST)"
+    }
+    ->
+    {
+        "Timeslot repository"
+        "Team member repository"
+        "Typical availability repository"
+        "Unavailability repository"
+    }
+    ->
+    {
+        "Schedule timeslot copy (GET, POST)"
+        "Schedule timeslot copy confirm (GET, POST)"
+    }
+    
+    {
+        "Schedule timeslot delete (GET, POST)"
+        "Schedule date range clear (GET, POST)"
+    }
+    ->
+    {
+        "Timeslot repository"
+    }
+    ->
+    {
+        "Schedule timeslot delete (GET, POST)"
         "Schedule date range clear (GET, POST)"
     }
     
@@ -77,6 +99,7 @@ digraph data_flow_diagram {
         "Typical availability repository"
         "Unavailability repository"
         "Shift context repository"
+        "Color repository"
         "Shift context preferences repository"
         "Shift context notes repository"
         "Substitute repository"
