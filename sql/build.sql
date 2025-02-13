@@ -36,6 +36,16 @@ CREATE TABLE Colors (
     hex CHAR(6) NOT NULL
 );
 
+CREATE TABLE ShiftContextNotes (
+    shiftContextId INT,
+    date DATE,
+    note VARCHAR(500) NOT NULL,
+    colorId INT,
+    PRIMARY KEY (shiftContextId, date),
+    FOREIGN KEY (shiftContextId) REFERENCES ShiftContexts(id),
+    FOREIGN KEY (colorId) REFERENCES Colors(id)
+);
+
 CREATE TABLE TeamMemberAvailability (
     id INT PRIMARY KEY AUTO_INCREMENT,
     teamMemberId INT NOT NULL,
