@@ -4,7 +4,8 @@
 
 - HTML
 - CSS
-- Typescript
+- TypeScript
+- JavaScript
 - SQL
 
 ## Stack
