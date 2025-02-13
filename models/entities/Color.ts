@@ -1,35 +1,35 @@
 export default class Color {
-  private id: number = 0;
-  private name: string = "";
-  private hex: string = "";
+  private _id: number = 0;
+  private _name: string = "";
+  private _hex: string = "";
 
-  public Color(id: number, name: string, hex: string) {
+  public constructor(id: number, name: string, hex: string) {
     this.id = id;
     this.name = name;
     this.hex = hex;
   }
 
-  public getId(): number {
-    return this.id;
+  public get id(): number {
+    return this._id;
+  }
+  
+  public set id(value: number) {
+    this._id = value;
   }
 
-  public setId(id: number): void {
-    this.id = id;
+  public get name(): string {
+    return this._name;
   }
 
-  public getName(): string {
-    return this.name;
+  public set name(value: string) {
+    this._name = value;
   }
 
-  public setName(name: string): void {
-    this.name = name;
+  public get hex(): string {
+    return this._hex;
   }
 
-  public getHex(): string {
-    return this.hex;
-  }
-
-  public setHex(hex: string): void {
-    this.hex = hex;
+  public set hex(value: string) {
+    this._hex = value;
   }
 }
