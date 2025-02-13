@@ -68,7 +68,18 @@ INSERT INTO colors
 	VALUES
 	("blue", "1667FF");
 	
-	
+
+-- SHIFT CONTEXT NOTES
+INSERT INTO shiftcontextnotes
+	(shiftcontextid, date, note, colorid)
+	VALUES
+	(1, "2025-03-04", "aslkdj fljsadf ljdsa ljlds jljf", 2),
+	(1, "2025-03-07", "ozxiugoueru oiudaf ouda ofodsa ufoiud", 1),
+	(2, "2025-03-05", "sd dsf jsdsdlkj fslkjd lkjsd lkj", 3),
+	(2, "2025-03-06", "lskdj fds fsdouf 7dsf7", 1)
+	;
+
+
 -- TEAM MEMBER (UN) AVAILABILITY
 INSERT INTO teammemberavailability
 	(teamMemberId, startdatetime, enddatetime, isPreference)
