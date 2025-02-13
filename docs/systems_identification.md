@@ -14,6 +14,7 @@
 
 ## Libraries
 
+- deno_mysql
 - Nunjucks
 - esbuild
 - exceljs
@@ -43,6 +44,7 @@
 - <https://developer.mozilla.org/en-US/docs/Web>
 - <https://docs.deno.com/runtime/>
 - <https://dev.mysql.com/doc/refman/9.0/en/>
+- <https://deno.land/x/mysql>
 - <https://mozilla.github.io/nunjucks/templating.html>
 - <https://esbuild.github.io/>
 - <https://github.com/exceljs/exceljs>
