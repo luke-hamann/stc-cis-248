@@ -27,11 +27,10 @@
 
 - Visual Studio Code
 - phpMyAdmin
-- GitHub
+- Git
 
 ## Collaboration
 
-- Git
 - GitHub <https://github.com/luke-hamann/stc-cis-248>
 
 ## Deployment
