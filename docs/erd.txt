@@ -64,7 +64,7 @@ Table TimeSlots {
 Table ShiftContextNotes {
   shiftContextId int [ pk, ref: > ShiftContexts.id ]
   date date [ pk ]
-  note sting [ not null ]
+  note string [ not null ]
   colorId int [ ref: > Colors.id ]
 }
 
