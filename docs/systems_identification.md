@@ -2,20 +2,20 @@
 
 ## Languages
 
-* HTML
-* CSS
-* Typescript
-* SQL
+- HTML
+- CSS
+- Typescript
+- SQL
 
 ## Stack
 
-* Deno
-* MySQL
+- Deno
+- MySQL
 
 ## Libraries
 
-* esbuild
-* exceljs
+- esbuild
+- exceljs
 
 ## Frameworks
 
@@ -23,25 +23,25 @@
 
 ## Tools
 
-* Visual Studio Code
-* phpMyAdmin
-* GitHub
+- Visual Studio Code
+- phpMyAdmin
+- GitHub
 
 ## Collaboration
 
-* Git
-* GitHub <https://github.com/luke-hamann/stc-cis-248>
+- Git
+- GitHub <https://github.com/luke-hamann/stc-cis-248>
 
 ## Deployment
 
-* Manual installation on a VPS
+- Manual installation on a VPS
 
 ## Resources
 
-* <https://www.typescriptlang.org/docs/>
-* <https://developer.mozilla.org/en-US/docs/Web>
-* <https://docs.deno.com/runtime/>
-* <https://dev.mysql.com/doc/refman/9.0/en/>
-* <https://esbuild.github.io/>
-* <https://github.com/exceljs/exceljs>
-* <https://git-scm.com/doc>
+- <https://www.typescriptlang.org/docs/>
+- <https://developer.mozilla.org/en-US/docs/Web>
+- <https://docs.deno.com/runtime/>
+- <https://dev.mysql.com/doc/refman/9.0/en/>
+- <https://esbuild.github.io/>
+- <https://github.com/exceljs/exceljs>
+- <https://git-scm.com/doc>
