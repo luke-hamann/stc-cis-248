@@ -4,7 +4,8 @@
 
 - HTML
 - CSS
-- Typescript
+- TypeScript
+- JavaScript
 - SQL
 
 ## Stack
@@ -14,6 +15,8 @@
 
 ## Libraries
 
+- deno_mysql
+- Nunjucks
 - esbuild
 - exceljs
 
@@ -25,11 +28,10 @@
 
 - Visual Studio Code
 - phpMyAdmin
-- GitHub
+- Git
 
 ## Collaboration
 
-- Git
 - GitHub <https://github.com/luke-hamann/stc-cis-248>
 
 ## Deployment
@@ -42,6 +44,8 @@
 - <https://developer.mozilla.org/en-US/docs/Web>
 - <https://docs.deno.com/runtime/>
 - <https://dev.mysql.com/doc/refman/9.0/en/>
+- <https://deno.land/x/mysql>
+- <https://mozilla.github.io/nunjucks/templating.html>
 - <https://esbuild.github.io/>
 - <https://github.com/exceljs/exceljs>
 - <https://git-scm.com/doc>
