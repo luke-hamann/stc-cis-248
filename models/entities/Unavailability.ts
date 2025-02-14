@@ -1,12 +1,12 @@
 import TeamMember from "./TeamMember.ts";
 
 export default class Unavailability {
-  private _id: number = 0;
-  private _teamMemberId: number = 0;
-  private _teamMember: TeamMember | null = null;
-  private _startDateTime: Date | null = null;
-  private _endDateTime: Date | null = null;
-  private _isPreference: boolean = false;
+  public id: number = 0;
+  public teamMemberId: number = 0;
+  public teamMember: TeamMember | null = null;
+  public startDateTime: Date | null = null;
+  public endDateTime: Date | null = null;
+  public isPreference: boolean = false;
 
   public constructor(
     id: number,
@@ -22,53 +22,5 @@ export default class Unavailability {
     this.startDateTime = startDateTime;
     this.endDateTime = endDateTime;
     this.isPreference = isPreference;
-  }
-
-  public get id(): number {
-    return this._id;
-  }
-
-  public set id(value: number) {
-    this._id = value;
-  }
-
-  public get teamMemberId(): number {
-    return this._teamMemberId;
-  }
-
-  public set teamMemberId(value: number) {
-    this._teamMemberId = value;
-  }
-
-  public get teamMember(): TeamMember | null {
-    return this._teamMember;
-  }
-
-  public set teamMember(value: TeamMember | null) {
-    this._teamMember = value;
-  }
-
-  public get startDateTime(): Date | null {
-    return this._startDateTime;
-  }
-
-  public set startDateTime(value: Date | null) {
-    this._startDateTime = value;
-  }
-
-  public get endDateTime(): Date | null {
-    return this._endDateTime;
-  }
-
-  public set endDateTime(value: Date | null) {
-    this._endDateTime = value;
-  }
-
-  public get isPreference(): boolean {
-    return this._isPreference;
-  }
-
-  public set isPreference(value: boolean) {
-    this._isPreference = value;
   }
 }
