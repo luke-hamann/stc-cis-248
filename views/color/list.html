@@ -1,0 +1,9 @@
+<ul>
+  {% for color in model.colors %}
+    <li>
+      {{ color.name }}
+      <a href="/color/{{ color.id }}/">edit</a>
+      <a href="/color/{{ color.id }}/delete/">delete</a>
+    </li>
+  {% endfor %}
+</ul>
