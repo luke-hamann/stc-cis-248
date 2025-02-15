@@ -1,31 +1,20 @@
-import routes from "./routes.json" with { type: "json" };
 import colorController from "./controllers/ColorController.ts";
+import staticFilesMiddleware from "./middleware/staticFilesMiddleware.ts";
 
 export default { fetch };
 
-const controllers: any = {
-  colorController
-};
+const controllers = [
+  staticFilesMiddleware,
+  colorController,
+];
 
 async function fetch(request: Request): Promise<Response> {
-  const kv = await Deno.openKv();
-
-  console.log(request);
-
-  for (const route of routes) {
-    if (request.method != route.method) continue;
-    
-    const url = new URL(request.url);
-    const match = url.pathname.match(route.pattern);
-    if (match == null) continue;
-
-    console.log(route);
-
-    const controller = controllers[route.controller];
-    const action = controller[route.action];
-
-    return await action(request, url, match);
+  // Controllers
+  for (const controller of controllers) {
+    const result = await controller(request);
+    if (result) return result;
   }
 
-  return new Response();
+  // 404 Page
+  return new Response("404 Not Found", { status: 404 });
 }

@@ -1,0 +1,13 @@
+{% extends "./_layout.html" %}
+
+{% block title %}Confirm Deletion{% endblock %}
+
+{% block content %}
+  <h1>Confirm Deletion</h1>
+
+  <form method="post" action="{{ model.action }}">
+    <p>Are you sure you want to delete "{{ model.description }}"?</p>
+    <button type="submit">Yes</button>
+    <a href="{{ model.cancel }}">Cancel</a>
+  </form>
+{% endblock %}

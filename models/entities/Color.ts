@@ -1,4 +1,4 @@
-export default class Color implements IColor {
+export default class Color {
   public id: number = 0;
   public name: string = "";
   public hex: string = "";
