@@ -13,7 +13,7 @@ export default class ShiftContextPreference {
     teamMember: TeamMember | null,
     shiftContextId: number,
     shiftContext: ShiftContext | null,
-    isPreferable: boolean
+    isPreferable: boolean,
   ) {
     this.teamMemberId = teamMemberId;
     this.teamMember = teamMember;

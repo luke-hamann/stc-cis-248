@@ -1,6 +1,6 @@
 import Color from "../entities/Color.ts";
 
-export default class ColorListViewModel {
+export default class ColorsViewModel {
   private _colors: Color[] = [];
 
   public constructor(colors: Color[]) {

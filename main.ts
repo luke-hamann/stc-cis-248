@@ -1,17 +1,19 @@
 import colorController from "./controllers/ColorController.ts";
+import { shiftContextController } from "./controllers/ShiftContextController.ts";
 import staticFilesMiddleware from "./middleware/staticFilesMiddleware.ts";
 
 export default { fetch };
 
 const controllers = [
-  staticFilesMiddleware,
-  colorController,
+  colorController
 ];
 
 async function fetch(request: Request): Promise<Response> {
+
+
   // Controllers
   for (const controller of controllers) {
-    const result = await controller(request);
+    const result = await controller.execute(request, context);
     if (result) return result;
   }
 

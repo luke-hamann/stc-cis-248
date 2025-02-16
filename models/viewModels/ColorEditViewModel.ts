@@ -1,14 +1,12 @@
 import Color from "../entities/Color.ts";
+import FormViewModel from "./_FormViewModel.ts";
 
-export default class ColorEditViewModel {
+export default class ColorEditViewModel extends FormViewModel {
   color: Color = new Color(0, "", "");
-  isEdit: boolean = false;
-  errors: string[] = [];
 
   public constructor(color: Color, isEdit: boolean, errors: string[]) {
+    super(isEdit, errors);
     this.color = color;
-    this.isEdit = isEdit;
-    this.errors = errors;
   }
 
   public static fromFormData(formData: FormData): ColorEditViewModel {

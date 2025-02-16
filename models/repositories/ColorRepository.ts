@@ -37,7 +37,7 @@ export default class ColorRepository {
     return await Promise.resolve(errors);
   }
 
-  public static async listColors(): Promise<Color[]> {
+  public static async getColors(): Promise<Color[]> {
     const result = await Database.execute(`
       SELECT id, name, hex
       FROM Colors

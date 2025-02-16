@@ -1,9 +1,80 @@
 import Color from "../models/entities/Color.ts";
 import ColorRepository from "../models/repositories/ColorRepository.ts";
 import ColorEditViewModel from "../models/viewModels/ColorEditViewModel.ts";
-import ColorListViewModel from "../models/viewModels/ColorsViewModel.ts";
+import ColorsViewModel from "../models/viewModels/ColorsViewModel.ts";
 import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
 import { HTMLResponse, RedirectResponse } from "./_utilities.ts";
+
+class ApplicationContext {
+  csrf: string = "";
+}
+
+class Action {
+  private _method: HTTPMethod;
+  private _pattern: RegExp;
+  private _handler: Handler;
+
+  public constructor(method: HTTPMethod, pattern: string, handler: Handler) {
+    this._method = method;
+    this._pattern = new RegExp(`/^${pattern}$/g`);
+    this._handler = handler;
+  }
+
+  public async execute(
+    request: Request,
+    context: ApplicationContext,
+  ): HandlerResult {
+    if (request.method != this._method) return context;
+    const url = new URL(request.url);
+    const match = url.pathname.matchAll(this._pattern).toArray()[0];
+    if (!match) return context;
+    return await this._handler(request, match, context);
+  }
+}
+
+class Controller {
+  private _actions: Action[] = [];
+
+  public register(method: HTTPMethod, pattern: string, handler: Handler) {
+    this._actions.push(new Action(method, pattern, handler));
+  }
+
+  public async execute(request: Request, context: ApplicationContext): HandlerResult {
+    for (const action of this._actions) {
+      const result = await action.execute(request, context);
+      if (result instanceof Response) {
+        return result;
+      }
+      else if (result instanceof ApplicationContext) {
+        context = result;
+      }
+    }
+    return context;
+  }
+}
+
+const colorController = new Controller();
+
+colorController.register("GET", "/colors/", async (_request, _match, _context) => {
+  const colors = await ColorRepository.getColors();
+  const model = new ColorsViewModel(colors);
+  return HTMLResponse("./views/color/list.html", model);
+});
+
+colorController.register("GET", "/colors/(\d+)/", async (_request, match, context) => {
+  const id = Number(match[1]);
+  if (isNaN(id)) return context;
+
+  const color = await ColorRepository.getColor(id);
+  if (color == null) return context;
+
+  const model = new ColorEditViewModel(color, true, []);
+  return HTMLResponse("./views/color/edit.html", model);
+});
+
+export default colorController;
+
+/*
 
 export default async function colorController(
   request: Request,
@@ -13,8 +84,8 @@ export default async function colorController(
 
   // Color list page
   if (request.method == "GET" && path == "/colors/") {
-    const colors = await ColorRepository.listColors();
-    const model = new ColorListViewModel(colors);
+    const colors = await ColorRepository.getColors();
+    const model = new ColorsViewModel(colors);
     return HTMLResponse("./views/color/list.html", model);
   }
 
