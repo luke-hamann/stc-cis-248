@@ -39,13 +39,15 @@ class Controller {
     this._actions.push(new Action(method, pattern, handler));
   }
 
-  public async execute(request: Request, context: ApplicationContext): HandlerResult {
+  public async execute(
+    request: Request,
+    context: ApplicationContext,
+  ): HandlerResult {
     for (const action of this._actions) {
       const result = await action.execute(request, context);
       if (result instanceof Response) {
         return result;
-      }
-      else if (result instanceof ApplicationContext) {
+      } else if (result instanceof ApplicationContext) {
         context = result;
       }
     }
@@ -55,22 +57,30 @@ class Controller {
 
 const colorController = new Controller();
 
-colorController.register("GET", "/colors/", async (_request, _match, _context) => {
-  const colors = await ColorRepository.getColors();
-  const model = new ColorsViewModel(colors);
-  return HTMLResponse("./views/color/list.html", model);
-});
+colorController.register(
+  "GET",
+  "/colors/",
+  async (_request, _match, _context) => {
+    const colors = await ColorRepository.getColors();
+    const model = new ColorsViewModel(colors);
+    return HTMLResponse("./views/color/list.html", model);
+  },
+);
 
-colorController.register("GET", "/colors/(\d+)/", async (_request, match, context) => {
-  const id = Number(match[1]);
-  if (isNaN(id)) return context;
+colorController.register(
+  "GET",
+  "/colors/(\d+)/",
+  async (_request, match, context) => {
+    const id = Number(match[1]);
+    if (isNaN(id)) return context;
 
-  const color = await ColorRepository.getColor(id);
-  if (color == null) return context;
+    const color = await ColorRepository.getColor(id);
+    if (color == null) return context;
 
-  const model = new ColorEditViewModel(color, true, []);
-  return HTMLResponse("./views/color/edit.html", model);
-});
+    const model = new ColorEditViewModel(color, true, []);
+    return HTMLResponse("./views/color/edit.html", model);
+  },
+);
 
 export default colorController;
 

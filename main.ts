@@ -5,12 +5,10 @@ import staticFilesMiddleware from "./middleware/staticFilesMiddleware.ts";
 export default { fetch };
 
 const controllers = [
-  colorController
+  colorController,
 ];
 
 async function fetch(request: Request): Promise<Response> {
-
-
   // Controllers
   for (const controller of controllers) {
     const result = await controller.execute(request, context);
