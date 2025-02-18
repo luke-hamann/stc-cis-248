@@ -4,8 +4,13 @@ import FormViewModel from "./_FormViewModel.ts";
 export default class ColorEditViewModel extends FormViewModel {
   color: Color = new Color(0, "", "");
 
-  public constructor(color: Color, isEdit: boolean, errors: string[]) {
-    super(isEdit, errors);
+  public constructor(
+    isEdit: boolean,
+    errors: string[],
+    csrf_token: string,
+    color: Color,
+  ) {
+    super(isEdit, errors, csrf_token);
     this.color = color;
   }
 
@@ -15,6 +20,6 @@ export default class ColorEditViewModel extends FormViewModel {
     const hex = (formData.get("hex") as string ?? "").replace("#", "");
 
     const color = new Color(id, name, hex);
-    return new ColorEditViewModel(color, false, []);
+    return new ColorEditViewModel(false, [], "", color);
   }
 }

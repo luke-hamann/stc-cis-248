@@ -1,32 +1,27 @@
 type HTTPMethod = "GET" | "POST";
 
-interface IApplicationContext {
-  csrf: string;
+type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+interface IContext {
+  csrf_token: string;
 }
 
-type HandlerResult = Promise<Response | IApplicationContext | void>;
+interface IActionResult {
+  response: Response | null;
+  context: IContext | null;
+  hasResponse(): boolean;
+  hasContext(): boolean;
+}
 
-type Handler = (
+type IActionHandler = (
   request: Request,
   match: string[],
-  context: IApplicationContext,
-) => HandlerResult;
+  context: IContext,
+) => IActionResult;
 
-interface ITeamMember {
-  id: number;
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  birthDate: Date;
-  email: string;
-  phone: string;
-  isExternal: boolean;
-  maxWeeklyHours: number;
-  maxWeeklyDays: number;
-  username: string;
-  password: string;
-  isAdmin: boolean;
-}
+/**
+ * Entity interfaces
+ */
 
 interface IColor {
   id: number;
@@ -52,4 +47,36 @@ interface IShiftContextNote {
 interface IShiftContextPreference {
   teamMemberId: number;
   shiftContextId: number;
+}
+
+interface ISubstitute {
+  teamMemberId: number;
+  date: Date;
+}
+
+interface ITeamMember {
+  id: number;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  birthDate: Date;
+  email: string;
+  phone: string;
+  isExternal: boolean;
+  maxWeeklyHours: number;
+  maxWeeklyDays: number;
+  username: string;
+  password: string;
+  isAdmin: boolean;
+}
+
+interface ITimeSlot {
+  id: number;
+  shiftContextId: number;
+  startDateTime: Date;
+  endDateTime: Date;
+  requiresAdult: boolean;
+  teamMemberId: number;
+  note: string;
+  colorId: number;
 }

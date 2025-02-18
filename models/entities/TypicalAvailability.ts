@@ -4,7 +4,7 @@ export default class TypicalAvailability {
   public id: number = 0;
   public teamMemberId: number = 0;
   public teamMember: TeamMember | null = null;
-  public dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null = null;
+  public dayOfWeek: DayOfWeek | null = null;
   public startTime: Date | null = null;
   public endTime: Date | null = null;
   public isPreference: boolean = false;
@@ -13,7 +13,7 @@ export default class TypicalAvailability {
     id: number,
     teamMemberId: number,
     teamMember: TeamMember | null,
-    dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null,
+    dayOfWeek: DayOfWeek | null,
     startTime: Date | null,
     endTime: Date | null,
     isPreference: boolean,

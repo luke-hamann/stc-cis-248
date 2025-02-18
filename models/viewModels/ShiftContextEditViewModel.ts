@@ -5,11 +5,12 @@ export default class ShiftContextEditViewModel extends FormViewModel {
   shiftContext: ShiftContext;
 
   public constructor(
-    shiftContext: ShiftContext,
     isEdit: boolean,
     errors: string[],
+    csrf_token: string,
+    shiftContext: ShiftContext,
   ) {
-    super(isEdit, errors);
+    super(isEdit, errors, csrf_token);
     this.shiftContext = shiftContext;
   }
 }

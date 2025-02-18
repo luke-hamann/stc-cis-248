@@ -1,3 +1,4 @@
+import { IColor } from "../../globals.d.ts";
 import Color from "../entities/Color.ts";
 import Database from "./_Database.ts";
 

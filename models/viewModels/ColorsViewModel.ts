@@ -1,17 +1,11 @@
 import Color from "../entities/Color.ts";
 
 export default class ColorsViewModel {
-  private _colors: Color[] = [];
+  public colors: Color[] = [];
+  public csrf_token: string = "";
 
-  public constructor(colors: Color[]) {
+  public constructor(colors: Color[], csrf_token: string) {
     this.colors = colors;
-  }
-
-  public get colors(): Color[] {
-    return this._colors;
-  }
-
-  public set colors(value: Color[]) {
-    this._colors = value;
+    this.csrf_token = csrf_token;
   }
 }
