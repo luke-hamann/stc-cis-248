@@ -5,7 +5,7 @@
     {% if model.isEdit %}Edit{% else %}Add{% endif %} Shift Context
   </h1>
 
-  {% if model.errors %}
+  {% if not model.isValid %}
     <ul>
       {% for error in model.errors %}
         <li>{{ error }}</li>
@@ -31,6 +31,8 @@
       <textarea name="description">{{ model.shiftContext.description }}</textarea>
     </div>
     <div>
+      <input type="hidden" name="id" value="{{ model.shiftContext.id }}" />
+      <input type="hidden" name="csrf_token" value="{{ model.csrf_token }}" />
       <button type="submit">Save</button>
       <a href="/contexts/">Cancel</a>
     </div>

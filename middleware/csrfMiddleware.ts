@@ -1,23 +1,24 @@
 import Context from "../models/controllerLayer/Context.ts";
 import Controller from "../models/controllerLayer/Controller.ts";
 
-export const csrfMiddleware = new Controller();
+const csrfMiddleware = new Controller();
+export default csrfMiddleware;
 
 csrfMiddleware.register(
   "GET",
   ".*",
-  async (_request: Request, _match: string[], context: Context) => {
+  (_request: Request, _match: string[], context: Context) => {
     context.csrf_token = "joe";
-    return await Promise.resolve(context);
+    return context;
   },
 );
 
 csrfMiddleware.register(
   "POST",
   ".*",
-  async (_request: Request, _match: string[], _context: Context) => {
-    const formData = await _request.formData();
-    const csrf_token = formData.get("csrf_token") ?? "";
+  async (request: Request, _m: string[], _c: Context) => {
+    const formData = await request.clone().formData();
+    const csrf_token = formData.get("csrf_token") as string ?? "";
 
     if (csrf_token != "joe") {
       return new Response("403 Forbidden", {

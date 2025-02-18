@@ -18,4 +18,8 @@ export default class ShiftContext {
     this.location = location;
     this.description = description;
   }
+
+  public static empty() {
+    return new ShiftContext(0, "", "", "", "");
+  }
 }

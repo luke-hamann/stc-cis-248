@@ -14,3 +14,12 @@ export function RedirectResponse(url: string) {
     headers: new Headers({ "Location": url }),
   });
 }
+
+export function NotFoundResponse() {
+  const view = nunjucks.render("./views/shared/404.html");
+
+  return new Response(view, {
+    status: 404,
+    headers: new Headers({ "Content-Type": "text/html" }),
+  });
+}

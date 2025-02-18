@@ -1,16 +1,21 @@
 import Context from "../models/controllerLayer/Context.ts";
-import ColorRepository from "../models/repositories/ColorRepository.ts";
 import ColorEditViewModel from "../models/viewModels/ColorEditViewModel.ts";
+import ColorRepository from "../models/repositories/ColorRepository.ts";
 import ColorsViewModel from "../models/viewModels/ColorsViewModel.ts";
 import Controller from "../models/controllerLayer/Controller.ts";
-import { HTMLResponse, RedirectResponse } from "./_utilities.ts";
+import {
+  HTMLResponse,
+  NotFoundResponse,
+  RedirectResponse,
+} from "./_utilities.ts";
 import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
-import Color from "../models/entities/Color.ts";
 
 const colorController = new Controller();
 export default colorController;
 
-// Color list
+/**
+ * Color list
+ */
 colorController.register(
   "GET",
   "/colors/",
@@ -21,32 +26,28 @@ colorController.register(
   },
 );
 
-// Color add GET
+/**
+ * Color add GET
+ */
 colorController.register(
   "GET",
   "/colors/add/",
-  (_request: Request, _match: string[], context: Context) => {
-    const model = new ColorEditViewModel(
-      false,
-      [],
-      context.csrf_token,
-      new Color(0, "", ""),
-    );
-    return HTMLResponse("./views/color/edit.html", model);
+  (_request: Request, _match: string[], _context: Context) => {
+    return HTMLResponse("./views/color/edit.html", ColorEditViewModel.empty());
   },
 );
 
-// Color add POST
+/**
+ * Color add POST
+ */
 colorController.register(
   "POST",
   "/colors/add/",
   async (request: Request, _match: string[], context: Context) => {
-    const model = ColorEditViewModel.fromFormData(await request.formData());
+    const model = await ColorEditViewModel.fromRequest(request);
 
-    const errors = await ColorRepository.validateColor(model.color);
-
-    if (errors.length > 0) {
-      model.errors = errors;
+    model.errors = await ColorRepository.validateColor(model.color);
+    if (!model.isValid()) {
       model.csrf_token = context.csrf_token;
       return HTMLResponse("./views/color/edit.html", model);
     }
@@ -56,34 +57,37 @@ colorController.register(
   },
 );
 
-// Color edit GET
+/**
+ * Color edit GET
+ */
 colorController.register(
   "GET",
   "/color/(\\d+)/",
   async (_request: Request, match: string[], context: Context) => {
     const id = Number(match[1]);
-    if (isNaN(id)) return context;
+    if (isNaN(id)) return NotFoundResponse();
 
     const color = await ColorRepository.getColor(id);
-    if (color == null) return context;
+    if (color == null) return NotFoundResponse();
 
     const model = new ColorEditViewModel(true, [], context.csrf_token, color);
     return HTMLResponse("./views/color/edit.html", model);
   },
 );
 
-// Color edit POST
+/**
+ * Color edit POST
+ */
 colorController.register(
   "POST",
   "/color/(\\d+)/",
   async (request: Request, match: string[], context: Context) => {
     const model = ColorEditViewModel.fromFormData(await request.formData());
     model.color.id = Number(match[1]);
-    const errors = await ColorRepository.validateColor(model.color);
 
-    if (errors.length > 0) {
+    model.errors = await ColorRepository.validateColor(model.color);
+    if (!model.isValid()) {
       model.isEdit = true;
-      model.errors = errors;
       model.csrf_token = context.csrf_token;
       return HTMLResponse("./views/color/edit.html", model);
     }
@@ -93,16 +97,18 @@ colorController.register(
   },
 );
 
-// Color delete GET
+/**
+ * Color delete GET
+ */
 colorController.register(
   "GET",
   "/color/(\\d+)/delete/",
   async (_request: Request, match: string[], context: Context) => {
     const id = Number(match[1]);
-    if (isNaN(id)) return;
+    if (isNaN(id)) return NotFoundResponse();
 
     const color = await ColorRepository.getColor(id);
-    if (color == null) return;
+    if (color == null) return NotFoundResponse();
 
     const model = new DeleteViewModel(
       color.name,
@@ -115,15 +121,19 @@ colorController.register(
   },
 );
 
-// Color delete POST
+/**
+ * Color delete POST
+ */
 colorController.register(
   "POST",
   "/color/(\\d+)/delete/",
   async (_request: Request, match: string[], _context: Context) => {
     const id = Number(match[1]);
-    if (isNaN(id)) return;
+    if (isNaN(id)) return NotFoundResponse();
+
     const color = await ColorRepository.getColor(id);
-    if (color == null) return;
+    if (color == null) return NotFoundResponse();
+
     await ColorRepository.deleteColor(id);
     return RedirectResponse("/colors/");
   },

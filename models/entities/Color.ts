@@ -8,4 +8,8 @@ export default class Color {
     this.name = name;
     this.hex = hex;
   }
+
+  public static empty() {
+    return new Color(0, "", "");
+  }
 }

@@ -6,18 +6,11 @@ interface IContext {
   csrf_token: string;
 }
 
-interface IActionResult {
-  response: Response | null;
-  context: IContext | null;
-  hasResponse(): boolean;
-  hasContext(): boolean;
-}
-
 type IActionHandler = (
   request: Request,
   match: string[],
   context: IContext,
-) => IActionResult;
+) => void | IContext | Response | Promise<void | IContext | Response>;
 
 /**
  * Entity interfaces

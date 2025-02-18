@@ -1,19 +1,21 @@
 import Context from "./models//controllerLayer/Context.ts";
 import colorController from "./controllers/ColorController.ts";
-import { csrfMiddleware } from "./middleware/csrfMiddleware.ts";
+import csrfMiddleware from "./middleware/csrfMiddleware.ts";
 import staticFilesMiddleware from "./middleware/staticFilesMiddleware.ts";
+import shiftContextController from "./controllers/ShiftContextController.ts";
+import { NotFoundResponse } from "./controllers/_utilities.ts";
 
 export default { fetch };
 
 const controllers = [
-  // csrfMiddleware,
+  csrfMiddleware,
   staticFilesMiddleware,
   colorController,
+  shiftContextController,
 ];
 
 async function fetch(request: Request): Promise<Response> {
   let context = new Context();
-  context.csrf_token = "joe";
 
   // Controllers
   for (const controller of controllers) {
@@ -27,5 +29,5 @@ async function fetch(request: Request): Promise<Response> {
   }
 
   // 404 Page
-  return new Response("404 Not Found", { status: 404 });
+  return NotFoundResponse();
 }

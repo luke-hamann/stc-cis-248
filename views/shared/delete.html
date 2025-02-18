@@ -8,6 +8,7 @@
   <form method="post" action="{{ model.action }}">
     <p>Are you sure you want to delete "{{ model.description }}"?</p>
     <button type="submit">Yes</button>
+    <input type="hidden" name="csrf_token" value="{{ model.csrf_token }}" />
     <a href="{{ model.cancel }}">Cancel</a>
   </form>
 {% endblock %}

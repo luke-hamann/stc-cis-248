@@ -14,6 +14,10 @@ export default class ColorEditViewModel extends FormViewModel {
     this.color = color;
   }
 
+  public static empty() {
+    return new ColorEditViewModel(false, [], "", Color.empty());
+  }
+
   public static fromFormData(formData: FormData): ColorEditViewModel {
     const id = Number(formData.get("id") as string ?? "");
     const name = formData.get("name") as string ?? "";
@@ -21,5 +25,11 @@ export default class ColorEditViewModel extends FormViewModel {
 
     const color = new Color(id, name, hex);
     return new ColorEditViewModel(false, [], "", color);
+  }
+
+  public static async fromRequest(
+    request: Request,
+  ): Promise<ColorEditViewModel> {
+    return this.fromFormData(await request.formData());
   }
 }

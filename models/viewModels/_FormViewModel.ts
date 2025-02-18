@@ -8,4 +8,8 @@ export default abstract class FormViewModel {
     this.errors = errors;
     this.csrf_token = csrf_token;
   }
+
+  public isValid() {
+    return this.errors.length == 0;
+  }
 }
