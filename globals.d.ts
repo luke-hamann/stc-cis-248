@@ -1,16 +1,5 @@
 type HTTPMethod = "GET" | "POST";
-
 type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
-
-interface IContext {
-  csrf_token: string;
-}
-
-type IActionHandler = (
-  request: Request,
-  match: string[],
-  context: IContext,
-) => void | IContext | Response | Promise<void | IContext | Response>;
 
 /**
  * Entity interfaces

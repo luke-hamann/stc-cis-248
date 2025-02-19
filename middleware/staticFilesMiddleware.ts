@@ -8,7 +8,7 @@ const STATIC_DIR = "./static";
 staticFilesMiddleware.register(
   "GET",
   ".*",
-  async (request: Request, _match: string[], _context: Context) => {
+  async (context: Context) => {
     const work = [STATIC_DIR];
     const files = [];
     while (work.length > 0) {
@@ -22,7 +22,8 @@ staticFilesMiddleware.register(
       }
     }
 
-    const staticFile = `${STATIC_DIR}${new URL(request.url).pathname}`;
+    const pathname = new URL(context.request.url).pathname;
+    const staticFile = `${STATIC_DIR}${pathname}`;
 
     if (!files.includes(staticFile)) return;
 
@@ -38,9 +39,9 @@ staticFilesMiddleware.register(
       }
     }
 
-    return new Response(await Deno.readFile(staticFile), {
-      headers: new Headers({ "Content-Type": contentType }),
-    });
+    context.response.body = await Deno.readFile(staticFile);
+    context.response?.headers.set("Content-Type", contentType);
+    return context.response;
   },
 );
 

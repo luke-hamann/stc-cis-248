@@ -20,10 +20,10 @@ export default shiftContextController;
 shiftContextController.register(
   "GET",
   "/contexts/",
-  async (_request: Request, _match: string[], _context: Context) => {
+  async (context: Context) => {
     const shiftContexts = await ShiftContextRepository.getShiftContexts();
     const model = new ShiftContextsViewModel(shiftContexts);
-    return HTMLResponse("./views/shiftContext/list.html", model);
+    return HTMLResponse(context, "./views/shiftContext/list.html", model);
   },
 );
 
@@ -33,17 +33,14 @@ shiftContextController.register(
 shiftContextController.register(
   "GET",
   "/context/add/",
-  (_r: Request, _m: string[], _c: Context) => {
+  (context: Context) => {
     const model = new ShiftContextEditViewModel(
       false,
       [],
-      _c.csrf_token,
+      context.csrf_token,
       ShiftContext.empty(),
     );
-    return HTMLResponse(
-      "./views/shiftContext/edit.html",
-      model,
-    );
+    return HTMLResponse(context, "./views/shiftContext/edit.html", model);
   },
 );
 
@@ -53,19 +50,19 @@ shiftContextController.register(
 shiftContextController.register(
   "POST",
   "/context/add/",
-  async (request: Request, _m: string[], context: Context) => {
+  async (context: Context) => {
     const model = ShiftContextEditViewModel.fromFormData(
-      await request.formData(),
+      await context.request.formData(),
     );
 
     model.errors = await ShiftContextRepository.validate(model.shiftContext);
     if (!model.isValid()) {
       model.csrf_token = context.csrf_token;
-      return HTMLResponse("./views/shiftContext/edit.html", model);
+      return HTMLResponse(context, "./views/shiftContext/edit.html", model);
     }
 
     await ShiftContextRepository.addShiftContext(model.shiftContext);
-    return RedirectResponse("/contexts/");
+    return RedirectResponse(context, "/contexts/");
   },
 );
 
@@ -75,12 +72,12 @@ shiftContextController.register(
 shiftContextController.register(
   "GET",
   "/context/(\\d+)/",
-  async (_r: Request, match: string[], context: Context) => {
-    const id = Number(match[1]);
+  async (context: Context) => {
+    const id = Number(context.match[1]);
     if (isNaN(id)) return;
 
     const shiftContext = await ShiftContextRepository.getShiftContext(id);
-    if (shiftContext == null) return NotFoundResponse();
+    if (shiftContext == null) return NotFoundResponse(context);
 
     const model = new ShiftContextEditViewModel(
       true,
@@ -88,7 +85,7 @@ shiftContextController.register(
       context.csrf_token,
       shiftContext,
     );
-    return HTMLResponse("./views/shiftContext/edit.html", model);
+    return HTMLResponse(context, "./views/shiftContext/edit.html", model);
   },
 );
 
@@ -98,18 +95,18 @@ shiftContextController.register(
 shiftContextController.register(
   "POST",
   "/context/(\\d+)/",
-  async (request: Request, _m: string[], context: Context) => {
-    const model = await ShiftContextEditViewModel.fromRequest(request);
+  async (context: Context) => {
+    const model = await ShiftContextEditViewModel.fromRequest(context.request);
 
     model.errors = await ShiftContextRepository.validate(model.shiftContext);
     if (!model.isValid()) {
       model.isEdit = true;
       model.csrf_token = context.csrf_token;
-      return HTMLResponse("./views/shiftContext/edit.html", model);
+      return HTMLResponse(context, "./views/shiftContext/edit.html", model);
     }
 
     await ShiftContextRepository.updateShiftContext(model.shiftContext);
-    return RedirectResponse("/contexts/");
+    return RedirectResponse(context, "/contexts/");
   },
 );
 
@@ -119,12 +116,12 @@ shiftContextController.register(
 shiftContextController.register(
   "GET",
   "/context/(\\d+)/delete/",
-  async (_r: Request, match: string[], context: Context) => {
-    const id = Number(match[1]);
-    if (isNaN(id)) return NotFoundResponse();
+  async (context: Context) => {
+    const id = Number(context.match[1]);
+    if (isNaN(id)) return NotFoundResponse(context);
 
     const shiftContext = await ShiftContextRepository.getShiftContext(id);
-    if (shiftContext == null) return NotFoundResponse();
+    if (shiftContext == null) return NotFoundResponse(context);
 
     const model = new DeleteViewModel(
       shiftContext.name,
@@ -132,7 +129,7 @@ shiftContextController.register(
       "/contexts/",
       context.csrf_token,
     );
-    return HTMLResponse("./views/shared/delete.html", model);
+    return HTMLResponse(context, "./views/shared/delete.html", model);
   },
 );
 
@@ -142,14 +139,18 @@ shiftContextController.register(
 shiftContextController.register(
   "POST",
   "/context/(\\d+)/delete/",
-  async (_r: Request, match: string[], _context: Context) => {
-    const id = Number(match[1]);
-    if (isNaN(id)) return NotFoundResponse();
+  async (context: Context) => {
+    const id = Number(context.match[1]);
+    if (isNaN(id)) {
+      return NotFoundResponse(context);
+    }
 
     const shiftContext = await ShiftContextRepository.getShiftContext(id);
-    if (shiftContext == null) return NotFoundResponse();
+    if (shiftContext == null) {
+      return NotFoundResponse(context);
+    }
 
     await ShiftContextRepository.deleteShiftContext(id);
-    return RedirectResponse("/contexts/");
+    return RedirectResponse(context, "/contexts/");
   },
 );

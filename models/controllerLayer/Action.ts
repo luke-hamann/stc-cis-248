@@ -1,9 +1,6 @@
-import {
-  HTTPMethod,
-  IActionHandler,
-  IActionResult,
-  IContext,
-} from "../../globals.d.ts";
+import { HTTPMethod, IActionHandler } from "../../globals.d.ts";
+import Context from "./Context.ts";
+import ResponseWrapper from "./ResponseWrapper.ts";
 
 /**
  * A class for representing a controller action
@@ -38,13 +35,15 @@ export default class Action {
    * @returns The result of the action's execution
    */
   public async execute(
-    request: Request,
-    context: IContext,
-  ): IActionResult {
-    if (request.method != this._method) return context;
-    const url = new URL(request.url);
+    context: Context,
+  ): Promise<void | ResponseWrapper> {
+    if (context.request.method != this._method) return;
+
+    const url = new URL(context.request.url);
     const match = url.pathname.matchAll(this._pattern).toArray()[0];
-    if (!match) return context;
-    return await this._handler(request, match, context);
+    if (!match) return;
+
+    context.match = match;
+    return await this._handler(context, match);
   }
 }

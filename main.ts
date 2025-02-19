@@ -4,10 +4,13 @@ import csrfMiddleware from "./middleware/csrfMiddleware.ts";
 import staticFilesMiddleware from "./middleware/staticFilesMiddleware.ts";
 import shiftContextController from "./controllers/ShiftContextController.ts";
 import { NotFoundResponse } from "./controllers/_utilities.ts";
+import ResponseWrapper from "./models/controllerLayer/ResponseWrapper.ts";
+import sessionMiddleware from "./middleware/sessionMiddleware.ts";
 
 export default { fetch };
 
 const controllers = [
+  sessionMiddleware,
   csrfMiddleware,
   staticFilesMiddleware,
   colorController,
@@ -15,19 +18,14 @@ const controllers = [
 ];
 
 async function fetch(request: Request): Promise<Response> {
-  let context = new Context();
+  const context = new Context(request, new ResponseWrapper());
 
   // Controllers
   for (const controller of controllers) {
-    const result = await controller.execute(request, context);
-
-    if (result instanceof Response) {
-      return result;
-    } else if (result instanceof Context) {
-      context = result;
-    }
+    const response = await controller.execute(context);
+    if (response) return response.toResponse();
   }
 
   // 404 Page
-  return NotFoundResponse();
+  return NotFoundResponse(context).toResponse();
 }

@@ -1,11 +1,6 @@
-import {
-  HTTPMethod,
-  IActionHandler,
-  IActionResult,
-  IContext,
-} from "../../globals.d.ts";
+import { HTTPMethod, IActionHandler, IContext } from "../../globals.d.ts";
 import Action from "./Action.ts";
-import Context from "./Context.ts";
+import ResponseWrapper from "./ResponseWrapper.ts";
 
 export default class Controller {
   private _actions: Action[] = [];
@@ -28,22 +23,16 @@ export default class Controller {
   /**
    * Loop over the controller's actions to attempt to generate a response
    *
-   * @param request The HTTP request coming in
-   * @param context The application context object
+   * @param context The application context
    * @returns An action result object
    */
   public async execute(
-    request: Request,
     context: IContext,
-  ): IActionResult {
+  ): Promise<ResponseWrapper | void> {
     for (const action of this._actions) {
-      const result = await action.execute(request, context);
-      if (result instanceof Response) {
-        return result;
-      } else if (result instanceof Context) {
-        context = result;
-      }
+      const response = await action.execute(context);
+      if (response) return response;
     }
-    return context;
+    return;
   }
 }

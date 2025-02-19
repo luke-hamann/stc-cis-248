@@ -8,7 +8,7 @@ export default scheduleController;
 scheduleController.register(
   "GET",
   "/",
-  (_request: Request, _match: string[], _context: Context) => {
-    return NotFoundResponse();
+  (context: Context) => {
+    return NotFoundResponse(context);
   },
 );
