@@ -17,9 +17,9 @@ csrfMiddleware.register(
   ".*",
   async (context: Context) => {
     const formData = await context.request.clone().formData();
-    const csrf_token = formData.get("csrf_token") as string ?? "";
+    context.csrf_token = formData.get("csrf_token") as string ?? "";
 
-    if (csrf_token != "joe") {
+    if (context.csrf_token != "joe") {
       context.response.status = 403;
       context.response.body = "403 Forbidden";
       context.response.headers.set("Content-Type", "text/plain");
