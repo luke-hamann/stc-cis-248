@@ -32,7 +32,7 @@
     </div>
     <div>
       <input type="hidden" name="id" value="{{ model.shiftContext.id }}" />
-      <input type="hidden" name="csrf_token" value="{{ model.csrf_token }}" />
+      {{ csrf(model) }}
       <button type="submit">Save</button>
       <a href="/contexts/">Cancel</a>
     </div>

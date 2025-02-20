@@ -24,7 +24,7 @@
     </div>
     <div>
       <input type="hidden" name="id" value="{{ model.color.id }}" />
-      <input type="hidden" name="csrf_token" value="{{ model.csrf_token }}" />
+      {{ csrf(model) }}
       <button type="submit">Save</button>
       <a href="/colors/">Cancel</a>
     </div>
