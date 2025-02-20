@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="/css/reset.css" />
+  <link rel="stylesheet" href="/css/stickyFooter.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  {% block styles %}{% endblock %}
+</head>
+<body>
+  <header>
+    <nav>
+      <ul class="navbar">
+        <li class="navbar-toggler">&equiv;</li>
+        <li class="navbar-item"><a href="/" class="navbar-link">Schedule</a></li>
+        <li class="navbar-item"><a href="/team/" class="navbar-link">Team</a></li>
+        <li class="navbar-item"><a href="/contexts/" class="navbar-link">Shift Contexts</a></li>
+        <li class="navbar-item"><a href="/colors/" class="navbar-link">Colors</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+
+  </footer>
+</body>
+</html>
