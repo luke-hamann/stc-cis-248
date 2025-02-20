@@ -2,6 +2,9 @@ import { HTTPMethod, IActionHandler, IContext } from "../../globals.d.ts";
 import Action from "./Action.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 
+/**
+ * A class for representing a controller in a router
+ */
 export default class Controller {
   private _actions: Action[] = [];
 
