@@ -1,8 +1,7 @@
 import Context from "../models/controllerLayer/Context.ts";
 import Controller from "../models/controllerLayer/Controller.ts";
 
-const timeSlotController = new Controller();
-export default timeSlotController;
+export const timeSlotController = new Controller();
 
 /**
  * Schedule time slot add GET
@@ -11,8 +10,7 @@ timeSlotController.register(
   "GET",
   "/schedule/timeslot/add/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -22,8 +20,7 @@ timeSlotController.register(
   "POST",
   "/schedule/timeslot/add/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -33,8 +30,7 @@ timeSlotController.register(
   "GET",
   "/schedule/time-slot/copy/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -44,8 +40,7 @@ timeSlotController.register(
   "POST",
   "/schedule/time-slot/copy/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -55,8 +50,7 @@ timeSlotController.register(
   "GET",
   "/schedule/time-slot/copy-confirm/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -66,8 +60,7 @@ timeSlotController.register(
   "POST",
   "/schedule/time-slot/copy-confirm/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -77,8 +70,7 @@ timeSlotController.register(
   "GET",
   "/schedule/time-slot/(\\d+)/edit/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -88,8 +80,7 @@ timeSlotController.register(
   "POST",
   "/schedule/time-slot/(\\d+)/edit/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -99,8 +90,7 @@ timeSlotController.register(
   "GET",
   "/schedule/time-slot/(\\d+)/delete/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -110,8 +100,7 @@ timeSlotController.register(
   "POST",
   "/schedule/time-slot/(\\d+)/delete/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -121,8 +110,7 @@ timeSlotController.register(
   "GET",
   "/schedule/clear/",
   (context: Context) => {
-
-  }
+  },
 );
 
 /**
@@ -132,6 +120,5 @@ timeSlotController.register(
   "POST",
   "/schedule/clear/",
   (context: Context) => {
-
-  }
+  },
 );

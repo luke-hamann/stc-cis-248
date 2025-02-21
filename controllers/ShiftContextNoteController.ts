@@ -1,13 +1,12 @@
 import Context from "../models/controllerLayer/Context.ts";
 import Controller from "../models/controllerLayer/Controller.ts";
 
-const shiftContextNotesController = new Controller();
-export default shiftContextNotesController;
+export const shiftContextNoteController = new Controller();
 
 /**
  * Shift context note edit GET
  */
-shiftContextNotesController.register(
+shiftContextNoteController.register(
   "GET",
   "/shift-context/note/(\\d+)/",
   async (context: Context) => {
@@ -17,7 +16,7 @@ shiftContextNotesController.register(
 /**
  * Shift context note edit POST
  */
-shiftContextNotesController.register(
+shiftContextNoteController.register(
   "POST",
   "/shift-context/note/(\\d+)/",
   async (context: Context) => {

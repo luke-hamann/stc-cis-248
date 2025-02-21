@@ -2,8 +2,7 @@ import Context from "../models/controllerLayer/Context.ts";
 import Controller from "../models/controllerLayer/Controller.ts";
 import { RedirectResponse } from "./_utilities.ts";
 
-const unavailabilityController = new Controller();
-export default unavailabilityController;
+export const unavailabilityController = new Controller();
 
 /**
  * Team member unavailability calendar redirect GET

@@ -1,13 +1,12 @@
 import Context from "../models/controllerLayer/Context.ts";
 import Controller from "../models/controllerLayer/Controller.ts";
 
-const shiftContextPreferencesController = new Controller();
-export default shiftContextPreferencesController;
+export const shiftContextPreferenceController = new Controller();
 
 /**
  * Shift context preferences GET
  */
-shiftContextPreferencesController.register(
+shiftContextPreferenceController.register(
   "GET",
   "/team-member/(\\d+)/preferences/",
   async (context: Context) => {
@@ -17,7 +16,7 @@ shiftContextPreferencesController.register(
 /**
  * Shift context preferences POST
  */
-shiftContextPreferencesController.register(
+shiftContextPreferenceController.register(
   "POST",
   "/team-member/(\\d+)/preferences/",
   async (context: Context) => {

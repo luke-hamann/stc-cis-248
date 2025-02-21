@@ -1,8 +1,7 @@
 import Context from "../models/controllerLayer/Context.ts";
 import Controller from "../models/controllerLayer/Controller.ts";
 
-const teamMemberController = new Controller();
-export default teamMemberController;
+export const teamMemberController = new Controller();
 
 /**
  * Team member list GET

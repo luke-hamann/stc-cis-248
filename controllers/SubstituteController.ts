@@ -1,13 +1,12 @@
 import Context from "../models/controllerLayer/Context.ts";
 import Controller from "../models/controllerLayer/Controller.ts";
 
-const substitutesController = new Controller();
-export default substitutesController;
+export const substituteController = new Controller();
 
 /**
  * Substitute add GET
  */
-substitutesController.register(
+substituteController.register(
   "GET",
   "/substitutes/(\\d{4})/(\\d{2})/(\\d{2})/",
   async (context: Context) => {
@@ -17,7 +16,7 @@ substitutesController.register(
 /**
  * Substitute add POST
  */
-substitutesController.register(
+substituteController.register(
   "GET",
   "/substitutes/(\\d{4})/(\\d{2})/(\\d{2})/",
   async (context: Context) => {
@@ -27,7 +26,7 @@ substitutesController.register(
 /**
  * Substitute delete GET
  */
-substitutesController.register(
+substituteController.register(
   "GET",
   "/substitutes/(\\d{4})/(\\d{2})/(\\d{id})/(\\d+)/",
   async (context: Context) => {
@@ -37,7 +36,7 @@ substitutesController.register(
 /**
  * Substitute delete POST
  */
-substitutesController.register(
+substituteController.register(
   "POST",
   "/substitutes/(\\d{4})/(\\d{2})/(\\d{id})/(\\d+)/",
   async (context: Context) => {
