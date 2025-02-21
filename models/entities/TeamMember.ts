@@ -42,4 +42,26 @@ export default class TeamMember {
     this.password = password;
     this.isAdmin = isAdmin;
   }
+
+  public static empty(): TeamMember {
+    return new TeamMember(
+      0,
+      "",
+      "",
+      "",
+      null,
+      "",
+      "",
+      false,
+      null,
+      null,
+      "",
+      "",
+      false,
+    );
+  }
+
+  public get fullName() {
+    return this.firstName + " " + this.lastName;
+  }
 }

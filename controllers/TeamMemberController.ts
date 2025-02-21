@@ -1,5 +1,9 @@
 import Context from "../models/controllerLayer/Context.ts";
 import Controller from "../models/controllerLayer/Controller.ts";
+import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
+import TeamMemberEditViewModel from "../models/viewModels/TeamMemberEditViewModel.ts";
+import TeamMembersViewModel from "../models/viewModels/TeamMembersViewModel.ts";
+import { HTMLResponse } from "./_utilities.ts";
 
 export const teamMemberController = new Controller();
 
@@ -10,6 +14,9 @@ teamMemberController.register(
   "GET",
   "/team-members/",
   async (context: Context) => {
+    const teamMembers = await TeamMemberRepository.getTeamMembers();
+    const model = new TeamMembersViewModel(teamMembers);
+    return HTMLResponse(context, "./views/teamMember/list.html", model);
   },
 );
 
@@ -20,6 +27,23 @@ teamMemberController.register(
   "GET",
   "/team-member/(\\d+)/",
   async (context: Context) => {
+    const id = Number(context.match[1]);
+    if (isNaN(id)) {
+      return;
+    }
+
+    const teamMember = await TeamMemberRepository.getTeamMember(id);
+    if (teamMember == null) {
+      return;
+    }
+
+    const model = new TeamMemberEditViewModel(
+      false,
+      [],
+      context.csrf_token,
+      teamMember,
+    );
+    return HTMLResponse(context, "./views/teamMember/profile.html", model);
   },
 );
 
@@ -28,8 +52,11 @@ teamMemberController.register(
  */
 teamMemberController.register(
   "GET",
-  "/team-member/add/",
+  "/team-members/add/",
   async (context: Context) => {
+    const model = TeamMemberEditViewModel.empty();
+    model.csrf_token = context.csrf_token;
+    return HTMLResponse(context, "./views/teamMember/edit.html", model);
   },
 );
 

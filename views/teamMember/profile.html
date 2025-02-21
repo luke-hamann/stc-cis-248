@@ -1,0 +1,63 @@
+{% extends "../shared/_layout.html" %}
+
+{% block title %}{{ model.teamMember.fullName }}{% endblock %}
+
+{% block content %}
+  <h1>{{ model.teamMember.fullName }}</h1>
+  <ul>
+    <li>
+      <a href="/team-member/{{ model.teamMember.id }}/">Profile</a>
+    </li>
+    <li>
+      <a href="/team-member/{{ model.teamMember.id }}/preferences/">Preferences</a>
+    </li>
+    <li>
+      <a href="/team-member/{{ model.teamMember.id }}/availability/">Availability</a>
+    </li>
+    <li>
+      <a href="/team-member/{{ model.teamMember.id }}/unavailability/">Unavailability</a>
+    </li>
+  </ul>
+  <div>
+    <div>First</div>
+    <div>{{ model.teamMember.firstName }}</div>
+  </div>
+  <div>
+    <div>Middle</div>
+    <div>{{ model.teamMember.middleName }}</div>
+  </div>
+  <div>
+    <div>Last</div>
+    <div>{{ model.teamMember.lastName }}</div>
+  </div>
+  <div>
+    <div>Birth date</div>
+    <div>{{ model.teamMember.birthDate.toLocaleDateString("en-US") }}</div>
+  </div>
+  <div>
+    <div>Email</div>
+    <div>{{ model.teamMember.email }}</div>
+  </div>
+  <div>
+    <div>Phone</div>
+    <div>{{ model.teamMember.phone }}</div>
+  </div>
+  <div>
+    <div>External</div>
+    <div>
+      <input type="checkbox" disabled {% if model.teamMember.isExternal %}checked{% endif %} />
+    </div>
+  </div>
+  <div>
+    <div>Max weekly hours</div>
+    <div>{{ model.teamMember.maxWeeklyHours }}</div>
+  </div>
+  <div>
+    <div>Max weekly days</div>
+    <div>{{ model.teamMember.maxWeeklyDays }}</div>
+  </div>
+  <div>
+    <a href="/team-member/{{ model.teamMember.id }}/edit/">Edit</a>
+    <a href="/team-member/{{ model.teamMember.id }}/delete/">Delete</a>
+  </div>
+{% endblock %}
