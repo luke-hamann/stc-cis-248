@@ -8,7 +8,7 @@ export default class Database {
 
   public static async execute(
     sql: string,
-    params?: (string | number)[],
+    params?: (null | string | number | boolean | Date)[],
   ): Promise<ExecuteResult> {
     if (this._client == null) {
       this._client = await new Client().connect({

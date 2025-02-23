@@ -30,6 +30,10 @@ export default class TeamMemberRepository {
     return rows.map((row) => this.mapRowToTeamMember(row));
   }
 
+  public static async validateTeamMember(teamMember: TeamMember): string[] {
+    return [];
+  }
+
   public static async getTeamMembers(): Promise<TeamMember[]> {
     const result = await Database.execute(`
       ${TeamMemberRepository.baseQuery}
@@ -54,5 +58,29 @@ export default class TeamMemberRepository {
     return (result.rows && result.rows.length > 0)
       ? this.mapRowToTeamMember(result.rows[0])
       : null;
+  }
+
+  public static async addTeamMember(t: TeamMember): Promise<number> {
+    const result = await Database.execute(
+      `
+      INSERT INTO TeamMembers
+      (firstName, middleName, lastName, birthDate, email, phone, isExternal,
+       maxWeeklyHours, maxWeeklyDays)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `,
+      [
+        t.firstName,
+        t.middleName,
+        t.lastName,
+        t.birthDate?.toISOString() ?? null,
+        t.email,
+        t.phone,
+        t.isExternal,
+        t.maxWeeklyHours,
+        t.maxWeeklyDays,
+      ],
+    );
+
+    return result.lastInsertId ?? 0;
   }
 }

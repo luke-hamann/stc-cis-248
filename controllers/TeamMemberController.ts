@@ -3,7 +3,7 @@ import Controller from "../models/controllerLayer/Controller.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
 import TeamMemberEditViewModel from "../models/viewModels/TeamMemberEditViewModel.ts";
 import TeamMembersViewModel from "../models/viewModels/TeamMembersViewModel.ts";
-import { HTMLResponse } from "./_utilities.ts";
+import { HTMLResponse, RedirectResponse } from "./_utilities.ts";
 
 export const teamMemberController = new Controller();
 
@@ -53,7 +53,7 @@ teamMemberController.register(
 teamMemberController.register(
   "GET",
   "/team-members/add/",
-  async (context: Context) => {
+  (context: Context) => {
     const model = TeamMemberEditViewModel.empty();
     model.csrf_token = context.csrf_token;
     return HTMLResponse(context, "./views/teamMember/edit.html", model);
@@ -67,6 +67,18 @@ teamMemberController.register(
   "POST",
   "/team-member/add/",
   async (context: Context) => {
+    const model = await TeamMemberEditViewModel.fromRequest(context.request);
+
+    model.errors = await TeamMemberRepository.validateTeamMember(
+      model.teamMember,
+    );
+    if (!model.isValid()) {
+      model.csrf_token = context.csrf_token;
+      return HTMLResponse(context, "./views/teamMember/edit.html", model);
+    }
+
+    const id = await TeamMemberRepository.addTeamMember(model.teamMember);
+    return RedirectResponse(context, `/team-member/${id}/`);
   },
 );
 

@@ -1,3 +1,4 @@
+import FormDataWrapper from "../controllerLayer/FormDataWrapper.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import FormViewModel from "./_FormViewModel.ts";
 
@@ -21,22 +22,27 @@ export default class TeamMemberEditViewModel extends FormViewModel {
   public static async fromRequest(
     request: Request,
   ): Promise<TeamMemberEditViewModel> {
-    const formData = await request.formData();
+    const formData = new FormDataWrapper(await request.formData());
 
-    const get = (key: string) => formData.get(key) as string ?? "";
-
-    const id = Number(get("id"));
-    const firstName = get("firstName");
-    const middleName = get("middleName");
-    const lastName = get("lastName");
-
-    const timestamp = Date.parse(get("birthDate"));
-    if (isNaN(timestamp)) {
-      const birthDate = null;
-    } else {
-      
-    }
-    if (!isNaN(Date.parse(get("birthDate")))
-    if (birthDate == "Invalid Date") birthDate = null;
+    return new TeamMemberEditViewModel(
+      false,
+      [],
+      "",
+      new TeamMember(
+        formData.getInt("id"),
+        formData.getString("firstName"),
+        formData.getString("middleName"),
+        formData.getString("lastName"),
+        formData.getDate("birthDate"),
+        formData.getString("email"),
+        formData.getString("phone"),
+        formData.getBool("isExternal"),
+        formData.getInt("maxWeeklyHours"),
+        formData.getInt("maxWeeklyDays"),
+        "",
+        "",
+        false,
+      ),
+    );
   }
 }
