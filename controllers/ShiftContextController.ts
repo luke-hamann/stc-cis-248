@@ -11,8 +11,7 @@ import {
   RedirectResponse,
 } from "./_utilities.ts";
 
-const shiftContextController = new Controller();
-export default shiftContextController;
+export const shiftContextController = new Controller();
 
 /**
  * Shift context list
