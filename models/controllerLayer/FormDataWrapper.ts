@@ -13,11 +13,11 @@ export default class FormDataWrapper {
     return (this.formData.get(key) as string).trim() ?? "";
   }
 
-  public getNumber(key: string): number {
+  public getNumber(key: string): number | null {
     const value = Number(this.getString(key));
 
     if (isNaN(value)) {
-      return 0;
+      return null;
     }
 
     return value;

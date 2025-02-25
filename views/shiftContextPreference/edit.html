@@ -1,0 +1,49 @@
+{% extends "../shared/_layout.html" %}
+
+{% set title = model.teamMember.fullName %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ model.teamMember.fullName }}</h1>
+  <form>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>:(</th>
+          <th>:|</th>
+          <th>:)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for shiftContext in model.shiftContexts %}
+          <tr>
+            <td>
+              {{ shiftContext.name }}
+            </td>
+            <td>
+              {{ not model.isPref(shiftContext.id) }}
+              <input type="radio" name="{{ shiftContext.id }}" value="negative"
+                {{ "checked" if not model.isPref(shiftContext.id) }} />
+            </td>
+            <td>
+              {{ model.isNeutral(shiftContext.id) }}
+              <input type="radio" name="{{ shiftContext.id }}" value="neutral"
+                {{ "checked" if model.isNeutral(shiftContext.id) }} />
+            </td>
+            <td>
+              {{ model.isPref(shiftContext.id) }}
+              <input type="radio" name="{{ shiftContext.id }}" value="positive"
+                {{ "checked" if model.isPref(shiftContext.id) }} />
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div>
+      <a href="/team-member/{{ model.teamMember.id }}/">Cancel</a>
+      <button type="submit">Save</button>
+    </div>
+  </form>
+{% endblock content %}
