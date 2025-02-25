@@ -23,15 +23,15 @@ export default class FormDataWrapper {
     return value;
   }
 
-  public getInt(key: string): number {
+  public getInt(key: string): number | null {
     const value = this.getNumber(key);
 
     if (value == null) {
-      return 0;
+      return null;
     }
 
     if (value % 1 != 0) {
-      return 0;
+      return null;
     }
 
     return value;
