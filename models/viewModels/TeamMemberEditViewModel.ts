@@ -29,7 +29,7 @@ export default class TeamMemberEditViewModel extends FormViewModel {
       [],
       "",
       new TeamMember(
-        formData.getInt("id"),
+        formData.getInt("id") ?? 0,
         formData.getString("firstName"),
         formData.getString("middleName"),
         formData.getString("lastName"),
