@@ -10,8 +10,7 @@ import {
 } from "./_utilities.ts";
 import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
 
-const colorController = new Controller();
-export default colorController;
+export const colorController = new Controller();
 
 /**
  * Color list
