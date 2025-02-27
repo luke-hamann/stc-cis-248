@@ -54,7 +54,6 @@
       <input type="text" id="maxWeeklyDays" name="maxWeeklyDays" value="{{ model.teamMember.maxWeeklyDays }}" />
     </div>
     <div>
-      <input type="hidden" name="id" value="{{ model.teamMember.id }}" />
       {{ csrf(model) }}
       <button type="submit">Save</button>
       <a href="{{ cancel }}">Cancel</a>

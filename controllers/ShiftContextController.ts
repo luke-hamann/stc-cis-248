@@ -72,7 +72,7 @@ shiftContextController.register(
   "GET",
   "/context/(\\d+)/",
   async (context: Context) => {
-    const id = Number(context.match[1]);
+    const id = parseInt(context.match[1]);
     if (isNaN(id)) return;
 
     const shiftContext = await ShiftContextRepository.getShiftContext(id);
@@ -116,7 +116,7 @@ shiftContextController.register(
   "GET",
   "/context/(\\d+)/delete/",
   async (context: Context) => {
-    const id = Number(context.match[1]);
+    const id = parseInt(context.match[1]);
     if (isNaN(id)) return NotFoundResponse(context);
 
     const shiftContext = await ShiftContextRepository.getShiftContext(id);
@@ -139,7 +139,7 @@ shiftContextController.register(
   "POST",
   "/context/(\\d+)/delete/",
   async (context: Context) => {
-    const id = Number(context.match[1]);
+    const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return NotFoundResponse(context);
     }

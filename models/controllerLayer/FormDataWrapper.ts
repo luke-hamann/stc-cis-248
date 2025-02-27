@@ -10,11 +10,11 @@ export default class FormDataWrapper {
   }
 
   public getString(key: string): string {
-    return (this.formData.get(key) as string).trim() ?? "";
+    return (this.formData.get(key) as string ?? "").trim();
   }
 
   public getNumber(key: string): number | null {
-    const value = Number(this.getString(key));
+    const value = parseInt(this.getString(key));
 
     if (isNaN(value)) {
       return null;

@@ -19,7 +19,7 @@ export default class ShiftContextEditViewModel extends FormViewModel {
   }
 
   public static fromFormData(formData: FormData) {
-    const id = Number(formData.get("id") as string ?? "0");
+    const id = parseInt(formData.get("id") as string ?? "0");
     const name = formData.get("name") as string ?? "";
     const ageGroup = formData.get("ageGroup") as string ?? "";
     const location = formData.get("location") as string ?? "";

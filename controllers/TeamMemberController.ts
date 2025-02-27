@@ -1,9 +1,14 @@
 import Context from "../models/controllerLayer/Context.ts";
 import Controller from "../models/controllerLayer/Controller.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
+import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
 import TeamMemberEditViewModel from "../models/viewModels/TeamMemberEditViewModel.ts";
 import TeamMembersViewModel from "../models/viewModels/TeamMembersViewModel.ts";
-import { HTMLResponse, RedirectResponse } from "./_utilities.ts";
+import {
+  HTMLResponse,
+  NotFoundResponse,
+  RedirectResponse,
+} from "./_utilities.ts";
 
 export const teamMemberController = new Controller();
 
@@ -27,7 +32,7 @@ teamMemberController.register(
   "GET",
   "/team-member/(\\d+)/",
   async (context: Context) => {
-    const id = Number(context.match[1]);
+    const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return;
     }
@@ -89,6 +94,23 @@ teamMemberController.register(
   "GET",
   "/team-member/(\\d+)/edit/",
   async (context: Context) => {
+    const id = parseInt(context.match[1]);
+    if (isNaN(id)) {
+      return NotFoundResponse(context);
+    }
+
+    const teamMember = await TeamMemberRepository.getTeamMember(id);
+    if (teamMember == null) {
+      return NotFoundResponse(context);
+    }
+
+    const model = new TeamMemberEditViewModel(
+      true,
+      [],
+      context.csrf_token,
+      teamMember,
+    );
+    return HTMLResponse(context, "./views/teamMember/edit.html", model);
   },
 );
 
@@ -99,6 +121,24 @@ teamMemberController.register(
   "POST",
   "/team-member/(\\d+)/edit/",
   async (context: Context) => {
+    const id = parseInt(context.match[1]);
+    if (isNaN(id)) {
+      return NotFoundResponse(context);
+    }
+
+    const model = await TeamMemberEditViewModel.fromRequest(context.request);
+    model.teamMember.id = id;
+
+    model.errors = await TeamMemberRepository.validateTeamMember(
+      model.teamMember,
+    );
+    if (!model.isValid()) {
+      model.isEdit = true;
+      return HTMLResponse(context, "./views/teamMember/edit.html", model);
+    }
+
+    await TeamMemberRepository.updateTeamMember(model.teamMember);
+    return RedirectResponse(context, `/team-member/${id}/`);
   },
 );
 
@@ -109,6 +149,23 @@ teamMemberController.register(
   "GET",
   "/team-member/(\\d+)/delete/",
   async (context: Context) => {
+    const id = parseInt(context.match[1]);
+    if (isNaN(id)) {
+      return NotFoundResponse(context);
+    }
+
+    const teamMember = await TeamMemberRepository.getTeamMember(id);
+    if (teamMember == null) {
+      return NotFoundResponse(context);
+    }
+
+    const model = new DeleteViewModel(
+      teamMember.fullName,
+      `/team-member/${id}/delete/`,
+      `/team-member/${id}/`,
+      context.csrf_token,
+    );
+    return HTMLResponse(context, "./views/shared/delete.html", model);
   },
 );
 
@@ -119,5 +176,17 @@ teamMemberController.register(
   "POST",
   "/team-member/(\\d+)/delete/",
   async (context: Context) => {
+    const id = parseInt(context.match[1]);
+    if (isNaN(id)) {
+      return NotFoundResponse(context);
+    }
+
+    const teamMember = await TeamMemberRepository.getTeamMember(id);
+    if (teamMember == null) {
+      return NotFoundResponse(context);
+    }
+
+    await TeamMemberRepository.deleteTeamMember(id);
+    return RedirectResponse(context, "/team-members/");
   },
 );

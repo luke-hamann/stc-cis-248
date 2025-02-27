@@ -1,28 +1,71 @@
-import { IShiftContextPreference } from "../../globals.d.ts";
-import ShiftContextPreference from "../entities/ShiftContextPreference.ts";
 import Database from "./_Database.ts";
 
 export default class ShiftContextPreferenceRepository {
+  public static async validate(
+    shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
+  ): Promise<string[]> {
+    // Ensure shift context ids exist
+
+    // Ensure shift context is not preferable and unpreferable at the same time
+
+    return await Promise.resolve([]);
+  }
+
   public static async getShiftContextPreferences(
     teamMemberId: number,
-  ): Promise<Map<number, boolean>> {
+  ): Promise<{ preferable: number[]; unpreferable: number[] }> {
     const result = await Database.execute(
       `
-      SELECT shiftContextId, isPreference
+      SELECT teamMemberId, shiftContextId, isPreference
       FROM TeamMemberShiftContextPreferences
       WHERE teamMemberId = ?
-      ORDER BY shiftContextId
     `,
       [teamMemberId],
     );
 
-    const rows = result.rows ?? [] as {teamMemberId: number, isPreferable: number}[];
-
-    const preferences = new Map<number, boolean>();
-    for (const row of rows) {
-      preferences.set(row.shiftContextId, row.isPreferable == 1);
+    const preferable = [];
+    const unpreferable = [];
+    for (const row of result.rows ?? []) {
+      if (row.isPreference) {
+        preferable.push(row.shiftContextId);
+      } else {
+        unpreferable.push(row.shiftContextId);
+      }
     }
 
-    return preferences;
+    return { preferable, unpreferable };
+  }
+
+  public static async updateShiftContextPreferences(
+    teamMemberId: number,
+    shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
+  ): Promise<void> {
+    await Database.execute(
+      `
+      DELETE FROM TeamMemberShiftContextPreferences
+      WHERE teamMemberId = ?
+    `,
+      [teamMemberId],
+    );
+
+    for (const shiftContextId of shiftContextPreferences.preferable) {
+      await Database.execute(
+        `
+        INSERT INTO TeamMemberShiftContextPreferences (teamMemberId, shiftContextId, isPreference)
+        VALUES (?, ?, 1)
+        `,
+        [teamMemberId, shiftContextId],
+      );
+    }
+
+    for (const shiftContextId of shiftContextPreferences.unpreferable) {
+      await Database.execute(
+        `
+        INSERT INTO TeamMemberShiftContextPreferences (teamMemberId, shiftContextId, isPreference)
+        VALUES (?, ?, 0)
+        `,
+        [teamMemberId, shiftContextId],
+      );
+    }
   }
 }

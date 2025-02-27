@@ -67,7 +67,7 @@ colorController.register(
   "GET",
   "/color/(\\d+)/",
   async (context: Context) => {
-    const id = Number(context.match[1]);
+    const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return NotFoundResponse(context);
     }
@@ -92,7 +92,7 @@ colorController.register(
     const model = ColorEditViewModel.fromFormData(
       await context.request.formData(),
     );
-    model.color.id = Number(context.match[1]);
+    model.color.id = parseInt(context.match[1]);
 
     model.errors = await ColorRepository.validateColor(model.color);
     if (!model.isValid()) {
@@ -113,7 +113,7 @@ colorController.register(
   "GET",
   "/color/(\\d+)/delete/",
   async (context: Context) => {
-    const id = Number(context.match[1]);
+    const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return NotFoundResponse(context);
     }
@@ -141,7 +141,7 @@ colorController.register(
   "POST",
   "/color/(\\d+)/delete/",
   async (context: Context) => {
-    const id = Number(context.match[1]);
+    const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return NotFoundResponse(context);
     }

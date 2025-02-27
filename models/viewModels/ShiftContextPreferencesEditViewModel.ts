@@ -4,15 +4,15 @@ import FormViewModel from "./_FormViewModel.ts";
 
 export default class ShiftContextPreferencesEditViewModel
   extends FormViewModel {
-  teamMember: TeamMember;
+  teamMember: TeamMember | null;
   shiftContexts: ShiftContext[];
-  shiftContextPreferences: Map<number, boolean>;
+  shiftContextPreferences: { preferable: number[]; unpreferable: number[] };
 
-  constructor(
+  public constructor(
     csrf_token: string,
-    teamMember: TeamMember,
+    teamMember: TeamMember | null,
     shiftContexts: ShiftContext[],
-    shiftContextPreferences: Map<number, boolean>,
+    shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
   ) {
     super(true, [], csrf_token);
     this.teamMember = teamMember;
@@ -20,13 +20,32 @@ export default class ShiftContextPreferencesEditViewModel
     this.shiftContextPreferences = shiftContextPreferences;
   }
 
-  public isPref(shiftContextId: number): boolean {
-    const preference = this.shiftContextPreferences.get(shiftContextId);
-    if (preference === undefined) return false;
-    return preference;
-  }
+  public static async fromRequest(
+    request: Request,
+  ): Promise<ShiftContextPreferencesEditViewModel> {
+    const formData: FormData = await request.formData();
+    const preferable: number[] = [];
+    const unpreferable: number[] = [];
 
-  public isNeutral(shiftContextId: number): boolean {
-    return !this.shiftContextPreferences.has(shiftContextId);
+    for (const key of formData.keys()) {
+      const shiftContextId = parseInt(key);
+      if (isNaN(shiftContextId)) continue;
+
+      const choice = formData.get(key) ?? "";
+      if (choice == "positive") {
+        preferable.push(shiftContextId);
+      } else if (choice == "negative") {
+        unpreferable.push(shiftContextId);
+      }
+    }
+
+    const shiftContextPreferences = { preferable, unpreferable };
+
+    return new ShiftContextPreferencesEditViewModel(
+      "",
+      null,
+      [],
+      shiftContextPreferences,
+    );
   }
 }

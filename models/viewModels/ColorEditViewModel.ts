@@ -19,7 +19,7 @@ export default class ColorEditViewModel extends FormViewModel {
   }
 
   public static fromFormData(formData: FormData): ColorEditViewModel {
-    const id = Number(formData.get("id") as string ?? "");
+    const id = parseInt(formData.get("id") as string ?? "");
     const name = formData.get("name") as string ?? "";
     const hex = (formData.get("hex") as string ?? "").replace("#", "");
 

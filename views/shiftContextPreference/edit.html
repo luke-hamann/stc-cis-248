@@ -6,14 +6,14 @@
 
 {% block content %}
   <h1>{{ model.teamMember.fullName }}</h1>
-  <form>
+  <form method="post">
     <table>
       <thead>
         <tr>
           <th></th>
-          <th>:(</th>
-          <th>:|</th>
-          <th>:)</th>
+          <th>☹️</th>
+          <th>😐</th>
+          <th>🙂</th>
         </tr>
       </thead>
       <tbody>
@@ -23,25 +23,24 @@
               {{ shiftContext.name }}
             </td>
             <td>
-              {{ not model.isPref(shiftContext.id) }}
               <input type="radio" name="{{ shiftContext.id }}" value="negative"
-                {{ "checked" if not model.isPref(shiftContext.id) }} />
+                {{ "checked" if model.shiftContextPreferences.unpreferable.includes(shiftContext.id) }} />
             </td>
             <td>
-              {{ model.isNeutral(shiftContext.id) }}
               <input type="radio" name="{{ shiftContext.id }}" value="neutral"
-                {{ "checked" if model.isNeutral(shiftContext.id) }} />
+                {{ "checked" if not model.shiftContextPreferences.preferable.includes(shiftContext.id) and
+                                not model.shiftContextPreferences.unpreferable.includes(shiftContext.id) }} />
             </td>
             <td>
-              {{ model.isPref(shiftContext.id) }}
               <input type="radio" name="{{ shiftContext.id }}" value="positive"
-                {{ "checked" if model.isPref(shiftContext.id) }} />
+                {{ "checked" if model.shiftContextPreferences.preferable.includes(shiftContext.id) }} />
             </td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
     <div>
+      {{ csrf(model) }}
       <a href="/team-member/{{ model.teamMember.id }}/">Cancel</a>
       <button type="submit">Save</button>
     </div>

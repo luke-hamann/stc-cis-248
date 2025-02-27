@@ -30,8 +30,10 @@ export default class TeamMemberRepository {
     return rows.map((row) => this.mapRowToTeamMember(row));
   }
 
-  public static async validateTeamMember(teamMember: TeamMember): string[] {
-    return [];
+  public static async validateTeamMember(
+    teamMember: TeamMember,
+  ): Promise<string[]> {
+    return await Promise.resolve([]);
   }
 
   public static async getTeamMembers(): Promise<TeamMember[]> {
@@ -82,5 +84,39 @@ export default class TeamMemberRepository {
     );
 
     return result.lastInsertId ?? 0;
+  }
+
+  public static async updateTeamMember(t: TeamMember): Promise<void> {
+    await Database.execute(
+      `
+      UPDATE TeamMembers
+      SET firstName = ?,
+        middleName = ?,
+        lastName = ?,
+        birthDate = ?,
+        email = ?,
+        phone = ?,
+        isExternal = ?,
+        maxWeeklyHours = ?,
+        maxWeeklyDays = ?
+      WHERE id = ?
+    `,
+      [
+        t.firstName,
+        t.middleName,
+        t.lastName,
+        t.birthDate?.toISOString() ?? null,
+        t.email,
+        t.phone,
+        t.isExternal,
+        t.maxWeeklyHours,
+        t.maxWeeklyDays,
+        t.id,
+      ],
+    );
+  }
+
+  public static async deleteTeamMember(id: number): Promise<void> {
+    await Database.execute("DELETE FROM TeamMembers WHERE id = ?", [id]);
   }
 }
