@@ -34,11 +34,20 @@ const controllers = [
 ];
 
 async function fetch(request: Request): Promise<Response> {
+  let response;
   const context = new Context(request, new ResponseWrapper());
 
   // Controllers
   for (const controller of controllers) {
-    const response = await controller.execute(context);
+    try {
+      response = await controller.execute(context);
+    } catch (error: unknown) {
+      response = new ResponseWrapper();
+      response.status = 500;
+      response.headers.set("Content-Type", "text/plain");
+      response.body = (error as Error).message + "\n\n" +
+        (error as Error).stack;
+    }
 
     if (response) {
       return response.toResponse();

@@ -24,4 +24,8 @@ export default class ShiftContextNote {
     this.colorId = colorId;
     this.color = color;
   }
+
+  public get dateString(): string {
+    return this.date?.toISOString().substring(0, 10) ?? "";
+  }
 }
