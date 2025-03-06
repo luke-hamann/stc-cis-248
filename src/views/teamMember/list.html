@@ -1,0 +1,24 @@
+{% extends "../shared/_layout.html" %}
+
+{% block title %}Team Members{% endblock title %}
+
+{% block content %}
+  <h1>Team Members</h1>
+  <a href="/team-members/add/">&plus; Add</a>
+  {% set isExternalFlag = false %}
+  {% for teamMember in model.teamMembers %}
+    {% if teamMember.isExternal and not isExternalFlag %}
+      <h2>External</h2>
+      {% set isExternalFlat = true %}
+    {% endif %}
+    <div>
+      {{ teamMember.fullName }}
+    </div>
+    <div>
+      <a href="/team-member/{{ teamMember.id }}/">Profile</a>
+      <a href="/team-member/{{ teamMember.id }}/preferences/">Preferences</a>
+      <a href="/team-member/{{ teamMember.id }}/availability/">Availability</a>
+      <a href="/team-member/{{ teamMember.id }}/unavailability/">Unavailability</a>
+    </div>
+  {% endfor %}
+{% endblock %}

@@ -8,8 +8,8 @@
       "request": "launch",
       "name": "Launch Program",
       "type": "node",
-      "program": "${workspaceFolder}/main.ts",
-      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/src/main.ts",
+      "cwd": "${workspaceFolder}/src/",
       "env": {},
       "runtimeExecutable": "deno",
       "runtimeArgs": [
