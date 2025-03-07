@@ -2,6 +2,7 @@ import { IShiftContextNoteRow } from "../../globals.d.ts";
 import Color from "../entities/Color.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import ShiftContextNote from "../entities/ShiftContextNote.ts";
+import { Database } from "./_Database.ts";
 
 export default class ShiftContextNoteRepository {
   private async validateShiftContextNote(
