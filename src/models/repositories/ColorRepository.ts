@@ -2,7 +2,8 @@ import type { IColor, IColorRepository } from "../../globals.d.ts";
 import Color from "../entities/Color.ts";
 import Repository from "./_Repository.ts";
 
-export class ColorRepository extends Repository implements IColorRepository {
+export default class ColorRepository extends Repository
+  implements IColorRepository {
   private mapRowToColor(row: IColor): Color {
     return new Color(row.id, row.name, row.hex);
   }

@@ -1,4 +1,4 @@
 import Repository from "./_Repository.ts";
 
-export class TimeSlotRepository extends Repository {
+export default class TimeSlotRepository extends Repository {
 }

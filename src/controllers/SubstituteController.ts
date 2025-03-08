@@ -1,10 +1,10 @@
 import Context from "../models/controllerLayer/Context.ts";
-import { SubstituteRepository } from "../models/repositories/SubstituteRepository.ts";
-import { TeamMemberRepository } from "../models/repositories/TeamMemberRepository.ts";
-import { SubstitutesEditViewModel } from "../models/viewModels/SubstitutesEditViewModel.ts";
-import { Controller2 } from "./_Controller2.ts";
+import SubstituteRepository from "../models/repositories/SubstituteRepository.ts";
+import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
+import SubstitutesEditViewModel from "../models/viewModels/SubstitutesEditViewModel.ts";
+import Controller2 from "./_Controller2.ts";
 
-export class SubstituteController extends Controller2 {
+export default class SubstituteController extends Controller2 {
   private teamMemberRepository: TeamMemberRepository;
   private substituteRepository: SubstituteRepository;
 

@@ -2,7 +2,7 @@ import { ITeamMember } from "../../globals.d.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import Repository from "./_Repository.ts";
 
-export class TeamMemberRepository extends Repository {
+export default class TeamMemberRepository extends Repository {
   private baseQuery: string = `
     SELECT id, firstName, middleName, lastName, birthDate, email, phone,
       isExternal, maxWeeklyHours, maxWeeklyDays, username, password, isAdmin
@@ -32,7 +32,7 @@ export class TeamMemberRepository extends Repository {
   }
 
   public async validateTeamMember(
-    teamMember: ITeamMember,
+    teamMember: TeamMember,
   ): Promise<string[]> {
     return await Promise.resolve([]);
   }

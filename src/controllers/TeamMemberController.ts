@@ -1,43 +1,63 @@
 import Context from "../models/controllerLayer/Context.ts";
-import Controller from "../models/controllerLayer/Controller.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
 import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
 import TeamMemberEditViewModel from "../models/viewModels/TeamMemberEditViewModel.ts";
 import TeamMembersViewModel from "../models/viewModels/TeamMembersViewModel.ts";
-import {
-  HTMLResponse,
-  NotFoundResponse,
-  RedirectResponse,
-} from "./_utilities.ts";
+import Controller2 from "./_Controller2.ts";
 
-export const teamMemberController = new Controller();
+export default class TeamMemberController extends Controller2 {
+  private teamMemberRepository: TeamMemberRepository;
 
-/**
- * Team member list GET
- */
-teamMemberController.register(
-  "GET",
-  "/team-members/",
-  async (context: Context) => {
-    const teamMembers = await TeamMemberRepository.getTeamMembers();
+  constructor(teamMemberRepository: TeamMemberRepository) {
+    super();
+    this.teamMemberRepository = teamMemberRepository;
+    this.routes = [
+      { method: "GET", pattern: "/team-members/", action: this.list },
+      { method: "GET", pattern: "/team-member/(\\d+)/", action: this.profile },
+      { method: "GET", pattern: "/team-members/add/", action: this.addGet },
+      { method: "POST", pattern: "/team-members/add/", action: this.addPost },
+      {
+        method: "GET",
+        pattern: "/team-member/(\\d+)/edit/",
+        action: this.editGet,
+      },
+      {
+        method: "POST",
+        pattern: "/team-member/(\\d+)/edit/",
+        action: this.editPost,
+      },
+      {
+        method: "GET",
+        pattern: "/team-member/(\\d+)/delete/",
+        action: this.deleteGet,
+      },
+      {
+        method: "POST",
+        pattern: "/team-member/(\\d+)/delete/",
+        action: this.deletePost,
+      },
+    ];
+  }
+
+  /**
+   * Team member list GET
+   */
+  public async list(context: Context) {
+    const teamMembers = await this.teamMemberRepository.getTeamMembers();
     const model = new TeamMembersViewModel(teamMembers);
-    return HTMLResponse(context, "./views/teamMember/list.html", model);
-  },
-);
+    return this.HTMLResponse(context, "./views/teamMember/list.html", model);
+  }
 
-/**
- * Team member profile GET
- */
-teamMemberController.register(
-  "GET",
-  "/team-member/(\\d+)/",
-  async (context: Context) => {
+  /**
+   * Team member profile GET
+   */
+  public async profile(context: Context) {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return;
     }
 
-    const teamMember = await TeamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.getTeamMember(id);
     if (teamMember == null) {
       return;
     }
@@ -48,60 +68,48 @@ teamMemberController.register(
       context.csrf_token,
       teamMember,
     );
-    return HTMLResponse(context, "./views/teamMember/profile.html", model);
-  },
-);
+    return this.HTMLResponse(context, "./views/teamMember/profile.html", model);
+  }
 
-/**
- * Team member add GET
- */
-teamMemberController.register(
-  "GET",
-  "/team-members/add/",
-  (context: Context) => {
+  /**
+   * Team member add GET
+   */
+  public addGet(context: Context) {
     const model = TeamMemberEditViewModel.empty();
     model.csrf_token = context.csrf_token;
-    return HTMLResponse(context, "./views/teamMember/edit.html", model);
-  },
-);
+    return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
+  }
 
-/**
- * Team member add POST
- */
-teamMemberController.register(
-  "POST",
-  "/team-member/add/",
-  async (context: Context) => {
+  /**
+   * Team member add POST
+   */
+  public async addPost(context: Context) {
     const model = await TeamMemberEditViewModel.fromRequest(context.request);
 
-    model.errors = await TeamMemberRepository.validateTeamMember(
+    model.errors = await this.teamMemberRepository.validateTeamMember(
       model.teamMember,
     );
     if (!model.isValid()) {
       model.csrf_token = context.csrf_token;
-      return HTMLResponse(context, "./views/teamMember/edit.html", model);
+      return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
     }
 
-    const id = await TeamMemberRepository.addTeamMember(model.teamMember);
-    return RedirectResponse(context, `/team-member/${id}/`);
-  },
-);
+    const id = await this.teamMemberRepository.addTeamMember(model.teamMember);
+    return this.RedirectResponse(context, `/team-member/${id}/`);
+  }
 
-/**
- * Team member edit GET
- */
-teamMemberController.register(
-  "GET",
-  "/team-member/(\\d+)/edit/",
-  async (context: Context) => {
+  /**
+   * Team member edit GET
+   */
+  public async editGet(context: Context) {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
-    const teamMember = await TeamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.getTeamMember(id);
     if (teamMember == null) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
     const model = new TeamMemberEditViewModel(
@@ -110,53 +118,45 @@ teamMemberController.register(
       context.csrf_token,
       teamMember,
     );
-    return HTMLResponse(context, "./views/teamMember/edit.html", model);
-  },
-);
+    return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
+  }
 
-/**
- * Team member edit POST
- */
-teamMemberController.register(
-  "POST",
-  "/team-member/(\\d+)/edit/",
-  async (context: Context) => {
+  /**
+   * Team member edit POST
+   */
+  public async editPost(context: Context) {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
     const model = await TeamMemberEditViewModel.fromRequest(context.request);
     model.teamMember.id = id;
 
-    model.errors = await TeamMemberRepository.validateTeamMember(
+    model.errors = await this.teamMemberRepository.validateTeamMember(
       model.teamMember,
     );
     if (!model.isValid()) {
       model.isEdit = true;
-      return HTMLResponse(context, "./views/teamMember/edit.html", model);
+      return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
     }
 
-    await TeamMemberRepository.updateTeamMember(model.teamMember);
-    return RedirectResponse(context, `/team-member/${id}/`);
-  },
-);
+    await this.teamMemberRepository.updateTeamMember(model.teamMember);
+    return this.RedirectResponse(context, `/team-member/${id}/`);
+  }
 
-/**
- * Team member delete GET
- */
-teamMemberController.register(
-  "GET",
-  "/team-member/(\\d+)/delete/",
-  async (context: Context) => {
+  /**
+   * Team member delete GET
+   */
+  public async deleteGet(context: Context) {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
-    const teamMember = await TeamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.getTeamMember(id);
     if (teamMember == null) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
     const model = new DeleteViewModel(
@@ -165,28 +165,24 @@ teamMemberController.register(
       `/team-member/${id}/`,
       context.csrf_token,
     );
-    return HTMLResponse(context, "./views/shared/delete.html", model);
-  },
-);
+    return this.HTMLResponse(context, "./views/shared/delete.html", model);
+  }
 
-/**
- * Team member delete POST
- */
-teamMemberController.register(
-  "POST",
-  "/team-member/(\\d+)/delete/",
-  async (context: Context) => {
+  /**
+   * Team member delete POST
+   */
+  public async deletePost(context: Context) {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
-    const teamMember = await TeamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.getTeamMember(id);
     if (teamMember == null) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
-    await TeamMemberRepository.deleteTeamMember(id);
-    return RedirectResponse(context, "/team-members/");
-  },
-);
+    await this.teamMemberRepository.deleteTeamMember(id);
+    return this.RedirectResponse(context, "/team-members/");
+  }
+}

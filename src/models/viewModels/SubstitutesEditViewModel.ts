@@ -1,7 +1,7 @@
 import TeamMember from "../entities/TeamMember.ts";
 import FormViewModel from "./_FormViewModel.ts";
 
-export class SubstitutesEditViewModel extends FormViewModel {
+export default class SubstitutesEditViewModel extends FormViewModel {
   public teamMembers: TeamMember[];
   public date: Date;
   public substitutesIds: number[];

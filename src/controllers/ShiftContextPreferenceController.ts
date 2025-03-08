@@ -1,38 +1,54 @@
 import Context from "../models/controllerLayer/Context.ts";
-import Controller from "../models/controllerLayer/Controller.ts";
 import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
 import ShiftContextPreferenceRepository from "../models/repositories/ShiftContextPreferenceRepository.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
-import {
-  HTMLResponse,
-  NotFoundResponse,
-  RedirectResponse,
-} from "./_utilities.ts";
-import ShiftContextPreference from "../models/entities/ShiftContextPreference.ts";
-import ShiftContextEditViewModel from "../models/viewModels/ShiftContextEditViewModel.ts";
 import ShiftContextPreferencesEditViewModel from "../models/viewModels/ShiftContextPreferencesEditViewModel.ts";
+import Controller2 from "./_Controller2.ts";
 
-export const shiftContextPreferenceController = new Controller();
+export default class ShiftContextPreferenceController extends Controller2 {
+  private shiftContextPreferenceRepository: ShiftContextPreferenceRepository;
+  private teamMemberRepository: TeamMemberRepository;
+  private shiftContextRepository: ShiftContextRepository;
 
-/**
- * Shift context preferences GET
- */
-shiftContextPreferenceController.register(
-  "GET",
-  "/team-member/(\\d+)/preferences/",
-  async (context: Context) => {
+  constructor(
+    shiftContextPreferenceRepository: ShiftContextPreferenceRepository,
+    teamMemberRepository: TeamMemberRepository,
+    shiftContextRepository: ShiftContextRepository,
+  ) {
+    super();
+    this.shiftContextPreferenceRepository = shiftContextPreferenceRepository;
+    this.teamMemberRepository = teamMemberRepository;
+    this.shiftContextRepository = shiftContextRepository;
+    this.routes = [
+      {
+        method: "GET",
+        pattern: "/team-member/(\\d+)/preferences/",
+        action: this.preferencesGet,
+      },
+      {
+        method: "POST",
+        pattern: "/team-member/(\\d+)/preferences/",
+        action: this.preferencesPost,
+      },
+    ];
+  }
+
+  /**
+   * Shift context preferences GET
+   */
+  public async preferencesGet(context: Context) {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
-    const teamMember = await TeamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.getTeamMember(id);
     if (teamMember == null) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
-    const shiftContexts = await ShiftContextRepository.getShiftContexts();
-    const shiftContextPreferences = await ShiftContextPreferenceRepository
+    const shiftContexts = await this.shiftContextRepository.getShiftContexts();
+    const shiftContextPreferences = await this.shiftContextPreferenceRepository
       .getShiftContextPreferences(id);
 
     const model = new ShiftContextPreferencesEditViewModel(
@@ -42,52 +58,48 @@ shiftContextPreferenceController.register(
       shiftContextPreferences,
     );
 
-    return HTMLResponse(
+    return this.HTMLResponse(
       context,
       "./views/shiftContextPreference/edit.html",
       model,
     );
-  },
-);
+  }
 
-/**
- * Shift context preferences POST
- */
-shiftContextPreferenceController.register(
-  "POST",
-  "/team-member/(\\d+)/preferences/",
-  async (context: Context) => {
+  /**
+   * Shift context preferences POST
+   */
+  public async preferencesPost(context: Context) {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
-    const teamMember = await TeamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.getTeamMember(id);
     if (teamMember == null) {
-      return NotFoundResponse(context);
+      return this.NotFoundResponse(context);
     }
 
     const model = await ShiftContextPreferencesEditViewModel.fromRequest(
       context.request,
     );
 
-    model.errors = await ShiftContextPreferenceRepository.validate(
+    model.errors = await this.shiftContextPreferenceRepository.validate(
       model.shiftContextPreferences,
     );
 
     if (!model.isValid()) {
       model.csrf_token = context.csrf_token;
-      return HTMLResponse(
+      return this.HTMLResponse(
         context,
         "./views/shiftContextPreference/edit.html",
         model,
       );
     }
 
-    await ShiftContextPreferenceRepository.updateShiftContextPreferences(
+    await this.shiftContextPreferenceRepository.updateShiftContextPreferences(
       id,
       model.shiftContextPreferences,
     );
-    return RedirectResponse(context, `/team-member/${id}/`);
-  },
-);
+    return this.RedirectResponse(context, `/team-member/${id}/`);
+  }
+}

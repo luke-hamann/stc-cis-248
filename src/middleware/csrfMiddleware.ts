@@ -1,7 +1,7 @@
 import Context from "../models/controllerLayer/Context.ts";
-import { Controller2 } from "../controllers/_Controller2.ts";
+import Controller2 from "../controllers/_Controller2.ts";
 
-export class CsrfMiddleware extends Controller2 {
+export default class CsrfMiddleware extends Controller2 {
   constructor() {
     super();
     this.routes = [

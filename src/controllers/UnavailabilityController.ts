@@ -1,110 +1,127 @@
 import Context from "../models/controllerLayer/Context.ts";
-import Controller from "../models/controllerLayer/Controller.ts";
-import { RedirectResponse } from "./_utilities.ts";
+import Controller2 from "./_Controller2.ts";
 
-export const unavailabilityController = new Controller();
+export default class UnavailabilityController extends Controller2 {
+  constructor() {
+    super();
+    this.routes = [
+      {
+        method: "GET",
+        pattern: "/team-member/(\\d+)/unavailability/",
+        action: this.index,
+      },
+      {
+        method: "GET",
+        pattern: "/team-member/(\\d+)/unavailability/(\\d{4})/",
+        action: this.calendar,
+      },
+      {
+        method: "GET",
+        pattern:
+          "/team-member/(\\d+)/unavailability/(\\d{4})/(\\d{2})/(\\d{2})/",
+        action: this.weekGet,
+      },
+      {
+        method: "POST",
+        pattern:
+          "/team-member/(\\d+)/unavailability/(\\d{4})/(\\d{2})/(\\d{2})/",
+        action: this.weekPost,
+      },
+      {
+        method: "GET",
+        pattern: "/team-member/(\\d+)/unavailability/add/",
+        action: this.addGet,
+      },
+      {
+        method: "POST",
+        pattern: "/team-member/(\\d+)/unavailability/add/",
+        action: this.addPost,
+      },
+      {
+        method: "GET",
+        pattern: "/team-member/(\\d+)/unavailability/(\\d+)/edit/",
+        action: this.editGet,
+      },
+      {
+        method: "POST",
+        pattern: "/team-member/(\\d+)/unavailability/(\\d+)/edit/",
+        action: this.editPost,
+      },
+      {
+        method: "GET",
+        pattern: "/team-member/(\\d+)/unavailability/(\\d+)/delete/",
+        action: this.deleteGet,
+      },
+      {
+        method: "POST",
+        pattern: "/team-member/(\\d+)/unavailability/(\\d+)/delete/",
+        action: this.deletePost,
+      },
+    ];
+  }
 
-/**
- * Team member unavailability calendar redirect GET
- */
-unavailabilityController.register(
-  "GET",
-  "/team-member/(\\d+)/unavailability/",
-  (context: Context) => {
+  /**
+   * Team member unavailability calendar redirect GET
+   */
+  public index(context: Context) {
     const id = context.match[1];
     const year = new Date().getFullYear();
     const url = `/team-member/${id}/unavailability/${year}/`;
 
-    return RedirectResponse(context, url);
-  },
-);
+    return this.RedirectResponse(context, url);
+  }
 
-/**
- * Team member unavailability calendar GET
- */
-unavailabilityController.register(
-  "GET",
-  "/team-member/(\\d+)/unavailability/(\\d{4})/",
-  (context: Context) => {
-  },
-);
+  /**
+   * Team member unavailability calendar GET
+   */
+  public calendar(context: Context) {
+  }
 
-/**
- * Team member unavailability week GET
- */
-unavailabilityController.register(
-  "GET",
-  "/team-member/(\\d+)/unavailability/(\\d{4})/(\\d{2})/(\\d{2})/",
-  (context: Context) => {
-  },
-);
+  /**
+   * Team member unavailability week GET
+   */
+  public async weekGet(context: Context) {
+  }
 
-/**
- * Team member unavailability week POST
- */
-unavailabilityController.register(
-  "POST",
-  "/team-member/(\\d+)/unavailability/(\\d{4})/(\\d{2})/(\\d{2})/",
-  (context: Context) => {
-  },
-);
+  /**
+   * Team member unavailability week POST
+   */
+  public async weekPost(context: Context) {
+  }
 
-/**
- * Team member unavailability week timeslot add GET
- */
-unavailabilityController.register(
-  "GET",
-  "/team-member/(\\d+)/unavailability/add/",
-  (context: Context) => {
-  },
-);
+  /**
+   * Team member unavailability week timeslot add GET
+   */
+  public async addGet(context: Context) {
+  }
 
-/**
- * Team member unavailability week timeslot add POST
- */
-unavailabilityController.register(
-  "POST",
-  "/team-member/(\\d+)/unavailability/add/",
-  (context: Context) => {
-  },
-);
+  /**
+   * Team member unavailability week timeslot add POST
+   */
+  public async addPost(context: Context) {
+  }
 
-/**
- * Team member unavailability week timeslot edit GET
- */
-unavailabilityController.register(
-  "GET",
-  "/team-member/(\\d+)/unavailability/(\\d+)/edit/",
-  (context: Context) => {
-  },
-);
+  /**
+   * Team member unavailability week timeslot edit GET
+   */
+  public async editGet(context: Context) {
+  }
 
-/**
- * Team member unavailability week timeslot edit POST
- */
-unavailabilityController.register(
-  "GET",
-  "/team-member/(\\d+)/unavailability/(\\d+)/edit/",
-  (context: Context) => {
-  },
-);
+  /**
+   * Team member unavailability week timeslot edit POST
+   */
+  public async editPost(context: Context) {
+  }
 
-/**
- * Team member unavailability week timeslot delete GET
- */
-unavailabilityController.register(
-  "GET",
-  "/team-member/(\\d+)/unavailability/(\\d+)/delete/",
-  (context: Context) => {
-  },
-);
+  /**
+   * Team member unavailability week timeslot delete GET
+   */
+  public async deleteGet(context: Context) {
+  }
 
-/**
- * Team member unavailability week timeslot delete POST
- */
-unavailabilityController.register(
-  "POST",
-  "/team-member/(\\d+)/unavailability/(\\d+)/delete/",
-  (context: Context) => {
-  },
-);
+  /**
+   * Team member unavailability week timeslot delete POST
+   */
+  public async deletePost(context: Context) {
+  }
+}

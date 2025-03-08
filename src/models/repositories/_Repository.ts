@@ -1,4 +1,4 @@
-import { Database2 } from "./_Database2.ts";
+import Database2 from "./_Database2.ts";
 
 export default abstract class Repository {
   protected database: Database2;

@@ -1,21 +1,17 @@
-import { NotFoundResponse } from "./controllers/_utilities.ts";
-import { ColorController } from "./controllers/ColorController.ts";
-import { scheduleController } from "./controllers/ScheduleController.ts";
-import { shiftContextController } from "./controllers/ShiftContextController.ts";
-import { shiftContextNoteController } from "./controllers/ShiftContextNoteController.ts";
-import { shiftContextPreferenceController } from "./controllers/ShiftContextPreferenceController.ts";
-import { SubstituteController } from "./controllers/SubstituteController.ts";
-import { teamMemberController } from "./controllers/TeamMemberController.ts";
-import { timeSlotController } from "./controllers/TimeSlotController.ts";
-import { typicalAvailbilityController } from "./controllers/TypicalAvailabilityController.ts";
-import { unavailabilityController } from "./controllers/UnavailabilityController.ts";
-import csrfMiddleware, { CsrfMiddleware } from "./middleware/csrfMiddleware.ts";
-import sessionMiddleware, {
-  SessionMiddleware,
-} from "./middleware/sessionMiddleware.ts";
-import staticFilesMiddleware from "./middleware/staticFilesMiddleware.ts";
-import { scheduleController, staticFilesMiddleware } from "./mod.ts";
+import ColorController from "./controllers/ColorController.ts";
 import Context from "./models/controllerLayer/Context.ts";
+import ScheduleController from "./controllers/ScheduleController.ts";
+import ShiftContextController from "./controllers/ShiftContextController.ts";
+import ShiftContextNoteController from "./controllers/ShiftContextNoteController.ts";
+import ShiftContextPreferenceController from "./controllers/ShiftContextPreferenceController.ts";
+import SubstituteController from "./controllers/SubstituteController.ts";
+import TeamMemberController from "./controllers/TeamMemberController.ts";
+import TimeSlotController from "./controllers/TimeSlotController.ts";
+import TypicalAvailbilityController from "./controllers/TypicalAvailabilityController.ts";
+import UnavailabilityController from "./controllers/UnavailabilityController.ts";
+import CsrfMiddleware from "./middleware/csrfMiddleware.ts";
+import SessionMiddleware from "./middleware/sessionMiddleware.ts";
+import StaticFilesMiddleware from "./middleware/staticFilesMiddleware.ts";
 import ResponseWrapper from "./models/controllerLayer/ResponseWrapper.ts";
 import ShiftContext from "./models/entities/ShiftContext.ts";
 import Unavailability from "./models/entities/Unavailability.ts";
@@ -29,6 +25,7 @@ import { TeamMemberRepository } from "./models/repositories/TeamMemberRepository
 import { TimeSlotRepository } from "./models/repositories/TimeSlotRepository.ts";
 import { TypicalAvailabilityRepository } from "./models/repositories/TypicalAvailabilityRepository.ts";
 import { UnavailabilityRepository } from "./models/repositories/UnavailabilityRepository.ts";
+import TypicalAvailabilityController from "./controllers/TypicalAvailabilityController.ts";
 
 export default { fetch };
 
@@ -60,20 +57,21 @@ const staticFilesMiddleware = new StaticFilesMiddleware();
 
 /** Controllers */
 
-const colorController = new ColorController(colorRepository);
-const scheduleController = new ScheduleController();
-
 const controllers = [
-  teamMemberController,
-  typicalAvailbilityController,
-  unavailabilityController,
-  shiftContextController,
-  shiftContextPreferenceController,
+  new TeamMemberController(teamMemberRepository),
+  new TypicalAvailabilityController(),
+  new UnavailabilityController(),
+  new ShiftContextController(shiftContextRepository),
+  new ShiftContextPreferenceController(
+    shiftContextPreferenceRepository,
+    teamMemberRepository,
+    shiftContextRepository,
+  ),
   new ColorController(colorRepository),
-  shiftContextNoteController,
-  timeSlotController,
+  new ShiftContextNoteController(shiftContextNoteRepository, colorRepository),
+  new TimeSlotController(),
   new SubstituteController(substituteRepository, teamMemberRepository),
-  scheduleController,
+  new ScheduleController(),
 ];
 
 async function fetch(request: Request): Promise<Response> {

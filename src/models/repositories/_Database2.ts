@@ -6,7 +6,7 @@ import {
 /**
  * Represents a database connection
  */
-export class Database2 {
+export default class Database2 {
   /** The database client connection */
   private _client: Client | null = null;
 

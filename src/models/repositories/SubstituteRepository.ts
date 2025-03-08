@@ -1,6 +1,6 @@
 import Repository from "./_Repository.ts";
 
-export class SubstituteRepository extends Repository {
+export default class SubstituteRepository extends Repository {
   public async getSubstituteIds(date: Date): Promise<number[]> {
     const results = await this.database.execute(
       `

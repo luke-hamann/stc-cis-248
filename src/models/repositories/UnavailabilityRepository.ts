@@ -1,4 +1,4 @@
 import Repository from "./_Repository.ts";
 
-export class UnavailabilityRepository extends Repository {
+export default class UnavailabilityRepository extends Repository {
 }

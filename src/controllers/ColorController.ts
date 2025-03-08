@@ -8,7 +8,7 @@ import Controller2 from "./_Controller2.ts";
 /**
  * Controls the color pages of the application
  */
-export class ColorController extends Controller2 {
+export default class ColorController extends Controller2 {
   /** The data store for color CRUD */
   private colorRepository: IColorRepository;
 
@@ -19,20 +19,20 @@ export class ColorController extends Controller2 {
     super();
     this.colorRepository = colorRepository;
     this.routes = [
-      { method: "GET", pattern: "/colors/", action: this.listColors },
-      { method: "GET", pattern: "/colors/add/", action: this.addColorGet },
-      { method: "POST", pattern: "/colors/add/", action: this.addColorPost },
-      { method: "GET", pattern: "/color/(\\d+)/", action: this.editColorGet },
-      { method: "POST", pattern: "/color/(\\d+)/", action: this.editColorPost },
+      { method: "GET", pattern: "/colors/", action: this.list },
+      { method: "GET", pattern: "/colors/add/", action: this.addGet },
+      { method: "POST", pattern: "/colors/add/", action: this.addPost },
+      { method: "GET", pattern: "/color/(\\d+)/", action: this.editGet },
+      { method: "POST", pattern: "/color/(\\d+)/", action: this.editPost },
       {
         method: "GET",
         pattern: "/color/(\\d+)/delete/",
-        action: this.deleteColorGet,
+        action: this.deleteGet,
       },
       {
         method: "POST",
         pattern: "/color/(\\d+)/delete/",
-        action: this.deleteColorPost,
+        action: this.deletePost,
       },
     ];
   }
@@ -41,7 +41,7 @@ export class ColorController extends Controller2 {
    * @param context
    * @returns
    */
-  public async listColors(context: Context) {
+  public async list(context: Context) {
     const colors = await this.colorRepository.getColors();
     const model = new ColorsViewModel(colors, context.csrf_token);
     return this.HTMLResponse(context, "./views/color/list.html", model);
@@ -51,7 +51,7 @@ export class ColorController extends Controller2 {
    * @param context
    * @returns
    */
-  public addColorGet(context: Context) {
+  public addGet(context: Context) {
     return this.HTMLResponse(
       context,
       "./views/color/edit.html",
@@ -63,7 +63,7 @@ export class ColorController extends Controller2 {
    * @param context
    * @returns
    */
-  public async addColorPost(context: Context) {
+  public async addPost(context: Context) {
     const model = await ColorEditViewModel.fromRequest(context.request);
 
     model.errors = await this.colorRepository.validateColor(model.color);
@@ -80,7 +80,7 @@ export class ColorController extends Controller2 {
    * @param context
    * @returns
    */
-  public async editColorGet(context: Context) {
+  public async editGet(context: Context) {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return this.NotFoundResponse(context);
@@ -99,7 +99,7 @@ export class ColorController extends Controller2 {
    * @param context
    * @returns
    */
-  public async editColorPost(context: Context) {
+  public async editPost(context: Context) {
     const model = ColorEditViewModel.fromFormData(
       await context.request.formData(),
     );
@@ -120,7 +120,7 @@ export class ColorController extends Controller2 {
    * @param context
    * @returns
    */
-  public async deleteColorGet(context: Context) {
+  public async deleteGet(context: Context) {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return this.NotFoundResponse(context);
@@ -145,7 +145,7 @@ export class ColorController extends Controller2 {
    * @param context
    * @returns
    */
-  public async deleteColorPost(context: Context) {
+  public async deletePost(context: Context) {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return this.NotFoundResponse(context);

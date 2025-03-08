@@ -1,7 +1,7 @@
 import Context from "../models/controllerLayer/Context.ts";
-import { Controller2 } from "../controllers/_Controller2.ts";
+import Controller2 from "../controllers/_Controller2.ts";
 
-export class StaticFilesMiddleware extends Controller2 {
+export default class StaticFilesMiddleware extends Controller2 {
   private readonly STATIC_DIR = "./static";
 
   constructor() {
@@ -26,7 +26,7 @@ export class StaticFilesMiddleware extends Controller2 {
     }
 
     const pathname = new URL(context.request.url).pathname;
-    const staticFile = `${STATIC_DIR}${pathname}`;
+    const staticFile = `${this.STATIC_DIR}${pathname}`;
 
     if (!files.includes(staticFile)) return;
 
