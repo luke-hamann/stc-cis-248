@@ -1,8 +1,8 @@
-import Database from "./_Database.ts";
+import Repository from "./_Repository.ts";
 
-export class SubstituteRepository {
+export class SubstituteRepository extends Repository {
   public async getSubstituteIds(date: Date): Promise<number[]> {
-    const results = await Database.execute(
+    const results = await this.database.execute(
       `
         SELECT teamMemberId
         FROM Substitutes
@@ -16,5 +16,11 @@ export class SubstituteRepository {
     return (results.rows as unknown as { teamMemberId: number }[]).map((row) =>
       row.teamMemberId
     );
+  }
+
+  public async updateSubstitutesIds(
+    date: Date,
+    teamMemberIds: number[],
+  ): Promise<void> {
   }
 }

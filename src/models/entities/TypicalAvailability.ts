@@ -1,3 +1,4 @@
+import type { DayOfWeek } from "../../globals.d.ts";
 import TeamMember from "./TeamMember.ts";
 
 export default class TypicalAvailability {

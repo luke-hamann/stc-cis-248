@@ -5,7 +5,7 @@ import nunjucks from "npm:nunjucks";
 
 nunjucks.configure(".", { noCache: true });
 
-export class Controller2 {
+export default class Controller2 {
   protected routes: {
     method: HTTPMethod;
     pattern: string;

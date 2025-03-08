@@ -1,6 +1,6 @@
-import Database from "./_Database.ts";
+import Repository from "./_Repository.ts";
 
-export default class ShiftContextPreferenceRepository {
+export default class ShiftContextPreferenceRepository extends Repository {
   public async validate(
     shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
   ): Promise<string[]> {
@@ -14,7 +14,7 @@ export default class ShiftContextPreferenceRepository {
   public async getShiftContextPreferences(
     teamMemberId: number,
   ): Promise<{ preferable: number[]; unpreferable: number[] }> {
-    const result = await Database.execute(
+    const result = await this.database.execute(
       `
       SELECT teamMemberId, shiftContextId, isPreference
       FROM TeamMemberShiftContextPreferences
@@ -40,7 +40,7 @@ export default class ShiftContextPreferenceRepository {
     teamMemberId: number,
     shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
   ): Promise<void> {
-    await Database.execute(
+    await this.database.execute(
       `
       DELETE FROM TeamMemberShiftContextPreferences
       WHERE teamMemberId = ?
@@ -49,7 +49,7 @@ export default class ShiftContextPreferenceRepository {
     );
 
     for (const shiftContextId of shiftContextPreferences.preferable) {
-      await Database.execute(
+      await this.database.execute(
         `
         INSERT INTO TeamMemberShiftContextPreferences (teamMemberId, shiftContextId, isPreference)
         VALUES (?, ?, 1)
@@ -59,7 +59,7 @@ export default class ShiftContextPreferenceRepository {
     }
 
     for (const shiftContextId of shiftContextPreferences.unpreferable) {
-      await Database.execute(
+      await this.database.execute(
         `
         INSERT INTO TeamMemberShiftContextPreferences (teamMemberId, shiftContextId, isPreference)
         VALUES (?, ?, 0)

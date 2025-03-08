@@ -30,9 +30,6 @@ export class SubstituteController extends Controller2 {
   }
 
   public async editSubstitutesGet(context: Context) {
-  }
-
-  public async editSubstitutesPost(context: Context) {
     const year = parseInt(context.match[1]);
     const month = parseInt(context.match[2]);
     const day = parseInt(context.match[3]);
@@ -51,5 +48,8 @@ export class SubstituteController extends Controller2 {
     );
 
     return this.HTMLResponse(context, "./views/substitute/edit.html", model);
+  }
+
+  public async editSubstitutesPost(context: Context) {
   }
 }

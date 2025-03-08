@@ -2,9 +2,9 @@ import { IShiftContextNoteRow } from "../../globals.d.ts";
 import Color from "../entities/Color.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import ShiftContextNote from "../entities/ShiftContextNote.ts";
-import { Database } from "./_Database.ts";
+import Repository from "./_Repository.ts";
 
-export default class ShiftContextNoteRepository {
+export default class ShiftContextNoteRepository extends Repository {
   private async validateShiftContextNote(
     shiftContextNote: ShiftContextNote,
   ): Promise<string[]> {
@@ -39,7 +39,7 @@ export default class ShiftContextNoteRepository {
   ): Promise<ShiftContextNote> {
     const dateString = date.toISOString().substring(0, 10);
 
-    const result = await Database.execute(
+    const result = await this.database.execute(
       `
       SELECT shiftContextId, sc.name shiftContextName, date, note, colorId, c.name colorName
       FROM ShiftContextNotes scn
@@ -51,14 +51,14 @@ export default class ShiftContextNoteRepository {
     );
 
     return (result.rows && result.rows.length > 0)
-      ? ShiftContextNoteRepository.mapRowToShiftContextNote(result.rows[1])
+      ? this.mapRowToShiftContextNote(result.rows[1])
       : new ShiftContextNote(shiftContextId, null, date, "", 0, null);
   }
 
   public async updateShiftContextNote(
     shiftContextNote: ShiftContextNote,
   ) {
-    await Database.execute(
+    await this.database.execute(
       `
       DELETE FROM ShiftContextNotes
       WHERE shiftContextId = ? AND date = ?
@@ -67,7 +67,7 @@ export default class ShiftContextNoteRepository {
     );
 
     if (shiftContextNote.note.length > 0) {
-      await Database.execute(
+      await this.database.execute(
         `
           INSERT INTO ShiftContextNotes (shiftContextId, date, note, colorId)
           VALUES (?, ?, ?, ?)

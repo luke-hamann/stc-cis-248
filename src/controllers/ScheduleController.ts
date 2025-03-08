@@ -1,8 +1,12 @@
 import Context from "../models/controllerLayer/Context.ts";
-import Controller from "../models/controllerLayer/Controller.ts";
-import { RedirectResponse } from "./_utilities.ts";
+import Controller2 from "./_Controller2.ts";
 
-export const scheduleController = new Controller();
+export default class ScheduleController extends Controller2 {
+  constructor() {
+    super();
+    this.routes = [];
+  }
+}
 
 /**
  * Schedule index GET

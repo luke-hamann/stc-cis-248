@@ -1,8 +1,8 @@
-import { IColor } from "../../globals.d.ts";
+import type { IColor, IColorRepository } from "../../globals.d.ts";
 import Color from "../entities/Color.ts";
-import { Database } from "./_Database.ts";
+import Repository from "./_Repository.ts";
 
-export class ColorRepository {
+export class ColorRepository extends Repository implements IColorRepository {
   private mapRowToColor(row: IColor): Color {
     return new Color(row.id, row.name, row.hex);
   }
@@ -17,7 +17,7 @@ export class ColorRepository {
     if (color.name.trim() == "") {
       errors.push("Color must have a name.");
     } else {
-      const result = await Database.execute(
+      const result = await this.database.execute(
         `
         SELECT *
         FROM Colors
@@ -39,7 +39,7 @@ export class ColorRepository {
   }
 
   public async getColors(): Promise<Color[]> {
-    const result = await Database.execute(`
+    const result = await this.database.execute(`
       SELECT id, name, hex
       FROM Colors
       ORDER BY LOWER(name)
@@ -49,7 +49,7 @@ export class ColorRepository {
   }
 
   public async getColor(id: number): Promise<Color | null> {
-    const result = await Database.execute(
+    const result = await this.database.execute(
       `
       SELECT id, name, hex
       FROM Colors
@@ -64,7 +64,7 @@ export class ColorRepository {
   }
 
   public async addColor(color: Color): Promise<number> {
-    const result = await Database.execute(
+    const result = await this.database.execute(
       `
       INSERT INTO Colors (name, hex)
       VALUES (?, ?)
@@ -76,7 +76,7 @@ export class ColorRepository {
   }
 
   public async updateColor(color: Color): Promise<void> {
-    await Database.execute(
+    await this.database.execute(
       `
       UPDATE Colors
       SET name = ?, hex = ?
@@ -87,7 +87,7 @@ export class ColorRepository {
   }
 
   public async deleteColor(id: number): Promise<void> {
-    await Database.execute(
+    await this.database.execute(
       `
       DELETE FROM Colors
       WHERE id = ?

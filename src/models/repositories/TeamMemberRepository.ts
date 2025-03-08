@@ -1,8 +1,8 @@
 import { ITeamMember } from "../../globals.d.ts";
 import TeamMember from "../entities/TeamMember.ts";
-import Database from "./_Database.ts";
+import Repository from "./_Repository.ts";
 
-export class TeamMemberRepository {
+export class TeamMemberRepository extends Repository {
   private baseQuery: string = `
     SELECT id, firstName, middleName, lastName, birthDate, email, phone,
       isExternal, maxWeeklyHours, maxWeeklyDays, username, password, isAdmin
@@ -38,7 +38,7 @@ export class TeamMemberRepository {
   }
 
   public async getTeamMembers(): Promise<TeamMember[]> {
-    const result = await Database.execute(`
+    const result = await this.database.execute(`
       ${this.baseQuery}
       ORDER BY isExternal,
         LOWER(lastName),
@@ -50,7 +50,7 @@ export class TeamMemberRepository {
   }
 
   public async getTeamMember(id: number): Promise<TeamMember | null> {
-    const result = await Database.execute(
+    const result = await this.database.execute(
       `
       ${this.baseQuery}
       WHERE id = ?
@@ -64,7 +64,7 @@ export class TeamMemberRepository {
   }
 
   public async addTeamMember(t: TeamMember): Promise<number> {
-    const result = await Database.execute(
+    const result = await this.database.execute(
       `
       INSERT INTO TeamMembers
       (firstName, middleName, lastName, birthDate, email, phone, isExternal,
@@ -88,7 +88,7 @@ export class TeamMemberRepository {
   }
 
   public async updateTeamMember(t: TeamMember): Promise<void> {
-    await Database.execute(
+    await this.database.execute(
       `
       UPDATE TeamMembers
       SET firstName = ?,
@@ -118,6 +118,6 @@ export class TeamMemberRepository {
   }
 
   public async deleteTeamMember(id: number): Promise<void> {
-    await Database.execute("DELETE FROM TeamMembers WHERE id = ?", [id]);
+    await this.database.execute("DELETE FROM TeamMembers WHERE id = ?", [id]);
   }
 }

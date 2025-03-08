@@ -1,3 +1,5 @@
+import Color from "./models/entities/Color.ts";
+
 export type HTTPMethod = "GET" | "POST";
 export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -67,7 +69,7 @@ export interface ITimeSlot {
  * Data layer
  */
 
-interface IShiftContextNoteRow {
+export interface IShiftContextNoteRow {
   shiftContextId: number;
   shiftContextName: string;
   date: string;
@@ -75,4 +77,17 @@ interface IShiftContextNoteRow {
   colorId: number;
   colorName: string;
   colorHex: string;
+}
+
+/**
+ * Repositories
+ */
+
+export interface IColorRepository {
+  validateColor(color: Color): Promise<string[]>;
+  getColors(): Promise<Color[]>;
+  getColor(id: number): Promise<Color | null>;
+  addColor(color: Color): Promise<number>;
+  updateColor(color: Color): Promise<void>;
+  deleteColor(id: number): Promise<void>;
 }

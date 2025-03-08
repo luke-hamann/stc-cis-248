@@ -14,11 +14,12 @@ import sessionMiddleware, {
   SessionMiddleware,
 } from "./middleware/sessionMiddleware.ts";
 import staticFilesMiddleware from "./middleware/staticFilesMiddleware.ts";
-import { staticFilesMiddleware } from "./mod.ts";
+import { scheduleController, staticFilesMiddleware } from "./mod.ts";
 import Context from "./models/controllerLayer/Context.ts";
 import ResponseWrapper from "./models/controllerLayer/ResponseWrapper.ts";
 import ShiftContext from "./models/entities/ShiftContext.ts";
 import Unavailability from "./models/entities/Unavailability.ts";
+import { Database2 } from "./models/repositories/_Database2.ts";
 import ColorRepository from "./models/repositories/ColorRepository.ts";
 import ShiftContextNoteRepository from "./models/repositories/ShiftContextNoteRepository.ts";
 import ShiftContextPreferenceRepository from "./models/repositories/ShiftContextPreferenceRepository.ts";
@@ -31,30 +32,38 @@ import { UnavailabilityRepository } from "./models/repositories/UnavailabilityRe
 
 export default { fetch };
 
+/** Database */
+
+const database = new Database2();
+
+/** Repositories */
+
+const colorRepository = new ColorRepository(database);
+const shiftContextNoteRepository = new ShiftContextNoteRepository(database);
+const shiftContextPreferenceRepository = new ShiftContextPreferenceRepository(
+  database,
+);
+const shiftContextRepository = new ShiftContextRepository(database);
+const substituteRepository = new SubstituteRepository(database);
+const teamMemberRepository = new TeamMemberRepository(database);
+const timeSlotRepository = new TimeSlotRepository(database);
+const typicalAvailabilityRepository = new TypicalAvailabilityRepository(
+  database,
+);
+const unavailabilityRepository = new UnavailabilityRepository(database);
+
 /** Middleware */
 
 const csrfMiddleware = new CsrfMiddleware();
 const sessionMiddleware = new SessionMiddleware();
 const staticFilesMiddleware = new StaticFilesMiddleware();
 
-/** Repositories */
-
-const colorRepository = new ColorRepository();
-const shiftContextNoteRepository = new ShiftContextNoteRepository();
-const shiftContextPreferenceRepository = new ShiftContextPreferenceRepository();
-const shiftContextRepository = new ShiftContextRepository();
-const substituteRepository = new SubstituteRepository();
-const teamMemberRepository = new TeamMemberRepository();
-const timeSlotRepository = new TimeSlotRepository();
-const typicalAvailabilityRepository = new TypicalAvailabilityRepository();
-const unavailabilityRepository = new UnavailabilityRepository();
-
 /** Controllers */
 
+const colorController = new ColorController(colorRepository);
+const scheduleController = new ScheduleController();
+
 const controllers = [
-  sessionMiddleware,
-  csrfMiddleware,
-  staticFilesMiddleware,
   teamMemberController,
   typicalAvailbilityController,
   unavailabilityController,
