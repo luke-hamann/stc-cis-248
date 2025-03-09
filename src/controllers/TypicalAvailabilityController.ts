@@ -1,7 +1,7 @@
-import Context from "../models/controllerLayer/Context.ts";
-import Controller2 from "./_Controller2.ts";
+import Context from "../_framework/Context.ts";
+import Controller from "../_framework/Controller.ts";
 
-export default class TypicalAvailabilityController extends Controller2 {
+export default class TypicalAvailabilityController extends Controller {
   constructor() {
     super();
     this.routes = [

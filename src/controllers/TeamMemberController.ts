@@ -1,11 +1,11 @@
-import Context from "../models/controllerLayer/Context.ts";
+import Context from "../_framework/Context.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
 import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
 import TeamMemberEditViewModel from "../models/viewModels/TeamMemberEditViewModel.ts";
 import TeamMembersViewModel from "../models/viewModels/TeamMembersViewModel.ts";
-import Controller2 from "./_Controller2.ts";
+import Controller from "../_framework/Controller.ts";
 
-export default class TeamMemberController extends Controller2 {
+export default class TeamMemberController extends Controller {
   private teamMemberRepository: TeamMemberRepository;
 
   constructor(teamMemberRepository: TeamMemberRepository) {

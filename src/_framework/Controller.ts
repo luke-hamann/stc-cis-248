@@ -1,11 +1,11 @@
-import { HTTPMethod } from "../globals.d.ts";
-import Context from "../models/controllerLayer/Context.ts";
-import ResponseWrapper from "../models/controllerLayer/ResponseWrapper.ts";
+import Context from "./Context.ts";
+import { HTTPMethod } from "./HTTPMethod.ts";
+import ResponseWrapper from "./ResponseWrapper.ts";
 import nunjucks from "npm:nunjucks";
 
 nunjucks.configure(".", { noCache: true });
 
-export default class Controller2 {
+export default class Controller {
   protected routes: {
     method: HTTPMethod;
     pattern: string;
@@ -25,7 +25,7 @@ export default class Controller2 {
       if (!match) continue;
 
       context.match = match;
-      return await route.action(context);
+      return await route.action.call(this, context);
     }
   }
 

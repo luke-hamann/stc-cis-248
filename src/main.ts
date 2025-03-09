@@ -1,5 +1,7 @@
+import Context from "./_framework/Context.ts";
+import Controller from "./_framework/Controller.ts";
+import ResponseWrapper from "./_framework/ResponseWrapper.ts";
 import ColorController from "./controllers/ColorController.ts";
-import Context from "./models/controllerLayer/Context.ts";
 import ScheduleController from "./controllers/ScheduleController.ts";
 import ShiftContextController from "./controllers/ShiftContextController.ts";
 import ShiftContextNoteController from "./controllers/ShiftContextNoteController.ts";
@@ -7,31 +9,27 @@ import ShiftContextPreferenceController from "./controllers/ShiftContextPreferen
 import SubstituteController from "./controllers/SubstituteController.ts";
 import TeamMemberController from "./controllers/TeamMemberController.ts";
 import TimeSlotController from "./controllers/TimeSlotController.ts";
-import TypicalAvailbilityController from "./controllers/TypicalAvailabilityController.ts";
+import TypicalAvailabilityController from "./controllers/TypicalAvailabilityController.ts";
 import UnavailabilityController from "./controllers/UnavailabilityController.ts";
-import CsrfMiddleware from "./middleware/csrfMiddleware.ts";
-import SessionMiddleware from "./middleware/sessionMiddleware.ts";
-import StaticFilesMiddleware from "./middleware/staticFilesMiddleware.ts";
-import ResponseWrapper from "./models/controllerLayer/ResponseWrapper.ts";
-import ShiftContext from "./models/entities/ShiftContext.ts";
-import Unavailability from "./models/entities/Unavailability.ts";
-import { Database2 } from "./models/repositories/_Database2.ts";
+import CsrfMiddleware from "./middleware/CsrfMiddleware.ts";
+import SessionMiddleware from "./middleware/SessionMiddleware.ts";
+import StaticFilesMiddleware from "./middleware/StaticFilesMiddleware.ts";
+import Database from "./models/repositories/_Database.ts";
 import ColorRepository from "./models/repositories/ColorRepository.ts";
 import ShiftContextNoteRepository from "./models/repositories/ShiftContextNoteRepository.ts";
 import ShiftContextPreferenceRepository from "./models/repositories/ShiftContextPreferenceRepository.ts";
 import ShiftContextRepository from "./models/repositories/ShiftContextRepository.ts";
-import { SubstituteRepository } from "./models/repositories/SubstituteRepository.ts";
-import { TeamMemberRepository } from "./models/repositories/TeamMemberRepository.ts";
-import { TimeSlotRepository } from "./models/repositories/TimeSlotRepository.ts";
-import { TypicalAvailabilityRepository } from "./models/repositories/TypicalAvailabilityRepository.ts";
-import { UnavailabilityRepository } from "./models/repositories/UnavailabilityRepository.ts";
-import TypicalAvailabilityController from "./controllers/TypicalAvailabilityController.ts";
+import SubstituteRepository from "./models/repositories/SubstituteRepository.ts";
+import TeamMemberRepository from "./models/repositories/TeamMemberRepository.ts";
+import TimeSlotRepository from "./models/repositories/TimeSlotRepository.ts";
+import TypicalAvailabilityRepository from "./models/repositories/TypicalAvailabilityRepository.ts";
+import UnavailabilityRepository from "./models/repositories/UnavailabilityRepository.ts";
 
 export default { fetch };
 
 /** Database */
 
-const database = new Database2();
+const database = new Database();
 
 /** Repositories */
 
@@ -49,15 +47,12 @@ const typicalAvailabilityRepository = new TypicalAvailabilityRepository(
 );
 const unavailabilityRepository = new UnavailabilityRepository(database);
 
-/** Middleware */
-
-const csrfMiddleware = new CsrfMiddleware();
-const sessionMiddleware = new SessionMiddleware();
-const staticFilesMiddleware = new StaticFilesMiddleware();
-
 /** Controllers */
 
-const controllers = [
+const controllers: Controller[] = [
+  new CsrfMiddleware(),
+  new SessionMiddleware(),
+  new StaticFilesMiddleware(),
   new TeamMemberController(teamMemberRepository),
   new TypicalAvailabilityController(),
   new UnavailabilityController(),
@@ -74,6 +69,14 @@ const controllers = [
   new ScheduleController(),
 ];
 
+/**
+ * Accepts an HTTP {@link Request} and promises an HTTP {@link Response}
+ * 
+ * Application entry point
+ * 
+ * @param request The HTTP request
+ * @returns An HTTP response
+ */
 async function fetch(request: Request): Promise<Response> {
   let response;
   const context = new Context(request, new ResponseWrapper());
@@ -96,5 +99,9 @@ async function fetch(request: Request): Promise<Response> {
   }
 
   // 404 Page
-  return NotFoundResponse(context).toResponse();
+  response = new ResponseWrapper();
+  response.status = 404;
+  response.headers.set("Context-Type", "text/plain");
+  response.body = "404 Not Found";
+  return response.toResponse();
 }

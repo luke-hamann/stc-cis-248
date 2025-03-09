@@ -1,14 +1,14 @@
 import { IColorRepository } from "../globals.d.ts";
-import Context from "../models/controllerLayer/Context.ts";
+import Context from "../_framework/Context.ts";
 import ColorEditViewModel from "../models/viewModels/ColorEditViewModel.ts";
 import ColorsViewModel from "../models/viewModels/ColorsViewModel.ts";
 import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
-import Controller2 from "./_Controller2.ts";
+import Controller from "../_framework/Controller.ts";
 
 /**
  * Controls the color pages of the application
  */
-export default class ColorController extends Controller2 {
+export default class ColorController extends Controller {
   /** The data store for color CRUD */
   private colorRepository: IColorRepository;
 

@@ -1,7 +1,7 @@
-import Context from "../models/controllerLayer/Context.ts";
-import Controller2 from "../controllers/_Controller2.ts";
+import Context from "../_framework/Context.ts";
+import Controller from "../_framework/Controller.ts";
 
-export default class SessionMiddleware extends Controller2 {
+export default class SessionMiddleware extends Controller {
   constructor() {
     super();
     this.routes = [

@@ -1,11 +1,11 @@
-import Context from "../models/controllerLayer/Context.ts";
+import Context from "../_framework/Context.ts";
 import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
 import ShiftContextPreferenceRepository from "../models/repositories/ShiftContextPreferenceRepository.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
 import ShiftContextPreferencesEditViewModel from "../models/viewModels/ShiftContextPreferencesEditViewModel.ts";
-import Controller2 from "./_Controller2.ts";
+import Controller from "../_framework/Controller.ts";
 
-export default class ShiftContextPreferenceController extends Controller2 {
+export default class ShiftContextPreferenceController extends Controller {
   private shiftContextPreferenceRepository: ShiftContextPreferenceRepository;
   private teamMemberRepository: TeamMemberRepository;
   private shiftContextRepository: ShiftContextRepository;

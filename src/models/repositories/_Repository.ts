@@ -1,9 +1,9 @@
-import Database2 from "./_Database2.ts";
+import Database from "./_Database.ts";
 
 export default abstract class Repository {
-  protected database: Database2;
+  protected database: Database;
 
-  constructor(database: Database2) {
+  constructor(database: Database) {
     this.database = database;
   }
 }
