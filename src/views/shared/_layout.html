@@ -9,32 +9,34 @@
   {% block styles %}{% endblock %}
 </head>
 <body>
-  <header>
-    <nav>
-      <ul class="flex">
-        <li class="hidden p-4">
-          &equiv;
-        </li>
-        <li class="p-4">
-          <a href="/">Schedule</a>
-        </li>
-        <li class="p-4">
-          <a href="/team-members/">Team members</a>
-        </li>
-        <li class="p-4">
-          <a href="/contexts/">Shift Contexts</a>
-        </li>
-        <li class="p-4">
-          <a href="/colors/">Colors</a>
-        </li>
-      </ul>
-    </nav>
-  </header>
-  <main>
-    {% block content %}{% endblock %}
-  </main>
-  <footer>
-    &copy;
-  </footer>
+  <div class="flex flex-col min-h-screen">
+    <header>
+      <nav>
+        <ul class="md:flex hover:*:not-first:block">
+          <li class="md:hidden p-4 select-none">
+            &equiv;
+          </li>
+          <li class="hidden md:block">
+            <a class="block p-4" href="/">Schedule</a>
+          </li>
+          <li class="hidden md:block">
+            <a class="block p-4" href="/team-members/">Team members</a>
+          </li>
+          <li class="hidden md:block">
+            <a class="block p-4" href="/contexts/">Shift Contexts</a>
+          </li>
+          <li class="hidden md:block">
+            <a class="block p-4" href="/colors/">Colors</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main class="flex-1 shrink-0">
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="p-8 text-center">
+      &copy; 2025
+    </footer>
+  </div>
 </body>
 </html>

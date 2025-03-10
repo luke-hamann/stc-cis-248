@@ -1,0 +1,24 @@
+{% extends "../shared/_layout.html" %}
+
+{% block title %}{{ model.title }}{% endblock %}
+
+{% block content %}
+  <div class="max-w-xl mx-auto flex justify-between gap-8 px-4 pb-8">
+    <a href="/schedule/{{ model.previousWeekString }}/" class="self-center select-none">
+      &lt;
+    </a>
+    <h1 class="text-center font-bold text-3xl">{{ model.title }}</h1>
+    <a href="/schedule/{{ model.nextWeekString }}/" class="self-center select-none">
+      &gt;
+    </a>
+  </div>
+  <ul class="flex w-full">
+    <li class="flex-1 text-center">SUN</li>
+    <li class="flex-1 text-center">MON</li>
+    <li class="flex-1 text-center">TUE</li>
+    <li class="flex-1 text-center">WED</li>
+    <li class="flex-1 text-center">THU</li>
+    <li class="flex-1 text-center">FRI</li>
+    <li class="flex-1 text-center">SAT</li>
+  </ul>
+{% endblock %}
