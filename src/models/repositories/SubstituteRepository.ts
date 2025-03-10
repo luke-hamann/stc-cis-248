@@ -1,4 +1,13 @@
 import Repository from "./_Repository.ts";
+import Substitute from "../entities/Substitute.ts";
+import TeamMember from "../entities/TeamMember.ts";
+
+export interface ISubstituteRowShort {
+  teamMemberId: number;
+  date: string;
+  firstName: string;
+  lastName: string;
+}
 
 export default class SubstituteRepository extends Repository {
   public async validate(substituteIds: number[]): Promise<string[]> {
@@ -6,7 +15,7 @@ export default class SubstituteRepository extends Repository {
   }
 
   public async getSubstituteIds(date: Date): Promise<number[]> {
-    const results = await this.database.execute(
+    const result = await this.database.execute(
       `
         SELECT teamMemberId
         FROM Substitutes
@@ -15,9 +24,9 @@ export default class SubstituteRepository extends Repository {
       [date.toISOString().substring(0, 10)],
     );
 
-    if (!results.rows) return [];
+    if (!result.rows) return [];
 
-    return (results.rows as unknown as { teamMemberId: number }[]).map((row) =>
+    return (result.rows as unknown as { teamMemberId: number }[]).map((row) =>
       row.teamMemberId
     );
   }
@@ -45,5 +54,47 @@ export default class SubstituteRepository extends Repository {
         [teamMemberId, dateString],
       );
     }
+  }
+
+  public async getSubstitutesInRange(
+    start: Date,
+    end: Date,
+  ): Promise<Substitute[]> {
+    const result = await this.database.execute(
+      `
+        SELECT teamMemberId, date, firstName, lastName
+        FROM Substitutes s
+        JOIN TeamMembers t ON s.teamMemberId = t.id
+        WHERE date BETWEEN ? AND ?
+      `,
+      [
+        start.toISOString().substring(0, 10),
+        end.toISOString().substring(0, 10),
+      ],
+    );
+
+    if (!result.rows) return [];
+
+    const rows: ISubstituteRowShort[] = result.rows;
+
+    return rows.map((row) => {
+      const date = new Date(row.date);
+      const teamMember = new TeamMember(
+        row.teamMemberId,
+        row.firstName,
+        "",
+        row.lastName,
+        null,
+        "",
+        "",
+        false,
+        null,
+        null,
+        "",
+        "",
+        false,
+      );
+      return new Substitute(row.teamMemberId, teamMember, date);
+    });
   }
 }

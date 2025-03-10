@@ -1,9 +1,16 @@
-import { IShiftContext } from "../../globals.d.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import Repository from "./_Repository.ts";
 
+export interface IShiftContextRow {
+  id: number;
+  name: string;
+  ageGroup: string;
+  location: string;
+  description: string;
+}
+
 export default class ShiftContextRepository extends Repository {
-  private mapRowToShiftContext(row: IShiftContext): ShiftContext {
+  private mapRowToShiftContext(row: IShiftContextRow): ShiftContext {
     return new ShiftContext(
       row.id,
       row.name,
@@ -13,7 +20,7 @@ export default class ShiftContextRepository extends Repository {
     );
   }
 
-  private mapRowsToShiftContexts(rows: IShiftContext[]): ShiftContext[] {
+  private mapRowsToShiftContexts(rows: IShiftContextRow[]): ShiftContext[] {
     return rows.map(this.mapRowToShiftContext);
   }
 

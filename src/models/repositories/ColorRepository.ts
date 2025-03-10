@@ -1,14 +1,28 @@
-import type { IColor, IColorRepository } from "../../globals.d.ts";
 import Color from "../entities/Color.ts";
 import Repository from "./_Repository.ts";
 
+export interface IColorRow {
+  id: number;
+  name: string;
+  hex: string;
+}
+
+export interface IColorRepository {
+  validateColor(color: Color): Promise<string[]>;
+  getColors(): Promise<Color[]>;
+  getColor(id: number): Promise<Color | null>;
+  addColor(color: Color): Promise<number>;
+  updateColor(color: Color): Promise<void>;
+  deleteColor(id: number): Promise<void>;
+}
+
 export default class ColorRepository extends Repository
   implements IColorRepository {
-  private mapRowToColor(row: IColor): Color {
+  private mapRowToColor(row: IColorRow): Color {
     return new Color(row.id, row.name, row.hex);
   }
 
-  private mapRowsToColors(rows: IColor[]): Color[] {
+  private mapRowsToColors(rows: IColorRow[]): Color[] {
     return rows.map((row) => this.mapRowToColor(row));
   }
 
@@ -46,7 +60,7 @@ export default class ColorRepository extends Repository
       ORDER BY LOWER(name)
     `);
 
-    return this.mapRowsToColors(result.rows as IColor[]);
+    return this.mapRowsToColors(result.rows as IColorRow[]);
   }
 
   public async getColor(id: number): Promise<Color | null> {

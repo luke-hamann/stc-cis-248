@@ -41,7 +41,12 @@ const shiftContextPreferenceRepository = new ShiftContextPreferenceRepository(
 const shiftContextRepository = new ShiftContextRepository(database);
 const substituteRepository = new SubstituteRepository(database);
 const teamMemberRepository = new TeamMemberRepository(database);
-const timeSlotRepository = new TimeSlotRepository(database);
+const timeSlotRepository = new TimeSlotRepository(
+  database,
+  shiftContextRepository,
+  colorRepository,
+  teamMemberRepository,
+);
 const typicalAvailabilityRepository = new TypicalAvailabilityRepository(
   database,
 );
@@ -66,7 +71,11 @@ const controllers: Controller[] = [
   new ShiftContextNoteController(shiftContextNoteRepository, colorRepository),
   new TimeSlotController(),
   new SubstituteController(substituteRepository, teamMemberRepository),
-  new ScheduleController(),
+  new ScheduleController(
+    timeSlotRepository,
+    substituteRepository,
+    shiftContextNoteRepository,
+  ),
 ];
 
 /**

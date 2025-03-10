@@ -3,17 +3,17 @@ import ShiftContext from "./ShiftContext.ts";
 import TeamMember from "./TeamMember.ts";
 
 export default class TimeSlot {
-  public id: number = 0;
-  public shiftContextId: number = 0;
-  public shiftContext: ShiftContext | null = null;
-  public startDateTime: Date | null = null;
-  public endDateTime: Date | null = null;
-  public requiresAdult: boolean = false;
-  public teamMemberId: number = 0;
-  public teamMember: TeamMember | null = null;
-  public note: string = "";
-  public colorId: number = 0;
-  public color: Color | null = null;
+  public id: number;
+  public shiftContextId: number;
+  public shiftContext: ShiftContext | null;
+  public startDateTime: Date | null;
+  public endDateTime: Date | null;
+  public requiresAdult: boolean;
+  public teamMemberId: number | null;
+  public teamMember: TeamMember | null;
+  public note: string;
+  public colorId: number | null;
+  public color: Color | null;
 
   public constructor(
     id: number,
@@ -22,10 +22,10 @@ export default class TimeSlot {
     startDateTime: Date | null,
     endDateTime: Date | null,
     requiresAdult: boolean,
-    teamMemberId: number,
+    teamMemberId: number | null,
     teamMember: TeamMember | null,
     note: string,
-    colorId: number,
+    colorId: number | null,
     color: Color | null,
   ) {
     this.id = id;
@@ -39,5 +39,13 @@ export default class TimeSlot {
     this.note = note;
     this.colorId = colorId;
     this.color = color;
+  }
+
+  public get startTimeString(): string {
+    return this.startDateTime?.toISOString().substring(11, 16) ?? "";
+  }
+
+  public get endTimeString(): string {
+    return this.endDateTime?.toISOString().substring(11, 16) ?? "";
   }
 }

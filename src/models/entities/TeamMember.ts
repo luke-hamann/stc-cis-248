@@ -61,7 +61,11 @@ export default class TeamMember {
     );
   }
 
-  public get fullName() {
+  public get fullName(): string {
     return this.firstName + " " + this.lastName;
+  }
+
+  public get birthDateString(): string {
+    return this.birthDate?.toISOString().substring(0, 10) ?? "";
   }
 }

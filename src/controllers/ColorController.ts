@@ -1,4 +1,4 @@
-import { IColorRepository } from "../globals.d.ts";
+import { IColorRepository } from "../models/repositories/ColorRepository.ts";
 import Context from "../_framework/Context.ts";
 import ColorEditViewModel from "../models/viewModels/ColorEditViewModel.ts";
 import ColorsViewModel from "../models/viewModels/ColorsViewModel.ts";
@@ -33,6 +33,11 @@ export default class ColorController extends Controller {
         method: "POST",
         pattern: "/color/(\\d+)/delete/",
         action: this.deletePost,
+      },
+      {
+        method: "GET",
+        pattern: "/css/colors.css",
+        action: this.colorStylesheet,
       },
     ];
   }
@@ -100,9 +105,7 @@ export default class ColorController extends Controller {
    * @returns
    */
   public async editPost(context: Context) {
-    const model = ColorEditViewModel.fromFormData(
-      await context.request.formData(),
-    );
+    const model = await ColorEditViewModel.fromRequest(context.request);
     model.color.id = parseInt(context.match[1]);
 
     model.errors = await this.colorRepository.validateColor(model.color);
@@ -158,5 +161,21 @@ export default class ColorController extends Controller {
 
     await this.colorRepository.deleteColor(id);
     return this.RedirectResponse(context, "/colors/");
+  }
+
+  public async colorStylesheet(context: Context) {
+    const colors = await this.colorRepository.getColors();
+    const chunks = ["@charset utf-8;\n\n"];
+
+    for (const color of colors) {
+      chunks.push(
+        `.stc-color-${color.id} {\n  background-color: #${color.hex};\n}\n\n`,
+      );
+    }
+
+    context.response.status = 200;
+    context.response.headers.set("Content-Type", "text/css");
+    context.response.body = chunks.join("");
+    return context.response;
   }
 }

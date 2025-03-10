@@ -3,22 +3,71 @@
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block content %}
-  <div class="max-w-xl mx-auto flex justify-between gap-8 px-4 pb-8">
-    <a href="/schedule/{{ model.previousWeekString }}/" class="self-center select-none">
-      &lt;
-    </a>
-    <h1 class="text-center font-bold text-3xl">{{ model.title }}</h1>
-    <a href="/schedule/{{ model.nextWeekString }}/" class="self-center select-none">
-      &gt;
-    </a>
+  <div class="flex flex-col min-h-100">
+    <div class="w-full sm:w-xl mx-auto flex justify-between gap-8 px-4 py-8">
+      <a href="/schedule/{{ model.previousWeekString }}/" class="self-center select-none">
+        &lt;
+      </a>
+      <h1 class="text-center font-bold text-3xl select-none">
+        <a href="/schedule/{{ model.currentWeek.getUTCFullYear() }}/">
+          {{ model.title }}
+        </a>
+      </h1>
+      <a href="/schedule/{{ model.nextWeekString }}/" class="self-center select-none">
+        &gt;
+      </a>
+    </div>
+    <div class="flex-1 overflow-x-auto">
+      <ul class="flex w-full">
+        {% for date in model.dates %}
+          <li class="flex-1 min-w-xs text-center text-xl font-bold">
+            {{ date.toISOString().substring(0, 10) }}
+          </li>
+        {% endfor %}
+      </ul>
+      <h2 class="text-3xl font-bold p-4">Time slots</h2>
+      <div class="flex w-full">
+        {% for date in model.dates %}
+          <div class="flex-1 min-w-xs">
+            {% for timeSlot in model.timeSlots %}
+              {% if timeSlot.startDateTime.toISOString().substring(0, 10) == date.toISOString().substring(0, 10) %}
+                <div class="p-2 my-4 mx-2 border-2 rounded">
+                  <div>{{ timeSlot.shiftContext.name }}</div>
+                  <div>{{ timeSlot.startTimeString }} to {{ timeSlot.endTimeString }}</div>
+                  <div>
+                    <input type="checkbox" id="{{ timeSlot.id }}_requiresAdult" {{ "checked" if timeSlot.requiresAdult }} disabled />
+                    <label for="{{ timeSlot.id }}_requiresAdult">Requires adult</label>
+                  </div>
+                  <div>
+                    {{ timeSlot.teamMember.fullName if timeSlot.teamMember.fullName else "(No assignee)" }}
+                  </div>
+                  <div class="stc-color-{{ timeSlot.color.id }}">{{ timeSlot.note }}</div>
+                  <div class="pt-2 text-center">
+                    <a href="" class="inline-block p-2 border rounded">Edit</a>
+                    <a href="" class="inline-block p-2 border rounded">Delete</a>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+      <h2 class="text-3xl font-bold p-4">Substitutes</h2>
+      <div class="flex w-100">
+        {% for date in model.dates %}
+          <div class="flex-1 min-w-76 p-2 m-2 border-2 rounded flex flex-col justify-between items-center">
+            <ul>
+              {% for substitute in model.substitutes %}
+                {% if substitute.date.toISOString() == date.toISOString() %}
+                  <li>{{ substitute.teamMember.fullName }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+            <a class="p-2 mt-4 border rounded w-fit">Edit</a>
+          </div>
+        {% endfor %}
+      </div>
+      <h2 class="text-3xl font-bold p-4">Shift notes</h2>
+    </div>
   </div>
-  <ul class="flex w-full">
-    <li class="flex-1 text-center">SUN</li>
-    <li class="flex-1 text-center">MON</li>
-    <li class="flex-1 text-center">TUE</li>
-    <li class="flex-1 text-center">WED</li>
-    <li class="flex-1 text-center">THU</li>
-    <li class="flex-1 text-center">FRI</li>
-    <li class="flex-1 text-center">SAT</li>
-  </ul>
 {% endblock %}

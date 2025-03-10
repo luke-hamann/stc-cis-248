@@ -31,7 +31,7 @@
     </div>
     <div>
       <label for="birthDate">Birth date</label>
-      <input type="text" id="birthDate" name="birthDate" value="{{ model.teamMember.birthDate.toISOString().slice(0, 10) if model.teamMember.birthDate }}" />
+      <input type="text" id="birthDate" name="birthDate" value="{{ model.teamMember.birthDateString }}" />
     </div>
     <div>
       <label for="email">Email</label>

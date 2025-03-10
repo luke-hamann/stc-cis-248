@@ -1,3 +1,4 @@
+import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
 import Color from "../entities/Color.ts";
 import FormViewModel from "./_FormViewModel.ts";
 
@@ -18,18 +19,14 @@ export default class ColorEditViewModel extends FormViewModel {
     return new ColorEditViewModel(false, [], "", Color.empty());
   }
 
-  public static fromFormData(formData: FormData): ColorEditViewModel {
-    const id = parseInt(formData.get("id") as string ?? "");
-    const name = formData.get("name") as string ?? "";
-    const hex = (formData.get("hex") as string ?? "").replace("#", "");
-
-    const color = new Color(id, name, hex);
-    return new ColorEditViewModel(false, [], "", color);
-  }
-
   public static async fromRequest(
     request: Request,
   ): Promise<ColorEditViewModel> {
-    return this.fromFormData(await request.formData());
+    const formData = new FormDataWrapper(await request.formData());
+    const id = formData.getInt("id") ?? 0;
+    const name = formData.getString("name");
+    const hex = formData.getString("hex");
+    const color = new Color(id, name, hex);
+    return new ColorEditViewModel(false, [], "", color);
   }
 }

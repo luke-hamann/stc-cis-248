@@ -1,7 +1,7 @@
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import ColorRepository from "../models/repositories/ColorRepository.ts";
-import floorDate from "../_dates/floorDate.ts";
+import DateLib from "../_dates/DateLib.ts";
 import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
 import ShiftContextNoteEditViewModel from "../models/viewModels/ShiftContextNoteEditViewModel.ts";
 
@@ -119,7 +119,7 @@ export default class ShiftContextNoteController extends Controller {
       model.shiftContextNote,
     );
 
-    const newDate = floorDate(date).toISOString().substring(0, 10)
+    const newDate = DateLib.floorDays(date).toISOString().substring(0, 10)
       .replaceAll("-", "/");
     return this.RedirectResponse(context, `/schedule/${newDate}/`);
   }

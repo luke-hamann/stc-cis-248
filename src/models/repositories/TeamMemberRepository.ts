@@ -1,6 +1,21 @@
-import { ITeamMember } from "../../globals.d.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import Repository from "./_Repository.ts";
+
+export interface ITeamMemberRow {
+  id: number;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  birthDate: Date;
+  email: string;
+  phone: string;
+  isExternal: boolean;
+  maxWeeklyHours: number;
+  maxWeeklyDays: number;
+  username: string;
+  password: string;
+  isAdmin: boolean;
+}
 
 export default class TeamMemberRepository extends Repository {
   private baseQuery: string = `
