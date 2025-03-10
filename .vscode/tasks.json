@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build tailwindcss",
+      "command": "./tailwindcss-windows-x64.exe",
+      "type": "shell",
+      "args": [
+        "-i",
+        "./src/static/css/input.css",
+        "-o",
+        "./src/static/css/output.css",
+        "--watch"
+      ],
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}

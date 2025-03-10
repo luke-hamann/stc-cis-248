@@ -1,6 +1,7 @@
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import ColorRepository from "../models/repositories/ColorRepository.ts";
+import floorDate from "../_dates/floorDate.ts";
 import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
 import ShiftContextNoteEditViewModel from "../models/viewModels/ShiftContextNoteEditViewModel.ts";
 
@@ -27,17 +28,6 @@ export default class ShiftContextNoteController extends Controller {
         action: this.editPost,
       },
     ];
-  }
-
-  /**
-   * Floor a date to the most recent Sunday on or before
-   * @param date The date to floor
-   * @returns The new floored date
-   */
-  private floorDate(date: Date): Date {
-    const newDate = new Date(date.getTime());
-    newDate.setDate(newDate.getDate() - newDate.getDay());
-    return newDate;
   }
 
   /**
@@ -129,7 +119,7 @@ export default class ShiftContextNoteController extends Controller {
       model.shiftContextNote,
     );
 
-    const newDate = this.floorDate(date).toISOString().substring(0, 10)
+    const newDate = floorDate(date).toISOString().substring(0, 10)
       .replaceAll("-", "/");
     return this.RedirectResponse(context, `/schedule/${newDate}/`);
   }

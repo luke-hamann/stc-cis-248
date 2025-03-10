@@ -1,3 +1,6 @@
 .env
 docs/
 coverage/
+
+tailwindcss-windows-x64.exe
+src/static/css/output.css
