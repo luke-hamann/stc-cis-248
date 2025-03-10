@@ -22,7 +22,9 @@ export default class SubstitutesEditViewModel extends FormViewModel {
     return this.date?.toISOString().substring(0, 10) ?? "";
   }
 
-  public static async fromRequest(request: Request): Promise<SubstitutesEditViewModel> {
+  public static async fromRequest(
+    request: Request,
+  ): Promise<SubstitutesEditViewModel> {
     const formData = await request.formData();
     const substituteIds: number[] = [];
 

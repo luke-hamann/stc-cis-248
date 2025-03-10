@@ -33,7 +33,7 @@ export default class SubstituteRepository extends Repository {
         DELETE FROM Substitutes
         WHERE date = ?
       `,
-      [dateString]
+      [dateString],
     );
 
     for (const teamMemberId of teamMemberIds) {
@@ -42,7 +42,7 @@ export default class SubstituteRepository extends Repository {
           INSERT INTO Substitutes (teamMemberId, date)
           VALUES (?, ?)
         `,
-        [teamMemberId, dateString]
+        [teamMemberId, dateString],
       );
     }
   }

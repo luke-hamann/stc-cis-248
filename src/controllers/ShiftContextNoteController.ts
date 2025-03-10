@@ -78,7 +78,7 @@ export default class ShiftContextNoteController extends Controller {
         shiftContextId,
         date,
       );
-    
+
     const colors = await this.colorRepository.getColors();
 
     const model = new ShiftContextNoteEditViewModel(
@@ -109,19 +109,28 @@ export default class ShiftContextNoteController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const model = await ShiftContextNoteEditViewModel.fromRequest(context.request);
+    const model = await ShiftContextNoteEditViewModel.fromRequest(
+      context.request,
+    );
     if (!model.isValid()) {
       model.csrf_token = context.csrf_token;
       model.colors = await this.colorRepository.getColors();
-      return this.HTMLResponse(context, "./views/shiftContextNote/edit.html", model);
+      return this.HTMLResponse(
+        context,
+        "./views/shiftContextNote/edit.html",
+        model,
+      );
     }
 
     model.shiftContextNote.shiftContextId = shiftContextId;
     model.shiftContextNote.date = date;
 
-    await this.shiftContextNoteRepository.updateShiftContextNote(model.shiftContextNote);
+    await this.shiftContextNoteRepository.updateShiftContextNote(
+      model.shiftContextNote,
+    );
 
-    const newDate = this.floorDate(date).toISOString().substring(0, 10).replaceAll('-', '/');
+    const newDate = this.floorDate(date).toISOString().substring(0, 10)
+      .replaceAll("-", "/");
     return this.RedirectResponse(context, `/schedule/${newDate}/`);
   }
 }

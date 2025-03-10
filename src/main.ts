@@ -71,9 +71,9 @@ const controllers: Controller[] = [
 
 /**
  * Accepts an HTTP {@link Request} and promises an HTTP {@link Response}
- * 
+ *
  * Application entry point
- * 
+ *
  * @param request The HTTP request
  * @returns An HTTP response
  */

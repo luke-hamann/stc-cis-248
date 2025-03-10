@@ -18,13 +18,22 @@ export default class ShiftContextNoteEditViewModel extends FormViewModel {
     this.colors = colors;
   }
 
-  public static async fromRequest(request: Request): Promise<ShiftContextNoteEditViewModel> {
+  public static async fromRequest(
+    request: Request,
+  ): Promise<ShiftContextNoteEditViewModel> {
     const formData = new FormDataWrapper(await request.formData());
 
-    const note = formData.getString('note');
-    const colorId = formData.getInt('colorId') ?? 0;
+    const note = formData.getString("note");
+    const colorId = formData.getInt("colorId") ?? 0;
 
-    const shiftContextNote = new ShiftContextNote(0, null, null, note, colorId, null)
+    const shiftContextNote = new ShiftContextNote(
+      0,
+      null,
+      null,
+      note,
+      colorId,
+      null,
+    );
 
     return new ShiftContextNoteEditViewModel([], "", shiftContextNote, []);
   }

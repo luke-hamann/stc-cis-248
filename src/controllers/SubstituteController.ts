@@ -63,7 +63,9 @@ export default class SubstituteController extends Controller {
     const date = new Date(timestamp);
 
     const model = await SubstitutesEditViewModel.fromRequest(context.request);
-    model.errors = await this.substituteRepository.validate(model.substitutesIds);
+    model.errors = await this.substituteRepository.validate(
+      model.substitutesIds,
+    );
     if (!model.isValid()) {
       model.teamMembers = await this.teamMemberRepository.getTeamMembers();
       model.date = date;
@@ -71,7 +73,10 @@ export default class SubstituteController extends Controller {
       return this.HTMLResponse(context, "./views/substitute/edit.html", model);
     }
 
-    await this.substituteRepository.updateSubstitutesIds(date, model.substitutesIds);
+    await this.substituteRepository.updateSubstitutesIds(
+      date,
+      model.substitutesIds,
+    );
     return this.RedirectResponse(context, "/");
   }
 }
