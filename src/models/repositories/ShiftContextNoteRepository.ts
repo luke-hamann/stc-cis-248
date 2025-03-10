@@ -51,7 +51,7 @@ export default class ShiftContextNoteRepository extends Repository {
     );
 
     return (result.rows && result.rows.length > 0)
-      ? this.mapRowToShiftContextNote(result.rows[1])
+      ? this.mapRowToShiftContextNote(result.rows[0])
       : new ShiftContextNote(shiftContextId, null, date, "", 0, null);
   }
 
