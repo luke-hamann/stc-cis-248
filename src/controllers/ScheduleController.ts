@@ -69,9 +69,7 @@ export default class ScheduleController extends Controller {
    * Schedule week GET
    */
   public async week(context: Context) {
-    const year = context.match[1];
-    const month = context.match[2];
-    const day = context.match[3];
+    const [_, year, month, day] = context.match;
     const timestamp = Date.parse(`${year}-${month}-${day}`);
     if (isNaN(timestamp)) {
       return this.NotFoundResponse(context);

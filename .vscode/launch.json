@@ -19,7 +19,7 @@
         "--inspect-wait"
       ],
       "attachSimplePort": 9229,
-      "preLaunchTask": "build tailwindcss"
+      "preLaunchTask": "tailwindcss"
     }
   ]
 }

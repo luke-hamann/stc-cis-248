@@ -101,4 +101,20 @@ export default class SubstituteRepository extends Repository {
   public async getOnDate(date: Date): Promise<Substitute[]> {
     return await this.getInDateRange(date, date);
   }
+
+  public async deleteInDateRange(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<void> {
+    await this.database.execute(
+      `
+        DELETE FROM Substitutes
+        WHERE date BETWEEN ? AND ?
+      `,
+      [
+        startDate.toISOString().substring(0, 10),
+        endDate.toISOString().substring(0, 10),
+      ],
+    );
+  }
 }

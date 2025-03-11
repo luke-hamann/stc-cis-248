@@ -1,0 +1,85 @@
+{% extends "../shared/_layout.html" %}
+{% from "../shared/field.html" import field with context %}
+
+{% if model.isEdit %}
+  {% set title = 'Edit Time Slot' %}
+  {% set action = ['/schedule/time-slot/', model.timeSlot.id, '/'] | join %}
+{% else %}
+  {% set title = 'Add Time Slot' %}
+  {% set action = '/schedule/time-slot/add/' %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <form action="{{ action }}" method="post">
+    {% if model.errors %}
+      <ul>
+        {% for error in model.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <div>
+      <label for="shiftContextId">Shift Context</label>
+      <select name="shiftContextId" id="shiftContextId">
+        <option value="">Select a shift context...</option>
+        {% for shiftContext in model.shiftContexts %}
+          <option value="{{ shiftContext.id }}" {{ "selected" if shiftContext.id == model.timeSlot.shiftContextId }} >
+            {{ shiftContext.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    {{ field("date", model.timeSlot.startDateString, "date", "Date") }}
+    {{ field("startTime", model.timeSlot.startTimeString, "time", "Start time") }}
+    {{ field("endTime", model.timeSlot.endTimeString, "time", "End time") }}
+    {{ field("requiresAdult", "", "checkbox", "Requires adult", model.timeSlot.requiresAdult) }}
+    <div>
+      <label>Assignee</label>
+      <div class="*:hidden hover:*:block">
+        <div class="has-checked:block">
+          <input type="radio" name="teamMemberId" value=""
+            id="teamMemberId_0" {{ "checked" if not model.timeSlot.teamMemberId }} />
+          <label for="teamMemberId_0">(none)</label>
+        </div>
+        {% for teamMember in model.teamMembers %}
+          <div class="has-checked:block">
+            <input type="radio" name="teamMemberId" value="{{ teamMember.id }}"
+              id="teamMemberId_{{ teamMember.id }}" {{ "checked" if model.timeSlot.teamMemberId == teamMember.id }} />
+            <label for="teamMemberId_{{ teamMember.id }}">{{ teamMember.fullName }}</label>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {{ field("note", model.timeSlot.note, "text", "Note") }}
+    <div>
+      <label for="colorId">Note color</label>
+      <select name="colorId" id="colorId" onchange="toggleNewColorSection()">
+        <option value="">(none)</option>
+        {% for color in model.colors %}
+          <option value="{{ color.id }}" {{ "selected" if color.id == model.timeSlot.colorId }} >{{ color.name }}</option>
+        {% endfor %}
+        <option value="0">(new)</option>
+      </select>
+    </div>
+    <div id="newColorSection" {{ 'style="display: none;"' | safe if model.timeSlot.colorId != 0 }}>
+      <label for="newColorHex">New note color</label>
+      <input type="color" name="newColorHex" value="{{ model.newColor.hex }}" />
+      <input type="text" name="newColorName" value="{{ model.newColor.name }}" />
+    </div>
+    <script>
+      function toggleNewColorSection() {
+        const colorId = document.querySelector("#colorId").value;
+        const display = colorId === "0" ? "block" : "none";
+        document.querySelector("#newColorSection").style.display = display;
+      }
+    </script>
+    <div>
+      {{ csrf(model) }}
+      <input type="submit" value="Save" />
+      <a href="{{ model.cancel }}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

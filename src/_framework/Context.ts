@@ -4,10 +4,10 @@ import ResponseWrapper from "./ResponseWrapper.ts";
  * A class for representing an application state context
  */
 export default class Context {
-  public request: Request;
-  public requestCookies: Map<string, string>;
+  public readonly request: Request;
+  public readonly requestCookies: Map<string, string>;
   public response: ResponseWrapper;
-  public match: string[] = [];
+  public readonly match: string[] = [];
   public csrf_token: string = "";
 
   /**

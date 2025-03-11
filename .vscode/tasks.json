@@ -2,7 +2,12 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build tailwindcss",
+      "label": "deno fmt",
+      "command": "deno fmt",
+      "type": "shell"
+    },
+    {
+      "label": "tailwindcss",
       "command": "./tailwindcss-windows-x64.exe",
       "type": "shell",
       "args": [

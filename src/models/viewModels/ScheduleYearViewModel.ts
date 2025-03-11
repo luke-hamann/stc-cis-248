@@ -12,4 +12,8 @@ export default class ScheduleYearViewModel {
     this.year = year;
     this.calendar = calendar;
   }
+
+  public get todayPath(): string {
+    return new Date().toISOString().substring(0, 10).replaceAll("-", "/");
+  }
 }

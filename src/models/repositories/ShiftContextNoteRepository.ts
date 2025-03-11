@@ -152,4 +152,20 @@ export default class ShiftContextNoteRepository extends Repository {
       );
     }
   }
+
+  public async deleteInDateRange(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<void> {
+    await this.database.execute(
+      `
+        DELETE FROM ShiftContextNotes
+        WHERE date BETWEEN ? AND ?
+      `,
+      [
+        startDate.toISOString().substring(0, 10),
+        endDate.toISOString().substring(0, 10),
+      ],
+    );
+  }
 }

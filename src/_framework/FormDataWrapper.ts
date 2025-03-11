@@ -37,6 +37,12 @@ export default class FormDataWrapper {
     return value;
   }
 
+  public getColorHex(key: string): string {
+    const value = this.getString(key);
+    const isValid = /^#[0123456789abcdef]{6}$/.test(value);
+    return isValid ? value.substring(1) : "";
+  }
+
   public getDate(key: string): Date | null {
     const value = this.getString(key);
     const timestamp = Date.parse(value);
@@ -46,5 +52,11 @@ export default class FormDataWrapper {
     }
 
     return new Date(timestamp);
+  }
+
+  public getTime(key: string): string {
+    const value = this.getString(key);
+    const isValid = /^(([01]\d)|(2[0-3])):[0-5]\d$/g.test(value);
+    return isValid ? value : "";
   }
 }

@@ -46,7 +46,7 @@ export default class ColorRepository extends Repository
       }
     }
 
-    if (!/[0123456789abcdef]{6}/.test(color.hex)) {
+    if (!/^[0123456789abcdef]{6}$/.test(color.hex)) {
       errors.push("Invalid color code.");
     }
 

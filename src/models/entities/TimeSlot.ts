@@ -41,6 +41,10 @@ export default class TimeSlot {
     this.color = color;
   }
 
+  public get startDateString(): string {
+    return this.startDateTime?.toISOString().substring(0, 10) ?? "";
+  }
+
   public get startTimeString(): string {
     return this.startDateTime?.toISOString().substring(11, 16) ?? "";
   }

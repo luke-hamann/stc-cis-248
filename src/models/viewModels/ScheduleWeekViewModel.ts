@@ -1,3 +1,4 @@
+import DateLib from "../../_dates/DateLib.ts";
 import Schedule from "../entities/Schedule.ts";
 
 export default class ScheduleWeekViewModel {
@@ -25,6 +26,22 @@ export default class ScheduleWeekViewModel {
   ) {
     this.currentWeek = currentWeek;
     this.schedule = schedule;
+  }
+
+  public get clearLink(): string {
+    const start = this.currentWeek.toISOString().substring(0, 10).replaceAll(
+      "-",
+      "/",
+    );
+    const end = DateLib.addDays(this.currentWeek, 6).toISOString().substring(
+      0,
+      10,
+    ).replaceAll("-", "/");
+    return `/schedule/clear/${start}/to/${end}/`;
+  }
+
+  public get copyLink(): string {
+    return `/schedule/clear/`;
   }
 
   /**

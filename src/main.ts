@@ -76,7 +76,14 @@ const controllers: Controller[] = [
   ),
   new ColorController(colorRepository),
   new ShiftContextNoteController(shiftContextNoteRepository, colorRepository),
-  new TimeSlotController(),
+  new TimeSlotController(
+    shiftContextRepository,
+    teamMemberRepository,
+    colorRepository,
+    shiftContextNoteRepository,
+    substituteRepository,
+    timeSlotRepository,
+  ),
   new SubstituteController(substituteRepository, teamMemberRepository),
   new ScheduleController(scheduleRepository),
 ];

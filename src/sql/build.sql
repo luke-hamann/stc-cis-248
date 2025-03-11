@@ -88,7 +88,7 @@ CREATE TABLE Timeslots (
     FOREIGN KEY (shiftContextId) REFERENCES ShiftContexts(id),
     FOREIGN KEY (teamMemberId) REFERENCES TeamMembers(id),
     FOREIGN KEY (colorId) REFERENCES Colors(id),
-    CHECK (startDateTime < endDateTime)
+    CHECK (endDateTime IS NULL OR startDateTime < endDateTime)
 );
 
 CREATE TABLE Substitutes (
