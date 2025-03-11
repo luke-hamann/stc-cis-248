@@ -1,6 +1,9 @@
 import DateLib from "../../_dates/DateLib.ts";
+import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
+import TimeSlot from "../entities/TimeSlot.ts";
 
 export default class ScheduleCopyViewModel {
+  public confirm: boolean;
   public fromStartDate: Date | null;
   public fromEndDate: Date | null;
   public toStartDate: Date | null;
@@ -12,7 +15,10 @@ export default class ScheduleCopyViewModel {
   public csrf_token: string;
   public errors: string[];
 
+  public newTimeSlots: TimeSlot[] = [];
+
   public constructor(
+    confirm: boolean,
     fromStartDate: Date | null,
     fromEndDate: Date | null,
     toStartDate: Date | null,
@@ -24,6 +30,7 @@ export default class ScheduleCopyViewModel {
     csrf_token: string,
     errors: string[],
   ) {
+    this.confirm = confirm;
     this.fromStartDate = fromStartDate;
     this.fromEndDate = fromEndDate;
     this.toStartDate = toStartDate;
@@ -34,6 +41,70 @@ export default class ScheduleCopyViewModel {
     this.includeTimeSlotNotes = includeTimeSlotNotes;
     this.csrf_token = csrf_token;
     this.errors = errors;
+  }
+
+  public static async fromRequest(
+    request: Request,
+  ): Promise<ScheduleCopyViewModel> {
+    const formData = new FormDataWrapper(await request.formData());
+
+    return new ScheduleCopyViewModel(
+      formData.getBool("confirm"),
+      formData.getDate("fromStartDate"),
+      formData.getDate("fromEndDate"),
+      formData.getDate("toStartDate"),
+      formData.getDate("toEndDate"),
+      formData.getBool("repeatCopy"),
+      formData.getBool("includeAssignees"),
+      formData.getBool("includeShiftContextNotes"),
+      formData.getBool("includeTimeSlotNotes"),
+      "",
+      [],
+    );
+  }
+
+  public validate() {
+    this.errors = [];
+
+    if (this.fromStartDate == null) {
+      this.errors.push("Please enter a start date to copy from.");
+    }
+
+    if (this.fromEndDate == null) {
+      this.errors.push("Please enter an end date to copy from.");
+    }
+
+    if (
+      this.fromStartDate != null &&
+      this.fromEndDate != null &&
+      this.fromEndDate.getTime() < this.fromStartDate.getTime()
+    ) {
+      this.errors.push(
+        "End date to copy from must be after start date to copy from.",
+      );
+    }
+
+    if (this.toStartDate == null) {
+      this.errors.push("Please enter a start date to copy to.");
+    }
+
+    if (this.toEndDate == null) {
+      this.errors.push("Please enter an end date to copy to.");
+    }
+
+    if (
+      this.toStartDate != null &&
+      this.toEndDate != null &&
+      this.toEndDate.getTime() < this.toStartDate.getTime()
+    ) {
+      this.errors.push(
+        "End date to copy to must be after start date to copy to.",
+      );
+    }
+  }
+
+  public isValid(): boolean {
+    return this.errors.length == 0;
   }
 
   private formatDate(date: Date | null): string {
@@ -58,7 +129,7 @@ export default class ScheduleCopyViewModel {
   }
 
   public get cancelLink(): string {
-    const date = DateLib.floorDays(this.fromStartDate ?? new Date());
+    const date = DateLib.floorToSunday(this.fromStartDate ?? new Date());
     const dateString = this.formatDate(date).replaceAll("-", "/");
     return `/schedule/${dateString}/`;
   }

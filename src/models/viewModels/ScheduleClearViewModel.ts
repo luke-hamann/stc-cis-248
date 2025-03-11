@@ -99,7 +99,7 @@ export default class ScheduleClearViewModel {
   }
 
   public get cancelLink(): string {
-    const date = DateLib.floorDays(this.startDate ?? new Date());
+    const date = DateLib.floorToSunday(this.startDate ?? new Date());
     const dateString = date.toISOString().substring(0, 10).replaceAll("-", "/");
     return `/schedule/${dateString}/`;
   }

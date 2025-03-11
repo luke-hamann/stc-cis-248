@@ -6,4 +6,39 @@
 
 {% block content %}
   <h1>{{ title }}</h1>
+  <p class="bg-amber-600 text-white border rounded">
+    ⚠️ <b>WARNING:</b> The target time range will be overwritten if you proceed.
+  </p>
+  <p>The following time slots will be created:</p>
+  <div>
+    {% for timeSlot in model.newTimeSlots %}
+      <div class="border">
+        <div>{{ timeSlot.id }}</div>
+        <div>{{ timeSlot.startDateTime.toISOString() }}</div>
+        <div>{{ timeSlot.endDateTime.toISOString() }}</div>
+      </div>
+    {% endfor %}
+  </div>
+  <form method="post">
+    {{ csrf(model) }}
+    <input type="hidden" name="confirm" />
+    <input type="hidden" name="fromStartDate" value="{{ model.fromStartDateString }}" />
+    <input type="hidden" name="fromEndDate" value="{{ model.fromEndDateString }}" />
+    <input type="hidden" name="toStartDate" value="{{ model.toStartDateString }}" />
+    <input type="hidden" name="toEndDate" value="{{ model.toEndDateString }}" />
+    {% if model.repeatCopy %}
+      <input type="hidden" name="repeatCopy" value="" />
+    {% endif %}
+    {% if model.includeAssignees %}
+      <input type="hidden" name="includeAssignees" value="" />
+    {% endif %}
+    {% if model.includeShiftContextNotes %}
+      <input type="hidden" name="includeShiftContextNotes" />
+    {% endif %}
+    {% if model.includeTimeSlotNotes %}
+      <input type="hidden" name="includeTimeSlotNotes" />
+    {% endif %}
+    <input type="submit" value="Confirm" />
+    <a href="/schedule/">Cancel</a>
+  </div>
 {% endblock %}

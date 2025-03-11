@@ -5,7 +5,7 @@ export default class DateLib {
     return newDate;
   }
 
-  public static floorDays(date: Date): Date {
+  public static floorToSunday(date: Date): Date {
     return this.addDays(date, -date.getUTCDay());
   }
 
@@ -19,5 +19,11 @@ export default class DateLib {
     }
 
     return dates;
+  }
+
+  public static differenceInDays(date1: Date, date2: Date): number {
+    return Math.round(
+      (date2.getTime() - date1.getTime()) / (24 * 60 * 60 * 1000),
+    );
   }
 }

@@ -119,7 +119,7 @@ export default class ShiftContextNoteController extends Controller {
       model.shiftContextNote,
     );
 
-    const newDate = DateLib.floorDays(date).toISOString().substring(0, 10)
+    const newDate = DateLib.floorToSunday(date).toISOString().substring(0, 10)
       .replaceAll("-", "/");
     return this.RedirectResponse(context, `/schedule/${newDate}/`);
   }

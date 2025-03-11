@@ -9,7 +9,7 @@ Deno.test("date lib add days", () => {
 
 Deno.test("date lib floor days", () => {
   const date = new Date("2025-03-14T00:00:00.000Z");
-  const newDate = DateLib.floorDays(date);
+  const newDate = DateLib.floorToSunday(date);
   console.log(newDate);
   assertEquals(newDate.toISOString(), "2025-03-09T00:00:00.000Z");
 });

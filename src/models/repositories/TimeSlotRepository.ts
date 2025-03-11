@@ -1,3 +1,4 @@
+import DateLib from "../../_dates/DateLib.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import Database from "./_Database.ts";
 import Repository from "./_Repository.ts";
@@ -8,8 +9,8 @@ import TeamMemberRepository from "./TeamMemberRepository.ts";
 interface ITimeSlotRow {
   id: number;
   shiftContextId: number;
-  startDateTime: string;
-  endDateTime: string;
+  startDateTime: Date;
+  endDateTime: Date | null;
   requiresAdult: number;
   teamMemberId: number | null;
   note: string;
@@ -42,8 +43,8 @@ export default class TimeSlotRepository extends Repository {
       row.id,
       row.shiftContextId,
       null,
-      new Date(row.startDateTime),
-      new Date(row.endDateTime),
+      row.startDateTime,
+      row.endDateTime,
       row.requiresAdult == 1 ? true : false,
       row.teamMemberId,
       null,
@@ -77,6 +78,34 @@ export default class TimeSlotRepository extends Repository {
 
   public async validate(t: TimeSlot): Promise<string[]> {
     return await Promise.resolve([]);
+  }
+
+  public async getOnDate(date: Date): Promise<TimeSlot[]> {
+    const result = await this.database.execute(
+      `${this.baseQuery} WHERE DATE(startDateTime) = ?`,
+      [date.toISOString().substring(0, 10)],
+    );
+
+    if (!result.rows) return [];
+
+    return this.mapRowsToTimeSlots(result.rows);
+  }
+
+  public async getInDateRange(start: Date, end: Date): Promise<TimeSlot[]> {
+    const result = await this.database.execute(
+      `
+        ${this.baseQuery}
+        WHERE DATE(startDateTime) BETWEEN ? AND ?
+      `,
+      [
+        start.toISOString().substring(0, 10),
+        end.toISOString().substring(0, 10),
+      ],
+    );
+
+    if (!result.rows) return [];
+
+    return this.mapRowsToTimeSlots(result.rows);
   }
 
   /**
@@ -136,8 +165,8 @@ export default class TimeSlotRepository extends Repository {
       `,
       [
         t.shiftContextId,
-        t.startDateTime?.toISOString()!,
-        t.endDateTime?.toISOString()!,
+        t.startDateTime,
+        t.endDateTime,
         t.requiresAdult ? 1 : 0,
         t.teamMemberId,
         t.note,
@@ -167,8 +196,8 @@ export default class TimeSlotRepository extends Repository {
       `,
       [
         t.shiftContextId,
-        t.startDateTime?.toISOString()!,
-        t.endDateTime?.toISOString()!,
+        t.startDateTime,
+        t.endDateTime,
         t.requiresAdult ? 1 : 0,
         t.teamMemberId,
         t.note,
@@ -206,5 +235,62 @@ export default class TimeSlotRepository extends Repository {
         endDate.toISOString().substring(0, 10),
       ],
     );
+  }
+
+  public async calculateCopy(
+    sourceStart: Date,
+    sourceEnd: Date,
+    destinationStart: Date,
+    destinationEnd: Date,
+    repeatCopy: boolean,
+    includeAssignees: boolean,
+    includeNotes: boolean,
+  ) {
+    const sourceWidth = DateLib.differenceInDays(sourceStart, sourceEnd) + 1;
+    const initialOffset = DateLib.differenceInDays(
+      sourceStart,
+      destinationStart,
+    );
+
+    const sourceTimeSlots = await this.getInDateRange(sourceStart, sourceEnd);
+    const destinationTimeSlots = [];
+
+    for (const timeSlot of sourceTimeSlots) {
+      let offset = initialOffset;
+
+      if (!includeAssignees) timeSlot.teamMemberId = null;
+      if (!includeNotes) timeSlot.note = "";
+
+      while (true) {
+        const newTimeSlot = timeSlot.clone();
+        newTimeSlot.startDateTime = DateLib.addDays(
+          newTimeSlot.startDateTime!,
+          offset,
+        );
+        newTimeSlot.endDateTime = DateLib.addDays(
+          newTimeSlot.endDateTime!,
+          offset,
+        );
+
+        const tempDate = new Date(newTimeSlot.startDateTime.getTime());
+        tempDate.setUTCHours(0, 0, 0, 0);
+
+        const isOutOfBounds = tempDate.getTime() > destinationEnd.getTime();
+
+        if (isOutOfBounds) break;
+
+        destinationTimeSlots.push(newTimeSlot);
+
+        if (!repeatCopy) break;
+
+        offset += sourceWidth;
+      }
+    }
+
+    destinationTimeSlots.sort((a, b) =>
+      a.startDateTime!.getTime() - b.startDateTime!.getTime()
+    );
+
+    return destinationTimeSlots;
   }
 }

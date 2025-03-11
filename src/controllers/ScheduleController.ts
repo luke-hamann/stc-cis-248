@@ -91,7 +91,10 @@ export default class ScheduleController extends Controller {
 
     // If the start date is not a Sunday
     if (startDate.getUTCDay() != 0) {
-      const newDate = DateLib.floorDays(startDate).toISOString().slice(0, 10)
+      const newDate = DateLib.floorToSunday(startDate).toISOString().slice(
+        0,
+        10,
+      )
         .replaceAll(
           "-",
           "/",

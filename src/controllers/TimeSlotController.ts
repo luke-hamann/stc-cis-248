@@ -82,16 +82,6 @@ export default class TimeSlotController extends Controller {
       },
       {
         method: "GET",
-        pattern: "/schedule/time-slot/copy-confirm/",
-        action: this.copyConfirmGet,
-      },
-      {
-        method: "POST",
-        pattern: "/schedule/time-slot/copy-confirm/",
-        action: this.copyConfirmPost,
-      },
-      {
-        method: "GET",
         pattern:
           "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.clearGet,
@@ -128,7 +118,7 @@ export default class TimeSlotController extends Controller {
       date = new Date();
     }
 
-    const weekStart = DateLib.floorDays(date);
+    const weekStart = DateLib.floorToSunday(date);
     const pathPart = weekStart.toISOString().substring(0, 10).replaceAll(
       "-",
       "/",
@@ -305,6 +295,7 @@ export default class TimeSlotController extends Controller {
     const end = new Date(timestamp2);
 
     const model = new ScheduleCopyViewModel(
+      false,
       start,
       end,
       null,
@@ -324,18 +315,47 @@ export default class TimeSlotController extends Controller {
    * Schedule time slot copy POST
    */
   public async copyPost(context: Context) {
-  }
+    const model = await ScheduleCopyViewModel.fromRequest(context.request);
 
-  /**
-   * Schedule time slot copy confirm GET
-   */
-  public async copyConfirmGet(context: Context) {
-  }
+    model.validate();
+    if (!model.isValid()) {
+      model.csrf_token = context.csrf_token;
+      return this.HTMLResponse(context, "./views/timeSlot/copy.html", model);
+    }
 
-  /**
-   * Schedule time slot copy confirm POST
-   */
-  public async copyConfirmPost(context: Context) {
+    const newTimeSlots = await this.timeSlots.calculateCopy(
+      model.fromStartDate!,
+      model.fromEndDate!,
+      model.toStartDate!,
+      model.toEndDate!,
+      model.repeatCopy,
+      model.includeAssignees,
+      model.includeTimeSlotNotes,
+    );
+
+    // Preview mode
+    if (!model.confirm) {
+      model.newTimeSlots = newTimeSlots;
+      model.csrf_token = context.csrf_token;
+      return this.HTMLResponse(
+        context,
+        "./views/timeSlot/copyPreview.html",
+        model,
+      );
+    }
+
+    // Confirm mode
+    await this.timeSlots.deleteInDateRange(
+      model.toStartDate!,
+      model.toEndDate!,
+    );
+
+    for (const timeSlot of newTimeSlots) {
+      await this.timeSlots.add(timeSlot);
+    }
+
+    const url = this.getCancelLink(model.toStartDate!);
+    return this.RedirectResponse(context, url);
   }
 
   /**
