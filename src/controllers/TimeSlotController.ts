@@ -346,15 +346,15 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.deleteTimeSlots) {
-      this.timeSlots.deleteInDateRange(model.startDate, model.endDate);
+      this.timeSlots.deleteInDateRange(model.startDate!, model.endDate!);
     }
 
     if (model.deleteSubstitutes) {
-      this.substitutes.deleteInDateRange(model.startDate, model.endDate);
+      this.substitutes.deleteInDateRange(model.startDate!, model.endDate!);
     }
 
     if (model.deleteShiftContextNotes) {
-      this.shiftContextNotes.deleteInDateRange(model.startDate, model.endDate);
+      this.shiftContextNotes.deleteInDateRange(model.startDate!, model.endDate!);
     }
 
     const url = this.getCancelLink(model.startDate!);
