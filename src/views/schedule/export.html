@@ -1,0 +1,27 @@
+{% extends "../shared/_layout.html" %}
+{% from "../shared/field.html" import field %}
+
+{% set title = "Export Schedule" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <form method="post">
+    {{ field("title", model.title, "text", "Title") }}
+    {{ field("startDate", model.startDate.isoDate, "date", "Start date") }}
+    {{ field("endDate", model.endDate.isoDate, "date", "End date") }}
+    <div>
+      <label for="format">Format</label>
+      <select name="format">
+        <option value="excel">Excel</option>
+        <option value="csv">CSV</option>
+      </select>
+    </div>
+    <div>
+      {{ csrf(model) }}
+      <button type="submit">Export</button>
+      <a href="{{ model.cancelLink }}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

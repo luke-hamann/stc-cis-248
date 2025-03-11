@@ -5,6 +5,8 @@ import Schedule from "../models/entities/Schedule.ts";
 import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
 import ScheduleWeekViewModel from "../models/viewModels/ScheduleWeekViewModel.ts";
 import ScheduleYearViewModel from "../models/viewModels/ScheduleYearViewModel.ts";
+import ScheduleExportViewModel from "../models/viewModels/ScheduleExportViewModel.ts";
+import BetterDate from "../_dates/BetterDate.ts";
 
 export default class ScheduleController extends Controller {
   private schedules: ScheduleRepository;
@@ -22,8 +24,18 @@ export default class ScheduleController extends Controller {
         pattern: "/schedule/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.week,
       },
-      { method: "GET", pattern: "/schedule/export/", action: this.exportGet },
-      { method: "POST", pattern: "/schedule/export/", action: this.exportPost },
+      {
+        method: "GET",
+        pattern:
+          "/schedule/export/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+        action: this.exportGet,
+      },
+      {
+        method: "POST",
+        pattern:
+          "/schedule/export/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+        action: this.exportPost,
+      },
     ];
   }
 
@@ -97,7 +109,26 @@ export default class ScheduleController extends Controller {
   /**
    * Schedule export GET
    */
-  public async exportGet(context: Context) {
+  public exportGet(context: Context) {
+    const [_, y1, m1, d1, y2, m2, d2] = context.match;
+    const timestamp1 = Date.parse(`${y1}-${m1}-${d1}`);
+    const timestamp2 = Date.parse(`${y2}-${m2}-${d2}`);
+    if (isNaN(timestamp1) || isNaN(timestamp2)) {
+      return this.NotFoundResponse(context);
+    }
+
+    const start = new BetterDate(timestamp1);
+    const end = new BetterDate(timestamp2);
+    const title = `Schedule ${start.isoDate} through ${end.isoDate}`;
+    const model = new ScheduleExportViewModel(
+      title,
+      start,
+      end,
+      null,
+      context.csrf_token,
+    );
+
+    return this.HTMLResponse(context, "./views/schedule/export.html", model);
   }
 
   /**

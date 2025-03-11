@@ -1,3 +1,4 @@
+import DateLib from "../../_dates/DateLib.ts";
 import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
 
 export default class ScheduleClearViewModel {
@@ -95,5 +96,11 @@ export default class ScheduleClearViewModel {
 
   public isValid() {
     return this.errors.length == 0;
+  }
+
+  public get cancelLink(): string {
+    const date = DateLib.floorDays(this.startDate ?? new Date());
+    const dateString = date.toISOString().substring(0, 10).replaceAll("-", "/");
+    return `/schedule/${dateString}/`;
   }
 }

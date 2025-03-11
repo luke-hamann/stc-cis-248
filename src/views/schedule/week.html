@@ -20,9 +20,9 @@
   </div>
 
   <div class="w-full text-center pb-8">
-    <a class="inline-block p-2 border rounded" href="">Copy</a>
+    <a class="inline-block p-2 border rounded" href="{{ model.copyLink }}">Copy</a>
     <a class="inline-block p-2 border rounded" href="{{ model.clearLink }}">Clear</a>
-    <a class="inline-block p-2 border rounded" href="">Export</a>
+    <a class="inline-block p-2 border rounded" href="{{ model.exportLink }}">Export</a>
   </div>
 
   <div class="flex flex-col min-h-100 overflow-x-auto">
@@ -46,11 +46,12 @@
       {% for date in model.dates %}
         <li class="flex-1 min-w-xs flex gap-2 justify-center">
           {% set formatted = date.toISOString().substring(0, 10).replaceAll("-", "/") %}
-          <a href="" class="block p-2 border rounded">
+          {% set copyUrl = ["/schedule/copy/", formatted, "/to/", formatted, "/"] | join %}
+          {% set clearUrl = ["/schedule/clear/", formatted, "/to/", formatted, "/"] | join %}
+          <a href="{{ copyUrl }}" class="block p-2 border rounded">
             Copy
           </a>
-          {% set url = ["/schedule/clear/", formatted, "/to/", formatted, "/"] | join %}
-          <a href="{{ url }}" class="block p-2 border rounded">
+          <a href="{{ clearUrl }}" class="block p-2 border rounded">
             Clear
           </a>
         </li>

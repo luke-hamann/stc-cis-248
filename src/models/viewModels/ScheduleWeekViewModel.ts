@@ -28,20 +28,26 @@ export default class ScheduleWeekViewModel {
     this.schedule = schedule;
   }
 
+  private formatDatePath(date: Date): string {
+    return date.toISOString().substring(0, 10).replaceAll("-", "/");
+  }
+
   public get clearLink(): string {
-    const start = this.currentWeek.toISOString().substring(0, 10).replaceAll(
-      "-",
-      "/",
-    );
-    const end = DateLib.addDays(this.currentWeek, 6).toISOString().substring(
-      0,
-      10,
-    ).replaceAll("-", "/");
+    const start = this.formatDatePath(this.currentWeek);
+    const end = this.formatDatePath(DateLib.addDays(this.currentWeek, 6));
     return `/schedule/clear/${start}/to/${end}/`;
   }
 
   public get copyLink(): string {
-    return `/schedule/clear/`;
+    const start = this.formatDatePath(this.currentWeek);
+    const end = this.formatDatePath(DateLib.addDays(this.currentWeek, 6));
+    return `/schedule/copy/${start}/to/${end}/`;
+  }
+
+  public get exportLink(): string {
+    const start = this.formatDatePath(this.currentWeek);
+    const end = this.formatDatePath(DateLib.addDays(this.currentWeek, 6));
+    return `/schedule/export/${start}/to/${end}/`;
   }
 
   /**

@@ -11,6 +11,7 @@ import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts
 import TimeSlotRepository from "../models/repositories/TimeSlotRepository.ts";
 import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
 import ScheduleClearViewModel from "../models/viewModels/ScheduleClearViewModel.ts";
+import ScheduleCopyViewModel from "../models/viewModels/ScheduleCopyViewModel.ts";
 import TimeSlotEditViewModel from "../models/viewModels/TimeSlotEditViewModel.ts";
 
 export default class TimeSlotController extends Controller {
@@ -69,12 +70,14 @@ export default class TimeSlotController extends Controller {
       },
       {
         method: "GET",
-        pattern: "/schedule/time-slot/copy/",
+        pattern:
+          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.copyGet,
       },
       {
         method: "POST",
-        pattern: "/schedule/time-slot/copy/",
+        pattern:
+          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.copyPost,
       },
       {
@@ -290,7 +293,31 @@ export default class TimeSlotController extends Controller {
   /**
    * Schedule time slot copy GET
    */
-  public async copyGet(context: Context) {
+  public copyGet(context: Context) {
+    const [_, y1, m1, d1, y2, m2, d2] = context.match;
+    const timestamp1 = Date.parse(`${y1}-${m1}-${d1}`);
+    const timestamp2 = Date.parse(`${y2}-${m2}-${d2}`);
+    if (isNaN(timestamp1) || isNaN(timestamp2)) {
+      return this.NotFoundResponse(context);
+    }
+
+    const start = new Date(timestamp1);
+    const end = new Date(timestamp2);
+
+    const model = new ScheduleCopyViewModel(
+      start,
+      end,
+      null,
+      null,
+      true,
+      false,
+      false,
+      false,
+      context.csrf_token,
+      [],
+    );
+
+    return this.HTMLResponse(context, "./views/timeSlot/copy.html", model);
   }
 
   /**
@@ -354,7 +381,10 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.deleteShiftContextNotes) {
-      this.shiftContextNotes.deleteInDateRange(model.startDate!, model.endDate!);
+      this.shiftContextNotes.deleteInDateRange(
+        model.startDate!,
+        model.endDate!,
+      );
     }
 
     const url = this.getCancelLink(model.startDate!);
