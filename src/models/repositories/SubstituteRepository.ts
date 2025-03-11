@@ -14,7 +14,7 @@ export default class SubstituteRepository extends Repository {
     return await Promise.resolve([]);
   }
 
-  public async getSubstituteIds(date: Date): Promise<number[]> {
+  public async getIds(date: Date): Promise<number[]> {
     const result = await this.database.execute(
       `
         SELECT teamMemberId
@@ -31,7 +31,7 @@ export default class SubstituteRepository extends Repository {
     );
   }
 
-  public async updateSubstitutesIds(
+  public async updateIds(
     date: Date,
     teamMemberIds: number[],
   ): Promise<void> {
@@ -56,7 +56,7 @@ export default class SubstituteRepository extends Repository {
     }
   }
 
-  public async getSubstitutesInRange(
+  public async getInDateRange(
     start: Date,
     end: Date,
   ): Promise<Substitute[]> {
@@ -96,5 +96,9 @@ export default class SubstituteRepository extends Repository {
       );
       return new Substitute(row.teamMemberId, teamMember, date);
     });
+  }
+
+  public async getOnDate(date: Date): Promise<Substitute[]> {
+    return await this.getInDateRange(date, date);
   }
 }

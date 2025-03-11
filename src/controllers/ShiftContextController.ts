@@ -35,7 +35,7 @@ export default class ShiftContextController extends Controller {
    * Shift context list
    */
   public async list(context: Context) {
-    const shiftContexts = await this.shiftContextRepository.getShiftContexts();
+    const shiftContexts = await this.shiftContextRepository.list();
     const model = new ShiftContextsViewModel(shiftContexts);
     return this.HTMLResponse(context, "./views/shiftContext/list.html", model);
   }
@@ -73,7 +73,7 @@ export default class ShiftContextController extends Controller {
       );
     }
 
-    await this.shiftContextRepository.addShiftContext(model.shiftContext);
+    await this.shiftContextRepository.add(model.shiftContext);
     return this.RedirectResponse(context, "/contexts/");
   }
 
@@ -84,7 +84,7 @@ export default class ShiftContextController extends Controller {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) return;
 
-    const shiftContext = await this.shiftContextRepository.getShiftContext(id);
+    const shiftContext = await this.shiftContextRepository.get(id);
     if (shiftContext == null) return this.NotFoundResponse(context);
 
     const model = new ShiftContextEditViewModel(
@@ -115,7 +115,7 @@ export default class ShiftContextController extends Controller {
       );
     }
 
-    await this.shiftContextRepository.updateShiftContext(model.shiftContext);
+    await this.shiftContextRepository.update(model.shiftContext);
     return this.RedirectResponse(context, "/contexts/");
   }
 
@@ -126,7 +126,7 @@ export default class ShiftContextController extends Controller {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) return this.NotFoundResponse(context);
 
-    const shiftContext = await this.shiftContextRepository.getShiftContext(id);
+    const shiftContext = await this.shiftContextRepository.get(id);
     if (shiftContext == null) return this.NotFoundResponse(context);
 
     const model = new DeleteViewModel(
@@ -147,12 +147,12 @@ export default class ShiftContextController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const shiftContext = await this.shiftContextRepository.getShiftContext(id);
+    const shiftContext = await this.shiftContextRepository.get(id);
     if (shiftContext == null) {
       return this.NotFoundResponse(context);
     }
 
-    await this.shiftContextRepository.deleteShiftContext(id);
+    await this.shiftContextRepository.delete(id);
     return this.RedirectResponse(context, "/contexts/");
   }
 }

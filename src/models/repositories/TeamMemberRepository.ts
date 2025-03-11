@@ -24,7 +24,7 @@ export default class TeamMemberRepository extends Repository {
     FROM TeamMembers
   `;
 
-  private mapRowToTeamMember(row: ITeamMember): TeamMember {
+  private mapRowToTeamMember(row: ITeamMemberRow): TeamMember {
     return new TeamMember(
       row.id,
       row.firstName,
@@ -42,17 +42,17 @@ export default class TeamMemberRepository extends Repository {
     );
   }
 
-  private mapRowsToTeamMembers(rows: ITeamMember[]): TeamMember[] {
+  private mapRowsToTeamMembers(rows: ITeamMemberRow[]): TeamMember[] {
     return rows.map((row) => this.mapRowToTeamMember(row));
   }
 
-  public async validateTeamMember(
+  public async validate(
     teamMember: TeamMember,
   ): Promise<string[]> {
     return await Promise.resolve([]);
   }
 
-  public async getTeamMembers(): Promise<TeamMember[]> {
+  public async list(): Promise<TeamMember[]> {
     const result = await this.database.execute(`
       ${this.baseQuery}
       ORDER BY isExternal,
@@ -61,10 +61,10 @@ export default class TeamMemberRepository extends Repository {
         LOWER(middleName)
     `);
 
-    return this.mapRowsToTeamMembers(result.rows as ITeamMember[]);
+    return this.mapRowsToTeamMembers(result.rows as ITeamMemberRow[]);
   }
 
-  public async getTeamMember(id: number): Promise<TeamMember | null> {
+  public async get(id: number): Promise<TeamMember | null> {
     const result = await this.database.execute(
       `
       ${this.baseQuery}
@@ -78,7 +78,7 @@ export default class TeamMemberRepository extends Repository {
       : null;
   }
 
-  public async addTeamMember(t: TeamMember): Promise<number> {
+  public async add(t: TeamMember): Promise<number> {
     const result = await this.database.execute(
       `
       INSERT INTO TeamMembers
@@ -102,7 +102,7 @@ export default class TeamMemberRepository extends Repository {
     return result.lastInsertId ?? 0;
   }
 
-  public async updateTeamMember(t: TeamMember): Promise<void> {
+  public async update(t: TeamMember): Promise<void> {
     await this.database.execute(
       `
       UPDATE TeamMembers
@@ -132,7 +132,7 @@ export default class TeamMemberRepository extends Repository {
     );
   }
 
-  public async deleteTeamMember(id: number): Promise<void> {
+  public async delete(id: number): Promise<void> {
     await this.database.execute("DELETE FROM TeamMembers WHERE id = ?", [id]);
   }
 }

@@ -43,7 +43,7 @@ export default class TeamMemberController extends Controller {
    * Team member list GET
    */
   public async list(context: Context) {
-    const teamMembers = await this.teamMemberRepository.getTeamMembers();
+    const teamMembers = await this.teamMemberRepository.list();
     const model = new TeamMembersViewModel(teamMembers);
     return this.HTMLResponse(context, "./views/teamMember/list.html", model);
   }
@@ -57,7 +57,7 @@ export default class TeamMemberController extends Controller {
       return;
     }
 
-    const teamMember = await this.teamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.get(id);
     if (teamMember == null) {
       return;
     }
@@ -86,7 +86,7 @@ export default class TeamMemberController extends Controller {
   public async addPost(context: Context) {
     const model = await TeamMemberEditViewModel.fromRequest(context.request);
 
-    model.errors = await this.teamMemberRepository.validateTeamMember(
+    model.errors = await this.teamMemberRepository.validate(
       model.teamMember,
     );
     if (!model.isValid()) {
@@ -94,7 +94,7 @@ export default class TeamMemberController extends Controller {
       return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
     }
 
-    const id = await this.teamMemberRepository.addTeamMember(model.teamMember);
+    const id = await this.teamMemberRepository.add(model.teamMember);
     return this.RedirectResponse(context, `/team-member/${id}/`);
   }
 
@@ -107,7 +107,7 @@ export default class TeamMemberController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const teamMember = await this.teamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.get(id);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
     }
@@ -133,7 +133,7 @@ export default class TeamMemberController extends Controller {
     const model = await TeamMemberEditViewModel.fromRequest(context.request);
     model.teamMember.id = id;
 
-    model.errors = await this.teamMemberRepository.validateTeamMember(
+    model.errors = await this.teamMemberRepository.validate(
       model.teamMember,
     );
     if (!model.isValid()) {
@@ -141,7 +141,7 @@ export default class TeamMemberController extends Controller {
       return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
     }
 
-    await this.teamMemberRepository.updateTeamMember(model.teamMember);
+    await this.teamMemberRepository.update(model.teamMember);
     return this.RedirectResponse(context, `/team-member/${id}/`);
   }
 
@@ -154,7 +154,7 @@ export default class TeamMemberController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const teamMember = await this.teamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.get(id);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
     }
@@ -177,12 +177,12 @@ export default class TeamMemberController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const teamMember = await this.teamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.get(id);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
     }
 
-    await this.teamMemberRepository.deleteTeamMember(id);
+    await this.teamMemberRepository.delete(id);
     return this.RedirectResponse(context, "/team-members/");
   }
 }

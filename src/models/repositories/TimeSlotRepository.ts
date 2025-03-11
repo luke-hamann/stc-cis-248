@@ -1,4 +1,3 @@
-import ShiftContext from "../entities/ShiftContext.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import Database from "./_Database.ts";
 import Repository from "./_Repository.ts";
@@ -18,9 +17,13 @@ interface ITimeSlotRow {
 }
 
 export default class TimeSlotRepository extends Repository {
-  private shiftContextRepository: ShiftContextRepository;
-  private colorRepository: ColorRepository;
-  private teamMemberRepository: TeamMemberRepository;
+  private shiftContexts: ShiftContextRepository;
+  private colors: ColorRepository;
+  private teamMembers: TeamMemberRepository;
+  private readonly baseQuery = `
+    SELECT id, shiftContextId, startDateTime, endDateTime, requiresAdult, teamMemberId, note, colorId
+    FROM Timeslots
+  `;
 
   constructor(
     database: Database,
@@ -29,9 +32,9 @@ export default class TimeSlotRepository extends Repository {
     teamMemberRepository: TeamMemberRepository,
   ) {
     super(database);
-    this.shiftContextRepository = shiftContextRepository;
-    this.colorRepository = colorRepository;
-    this.teamMemberRepository = teamMemberRepository;
+    this.shiftContexts = shiftContextRepository;
+    this.colors = colorRepository;
+    this.teamMembers = teamMemberRepository;
   }
 
   private mapRowToTimeSlot(row: ITimeSlotRow) {
@@ -54,42 +57,39 @@ export default class TimeSlotRepository extends Repository {
     return rows.map((row) => this.mapRowToTimeSlot(row));
   }
 
-  public async getTimeslotsInRange(
-    start: Date,
-    end: Date,
+  private async populate(t: TimeSlot): Promise<TimeSlot> {
+    const timeSlot = t.clone();
+
+    timeSlot.shiftContext = await this.shiftContexts.get(
+      timeSlot.shiftContextId,
+    );
+
+    if (timeSlot.colorId != null) {
+      timeSlot.color = await this.colors.get(timeSlot.colorId);
+    }
+
+    if (timeSlot.teamMemberId != null) {
+      timeSlot.teamMember = await this.teamMembers.get(timeSlot.teamMemberId);
+    }
+
+    return timeSlot;
+  }
+
+  public async list(
+    shiftContextId: number,
+    date: Date,
   ): Promise<TimeSlot[]> {
     const result = await this.database.execute(
-      `
-        SELECT id, shiftContextId, startDateTime, endDateTime, requiresAdult, teamMemberId, note, colorId
-        FROM Timeslots
-        WHERE DATE(startDateTime) BETWEEN ? AND ?
-        ORDER BY startDateTime
-      `,
-      [start.toISOString(), end.toISOString()],
+      `${this.baseQuery} WHERE shiftContextId = ? AND DATE(startDateTime) = ?`,
+      [shiftContextId, date.toISOString().substring(0, 10)],
     );
 
     if (!result.rows) return [];
 
-    const timeSlots = this.mapRowsToTimeSlots(result.rows);
-
-    for (let i = 0; i < timeSlots.length; i++) {
-      const shiftContextId = timeSlots[i].shiftContextId;
-      const colorId = timeSlots[i].colorId;
-      const teamMemberId = timeSlots[i].teamMemberId;
-
-      timeSlots[i].shiftContext = await this.shiftContextRepository
-        .getShiftContext(shiftContextId);
-
-      if (colorId != null) {
-        timeSlots[i].color = await this.colorRepository.getColor(colorId);
-      }
-
-      if (teamMemberId != null) {
-        timeSlots[i].teamMember = await this.teamMemberRepository.getTeamMember(
-          teamMemberId,
-        );
-      }
-    }
+    let timeSlots = this.mapRowsToTimeSlots(result.rows);
+    timeSlots = await Promise.all(
+      timeSlots.map(async (timeSlot) => await this.populate(timeSlot)),
+    );
 
     return timeSlots;
   }

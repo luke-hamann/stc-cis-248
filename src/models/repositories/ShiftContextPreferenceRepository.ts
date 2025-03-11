@@ -11,7 +11,7 @@ export default class ShiftContextPreferenceRepository extends Repository {
     return await Promise.resolve([]);
   }
 
-  public async getShiftContextPreferences(
+  public async get(
     teamMemberId: number,
   ): Promise<{ preferable: number[]; unpreferable: number[] }> {
     const result = await this.database.execute(
@@ -36,7 +36,7 @@ export default class ShiftContextPreferenceRepository extends Repository {
     return { preferable, unpreferable };
   }
 
-  public async updateShiftContextPreferences(
+  public async update(
     teamMemberId: number,
     shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
   ): Promise<void> {

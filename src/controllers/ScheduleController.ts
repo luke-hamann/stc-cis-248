@@ -1,26 +1,19 @@
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import DateLib from "../_dates/DateLib.ts";
+import Schedule from "../models/entities/Schedule.ts";
+import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
 import ScheduleWeekViewModel from "../models/viewModels/ScheduleWeekViewModel.ts";
 import ScheduleYearViewModel from "../models/viewModels/ScheduleYearViewModel.ts";
-import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
-import SubstituteRepository from "../models/repositories/SubstituteRepository.ts";
-import TimeSlotRepository from "../models/repositories/TimeSlotRepository.ts";
 
 export default class ScheduleController extends Controller {
-  private timeSlotRepository: TimeSlotRepository;
-  private substituteRepository: SubstituteRepository;
-  private shiftContextNoteRepository: ShiftContextNoteRepository;
+  private schedules: ScheduleRepository;
 
   constructor(
-    timeSlotRepository: TimeSlotRepository,
-    substituteRepository: SubstituteRepository,
-    shiftContextNoteRepository: ShiftContextNoteRepository,
+    schedules: ScheduleRepository,
   ) {
     super();
-    this.timeSlotRepository = timeSlotRepository;
-    this.substituteRepository = substituteRepository;
-    this.shiftContextNoteRepository = shiftContextNoteRepository;
+    this.schedules = schedules;
     this.routes = [
       { method: "GET", pattern: "/(schedule\/)?", action: this.index },
       { method: "GET", pattern: "/schedule/(\\d{4})/", action: this.year },
@@ -86,6 +79,7 @@ export default class ScheduleController extends Controller {
 
     const startDate = new Date(timestamp);
 
+    // If the start date is not a Sunday
     if (startDate.getUTCDay() != 0) {
       const newDate = DateLib.floorDays(startDate).toISOString().slice(0, 10)
         .replaceAll(
@@ -95,31 +89,10 @@ export default class ScheduleController extends Controller {
       return this.RedirectResponse(context, `/schedule/${newDate}/`);
     }
 
-    const endDate = new Date(startDate.getTime());
-    endDate.setDate(endDate.getUTCDate() + 6);
+    const endDate = DateLib.addDays(startDate, 6);
+    const schedule = await this.schedules.getSchedule(startDate, endDate);
 
-    const timeSlots = await this.timeSlotRepository.getTimeslotsInRange(
-      startDate,
-      endDate,
-    );
-
-    const shiftContextNotes = await this.shiftContextNoteRepository
-      .getShiftContextNotesInRange(
-        startDate,
-        endDate,
-      );
-
-    const substitutes = await this.substituteRepository.getSubstitutesInRange(
-      startDate,
-      endDate,
-    );
-
-    const model = new ScheduleWeekViewModel(
-      startDate,
-      timeSlots,
-      shiftContextNotes,
-      substitutes,
-    );
+    const model = new ScheduleWeekViewModel(startDate, schedule);
     return this.HTMLResponse(context, "./views/schedule/week.html", model);
   }
 

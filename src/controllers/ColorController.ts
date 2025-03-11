@@ -47,7 +47,7 @@ export default class ColorController extends Controller {
    * @returns
    */
   public async list(context: Context) {
-    const colors = await this.colorRepository.getColors();
+    const colors = await this.colorRepository.list();
     const model = new ColorsViewModel(colors, context.csrf_token);
     return this.HTMLResponse(context, "./views/color/list.html", model);
   }
@@ -71,13 +71,13 @@ export default class ColorController extends Controller {
   public async addPost(context: Context) {
     const model = await ColorEditViewModel.fromRequest(context.request);
 
-    model.errors = await this.colorRepository.validateColor(model.color);
+    model.errors = await this.colorRepository.validate(model.color);
     if (!model.isValid()) {
       model.csrf_token = context.csrf_token;
       return this.HTMLResponse(context, "./views/color/edit.html", model);
     }
 
-    await this.colorRepository.addColor(model.color);
+    await this.colorRepository.add(model.color);
     return this.RedirectResponse(context, "/colors/");
   }
 
@@ -91,7 +91,7 @@ export default class ColorController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const color = await this.colorRepository.getColor(id);
+    const color = await this.colorRepository.get(id);
     if (color == null) {
       return this.NotFoundResponse(context);
     }
@@ -108,14 +108,14 @@ export default class ColorController extends Controller {
     const model = await ColorEditViewModel.fromRequest(context.request);
     model.color.id = parseInt(context.match[1]);
 
-    model.errors = await this.colorRepository.validateColor(model.color);
+    model.errors = await this.colorRepository.validate(model.color);
     if (!model.isValid()) {
       model.isEdit = true;
       model.csrf_token = context.csrf_token;
       return this.HTMLResponse(context, "./views/color/edit.html", model);
     }
 
-    await this.colorRepository.updateColor(model.color);
+    await this.colorRepository.update(model.color);
     return this.RedirectResponse(context, "/colors/");
   }
 
@@ -129,7 +129,7 @@ export default class ColorController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const color = await this.colorRepository.getColor(id);
+    const color = await this.colorRepository.get(id);
     if (color == null) {
       return this.NotFoundResponse(context);
     }
@@ -154,17 +154,17 @@ export default class ColorController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const color = await this.colorRepository.getColor(id);
+    const color = await this.colorRepository.get(id);
     if (color == null) {
       return this.NotFoundResponse(context);
     }
 
-    await this.colorRepository.deleteColor(id);
+    await this.colorRepository.delete(id);
     return this.RedirectResponse(context, "/colors/");
   }
 
   public async colorStylesheet(context: Context) {
-    const colors = await this.colorRepository.getColors();
+    const colors = await this.colorRepository.list();
     const chunks = ["@charset utf-8;\n\n"];
 
     for (const color of colors) {

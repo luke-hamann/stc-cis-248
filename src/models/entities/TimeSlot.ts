@@ -48,4 +48,20 @@ export default class TimeSlot {
   public get endTimeString(): string {
     return this.endDateTime?.toISOString().substring(11, 16) ?? "";
   }
+
+  public clone(): TimeSlot {
+    return new TimeSlot(
+      this.id,
+      this.shiftContextId,
+      null,
+      this.startDateTime,
+      this.endDateTime,
+      this.requiresAdult,
+      this.teamMemberId,
+      null,
+      this.note,
+      this.colorId,
+      null,
+    );
+  }
 }

@@ -27,7 +27,7 @@ export default class ShiftContextNoteRepository extends Repository {
    * @param shiftContextNote The shift context note
    * @returns An array of error message strings
    */
-  private async validateShiftContextNote(
+  private async validate(
     shiftContextNote: ShiftContextNote,
   ): Promise<string[]> {
     return await Promise.resolve([]);
@@ -80,7 +80,7 @@ export default class ShiftContextNoteRepository extends Repository {
    * @param date The date of the shift context note
    * @returns The shift context note
    */
-  public async getShiftContextNote(
+  public async get(
     shiftContextId: number,
     date: Date,
   ): Promise<ShiftContextNote> {
@@ -102,7 +102,7 @@ export default class ShiftContextNoteRepository extends Repository {
    * @param end The ending date of the range
    * @returns The array of shift context notes
    */
-  public async getShiftContextNotesInRange(
+  public async getInDateRange(
     start: Date,
     end: Date,
   ): Promise<ShiftContextNote[]> {
@@ -126,7 +126,7 @@ export default class ShiftContextNoteRepository extends Repository {
    *
    * @param shiftContextNote The shift context note to update
    */
-  public async updateShiftContextNote(
+  public async update(
     shiftContextNote: ShiftContextNote,
   ) {
     await this.database.execute(

@@ -64,12 +64,12 @@ export default class ShiftContextNoteController extends Controller {
     }
 
     const shiftContextNote = await this.shiftContextNoteRepository
-      .getShiftContextNote(
+      .get(
         shiftContextId,
         date,
       );
 
-    const colors = await this.colorRepository.getColors();
+    const colors = await this.colorRepository.list();
 
     const model = new ShiftContextNoteEditViewModel(
       [],
@@ -104,7 +104,7 @@ export default class ShiftContextNoteController extends Controller {
     );
     if (!model.isValid()) {
       model.csrf_token = context.csrf_token;
-      model.colors = await this.colorRepository.getColors();
+      model.colors = await this.colorRepository.list();
       return this.HTMLResponse(
         context,
         "./views/shiftContextNote/edit.html",
@@ -115,7 +115,7 @@ export default class ShiftContextNoteController extends Controller {
     model.shiftContextNote.shiftContextId = shiftContextId;
     model.shiftContextNote.date = date;
 
-    await this.shiftContextNoteRepository.updateShiftContextNote(
+    await this.shiftContextNoteRepository.update(
       model.shiftContextNote,
     );
 

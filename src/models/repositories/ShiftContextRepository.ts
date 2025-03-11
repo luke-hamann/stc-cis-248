@@ -47,7 +47,7 @@ export default class ShiftContextRepository extends Repository {
     return errors;
   }
 
-  public async getShiftContexts(): Promise<ShiftContext[]> {
+  public async list(): Promise<ShiftContext[]> {
     const result = await this.database.execute(`
       SELECT id, name, ageGroup, location, description
       FROM ShiftContexts
@@ -57,7 +57,7 @@ export default class ShiftContextRepository extends Repository {
     return result.rows ? this.mapRowsToShiftContexts(result.rows) : [];
   }
 
-  public async getShiftContext(
+  public async get(
     id: number,
   ): Promise<ShiftContext | null> {
     const result = await this.database.execute(
@@ -76,7 +76,7 @@ export default class ShiftContextRepository extends Repository {
     }
   }
 
-  public async addShiftContext(s: ShiftContext): Promise<number> {
+  public async add(s: ShiftContext): Promise<number> {
     const result = await this.database.execute(
       `
         INSERT INTO ShiftContexts (name, ageGroup, location, description)
@@ -88,7 +88,7 @@ export default class ShiftContextRepository extends Repository {
     return result.lastInsertId ?? 0;
   }
 
-  public async updateShiftContext(s: ShiftContext): Promise<void> {
+  public async update(s: ShiftContext): Promise<void> {
     await this.database.execute(
       `
       UPDATE ShiftContexts
@@ -99,7 +99,7 @@ export default class ShiftContextRepository extends Repository {
     );
   }
 
-  public async deleteShiftContext(id: number): Promise<void> {
+  public async delete(id: number): Promise<void> {
     await this.database.execute(
       `
       DELETE FROM ShiftContexts

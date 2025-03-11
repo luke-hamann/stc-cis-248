@@ -8,12 +8,12 @@ export interface IColorRow {
 }
 
 export interface IColorRepository {
-  validateColor(color: Color): Promise<string[]>;
-  getColors(): Promise<Color[]>;
-  getColor(id: number): Promise<Color | null>;
-  addColor(color: Color): Promise<number>;
-  updateColor(color: Color): Promise<void>;
-  deleteColor(id: number): Promise<void>;
+  validate(color: Color): Promise<string[]>;
+  list(): Promise<Color[]>;
+  get(id: number): Promise<Color | null>;
+  add(color: Color): Promise<number>;
+  update(color: Color): Promise<void>;
+  delete(id: number): Promise<void>;
 }
 
 export default class ColorRepository extends Repository
@@ -26,7 +26,7 @@ export default class ColorRepository extends Repository
     return rows.map((row) => this.mapRowToColor(row));
   }
 
-  public async validateColor(color: Color): Promise<string[]> {
+  public async validate(color: Color): Promise<string[]> {
     const errors = [];
 
     if (color.name.trim() == "") {
@@ -53,7 +53,7 @@ export default class ColorRepository extends Repository
     return await Promise.resolve(errors);
   }
 
-  public async getColors(): Promise<Color[]> {
+  public async list(): Promise<Color[]> {
     const result = await this.database.execute(`
       SELECT id, name, hex
       FROM Colors
@@ -63,7 +63,7 @@ export default class ColorRepository extends Repository
     return this.mapRowsToColors(result.rows as IColorRow[]);
   }
 
-  public async getColor(id: number): Promise<Color | null> {
+  public async get(id: number): Promise<Color | null> {
     const result = await this.database.execute(
       `
       SELECT id, name, hex
@@ -78,7 +78,7 @@ export default class ColorRepository extends Repository
       : null;
   }
 
-  public async addColor(color: Color): Promise<number> {
+  public async add(color: Color): Promise<number> {
     const result = await this.database.execute(
       `
       INSERT INTO Colors (name, hex)
@@ -90,7 +90,7 @@ export default class ColorRepository extends Repository
     return result.lastInsertId ?? 0;
   }
 
-  public async updateColor(color: Color): Promise<void> {
+  public async update(color: Color): Promise<void> {
     await this.database.execute(
       `
       UPDATE Colors
@@ -101,7 +101,7 @@ export default class ColorRepository extends Repository
     );
   }
 
-  public async deleteColor(id: number): Promise<void> {
+  public async delete(id: number): Promise<void> {
     await this.database.execute(
       `
       DELETE FROM Colors

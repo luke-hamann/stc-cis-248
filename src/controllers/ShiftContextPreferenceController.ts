@@ -42,14 +42,14 @@ export default class ShiftContextPreferenceController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const teamMember = await this.teamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.get(id);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
     }
 
-    const shiftContexts = await this.shiftContextRepository.getShiftContexts();
+    const shiftContexts = await this.shiftContextRepository.list();
     const shiftContextPreferences = await this.shiftContextPreferenceRepository
-      .getShiftContextPreferences(id);
+      .get(id);
 
     const model = new ShiftContextPreferencesEditViewModel(
       context.csrf_token,
@@ -74,7 +74,7 @@ export default class ShiftContextPreferenceController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const teamMember = await this.teamMemberRepository.getTeamMember(id);
+    const teamMember = await this.teamMemberRepository.get(id);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
     }
@@ -96,7 +96,7 @@ export default class ShiftContextPreferenceController extends Controller {
       );
     }
 
-    await this.shiftContextPreferenceRepository.updateShiftContextPreferences(
+    await this.shiftContextPreferenceRepository.update(
       id,
       model.shiftContextPreferences,
     );

@@ -16,6 +16,7 @@ import SessionMiddleware from "./middleware/SessionMiddleware.ts";
 import StaticFilesMiddleware from "./middleware/StaticFilesMiddleware.ts";
 import Database from "./models/repositories/_Database.ts";
 import ColorRepository from "./models/repositories/ColorRepository.ts";
+import ScheduleRepository from "./models/repositories/ScheduleRepository.ts";
 import ShiftContextNoteRepository from "./models/repositories/ShiftContextNoteRepository.ts";
 import ShiftContextPreferenceRepository from "./models/repositories/ShiftContextPreferenceRepository.ts";
 import ShiftContextRepository from "./models/repositories/ShiftContextRepository.ts";
@@ -51,6 +52,12 @@ const typicalAvailabilityRepository = new TypicalAvailabilityRepository(
   database,
 );
 const unavailabilityRepository = new UnavailabilityRepository(database);
+const scheduleRepository = new ScheduleRepository(
+  shiftContextRepository,
+  shiftContextNoteRepository,
+  timeSlotRepository,
+  substituteRepository,
+);
 
 /** Controllers */
 
@@ -71,11 +78,7 @@ const controllers: Controller[] = [
   new ShiftContextNoteController(shiftContextNoteRepository, colorRepository),
   new TimeSlotController(),
   new SubstituteController(substituteRepository, teamMemberRepository),
-  new ScheduleController(
-    timeSlotRepository,
-    substituteRepository,
-    shiftContextNoteRepository,
-  ),
+  new ScheduleController(scheduleRepository),
 ];
 
 /**
