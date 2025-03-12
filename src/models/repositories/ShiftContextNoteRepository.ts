@@ -1,4 +1,5 @@
 import BetterDate from "../../_dates/BetterDate.ts";
+import DateLib from "../../_dates/DateLib.ts";
 import Color from "../entities/Color.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import ShiftContextNote from "../entities/ShiftContextNote.ts";
@@ -61,6 +62,17 @@ export default class ShiftContextNoteRepository extends Repository {
     return shiftContextNote;
   }
 
+  private sanitizeDate(d: Date): Date {
+    const newDate = new Date(d.getTime());
+
+    newDate.setFullYear(newDate.getUTCFullYear());
+    newDate.setMonth(newDate.getUTCMonth());
+    newDate.setDate(newDate.getUTCDate());
+    newDate.setHours(0, 0, 0, 0);
+
+    return newDate;
+  }
+
   /**
    * Convert a database row to a shift context note
    * @param row The database row
@@ -69,10 +81,7 @@ export default class ShiftContextNoteRepository extends Repository {
   private mapRowToShiftContextNote(
     row: IShiftContextNoteRow,
   ): ShiftContextNote {
-    row.date.setFullYear(row.date.getUTCFullYear());
-    row.date.setMonth(row.date.getUTCMonth());
-    row.date.setDate(row.date.getUTCDate());
-    row.date.setHours(0, 0, 0, 0);
+    row.date = this.sanitizeDate(row.date);
 
     return new ShiftContextNote(
       row.shiftContextId,
@@ -124,11 +133,14 @@ export default class ShiftContextNoteRepository extends Repository {
    * @param shiftContextId The shift context id
    * @returns The array of shift context notes
    */
-  public async getFilter(
+  public async getWhere(
     start: Date,
     end: Date,
     shiftContextId?: number,
   ): Promise<ShiftContextNote[]> {
+    start = this.sanitizeDate(start);
+    end = this.sanitizeDate(end);
+
     let query = `${this.baseQuery} WHERE date BETWEEN ? AND ?`;
     if (shiftContextId) query += " AND shiftContextId = ?";
 
@@ -196,5 +208,56 @@ export default class ShiftContextNoteRepository extends Repository {
         endDate,
       ],
     );
+  }
+
+  public async calculateCopy(
+    sourceStart: Date,
+    sourceEnd: Date,
+    destinationStart: Date,
+    destinationEnd: Date,
+    repeatCopy: boolean,
+  ): Promise<ShiftContextNote[]> {
+    const sourceWidth = DateLib.differenceInDays(sourceStart, sourceEnd) + 1;
+    const initialOffset = DateLib.differenceInDays(
+      sourceStart,
+      destinationStart,
+    );
+
+    const sourceShiftContextNotes = await this.getWhere(
+      sourceStart,
+      sourceEnd,
+    );
+    const destinationShiftContextNotes = [];
+
+    for (const shiftContextNote of sourceShiftContextNotes) {
+      let offset = initialOffset;
+
+      while (true) {
+        const newShiftContextNote = shiftContextNote.clone();
+        newShiftContextNote.date = DateLib.addDays(
+          newShiftContextNote.date!,
+          offset,
+        );
+
+        const tempDate = new Date(newShiftContextNote.date.getTime());
+        tempDate.setHours(0, 0, 0, 0);
+
+        const isOutOfBounds = tempDate.getTime() > destinationEnd.getTime();
+
+        if (isOutOfBounds) break;
+
+        destinationShiftContextNotes.push(newShiftContextNote);
+
+        if (!repeatCopy) break;
+
+        offset += sourceWidth;
+      }
+    }
+
+    destinationShiftContextNotes.sort((a, b) =>
+      a.date!.getTime() - b.date!.getTime()
+    );
+
+    return destinationShiftContextNotes;
   }
 }

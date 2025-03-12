@@ -3,6 +3,7 @@ import DateLib from "../_dates/DateLib.ts";
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import Color from "../models/entities/Color.ts";
+import ShiftContextNote from "../models/entities/ShiftContextNote.ts";
 import TimeSlot from "../models/entities/TimeSlot.ts";
 import ColorRepository from "../models/repositories/ColorRepository.ts";
 import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
@@ -328,20 +329,21 @@ export default class TimeSlotController extends Controller {
       model.includeTimeSlotNotes,
     );
 
-    let newShiftContextNotes = [];
+    let newShiftContextNotes: ShiftContextNote[] = [];
     if (model.includeShiftContextNotes) {
       newShiftContextNotes = await this.shiftContextNotes.calculateCopy(
         model.fromStartDate!,
         model.fromEndDate!,
         model.toStartDate!,
         model.toEndDate!,
+        model.repeatCopy,
       );
     }
 
     // Preview mode
     if (!model.confirm) {
       model.newTimeSlots = newTimeSlots;
-      model.newShiftContextNotes = [];
+      model.newShiftContextNotes = newShiftContextNotes;
       model.csrf_token = context.csrf_token;
       return this.HTMLResponse(
         context,
@@ -355,9 +357,18 @@ export default class TimeSlotController extends Controller {
       model.toStartDate!,
       model.toEndDate!,
     );
-
     for (const timeSlot of newTimeSlots) {
       await this.timeSlots.add(timeSlot);
+    }
+
+    if (model.includeShiftContextNotes) {
+      await this.shiftContextNotes.deleteInDateRange(
+        model.toStartDate!,
+        model.toEndDate!,
+      );
+      for (const shiftContextNote of newShiftContextNotes) {
+        await this.shiftContextNotes.update(shiftContextNote);
+      }
     }
 
     const url = this.getCancelLink(model.toStartDate!);

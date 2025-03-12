@@ -25,6 +25,17 @@ export default class ShiftContextNote {
     this.color = color;
   }
 
+  public clone() {
+    return new ShiftContextNote(
+      this.shiftContextId,
+      null,
+      this.date ? new Date(this.date.getTime()) : null,
+      this.note,
+      this.colorId,
+      null,
+    );
+  }
+
   public toString() {
     return this.note + " " + this.date;
   }

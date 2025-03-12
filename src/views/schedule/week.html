@@ -56,7 +56,6 @@
             {% endif %}
 
             {% if type == "ShiftContextNote" %}
-              {{ data.date }}
               {% if data.color.hex %}
               <p style="background-color: {{ ['#', data.color.hex] | join }}">
                 {{ data.note }}

@@ -9,16 +9,28 @@
   <p class="bg-amber-600 text-white border rounded">
     ⚠️ <b>WARNING:</b> The target time range will be overwritten if you proceed.
   </p>
-  <p>The following time slots will be created:</p>
-  <div>
-    {% for timeSlot in model.newTimeSlots %}
+  {% if model.newTimeSlots %}
+    <p>The following time slots will be created:</p>
+  {% else %}
+    <p>No time slots will be created.</p>
+  {% endif %}
+  {% for timeSlot in model.newTimeSlots %}
+    <div class="border">
+      <div>{{ timeSlot.id }}</div>
+      <div>{{ timeSlot.startDateTime }}</div>
+      <div>{{ timeSlot.endDateTime }}</div>
+    </div>
+  {% else %}
+  </div>
+  {% if model.includeShiftContextNotes %}
+    <p>The following shift context notes will be created:</p>
+    {% for shiftContextNote in model.newShiftContextNotes %}
       <div class="border">
-        <div>{{ timeSlot.id }}</div>
-        <div>{{ timeSlot.startDateTime }}</div>
-        <div>{{ timeSlot.endDateTime }}</div>
+        <div>{{ shiftContextNote.date }}</div>
+        <div>{{ shiftContextNote.note }}</div>
       </div>
     {% endfor %}
-  </div>
+  {% endif %}
   <form method="post">
     {{ csrf(model) }}
     <input type="hidden" name="confirm" />
