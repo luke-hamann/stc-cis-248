@@ -1,5 +1,6 @@
 import DateLib from "../../_dates/DateLib.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
+import TimeSlotGroup from "../entities/TimeSlotGroup.ts";
 import Database from "./_Database.ts";
 import Repository from "./_Repository.ts";
 import ColorRepository from "./ColorRepository.ts";
@@ -15,6 +16,12 @@ interface ITimeSlotRow {
   teamMemberId: number | null;
   note: string;
   colorId: number | null;
+}
+
+interface ITimeSlotGroupRow {
+  startTime: string;
+  endTime: string;
+  requiresAdult: number;
 }
 
 export default class TimeSlotRepository extends Repository {
@@ -45,7 +52,7 @@ export default class TimeSlotRepository extends Repository {
       null,
       row.startDateTime,
       row.endDateTime,
-      row.requiresAdult == 1 ? true : false,
+      row.requiresAdult == 1,
       row.teamMemberId,
       null,
       row.note,
@@ -318,5 +325,66 @@ export default class TimeSlotRepository extends Repository {
     );
 
     return destinationTimeSlots;
+  }
+
+  public async getGroups(
+    shiftContextId: number,
+    start: Date,
+    end: Date,
+  ): Promise<TimeSlotGroup[]> {
+    const result = await this.database.execute(
+      `
+        SELECT TIME(startDateTime) startTime, TIME(endDateTime) endTime, requiresAdult
+        FROM TimeSlots
+        WHERE shiftContextId = ? AND
+          DATE(startDateTime) BETWEEN ? AND ?
+        GROUP BY 1, 2, 3
+        ORDER BY 1, 2, 3 DESC
+      `,
+      [shiftContextId, start, end],
+    );
+
+    if (!result.rows || result.rows.length == 0) return [];
+
+    return result.rows.map((row: ITimeSlotGroupRow) =>
+      new TimeSlotGroup(
+        shiftContextId,
+        start,
+        end,
+        row.startTime,
+        row.endTime,
+        row.requiresAdult == 1,
+      )
+    );
+  }
+
+  public async getInGroup(g: TimeSlotGroup): Promise<TimeSlot[]> {
+    const result = await this.database.execute(
+      `
+        ${this.baseQuery}
+        WHERE shiftContextId = ?
+          AND DATE(startDateTime) BETWEEN ? AND ?
+          AND TIME(startDateTime) == ?
+          AND TIME(endDateTime) == ?
+          AND requiresAdult = ?
+        ORDER BY startDateTime
+      `,
+      [
+        g.shiftContextId,
+        g.windowStart,
+        g.windowEnd,
+        g.startTime,
+        g.endTime,
+        g.requiresAdult,
+      ],
+    );
+
+    if (!result.rows) return [];
+
+    return await Promise.all(
+      this.mapRowsToTimeSlots(result.rows).map((timeSlot) =>
+        this.populate(timeSlot)
+      ),
+    );
   }
 }

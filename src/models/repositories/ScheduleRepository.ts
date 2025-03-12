@@ -12,6 +12,7 @@ import SubstituteRepository from "./SubstituteRepository.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotRepository from "./TimeSlotRepository.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
+import TimeSlotGroup from "../entities/TimeSlotGroup.ts";
 
 export default class ScheduleRepository {
   private shiftContexts: ShiftContextRepository;
@@ -42,11 +43,13 @@ export default class ScheduleRepository {
 
     const shiftContexts = await this.shiftContexts.list();
     for (const shiftContext of shiftContexts) {
-      // Shift context header row
+      // Shift context header cell
       const row: ScheduleRow = [{
         type: "ShiftContext",
         content: shiftContext,
       }];
+
+      // Shift context note cells
       for (const date of dateList) {
         let shiftContextNote = await this.shiftContextNotes.get(
           shiftContext.id,
@@ -67,7 +70,36 @@ export default class ScheduleRepository {
         const cell = new ScheduleCell("ShiftContextNote", shiftContextNote);
         row.push(cell);
       }
+
+      // Push shift context header row
       table.push(row);
+
+      // Time slot groups under shift context
+      const timeSlotGroups = await this.timeSlots.getGroups(
+        shiftContext.id,
+        start,
+        end,
+      );
+      for (const timeSlotGroup of timeSlotGroups) {
+        const timeSlots = await this.timeSlots.getInGroup(timeSlotGroup);
+        const rows: ScheduleTable = [];
+
+        // initialize the first row
+        const row: ScheduleRow = [
+          new ScheduleCell("TimeSlotGroup", timeSlotGroup),
+        ];
+
+        for (const date of dateList) {
+        }
+
+        // for (let i = 0; i < dateCount; i++) {
+        //   row.push(new ScheduleCell("string", ""));
+        // }
+
+        rows.push(row);
+
+        table.push(...rows);
+      }
     }
 
     // Substitutes row

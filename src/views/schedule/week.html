@@ -70,6 +70,11 @@
               </p>
             {% endif %}
 
+            {% if type == "TimeSlotGroup" %}
+              <p>{{ data.startTime }} to {{ data.endTime }}</p>
+              <p>{{ "18+" if data.requiresAdult }}</p>
+            {% endif %}
+
             {% if type == "SubstituteList" %}
               {% if data.teamMembers %}
                 <ul class="list-disc">
