@@ -33,10 +33,10 @@ export default class ScheduleRepository {
   }
 
   public async getSchedule(start: Date, end: Date): Promise<Schedule> {
-    const table: ScheduleTable = [];
+    const scheduleTable: ScheduleTable = [];
     const dateList = DateLib.getDatesInRange(start, end);
 
-    table.push([
+    scheduleTable.push([
       new ScheduleCell("string", ""),
       ...dateList.map((date) => new ScheduleCell("dateHeader", date)),
     ]);
@@ -72,7 +72,7 @@ export default class ScheduleRepository {
       }
 
       // Push shift context header row
-      table.push(row);
+      scheduleTable.push(row);
 
       // Time slot groups under shift context
       const timeSlotGroups = await this.timeSlots.getGroups(
@@ -81,24 +81,53 @@ export default class ScheduleRepository {
         end,
       );
       for (const timeSlotGroup of timeSlotGroups) {
-        const timeSlots = await this.timeSlots.getInGroup(timeSlotGroup);
-        const rows: ScheduleTable = [];
+        const timeSlotsByDay: (TimeSlot | null)[][] = await this.timeSlots
+          .getInGroup(timeSlotGroup);
 
-        // initialize the first row
-        const row: ScheduleRow = [
-          new ScheduleCell("TimeSlotGroup", timeSlotGroup),
-        ];
+        const rowCount = timeSlotsByDay.length;
+        const colCount = Math.max(
+          ...timeSlotsByDay.map((array) => array.length),
+        );
 
-        for (const date of dateList) {
+        // fill the array with nulls to convert it from jagged to rectangular
+        for (let i = 0; i < timeSlotsByDay.length; i++) {
+          while (timeSlotsByDay[i].length < colCount) {
+            timeSlotsByDay[i].push(null);
+          }
         }
 
-        // for (let i = 0; i < dateCount; i++) {
-        //   row.push(new ScheduleCell("string", ""));
-        // }
+        // build a new array to transpose the old one into
+        const targetArray: (ScheduleCell | null)[][] = [];
+        for (let i = 0; i < colCount; i++) {
+          const row: (ScheduleCell | null)[] = [];
+          for (let j = 0; j < rowCount; j++) {
+            row.push(null);
+          }
+          targetArray.push(row);
+        }
 
-        rows.push(row);
+        // transpose old array into new array
+        for (let rowNum = 0; rowNum < rowCount; rowNum++) {
+          for (let colNum = 0; colNum < colCount; colNum++) {
+            const timeSlot = timeSlotsByDay[rowNum][colNum];
 
-        table.push(...rows);
+            let newCell = new ScheduleCell("string", "");
+            if (timeSlot) {
+              newCell = new ScheduleCell("TimeSlot", timeSlot);
+            }
+
+            // Swapped row and column to transpose array
+            targetArray[colNum][rowNum] = newCell;
+          }
+        }
+
+        for (let i = 0; i < targetArray.length; i++) {
+          targetArray[i].unshift(
+            new ScheduleCell("TimeSlotGroup", timeSlotGroup),
+          );
+        }
+
+        scheduleTable.push(...(targetArray as ScheduleTable));
       }
     }
 
@@ -112,8 +141,8 @@ export default class ScheduleRepository {
       const cell = new ScheduleCell("SubstituteList", substituteList);
       substitutesRow.push(cell);
     }
-    table.push(substitutesRow);
+    scheduleTable.push(substitutesRow);
 
-    return new Schedule("", start, end, table);
+    return new Schedule("", start, end, scheduleTable);
   }
 }

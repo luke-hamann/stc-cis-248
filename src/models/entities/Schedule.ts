@@ -7,9 +7,10 @@ export type ScheduleCellType =
   | "string"
   | "header"
   | "dateHeader"
-  | "TimeSlotGroup"
   | "ShiftContext"
   | "ShiftContextNote"
+  | "TimeSlotGroup"
+  | "TimeSlot"
   | "SubstituteList";
 
 export type ScheduleCellContent =
