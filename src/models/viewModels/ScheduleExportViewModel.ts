@@ -22,7 +22,8 @@ export default class ScheduleExportViewModel {
   }
 
   public get cancelLink() {
-    const component = this.startDate.floorToSunday().isoDateSlashes;
+    const weekStart = this.startDate.floorToSunday();
+    const component = weekStart.toDateString().replaceAll("-", "/");
     return `/schedule/${component}/`;
   }
 }

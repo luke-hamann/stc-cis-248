@@ -4,6 +4,7 @@ import ColorRepository from "../models/repositories/ColorRepository.ts";
 import DateLib from "../_dates/DateLib.ts";
 import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
 import ShiftContextNoteEditViewModel from "../models/viewModels/ShiftContextNoteEditViewModel.ts";
+import BetterDate from "../_dates/BetterDate.ts";
 
 export default class ShiftContextNoteController extends Controller {
   private shiftContextNoteRepository: ShiftContextNoteRepository;
@@ -36,16 +37,16 @@ export default class ShiftContextNoteController extends Controller {
    * @returns The extracted date or null
    */
   private getNoteDate(context: Context): Date | null {
-    const year = context.match[2];
-    const month = context.match[3];
-    const day = context.match[4];
-    const timestamp = Date.parse(`${year}-${month}-${day}Z`);
+    const year = parseInt(context.match[2]);
+    const monthIndex = parseInt(context.match[3]) - 1;
+    const day = parseInt(context.match[4]);
+    const date = new Date(year, monthIndex, day);
 
-    if (isNaN(timestamp)) {
+    if (isNaN(date.getTime())) {
       return null;
     }
 
-    return new Date(timestamp);
+    return date;
   }
 
   /**
@@ -119,8 +120,7 @@ export default class ShiftContextNoteController extends Controller {
       model.shiftContextNote,
     );
 
-    const newDate = DateLib.floorToSunday(date).toISOString().substring(0, 10)
-      .replaceAll("-", "/");
+    const newDate = new BetterDate(date.getTime()).toDateString();
     return this.RedirectResponse(context, `/schedule/${newDate}/`);
   }
 }

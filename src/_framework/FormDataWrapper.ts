@@ -45,13 +45,19 @@ export default class FormDataWrapper {
 
   public getDate(key: string): Date | null {
     const value = this.getString(key);
-    const timestamp = Date.parse(value);
+    const match = value.matchAll(/^(\d{4})-(\d{2})-(\d{2})$/g).toArray()[0];
+    if (!match) return null;
 
-    if (isNaN(timestamp)) {
+    const date = new Date(
+      parseInt(match[1]),
+      parseInt(match[2]) - 1,
+      parseInt(match[3]),
+    );
+    if (isNaN(date.getTime())) {
       return null;
     }
 
-    return new Date(timestamp);
+    return date;
   }
 
   public getTime(key: string): string {

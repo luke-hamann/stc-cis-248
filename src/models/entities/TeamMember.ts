@@ -1,3 +1,5 @@
+import BetterDate from "../../_dates/BetterDate.ts";
+
 export default class TeamMember {
   public id: number = 0;
   public firstName: string = "";
@@ -66,6 +68,8 @@ export default class TeamMember {
   }
 
   public get birthDateString(): string {
-    return this.birthDate?.toISOString().substring(0, 10) ?? "";
+    return this.birthDate
+      ? BetterDate.fromDate(this.birthDate).toDateString()
+      : "";
   }
 }

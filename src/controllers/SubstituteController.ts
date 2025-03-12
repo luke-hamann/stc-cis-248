@@ -29,16 +29,18 @@ export default class SubstituteController extends Controller {
     ];
   }
 
-  public async editSubstitutesGet(context: Context) {
+  private getDateFromContext(context: Context): Date {
     const year = parseInt(context.match[1]);
-    const month = parseInt(context.match[2]);
+    const monthIndex = parseInt(context.match[2]) - 1;
     const day = parseInt(context.match[3]);
+    return new Date(year, monthIndex, day);
+  }
 
-    const timestamp = Date.parse(`${year}-${month}-${day}`);
-    if (isNaN(timestamp)) {
+  public async editSubstitutesGet(context: Context) {
+    const date = this.getDateFromContext(context);
+    if (isNaN(date.getTime())) {
       return this.NotFoundResponse(context);
     }
-    const date = new Date(timestamp);
 
     const model = new SubstitutesEditViewModel(
       await this.teamMemberRepository.list(),
@@ -51,16 +53,10 @@ export default class SubstituteController extends Controller {
   }
 
   public async editSubstitutesPost(context: Context) {
-    const year = parseInt(context.match[1]);
-    const month = parseInt(context.match[2]);
-    const day = parseInt(context.match[3]);
-
-    const timestamp = Date.parse(`${year}-${month}-${day}`);
-    if (isNaN(timestamp)) {
+    const date = this.getDateFromContext(context);
+    if (isNaN(date.getTime())) {
       return this.NotFoundResponse(context);
     }
-
-    const date = new Date(timestamp);
 
     const model = await SubstitutesEditViewModel.fromRequest(context.request);
     model.errors = await this.substituteRepository.validate(

@@ -1,3 +1,4 @@
+import BetterDate from "../../_dates/BetterDate.ts";
 import DateLib from "../../_dates/DateLib.ts";
 import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
 
@@ -66,6 +67,25 @@ export default class ScheduleClearViewModel {
     );
   }
 
+  public get startDateString(): string {
+    return this.startDate
+      ? BetterDate.fromDate(this.startDate).toDateString()
+      : "";
+  }
+
+  public get endDateString(): string {
+    return this.endDate ? BetterDate.fromDate(this.endDate).toDateString() : "";
+  }
+
+  public get cancelLink(): string {
+    const date = DateLib.floorToSunday(this.startDate ?? new Date());
+    const dateString = BetterDate.fromDate(date).toDateString().replaceAll(
+      "-",
+      "/",
+    );
+    return `/schedule/${dateString}/`;
+  }
+
   public validate(): void {
     this.errors = [];
 
@@ -96,11 +116,5 @@ export default class ScheduleClearViewModel {
 
   public isValid() {
     return this.errors.length == 0;
-  }
-
-  public get cancelLink(): string {
-    const date = DateLib.floorToSunday(this.startDate ?? new Date());
-    const dateString = date.toISOString().substring(0, 10).replaceAll("-", "/");
-    return `/schedule/${dateString}/`;
   }
 }

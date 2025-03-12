@@ -4,6 +4,7 @@ import FormViewModel from "./_FormViewModel.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
+import BetterDate from "../../_dates/BetterDate.ts";
 
 export default class TimeSlotEditViewModel extends FormViewModel {
   shiftContexts: ShiftContext[];
@@ -47,16 +48,16 @@ export default class TimeSlotEditViewModel extends FormViewModel {
     const newColorHex = formData.getColorHex("newColorHex");
     const newColorName = formData.getString("newColorName");
 
-    const isoDate = date?.toISOString().substring(0, 10) ?? "";
+    const betterDate = date ? BetterDate.fromDate(date) : null;
 
     let startDateTime = null;
-    if (date != null && startTime != "") {
-      startDateTime = new Date(`${isoDate}T${startTime}:00.000Z`);
+    if (betterDate != null && startTime != "") {
+      startDateTime = new Date(betterDate.toDateString() + "T" + startTime);
     }
 
     let endDateTime = null;
-    if (date != null && endTime != "") {
-      endDateTime = new Date(`${isoDate}T${endTime}:00.000Z`);
+    if (betterDate != null && endTime != "") {
+      endDateTime = new Date(betterDate.toDateString() + "T" + endTime);
     }
 
     const timeSlot = new TimeSlot(

@@ -1,3 +1,5 @@
+import BetterDate from "../../_dates/BetterDate.ts";
+
 export default class ScheduleYearViewModel {
   public csrf_token: string;
   public year: number;
@@ -14,6 +16,6 @@ export default class ScheduleYearViewModel {
   }
 
   public get todayPath(): string {
-    return new Date().toISOString().substring(0, 10).replaceAll("-", "/");
+    return BetterDate.fromDate(new Date()).toDateString().replaceAll("-", "/");
   }
 }

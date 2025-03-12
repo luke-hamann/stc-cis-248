@@ -1,7 +1,6 @@
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import DateLib from "../_dates/DateLib.ts";
-import Schedule from "../models/entities/Schedule.ts";
 import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
 import ScheduleWeekViewModel from "../models/viewModels/ScheduleWeekViewModel.ts";
 import ScheduleYearViewModel from "../models/viewModels/ScheduleYearViewModel.ts";
@@ -67,8 +66,8 @@ export default class ScheduleController extends Controller {
       const monthName = firstOfMonth.toLocaleString("default", {
         month: "long",
       });
-      const daysInMonth = new Date(year, monthIndex + 1, 0).getUTCDate();
-      const initialDayOfWeek = firstOfMonth.getUTCDay();
+      const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+      const initialDayOfWeek = firstOfMonth.getDay();
 
       calendar.push({ monthName, daysInMonth, initialDayOfWeek });
     }
@@ -82,24 +81,22 @@ export default class ScheduleController extends Controller {
    */
   public async week(context: Context) {
     const [_, year, month, day] = context.match;
-    const timestamp = Date.parse(`${year}-${month}-${day}`);
-    if (isNaN(timestamp)) {
+    const startDate = new Date(
+      parseInt(year),
+      parseInt(month) - 1,
+      parseInt(day),
+    );
+    if (isNaN(startDate.getTime())) {
       return this.NotFoundResponse(context);
     }
 
-    const startDate = new Date(timestamp);
-
     // If the start date is not a Sunday
-    if (startDate.getUTCDay() != 0) {
-      const newDate = DateLib.floorToSunday(startDate).toISOString().slice(
-        0,
-        10,
-      )
-        .replaceAll(
-          "-",
-          "/",
-        );
-      return this.RedirectResponse(context, `/schedule/${newDate}/`);
+    if (startDate.getDay() != 0) {
+      let newDate = BetterDate.fromDate(startDate);
+      newDate = newDate.floorToSunday();
+      const component = newDate.toDateString().replaceAll("-", "/");
+      const url = `/schedule/${component}/`;
+      return this.RedirectResponse(context, url);
     }
 
     const endDate = DateLib.addDays(startDate, 6);
@@ -114,19 +111,20 @@ export default class ScheduleController extends Controller {
    */
   public exportGet(context: Context) {
     const [_, y1, m1, d1, y2, m2, d2] = context.match;
-    const timestamp1 = Date.parse(`${y1}-${m1}-${d1}`);
-    const timestamp2 = Date.parse(`${y2}-${m2}-${d2}`);
-    if (isNaN(timestamp1) || isNaN(timestamp2)) {
+    const start = new Date(parseInt(y1), parseInt(m1) - 1, parseInt(d1));
+    const end = new Date(parseInt(y2), parseInt(m2) - 1, parseInt(d2));
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       return this.NotFoundResponse(context);
     }
 
-    const start = new BetterDate(timestamp1);
-    const end = new BetterDate(timestamp2);
-    const title = `Schedule ${start.isoDate} through ${end.isoDate}`;
+    const startBetterDate = BetterDate.fromDate(start);
+    const endBetterDate = BetterDate.fromDate(end);
+    const title =
+      `Schedule ${startBetterDate.toDateString()} through ${endBetterDate.toDateString()}`;
     const model = new ScheduleExportViewModel(
       title,
-      start,
-      end,
+      startBetterDate,
+      endBetterDate,
       null,
       context.csrf_token,
     );

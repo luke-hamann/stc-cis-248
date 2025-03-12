@@ -9,8 +9,8 @@
   <h1>{{ title }}</h1>
   <form method="post">
     {{ field("title", model.title, "text", "Title") }}
-    {{ field("startDate", model.startDate.isoDate, "date", "Start date") }}
-    {{ field("endDate", model.endDate.isoDate, "date", "End date") }}
+    {{ field("startDate", model.startDate, "date", "Start date") }}
+    {{ field("endDate", model.endDate, "date", "End date") }}
     <div>
       <label for="format">Format</label>
       <select name="format">

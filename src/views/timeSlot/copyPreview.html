@@ -14,8 +14,8 @@
     {% for timeSlot in model.newTimeSlots %}
       <div class="border">
         <div>{{ timeSlot.id }}</div>
-        <div>{{ timeSlot.startDateTime.toISOString() }}</div>
-        <div>{{ timeSlot.endDateTime.toISOString() }}</div>
+        <div>{{ timeSlot.startDateTime }}</div>
+        <div>{{ timeSlot.endDateTime }}</div>
       </div>
     {% endfor %}
   </div>

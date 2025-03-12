@@ -1,3 +1,4 @@
+import BetterDate from "../../_dates/BetterDate.ts";
 import Color from "./Color.ts";
 import ShiftContext from "./ShiftContext.ts";
 
@@ -26,6 +27,6 @@ export default class ShiftContextNote {
   }
 
   public get dateString(): string {
-    return this.date?.toISOString().substring(0, 10) ?? "";
+    return this.date ? BetterDate.fromDate(this.date).toDateString() : "";
   }
 }

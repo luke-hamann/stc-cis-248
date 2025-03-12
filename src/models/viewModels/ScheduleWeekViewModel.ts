@@ -1,3 +1,4 @@
+import BetterDate from "../../_dates/BetterDate.ts";
 import DateLib from "../../_dates/DateLib.ts";
 import Schedule from "../entities/Schedule.ts";
 
@@ -29,7 +30,7 @@ export default class ScheduleWeekViewModel {
   }
 
   private formatDatePath(date: Date): string {
-    return date.toISOString().substring(0, 10).replaceAll("-", "/");
+    return BetterDate.fromDate(date).toDateString().replaceAll("-", "/");
   }
 
   public get clearLink(): string {
@@ -55,9 +56,9 @@ export default class ScheduleWeekViewModel {
    * @returns The title
    */
   public get title(): string {
-    const monthName = this.monthNames[this.currentWeek.getUTCMonth()];
-    const date = this.currentWeek.getUTCDate();
-    const year = this.currentWeek.getUTCFullYear();
+    const monthName = this.monthNames[this.currentWeek.getMonth()];
+    const date = this.currentWeek.getDate();
+    const year = this.currentWeek.getFullYear();
     return `Week of ${monthName} ${date}, ${year}`;
   }
 
@@ -72,7 +73,7 @@ export default class ScheduleWeekViewModel {
     const dates = [];
     for (let i = 0; i < 7; i++) {
       const date = new Date(this.currentWeek.getTime());
-      date.setUTCDate(date.getUTCDate() + i);
+      date.setDate(date.getDate() + i);
       dates.push(date);
     }
     return dates;
@@ -84,8 +85,11 @@ export default class ScheduleWeekViewModel {
    */
   public get previousWeekString(): string {
     const previousWeek = new Date(this.currentWeek.getTime());
-    previousWeek.setUTCDate(previousWeek.getUTCDate() - 7);
-    return previousWeek.toISOString().substring(0, 10).replaceAll("-", "/");
+    previousWeek.setDate(previousWeek.getDate() - 7);
+    return BetterDate.fromDate(previousWeek).toDateString().replaceAll(
+      "-",
+      "/",
+    );
   }
 
   /**
@@ -93,7 +97,7 @@ export default class ScheduleWeekViewModel {
    */
   public get nextWeekString(): string {
     const nextWeek = new Date(this.currentWeek.getTime());
-    nextWeek.setUTCDate(nextWeek.getUTCDate() + 7);
-    return nextWeek.toISOString().substring(0, 10).replaceAll("-", "/");
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    return BetterDate.fromDate(nextWeek).toDateString().replaceAll("-", "/");
   }
 }

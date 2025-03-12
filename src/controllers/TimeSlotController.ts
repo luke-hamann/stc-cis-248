@@ -1,3 +1,4 @@
+import BetterDate from "../_dates/BetterDate.ts";
 import DateLib from "../_dates/DateLib.ts";
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
@@ -96,6 +97,20 @@ export default class TimeSlotController extends Controller {
   }
 
   /**
+   * @param date
+   * @returns
+   */
+  private getCancelLink(date?: Date): string {
+    if (!date) {
+      date = new Date();
+    }
+
+    const newDate = BetterDate.fromDate(DateLib.floorToSunday(date))
+      .toDateString().replaceAll("-", "/");
+    return `/schedule/${newDate}/`;
+  }
+
+  /**
    * Gets a time slot based on the application context, null if not found
    * @param context App context
    * @returns A time slot or null
@@ -107,23 +122,6 @@ export default class TimeSlotController extends Controller {
     }
 
     return await this.timeSlots.get(id);
-  }
-
-  /**
-   * @param date
-   * @returns
-   */
-  private getCancelLink(date?: Date): string {
-    if (!date) {
-      date = new Date();
-    }
-
-    const weekStart = DateLib.floorToSunday(date);
-    const pathPart = weekStart.toISOString().substring(0, 10).replaceAll(
-      "-",
-      "/",
-    );
-    return `/schedule/${pathPart}/`;
   }
 
   /**
@@ -285,14 +283,11 @@ export default class TimeSlotController extends Controller {
    */
   public copyGet(context: Context) {
     const [_, y1, m1, d1, y2, m2, d2] = context.match;
-    const timestamp1 = Date.parse(`${y1}-${m1}-${d1}`);
-    const timestamp2 = Date.parse(`${y2}-${m2}-${d2}`);
-    if (isNaN(timestamp1) || isNaN(timestamp2)) {
+    const start = new Date(parseInt(y1), parseInt(m1) - 1, parseInt(d1));
+    const end = new Date(parseInt(y2), parseInt(m2) - 1, parseInt(d2));
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       return this.NotFoundResponse(context);
     }
-
-    const start = new Date(timestamp1);
-    const end = new Date(timestamp2);
 
     const model = new ScheduleCopyViewModel(
       false,
@@ -363,14 +358,11 @@ export default class TimeSlotController extends Controller {
    */
   public clearGet(context: Context) {
     const [_, y1, m1, d1, y2, m2, d2] = context.match;
-    const timestamp1 = Date.parse(`${y1}-${m1}-${d1}`);
-    const timestamp2 = Date.parse(`${y2}-${m2}-${d2}`);
-    if (isNaN(timestamp1) || isNaN(timestamp2)) {
+    const start = new Date(parseInt(y1), parseInt(m1) - 1, parseInt(d1));
+    const end = new Date(parseInt(y2), parseInt(m2) - 1, parseInt(d2));
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       return this.NotFoundResponse(context);
     }
-
-    const start = new Date(timestamp1);
-    const end = new Date(timestamp2);
 
     const model = ScheduleClearViewModel.default(
       start,

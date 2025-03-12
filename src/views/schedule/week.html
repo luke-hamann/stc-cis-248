@@ -10,7 +10,7 @@
       &lt;
     </a>
     <h1 class="text-center font-bold text-3xl select-none">
-      <a href="/schedule/{{ model.currentWeek.getUTCFullYear() }}/">
+      <a href="/schedule/{{ model.currentWeek.getFullYear() }}/">
         {{ model.title }}
       </a>
     </h1>
@@ -31,7 +31,7 @@
       <li class="flex-1 min-w-xs"></li>
       {% for date in model.dates %}
         <li class="flex-1 min-w-xs text-center text-xl font-bold">
-          {{ date.toISOString().substring(0, 10) }}
+          {{ date }}
         </li>
       {% endfor %}
     </ul>
@@ -45,7 +45,13 @@
       </li>
       {% for date in model.dates %}
         <li class="flex-1 min-w-xs flex gap-2 justify-center">
-          {% set formatted = date.toISOString().substring(0, 10).replaceAll("-", "/") %}
+          {% set formatted = [
+              date.getFullYear(),
+              "/",
+              (date.getMonth() + 1).toString().padStart(2, "0"),
+              "/",
+              date.getDate().toString().padStart(2, "0")
+            ] | join %}
           {% set copyUrl = ["/schedule/copy/", formatted, "/to/", formatted, "/"] | join %}
           {% set clearUrl = ["/schedule/clear/", formatted, "/to/", formatted, "/"] | join %}
           <a href="{{ copyUrl }}" class="block p-2 border rounded">
@@ -133,54 +139,4 @@
 
       {% endfor %}
     </div>
-
-    <!--
-
-    <div class="flex-1 overflow-x-auto">
-      <h2 class="text-3xl font-bold p-4">Time slots</h2>
-      <div class="flex w-full">
-        {% for date in model.dates %}
-          <div class="flex-1 min-w-xs">
-            {% for timeSlot in model.timeSlots %}
-              {% if timeSlot.startDateTime.toISOString().substring(0, 10) == date.toISOString().substring(0, 10) %}
-                <div class="p-2 my-4 mx-2 border-2 rounded">
-                  <div>{{ timeSlot.shiftContext.name }}</div>
-                  <div>{{ timeSlot.startTimeString }} to {{ timeSlot.endTimeString }}</div>
-                  <div>
-                    <input type="checkbox" id="{{ timeSlot.id }}_requiresAdult" {{ "checked" if timeSlot.requiresAdult }} disabled />
-                    <label for="{{ timeSlot.id }}_requiresAdult">Requires adult</label>
-                  </div>
-                  <div>
-                    {{ timeSlot.teamMember.fullName if timeSlot.teamMember.fullName else "(No assignee)" }}
-                  </div>
-                  <div class="stc-color-{{ timeSlot.color.id }}">{{ timeSlot.note }}</div>
-                  <div class="pt-2 text-center">
-                    <a href="" class="inline-block p-2 border rounded">Edit</a>
-                    <a href="" class="inline-block p-2 border rounded">Delete</a>
-                  </div>
-                </div>
-              {% endif %}
-            {% endfor %}
-          </div>
-        {% endfor %}
-      </div>
-      <h2 class="text-3xl font-bold p-4">Substitutes</h2>
-      <div class="flex w-100">
-        {% for date in model.dates %}
-          <div class="flex-1 min-w-76 p-2 m-2 border-2 rounded flex flex-col justify-between items-center">
-            <ul>
-              {% for substitute in model.substitutes %}
-                {% if substitute.date.toISOString() == date.toISOString() %}
-                  <li>{{ substitute.teamMember.fullName }}</li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-            <a class="p-2 mt-4 border rounded w-fit">Edit</a>
-          </div>
-        {% endfor %}
-      </div>
-      <h2 class="text-3xl font-bold p-4">Shift notes</h2>
-    </div>
-  </div>
-  -->
 {% endblock %}

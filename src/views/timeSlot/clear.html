@@ -8,8 +8,8 @@
 {% block content %}
   <h1>{{ title }}</h1>
   <form method="post">
-    {{ field("startDate", model.startDate.toISOString().substring(0, 10), "date", "Start date") }}
-    {{ field("endDate", model.endDate.toISOString().substring(0, 10), "date", "End date") }}
+    {{ field("startDate", model.startDateString, "date", "Start date") }}
+    {{ field("endDate", model.endDateString, "date", "End date") }}
     {{ field("deleteTimeSlots", "", "checkbox", "Delete time slots", model.deleteTimeSlots) }}
     {{ field("deleteShiftContextNotes", "", "checkbox", "Delete shift context notes", model.deleteShiftContextNotes) }}
     {{ field("deleteSubstitutes", "", "checkbox", "Delete substitutes", model.deleteSubstitutes) }}

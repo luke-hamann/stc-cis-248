@@ -1,3 +1,4 @@
+import BetterDate from "../../_dates/BetterDate.ts";
 import DateLib from "../../_dates/DateLib.ts";
 import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
@@ -109,7 +110,7 @@ export default class ScheduleCopyViewModel {
 
   private formatDate(date: Date | null): string {
     if (date == null) return "";
-    return date.toISOString().substring(0, 10);
+    return BetterDate.fromDate(date).toDateString();
   }
 
   public get fromStartDateString(): string {

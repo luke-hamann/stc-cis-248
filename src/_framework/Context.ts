@@ -7,7 +7,7 @@ export default class Context {
   public readonly request: Request;
   public readonly requestCookies: Map<string, string>;
   public response: ResponseWrapper;
-  public readonly match: string[] = [];
+  public match: string[] = [];
   public csrf_token: string = "";
 
   /**

@@ -273,7 +273,7 @@ export default class TimeSlotRepository extends Repository {
         );
 
         const tempDate = new Date(newTimeSlot.startDateTime.getTime());
-        tempDate.setUTCHours(0, 0, 0, 0);
+        tempDate.setHours(0, 0, 0, 0);
 
         const isOutOfBounds = tempDate.getTime() > destinationEnd.getTime();
 

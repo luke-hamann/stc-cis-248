@@ -1,3 +1,4 @@
+import BetterDate from "../../_dates/BetterDate.ts";
 import Color from "./Color.ts";
 import ShiftContext from "./ShiftContext.ts";
 import TeamMember from "./TeamMember.ts";
@@ -42,15 +43,21 @@ export default class TimeSlot {
   }
 
   public get startDateString(): string {
-    return this.startDateTime?.toISOString().substring(0, 10) ?? "";
+    return this.startDateTime
+      ? BetterDate.fromDate(this.startDateTime).toDateString()
+      : "";
   }
 
   public get startTimeString(): string {
-    return this.startDateTime?.toISOString().substring(11, 16) ?? "";
+    return this.startDateTime
+      ? BetterDate.fromDate(this.startDateTime).toTimeString()
+      : "";
   }
 
   public get endTimeString(): string {
-    return this.endDateTime?.toISOString().substring(11, 16) ?? "";
+    return this.endDateTime
+      ? BetterDate.fromDate(this.endDateTime).toTimeString()
+      : "";
   }
 
   public clone(): TimeSlot {
