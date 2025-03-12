@@ -375,7 +375,10 @@ export default class TimeSlotRepository extends Repository {
         [g.shiftContextId, date, g.startTime, g.endTime, g.requiresAdult],
       );
 
-      if (!result.rows || result.rows.length == 0) continue;
+      if (!result.rows || result.rows.length == 0) {
+        table.push([]);
+        continue;
+      }
 
       const timeSlots = await Promise.all(
         this.mapRowsToTimeSlots(result.rows).map((timeSlot) =>

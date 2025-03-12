@@ -80,6 +80,10 @@
               <p>{{ data.endDateTime }}</p>
               <p>{{ "18+" if data.requiresAdult }}</p>
               <p>{{ data.id }}</p>
+              <div>
+                <a href="/schedule/time-slot/{{ data.id }}/">Edit</a>
+                <a href="/schedule/time-slot/{{ data.id }}/delete/">Delete</a>
+              </div>
             {% endif %}
 
             {% if type == "SubstituteList" %}

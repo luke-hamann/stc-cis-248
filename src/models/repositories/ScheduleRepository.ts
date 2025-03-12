@@ -121,6 +121,7 @@ export default class ScheduleRepository {
           }
         }
 
+        // Insert header cell at start of each row
         for (let i = 0; i < targetArray.length; i++) {
           targetArray[i].unshift(
             new ScheduleCell("TimeSlotGroup", timeSlotGroup),
