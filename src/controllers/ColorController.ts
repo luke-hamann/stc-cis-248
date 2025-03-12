@@ -34,11 +34,6 @@ export default class ColorController extends Controller {
         pattern: "/color/(\\d+)/delete/",
         action: this.deletePost,
       },
-      {
-        method: "GET",
-        pattern: "/css/colors.css",
-        action: this.colorStylesheet,
-      },
     ];
   }
 
@@ -161,21 +156,5 @@ export default class ColorController extends Controller {
 
     await this.colorRepository.delete(id);
     return this.RedirectResponse(context, "/colors/");
-  }
-
-  public async colorStylesheet(context: Context) {
-    const colors = await this.colorRepository.list();
-    const chunks = ["@charset utf-8;\n\n"];
-
-    for (const color of colors) {
-      chunks.push(
-        `.stc-color-${color.id} {\n  background-color: #${color.hex};\n}\n\n`,
-      );
-    }
-
-    context.response.status = 200;
-    context.response.headers.set("Content-Type", "text/css");
-    context.response.body = chunks.join("");
-    return context.response;
   }
 }

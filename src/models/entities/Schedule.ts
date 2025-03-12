@@ -4,10 +4,10 @@ import Substitute from "./Substitute.ts";
 import TimeSlot from "./TimeSlot.ts";
 
 export class DailyEntry {
-  public shiftContextNote: ShiftContextNote;
+  public shiftContextNote: ShiftContextNote | null;
   public timeSlots: TimeSlot[];
 
-  constructor(shiftContextNote: ShiftContextNote, timeSlots: TimeSlot[]) {
+  constructor(shiftContextNote: ShiftContextNote | null, timeSlots: TimeSlot[]) {
     this.shiftContextNote = shiftContextNote;
     this.timeSlots = timeSlots;
   }

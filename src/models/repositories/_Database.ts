@@ -26,7 +26,7 @@ export default class Database {
    */
   public async execute(
     sql: string,
-    params?: (null | string | number | boolean | Date)[],
+    params?: (undefined | null | string | number | boolean | Date)[],
   ): Promise<ExecuteResult> {
     if (this._client == null) {
       this._client = await new Client().connect({

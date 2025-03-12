@@ -75,10 +75,21 @@
             {# Shift context note card #}
 
             <div class="p-2 my-4 mx-2 border rounded flex gap-2">
-              <div class="flex-1 stc-color-{{ dailyEntry.shiftContextNote.colorId }}">
+              {% set hex = dailEntry.shiftContextNote.colorHex %}
+              {% set shiftContextId = dailyEntry.shiftContextNote.shiftContextId %}
+              {% set date = dailyEntry.shiftContextNote.date %}
+              {{ dailyEntry.shiftContextNote.date }}
+              {% set formatted = [
+                date.getFullYear(),
+                "/",
+                (date.getMonth() + 1).toString().padStart(2, "0"),
+                "/",
+                date.getDate().toString().padStart(2, "0")
+              ] | join %}
+              <div class="flex-1" {{ (["style", "=", '"background-color: #', hex, ';"'] | join | safe) if hex }}>
                 {{ dailyEntry.shiftContextNote.note }}
               </div>
-              <a href="/shift-context/{{ dailyEntry.shiftContextNote.shiftContextId }}/note/{{ dailyEntry.shiftContextNote.dateString.replaceAll('-', '/') }}/" class="w-fit px-2 py-1 mx-auto border rounded">
+              <a href="/shift-context/{{ shiftContextId }}/note/{{ formatted }}/" class="w-fit px-2 py-1 mx-auto border rounded">
                 Edit
               </a>
             </div>
@@ -97,7 +108,7 @@
                 <div>
                   {{ timeSlot.teamMember.fullName if timeSlot.teamMember.fullName else "(No assignee)" }}
                 </div>
-                <div class="stc-color-{{ timeSlot.color.id }}">
+                <div {{ ["style", "=", '"background-color: #', timeSlot.color.hex, ';"'] | join | safe }}>
                   {{ timeSlot.note }}
                 </div>
                 <div class="pt-2 text-center">

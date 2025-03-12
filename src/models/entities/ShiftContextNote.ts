@@ -7,7 +7,7 @@ export default class ShiftContextNote {
   public shiftContext: ShiftContext | null = null;
   public date: Date | null = null;
   public note: string = "";
-  public colorId: number = 0;
+  public colorId: number | null;
   public color: Color | null = null;
 
   public constructor(
@@ -15,7 +15,7 @@ export default class ShiftContextNote {
     shiftContext: ShiftContext | null,
     date: Date | null,
     note: string,
-    colorId: number,
+    colorId: number | null,
     color: Color | null,
   ) {
     this.shiftContextId = shiftContextId;
@@ -24,9 +24,5 @@ export default class ShiftContextNote {
     this.note = note;
     this.colorId = colorId;
     this.color = color;
-  }
-
-  public get dateString(): string {
-    return this.date ? BetterDate.fromDate(this.date).toDateString() : "";
   }
 }

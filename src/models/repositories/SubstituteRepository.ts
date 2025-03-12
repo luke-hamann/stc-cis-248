@@ -21,7 +21,7 @@ export default class SubstituteRepository extends Repository {
         FROM Substitutes
         WHERE date = ?
       `,
-      [date.toISOString().substring(0, 10)],
+      [date],
     );
 
     if (!result.rows) return [];
@@ -35,14 +35,12 @@ export default class SubstituteRepository extends Repository {
     date: Date,
     teamMemberIds: number[],
   ): Promise<void> {
-    const dateString = date.toISOString().substring(0, 10);
-
     await this.database.execute(
       `
         DELETE FROM Substitutes
         WHERE date = ?
       `,
-      [dateString],
+      [date],
     );
 
     for (const teamMemberId of teamMemberIds) {
@@ -51,7 +49,7 @@ export default class SubstituteRepository extends Repository {
           INSERT INTO Substitutes (teamMemberId, date)
           VALUES (?, ?)
         `,
-        [teamMemberId, dateString],
+        [teamMemberId, date],
       );
     }
   }
@@ -67,10 +65,7 @@ export default class SubstituteRepository extends Repository {
         JOIN TeamMembers t ON s.teamMemberId = t.id
         WHERE date BETWEEN ? AND ?
       `,
-      [
-        start.toISOString().substring(0, 10),
-        end.toISOString().substring(0, 10),
-      ],
+      [start, end]
     );
 
     if (!result.rows) return [];
@@ -103,18 +98,15 @@ export default class SubstituteRepository extends Repository {
   }
 
   public async deleteInDateRange(
-    startDate: Date,
-    endDate: Date,
+    start: Date,
+    end: Date,
   ): Promise<void> {
     await this.database.execute(
       `
         DELETE FROM Substitutes
         WHERE date BETWEEN ? AND ?
       `,
-      [
-        startDate.toISOString().substring(0, 10),
-        endDate.toISOString().substring(0, 10),
-      ],
+      [start, end],
     );
   }
 }

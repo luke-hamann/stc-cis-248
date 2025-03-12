@@ -27,7 +27,7 @@ export default class ShiftContextNoteRepository extends Repository {
    * @param shiftContextNote The shift context note
    * @returns An array of error message strings
    */
-  private async validate(
+  public async validate(
     shiftContextNote: ShiftContextNote,
   ): Promise<string[]> {
     return await Promise.resolve([]);
@@ -74,8 +74,6 @@ export default class ShiftContextNoteRepository extends Repository {
   /**
    * Get a shift context note by its shift context id and date
    *
-   * Returns an empty shift context note if it does not exist in the database
-   *
    * @param shiftContextId The shift context id
    * @param date The date of the shift context note
    * @returns The shift context note
@@ -83,17 +81,17 @@ export default class ShiftContextNoteRepository extends Repository {
   public async get(
     shiftContextId: number,
     date: Date,
-  ): Promise<ShiftContextNote> {
-    const dateString = date.toISOString().substring(0, 10);
-
+  ): Promise<ShiftContextNote | null> {
     const result = await this.database.execute(
       `${this.baseQuery} WHERE shiftContextId = ? AND date = ?`,
-      [shiftContextId, dateString],
+      [shiftContextId, date.toISOString()],
     );
 
-    return (result.rows && result.rows.length > 0)
-      ? this.mapRowToShiftContextNote(result.rows[0])
-      : new ShiftContextNote(shiftContextId, null, date, "", 0, null);
+    if (!result.rows || result.rows.length == 0) {
+      return null
+    }
+
+    return this.mapRowToShiftContextNote(result.rows[0]);
   }
 
   /**
@@ -106,12 +104,9 @@ export default class ShiftContextNoteRepository extends Repository {
     start: Date,
     end: Date,
   ): Promise<ShiftContextNote[]> {
-    const startString = start.toISOString().substring(0, 10);
-    const endString = end.toISOString().substring(0, 10);
-
     const result = await this.database.execute(
       `${this.baseQuery} WHERE date BETWEEN ? AND ?`,
-      [startString, endString],
+      [start.toISOString(), end.toISOString()],
     );
 
     if (!result.rows) return [];
@@ -134,7 +129,7 @@ export default class ShiftContextNoteRepository extends Repository {
       DELETE FROM ShiftContextNotes
       WHERE shiftContextId = ? AND date = ?
       `,
-      [shiftContextNote.shiftContextId, shiftContextNote.dateString],
+      [shiftContextNote.shiftContextId, shiftContextNote.date],
     );
 
     if (shiftContextNote.note.length > 0) {
@@ -145,7 +140,7 @@ export default class ShiftContextNoteRepository extends Repository {
         `,
         [
           shiftContextNote.shiftContextId,
-          shiftContextNote.dateString,
+          shiftContextNote.date,
           shiftContextNote.note,
           shiftContextNote.colorId,
         ],
@@ -163,8 +158,8 @@ export default class ShiftContextNoteRepository extends Repository {
         WHERE date BETWEEN ? AND ?
       `,
       [
-        startDate.toISOString().substring(0, 10),
-        endDate.toISOString().substring(0, 10),
+        startDate,
+        endDate,
       ],
     );
   }

@@ -76,14 +76,24 @@ export default class TimeSlotRepository extends Repository {
     return timeSlot;
   }
 
+  /**
+   * Validates a time slot
+   * @param t A time slot
+   * @returns A list of error messages
+   */
   public async validate(t: TimeSlot): Promise<string[]> {
     return await Promise.resolve([]);
   }
 
+  /**
+   * Gets all time slots starting on a given date
+   * @param date The date
+   * @returns A list of time slots
+   */
   public async getOnDate(date: Date): Promise<TimeSlot[]> {
     const result = await this.database.execute(
       `${this.baseQuery} WHERE DATE(startDateTime) = ?`,
-      [date.toISOString().substring(0, 10)],
+      [date],
     );
 
     if (!result.rows) return [];
@@ -91,16 +101,19 @@ export default class TimeSlotRepository extends Repository {
     return this.mapRowsToTimeSlots(result.rows);
   }
 
+  /**
+   * Gets all time slots starting within a given date range
+   * @param start The beginning of the range
+   * @param end The end of the range
+   * @returns The list of time slots
+   */
   public async getInDateRange(start: Date, end: Date): Promise<TimeSlot[]> {
     const result = await this.database.execute(
       `
         ${this.baseQuery}
         WHERE DATE(startDateTime) BETWEEN ? AND ?
       `,
-      [
-        start.toISOString().substring(0, 10),
-        end.toISOString().substring(0, 10),
-      ],
+      [start, end],
     );
 
     if (!result.rows) return [];
@@ -120,7 +133,7 @@ export default class TimeSlotRepository extends Repository {
   ): Promise<TimeSlot[]> {
     const result = await this.database.execute(
       `${this.baseQuery} WHERE shiftContextId = ? AND DATE(startDateTime) = ?`,
-      [shiftContextId, date.toISOString().substring(0, 10)],
+      [shiftContextId, date],
     );
 
     if (!result.rows) return [];
@@ -221,22 +234,35 @@ export default class TimeSlotRepository extends Repository {
     );
   }
 
+  /**
+   * Deletes all time slots starting within a given date range
+   * @param start The beginning of the range
+   * @param end The end of the range
+   */
   public async deleteInDateRange(
-    startDate: Date,
-    endDate: Date,
+    start: Date,
+    end: Date,
   ): Promise<void> {
     await this.database.execute(
       `
         DELETE FROM TimeSlots
         WHERE DATE(startDateTime) BETWEEN ? AND ?
       `,
-      [
-        startDate.toISOString().substring(0, 10),
-        endDate.toISOString().substring(0, 10),
-      ],
+      [start, end],
     );
   }
 
+  /**
+   * Generate time slots for a prospective copy operation
+   * @param sourceStart The beginning of the time range to copy
+   * @param sourceEnd The end of the time range to copy
+   * @param destinationStart The beginning of the time range to copy to
+   * @param destinationEnd The end of the time range to copy to
+   * @param repeatCopy Wheather the source range should be repeated to fill the destination range
+   * @param includeAssignees Whether the copied time slots should include team member ids
+   * @param includeNotes Whether the copied time slots should include their notes
+   * @returns The list of time slots, ordered by start date time
+   */
   public async calculateCopy(
     sourceStart: Date,
     sourceEnd: Date,

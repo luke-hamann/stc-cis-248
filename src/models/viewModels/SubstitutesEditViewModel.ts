@@ -18,10 +18,6 @@ export default class SubstitutesEditViewModel extends FormViewModel {
     this.substitutesIds = substituteIds;
   }
 
-  public get dateString(): string {
-    return this.date?.toISOString().substring(0, 10) ?? "";
-  }
-
   public static async fromRequest(
     request: Request,
   ): Promise<SubstitutesEditViewModel> {

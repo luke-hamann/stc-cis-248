@@ -10,6 +10,7 @@
     <div>
       <label for="colorId">Color</label>
       <select id="colorId" name="colorId">
+        <option {{ "checked" if not model.shiftContextNote.colorId }} >(none)</option>
         {% for color in model.colors %}
           <option value="{{ color.id }}"
             {{ "checked" if model.shiftContextNote.colorId == color.id }} >{{ color.name }}</option>

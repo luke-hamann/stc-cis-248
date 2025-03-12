@@ -25,7 +25,7 @@ export default class ColorEditViewModel extends FormViewModel {
     const formData = new FormDataWrapper(await request.formData());
     const id = formData.getInt("id") ?? 0;
     const name = formData.getString("name");
-    const hex = formData.getString("hex");
+    const hex = formData.getColorHex("hex");
     const color = new Color(id, name, hex);
     return new ColorEditViewModel(false, [], "", color);
   }

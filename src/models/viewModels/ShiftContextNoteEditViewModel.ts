@@ -24,7 +24,7 @@ export default class ShiftContextNoteEditViewModel extends FormViewModel {
     const formData = new FormDataWrapper(await request.formData());
 
     const note = formData.getString("note");
-    const colorId = formData.getInt("colorId") ?? 0;
+    const colorId = formData.getInt("colorId");
 
     const shiftContextNote = new ShiftContextNote(
       0,
