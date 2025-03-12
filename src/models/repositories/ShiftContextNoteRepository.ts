@@ -1,26 +1,38 @@
+import BetterDate from "../../_dates/BetterDate.ts";
 import Color from "../entities/Color.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import ShiftContextNote from "../entities/ShiftContextNote.ts";
+import Database from "./_Database.ts";
 import Repository from "./_Repository.ts";
+import { IColorRepository } from "./ColorRepository.ts";
+import ShiftContextRepository from "./ShiftContextRepository.ts";
 
 export interface IShiftContextNoteRow {
   shiftContextId: number;
-  shiftContextName: string;
   date: Date;
   note: string;
   colorId: number;
-  colorName: string;
-  colorHex: string;
 }
 
 export default class ShiftContextNoteRepository extends Repository {
+  private colors: IColorRepository;
+  private shiftContexts: ShiftContextRepository;
+
   /** Defines a generic SQL query for fetching all shift context notes */
   private readonly baseQuery = `
-    SELECT shiftContextId, sc.name shiftContextName, date, note, colorId, c.name colorName
-    FROM ShiftContextNotes scn
-      JOIN shiftcontexts sc ON scn.shiftContextId = sc.id
-      JOIN colors c ON scn.colorId = c.id
+    SELECT shiftContextId, date, note, colorId
+    FROM ShiftContextNotes
   `;
+
+  constructor(
+    database: Database,
+    colors: IColorRepository,
+    shiftContexts: ShiftContextRepository,
+  ) {
+    super(database);
+    this.colors = colors;
+    this.shiftContexts = shiftContexts;
+  }
 
   /**
    * Validate a shift context note
@@ -33,6 +45,22 @@ export default class ShiftContextNoteRepository extends Repository {
     return await Promise.resolve([]);
   }
 
+  private async populate(shiftContextNote: ShiftContextNote) {
+    const shiftContextId = shiftContextNote.shiftContextId;
+    if (shiftContextId) {
+      shiftContextNote.shiftContext = await this.shiftContexts.get(
+        shiftContextId,
+      );
+    }
+
+    const colorId = shiftContextNote.colorId;
+    if (colorId) {
+      shiftContextNote.color = await this.colors.get(colorId);
+    }
+
+    return shiftContextNote;
+  }
+
   /**
    * Convert a database row to a shift context note
    * @param row The database row
@@ -41,22 +69,18 @@ export default class ShiftContextNoteRepository extends Repository {
   private mapRowToShiftContextNote(
     row: IShiftContextNoteRow,
   ): ShiftContextNote {
-    const shiftContext = new ShiftContext(
-      row.shiftContextId,
-      row.shiftContextName,
-      "",
-      "",
-      "",
-    );
-    const color = new Color(row.colorId, row.colorName, row.colorHex);
+    row.date.setFullYear(row.date.getUTCFullYear());
+    row.date.setMonth(row.date.getUTCMonth());
+    row.date.setDate(row.date.getUTCDate());
+    row.date.setHours(0, 0, 0, 0);
 
     return new ShiftContextNote(
       row.shiftContextId,
-      shiftContext,
-      new Date(row.date),
+      null,
+      row.date,
       row.note,
       row.colorId,
-      color,
+      null,
     );
   }
 
@@ -73,7 +97,6 @@ export default class ShiftContextNoteRepository extends Repository {
 
   /**
    * Get a shift context note by its shift context id and date
-   *
    * @param shiftContextId The shift context id
    * @param date The date of the shift context note
    * @returns The shift context note
@@ -84,34 +107,45 @@ export default class ShiftContextNoteRepository extends Repository {
   ): Promise<ShiftContextNote | null> {
     const result = await this.database.execute(
       `${this.baseQuery} WHERE shiftContextId = ? AND date = ?`,
-      [shiftContextId, date.toISOString()],
+      [shiftContextId, date],
     );
 
     if (!result.rows || result.rows.length == 0) {
-      return null
+      return null;
     }
 
-    return this.mapRowToShiftContextNote(result.rows[0]);
+    return this.populate(this.mapRowToShiftContextNote(result.rows[0]));
   }
 
   /**
    * Get all the shift context notes within a date range
    * @param start The starting date of the range
    * @param end The ending date of the range
+   * @param shiftContextId The shift context id
    * @returns The array of shift context notes
    */
-  public async getInDateRange(
+  public async getFilter(
     start: Date,
     end: Date,
+    shiftContextId?: number,
   ): Promise<ShiftContextNote[]> {
+    let query = `${this.baseQuery} WHERE date BETWEEN ? AND ?`;
+    if (shiftContextId) query += " AND shiftContextId = ?";
+
     const result = await this.database.execute(
-      `${this.baseQuery} WHERE date BETWEEN ? AND ?`,
-      [start.toISOString(), end.toISOString()],
+      query,
+      [start, end, shiftContextId],
     );
 
     if (!result.rows) return [];
 
-    return this.mapRowsToShiftContextNotes(result.rows);
+    let shiftContextNotes = this.mapRowsToShiftContextNotes(result.rows);
+    shiftContextNotes = await Promise.all(
+      shiftContextNotes.map((shiftContextNote) =>
+        this.populate(shiftContextNote)
+      ),
+    );
+    return shiftContextNotes;
   }
 
   /**

@@ -1,106 +1,90 @@
 import Repository from "./_Repository.ts";
 import Substitute from "../entities/Substitute.ts";
 import TeamMember from "../entities/TeamMember.ts";
+import SubstituteList from "../entities/SubstituteList.ts";
 
-export interface ISubstituteRowShort {
-  teamMemberId: number;
-  date: string;
+export interface ISubstituteRow {
+  date: Date;
+  id: number;
   firstName: string;
+  middleName: string;
   lastName: string;
 }
 
 export default class SubstituteRepository extends Repository {
-  public async validate(substituteIds: number[]): Promise<string[]> {
+  private mapRowToSubstitute(row: ISubstituteRow): TeamMember {
+    return new TeamMember(
+      row.id,
+      row.firstName,
+      row.middleName,
+      row.lastName,
+      null,
+      "",
+      "",
+      false,
+      null,
+      null,
+      "",
+      "",
+      false,
+    );
+  }
+
+  private mapRowsToSubstitutes(rows: ISubstituteRow[]): TeamMember[] {
+    return rows.map((row) => this.mapRowToSubstitute(row));
+  }
+
+  /**
+   * Validate a list of team member ids to use as substitutes
+   * @param teamMemberIds The list of team member ids
+   * @returns A promise of an array of error messages
+   */
+  public async validate(substituteList: SubstituteList): Promise<string[]> {
     return await Promise.resolve([]);
   }
 
-  public async getIds(date: Date): Promise<number[]> {
+  public async getSubstituteList(date: Date): Promise<SubstituteList> {
     const result = await this.database.execute(
       `
-        SELECT teamMemberId
-        FROM Substitutes
-        WHERE date = ?
+        SELECT t.id, t.firstName, t.middleName, t.lastName
+        FROM Substitutes s
+        JOIN TeamMembers t ON s.teamMemberId = t.id
+        WHERE s.date = ?
       `,
       [date],
     );
 
-    if (!result.rows) return [];
+    if (!result.rows) return new SubstituteList(date, []);
 
-    return (result.rows as unknown as { teamMemberId: number }[]).map((row) =>
-      row.teamMemberId
-    );
+    return new SubstituteList(date, this.mapRowsToSubstitutes(result.rows));
   }
 
-  public async updateIds(
-    date: Date,
-    teamMemberIds: number[],
-  ): Promise<void> {
+  public async update(substituteList: SubstituteList): Promise<void> {
     await this.database.execute(
       `
         DELETE FROM Substitutes
         WHERE date = ?
       `,
-      [date],
+      [substituteList.date],
     );
 
-    for (const teamMemberId of teamMemberIds) {
+    for (const teamMember of substituteList.teamMembers) {
       await this.database.execute(
         `
           INSERT INTO Substitutes (teamMemberId, date)
           VALUES (?, ?)
         `,
-        [teamMemberId, date],
+        [teamMember.id, substituteList.date],
       );
     }
   }
 
-  public async getInDateRange(
-    start: Date,
-    end: Date,
-  ): Promise<Substitute[]> {
-    const result = await this.database.execute(
-      `
-        SELECT teamMemberId, date, firstName, lastName
-        FROM Substitutes s
-        JOIN TeamMembers t ON s.teamMemberId = t.id
-        WHERE date BETWEEN ? AND ?
-      `,
-      [start, end]
-    );
-
-    if (!result.rows) return [];
-
-    const rows: ISubstituteRowShort[] = result.rows;
-
-    return rows.map((row) => {
-      const date = new Date(row.date);
-      const teamMember = new TeamMember(
-        row.teamMemberId,
-        row.firstName,
-        "",
-        row.lastName,
-        null,
-        "",
-        "",
-        false,
-        null,
-        null,
-        "",
-        "",
-        false,
-      );
-      return new Substitute(row.teamMemberId, teamMember, date);
-    });
-  }
-
-  public async getOnDate(date: Date): Promise<Substitute[]> {
-    return await this.getInDateRange(date, date);
-  }
-
-  public async deleteInDateRange(
-    start: Date,
-    end: Date,
-  ): Promise<void> {
+  /**
+   * Deletes all substitutes within a date range
+   * @param start Starting date
+   * @param end Ending date
+   */
+  public async deleteDateRange(start: Date, end: Date): Promise<void> {
     await this.database.execute(
       `
         DELETE FROM Substitutes

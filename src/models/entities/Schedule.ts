@@ -1,43 +1,52 @@
 import ShiftContext from "./ShiftContext.ts";
 import ShiftContextNote from "./ShiftContextNote.ts";
-import Substitute from "./Substitute.ts";
+import SubstituteList from "./SubstituteList.ts";
 import TimeSlot from "./TimeSlot.ts";
 
-export class DailyEntry {
-  public shiftContextNote: ShiftContextNote | null;
-  public timeSlots: TimeSlot[];
+export type ScheduleCellType =
+  | "string"
+  | "header"
+  | "dateHeader"
+  | "ShiftContext"
+  | "ShiftContextNote"
+  | "SubstituteList";
 
-  constructor(shiftContextNote: ShiftContextNote | null, timeSlots: TimeSlot[]) {
-    this.shiftContextNote = shiftContextNote;
-    this.timeSlots = timeSlots;
+export type ScheduleCellContent =
+  | string
+  | Date
+  | ShiftContext
+  | ShiftContextNote
+  | TimeSlot
+  | SubstituteList;
+
+export class ScheduleCell {
+  public type: ScheduleCellType;
+  public content: ScheduleCellContent;
+
+  constructor(type: ScheduleCellType, content: ScheduleCellContent) {
+    this.type = type;
+    this.content = content;
   }
 }
 
-export class ShiftContextData {
-  public shiftContext: ShiftContext;
-  public dailyEntries: DailyEntry[];
-
-  constructor(shiftContext: ShiftContext, dailyData: DailyEntry[]) {
-    this.shiftContext = shiftContext;
-    this.dailyEntries = dailyData;
-  }
-}
+export type ScheduleRow = ScheduleCell[];
+export type ScheduleTable = ScheduleRow[];
 
 export default class Schedule {
-  public startDate: Date;
-  public endDate: Date;
-  public shiftContextData: ShiftContextData[];
-  public substitutes: Substitute[][];
+  public title: string;
+  public start: Date;
+  public end: Date;
+  public table: ScheduleTable;
 
-  constructor(
-    startDate: Date,
-    endDate: Date,
-    shiftContextData: ShiftContextData[],
-    substitutes: Substitute[][],
+  public constructor(
+    title: string,
+    start: Date,
+    end: Date,
+    table: ScheduleTable,
   ) {
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.shiftContextData = shiftContextData;
-    this.substitutes = substitutes;
+    this.title = title;
+    this.start = start;
+    this.end = end;
+    this.table = table;
   }
 }

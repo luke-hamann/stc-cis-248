@@ -6,16 +6,19 @@ import ShiftContextNote from "../entities/ShiftContextNote.ts";
 export default class ShiftContextNoteEditViewModel extends FormViewModel {
   shiftContextNote: ShiftContextNote;
   colors: Color[];
+  weekStart: Date;
 
   public constructor(
     errors: string[],
     csrf_token: string,
     shiftContextNote: ShiftContextNote,
     colors: Color[],
+    weekStart: Date,
   ) {
     super(true, errors, csrf_token);
     this.shiftContextNote = shiftContextNote;
     this.colors = colors;
+    this.weekStart = weekStart;
   }
 
   public static async fromRequest(
@@ -35,6 +38,12 @@ export default class ShiftContextNoteEditViewModel extends FormViewModel {
       null,
     );
 
-    return new ShiftContextNoteEditViewModel([], "", shiftContextNote, []);
+    return new ShiftContextNoteEditViewModel(
+      [],
+      "",
+      shiftContextNote,
+      [],
+      new Date(),
+    );
   }
 }

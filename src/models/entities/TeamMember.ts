@@ -63,6 +63,10 @@ export default class TeamMember {
     );
   }
 
+  public toString(): string {
+    return this.fullName;
+  }
+
   public get fullName(): string {
     return this.firstName + " " + this.lastName;
   }

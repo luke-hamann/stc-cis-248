@@ -1,7 +1,8 @@
 import DateLib from "../../_dates/DateLib.ts";
 import Schedule, {
-  DailyEntry,
-  ShiftContextData,
+  ScheduleCell,
+  ScheduleRow,
+  ScheduleTable,
 } from "../entities/Schedule.ts";
 import ShiftContextNote from "../entities/ShiftContextNote.ts";
 import ShiftContextNoteRepository from "./ShiftContextNoteRepository.ts";
@@ -10,6 +11,7 @@ import Substitute from "../entities/Substitute.ts";
 import SubstituteRepository from "./SubstituteRepository.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotRepository from "./TimeSlotRepository.ts";
+import ShiftContext from "../entities/ShiftContext.ts";
 
 export default class ScheduleRepository {
   private shiftContexts: ShiftContextRepository;
@@ -30,31 +32,56 @@ export default class ScheduleRepository {
   }
 
   public async getSchedule(start: Date, end: Date): Promise<Schedule> {
-    const schedule = new Schedule(start, end, [], []);
+    const table: ScheduleTable = [];
+    const dateList = DateLib.getDatesInRange(start, end);
 
-    // Get the shift context data
+    table.push([
+      new ScheduleCell("string", ""),
+      ...dateList.map((date) => new ScheduleCell("dateHeader", date)),
+    ]);
+
     const shiftContexts = await this.shiftContexts.list();
     for (const shiftContext of shiftContexts) {
-      const shiftContextData = new ShiftContextData(shiftContext, []);
-
-      for (const date of DateLib.getDatesInRange(start, end)) {
-        const entry = new DailyEntry(
-          await this.shiftContextNotes.get(shiftContext.id, date),
-          await this.timeSlots.list(shiftContext.id, date),
+      // Shift context header row
+      const row: ScheduleRow = [{
+        type: "ShiftContext",
+        content: shiftContext,
+      }];
+      for (const date of dateList) {
+        let shiftContextNote = await this.shiftContextNotes.get(
+          shiftContext.id,
+          date,
         );
-        shiftContextData.dailyEntries.push(entry);
+
+        if (shiftContextNote == null) {
+          shiftContextNote = new ShiftContextNote(
+            shiftContext.id,
+            null,
+            date,
+            "",
+            null,
+            null,
+          );
+        }
+
+        const cell = new ScheduleCell("ShiftContextNote", shiftContextNote);
+        row.push(cell);
       }
-
-      schedule.shiftContextData.push(shiftContextData);
+      table.push(row);
     }
 
-    // Get the substitutes by date
-    for (const date of DateLib.getDatesInRange(start, end)) {
-      schedule.substitutes.push(
-        await this.substitutes.getOnDate(date),
-      );
+    // Substitutes row
+    const substitutesRow: ScheduleRow = [{
+      type: "header",
+      content: "Substitutes",
+    }];
+    for (const date of dateList) {
+      const substituteList = await this.substitutes.getSubstituteList(date);
+      const cell = new ScheduleCell("SubstituteList", substituteList);
+      substitutesRow.push(cell);
     }
+    table.push(substitutesRow);
 
-    return schedule;
+    return new Schedule("", start, end, table);
   }
 }

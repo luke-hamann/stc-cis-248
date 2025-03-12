@@ -165,7 +165,7 @@ export default class TeamMemberController extends Controller {
       `/team-member/${id}/`,
       context.csrf_token,
     );
-    return this.HTMLResponse(context, "./views/shared/delete.html", model);
+    return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
   /**

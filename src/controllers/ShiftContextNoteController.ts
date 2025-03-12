@@ -72,7 +72,14 @@ export default class ShiftContextNoteController extends Controller {
       );
 
     if (shiftContextNote == null) {
-      shiftContextNote = new ShiftContextNote(shiftContextId, null, date, "", null, null);
+      shiftContextNote = new ShiftContextNote(
+        shiftContextId,
+        null,
+        date,
+        "",
+        null,
+        null,
+      );
     }
 
     const model = new ShiftContextNoteEditViewModel(
@@ -80,6 +87,7 @@ export default class ShiftContextNoteController extends Controller {
       context.csrf_token,
       shiftContextNote,
       await this.colorRepository.list(),
+      BetterDate.fromDate(date).floorToSunday().toDate(),
     );
 
     return this.HTMLResponse(
@@ -103,15 +111,14 @@ export default class ShiftContextNoteController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    if (await this.shiftContextNoteRepository.get(shiftContextId, date) == null) {
-      return this.NotFoundResponse(context);
-    }
-
     const model = await ShiftContextNoteEditViewModel.fromRequest(
       context.request,
     );
+    model.shiftContextNote.date = date;
 
-    model.errors = await this.shiftContextNoteRepository.validate(model.shiftContextNote);
+    model.errors = await this.shiftContextNoteRepository.validate(
+      model.shiftContextNote,
+    );
     if (!model.isValid()) {
       model.csrf_token = context.csrf_token;
       model.colors = await this.colorRepository.list();
@@ -129,7 +136,10 @@ export default class ShiftContextNoteController extends Controller {
       model.shiftContextNote,
     );
 
-    const newDate = new BetterDate(date.getTime()).toDateString().replaceAll('-', '/');
+    const newDate = new BetterDate(date.getTime()).toDateString().replaceAll(
+      "-",
+      "/",
+    );
     return this.RedirectResponse(context, `/schedule/${newDate}/`);
   }
 }

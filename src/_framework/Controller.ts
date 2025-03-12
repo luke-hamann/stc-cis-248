@@ -3,8 +3,6 @@ import { HTTPMethod } from "./HTTPMethod.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 import nunjucks from "npm:nunjucks";
 
-nunjucks.configure(".", { noCache: true });
-
 export default class Controller {
   protected routes: {
     method: HTTPMethod;
@@ -65,7 +63,7 @@ export default class Controller {
    * @returns The response wrapper object
    */
   protected NotFoundResponse(context: Context): ResponseWrapper {
-    context.response.body = nunjucks.render("./views/shared/404.html");
+    context.response.body = nunjucks.render("./views/_shared/404.html");
     context.response.status = 404;
     context.response.headers.set("Content-Type", "text/html");
     return context.response;

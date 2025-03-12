@@ -260,7 +260,7 @@ export default class TimeSlotController extends Controller {
       context.csrf_token,
     );
 
-    return this.HTMLResponse(context, "./views/shared/delete.html", model);
+    return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
   /**
@@ -328,9 +328,20 @@ export default class TimeSlotController extends Controller {
       model.includeTimeSlotNotes,
     );
 
+    let newShiftContextNotes = [];
+    if (model.includeShiftContextNotes) {
+      newShiftContextNotes = await this.shiftContextNotes.calculateCopy(
+        model.fromStartDate!,
+        model.fromEndDate!,
+        model.toStartDate!,
+        model.toEndDate!,
+      );
+    }
+
     // Preview mode
     if (!model.confirm) {
       model.newTimeSlots = newTimeSlots;
+      model.newShiftContextNotes = [];
       model.csrf_token = context.csrf_token;
       return this.HTMLResponse(
         context,
@@ -389,7 +400,7 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.deleteSubstitutes) {
-      this.substitutes.deleteInDateRange(model.startDate!, model.endDate!);
+      this.substitutes.deleteDateRange(model.startDate!, model.endDate!);
     }
 
     if (model.deleteShiftContextNotes) {

@@ -1,4 +1,3 @@
-import BetterDate from "../../_dates/BetterDate.ts";
 import Color from "./Color.ts";
 import ShiftContext from "./ShiftContext.ts";
 
@@ -24,5 +23,9 @@ export default class ShiftContextNote {
     this.note = note;
     this.colorId = colorId;
     this.color = color;
+  }
+
+  public toString() {
+    return this.note + " " + this.date;
   }
 }

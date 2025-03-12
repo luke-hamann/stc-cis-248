@@ -22,4 +22,8 @@ export default class ShiftContext {
   public static empty() {
     return new ShiftContext(0, "", "", "", "");
   }
+
+  public toString() {
+    return this.name;
+  }
 }

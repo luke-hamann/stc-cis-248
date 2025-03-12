@@ -35,13 +35,17 @@ const database = new Database();
 /** Repositories */
 
 const colorRepository = new ColorRepository(database);
-const shiftContextNoteRepository = new ShiftContextNoteRepository(database);
 const shiftContextPreferenceRepository = new ShiftContextPreferenceRepository(
   database,
 );
 const shiftContextRepository = new ShiftContextRepository(database);
 const substituteRepository = new SubstituteRepository(database);
 const teamMemberRepository = new TeamMemberRepository(database);
+const shiftContextNoteRepository = new ShiftContextNoteRepository(
+  database,
+  colorRepository,
+  shiftContextRepository,
+);
 const timeSlotRepository = new TimeSlotRepository(
   database,
   shiftContextRepository,

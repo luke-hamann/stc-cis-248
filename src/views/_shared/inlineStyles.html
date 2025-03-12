@@ -1,0 +1,1 @@
+{% macro inlineStyles(styles) %}style="{% for property, value in styles%}{{ property }}: {{ value }};{% endfor %}"{% endmacro %}

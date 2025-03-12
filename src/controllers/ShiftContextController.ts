@@ -135,7 +135,7 @@ export default class ShiftContextController extends Controller {
       "/contexts/",
       context.csrf_token,
     );
-    return this.HTMLResponse(context, "./views/shared/delete.html", model);
+    return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
   /**
