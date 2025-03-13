@@ -2,6 +2,7 @@ import ShiftContext from "./ShiftContext.ts";
 import ShiftContextNote from "./ShiftContextNote.ts";
 import SubstituteList from "./SubstituteList.ts";
 import TimeSlot from "./TimeSlot.ts";
+import TimeSlotGroup from "./TimeSlotGroup.ts";
 
 export type ScheduleCellType =
   | "string"

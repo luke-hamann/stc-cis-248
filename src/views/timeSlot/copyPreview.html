@@ -20,8 +20,7 @@
       <div>{{ timeSlot.startDateTime }}</div>
       <div>{{ timeSlot.endDateTime }}</div>
     </div>
-  {% else %}
-  </div>
+  {% endfor %}
   {% if model.includeShiftContextNotes %}
     <p>The following shift context notes will be created:</p>
     {% for shiftContextNote in model.newShiftContextNotes %}
@@ -50,7 +49,10 @@
     {% if model.includeTimeSlotNotes %}
       <input type="hidden" name="includeTimeSlotNotes" />
     {% endif %}
-    <input type="submit" value="Confirm" />
-    <a href="/schedule/">Cancel</a>
+    <div>
+      <input type="submit" value="Confirm" />
+      <a href="/schedule/copy/{{ formatDatePath(model.fromStartDate) }}/to/{{ formatDatePath(model.fromEndDate) }}/">Edit</a>
+      <a href="/schedule/{{ formatDatePath(model.fromStartDate) }}/">Cancel</a>
+    </div>
   </div>
 {% endblock %}
