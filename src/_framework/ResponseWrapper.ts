@@ -2,7 +2,7 @@
  * A class for representing a mutable HTTP response
  */
 export default class ResponseWrapper {
-  public body: ReadableStream | Uint8Array | string | null = null;
+  public body: ReadableStream | Uint8Array | ArrayBuffer | string | null = null;
   public headers: Map<string, string> = new Map<string, string>();
   public status: number | null = null;
 
