@@ -7,12 +7,9 @@ import Schedule, {
 import ShiftContextNote from "../entities/ShiftContextNote.ts";
 import ShiftContextNoteRepository from "./ShiftContextNoteRepository.ts";
 import ShiftContextRepository from "./ShiftContextRepository.ts";
-import Substitute from "../entities/Substitute.ts";
 import SubstituteRepository from "./SubstituteRepository.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotRepository from "./TimeSlotRepository.ts";
-import ShiftContext from "../entities/ShiftContext.ts";
-import TimeSlotGroup from "../entities/TimeSlotGroup.ts";
 
 export default class ScheduleRepository {
   private shiftContexts: ShiftContextRepository;
@@ -36,6 +33,7 @@ export default class ScheduleRepository {
     const scheduleTable: ScheduleTable = [];
     const dateList = DateLib.getDatesInRange(start, end);
 
+    // column headers
     scheduleTable.push([
       new ScheduleCell("string", ""),
       ...dateList.map((date) => new ScheduleCell("dateHeader", date)),
@@ -75,14 +73,14 @@ export default class ScheduleRepository {
       scheduleTable.push(row);
 
       // Time slot groups under shift context
-      const timeSlotGroups = await this.timeSlots.getGroups(
+      const groups = await this.timeSlots.getByGroups(
         shiftContext.id,
         start,
         end,
       );
-      for (const timeSlotGroup of timeSlotGroups) {
-        const timeSlotsByDay: (TimeSlot | null)[][] = await this.timeSlots
-          .getInGroup(timeSlotGroup);
+      for (const group of groups) {
+        const timeSlotGroup = group.timeSlotGroup;
+        const timeSlotsByDay = group.timeSlotsByDay as (TimeSlot | null)[][];
 
         const rowCount = timeSlotsByDay.length;
         const colCount = Math.max(

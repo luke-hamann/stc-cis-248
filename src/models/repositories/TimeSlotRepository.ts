@@ -1,4 +1,3 @@
-import BetterDate from "../../_dates/BetterDate.ts";
 import DateLib from "../../_dates/DateLib.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotGroup from "../entities/TimeSlotGroup.ts";
@@ -328,11 +327,20 @@ export default class TimeSlotRepository extends Repository {
     return destinationTimeSlots;
   }
 
-  public async getGroups(
+  /**
+   * Gets time slots by grouping and then by date for a given shift context and date range
+   * @param shiftContextId The shift context
+   * @param startDate The starting date
+   * @param endDate The ending date
+   * @returns Time slot groups with their cooresponsponding time slots broken down by day
+   */
+  public async getByGroups(
     shiftContextId: number,
-    start: Date,
-    end: Date,
-  ): Promise<TimeSlotGroup[]> {
+    startDate: Date,
+    endDate: Date,
+  ): Promise<{ timeSlotGroup: TimeSlotGroup; timeSlotsByDay: TimeSlot[][] }[]> {
+    // Calculate groupings
+
     const result = await this.database.execute(
       `
         SELECT TIME(startDateTime) startTime, TIME(endDateTime) endTime, requiresAdult
@@ -342,53 +350,67 @@ export default class TimeSlotRepository extends Repository {
         GROUP BY 1, 2, 3
         ORDER BY 1, 2, 3 DESC
       `,
-      [shiftContextId, start, end],
+      [shiftContextId, startDate, endDate],
     );
 
     if (!result.rows || result.rows.length == 0) return [];
 
-    return result.rows.map((row: ITimeSlotGroupRow) =>
+    const timeSlotGroups = result.rows.map((row: ITimeSlotGroupRow) =>
       new TimeSlotGroup(
         shiftContextId,
-        start,
-        end,
+        startDate,
+        endDate,
         row.startTime,
         row.endTime,
         row.requiresAdult == 1,
       )
     );
-  }
 
-  public async getInGroup(g: TimeSlotGroup): Promise<TimeSlot[][]> {
-    const table: TimeSlot[][] = [];
+    // Organize time slots by grouping and then by date within date range
 
-    for (const date of DateLib.getDatesInRange(g.windowStart, g.windowEnd)) {
-      const result = await this.database.execute(
-        `
-          ${this.baseQuery}
-          WHERE shiftContextId = ?
-            AND DATE(startDateTime) = ?
-            AND TIME(startDateTime) = ?
-            AND TIME(endDateTime) = ?
-            AND requiresAdult = ?
-        `,
-        [g.shiftContextId, date, g.startTime, g.endTime, g.requiresAdult],
-      );
+    const output: {
+      timeSlotGroup: TimeSlotGroup;
+      timeSlotsByDay: TimeSlot[][];
+    }[] = [];
+    for (const timeSlotGroup of timeSlotGroups) {
+      const table: TimeSlot[][] = [];
 
-      if (!result.rows || result.rows.length == 0) {
-        table.push([]);
-        continue;
+      for (const date of DateLib.getDatesInRange(startDate, endDate)) {
+        const result = await this.database.execute(
+          `
+            ${this.baseQuery}
+            WHERE shiftContextId = ?
+              AND DATE(startDateTime) = ?
+              AND TIME(startDateTime) = ?
+              AND TIME(endDateTime) = ?
+              AND requiresAdult = ?
+          `,
+          [
+            timeSlotGroup.shiftContextId,
+            date,
+            timeSlotGroup.startTime,
+            timeSlotGroup.endTime,
+            timeSlotGroup.requiresAdult,
+          ],
+        );
+
+        if (!result.rows || result.rows.length == 0) {
+          table.push([]);
+          continue;
+        }
+
+        const timeSlots = await Promise.all(
+          this.mapRowsToTimeSlots(result.rows).map((timeSlot) =>
+            this.populate(timeSlot)
+          ),
+        );
+
+        table.push(timeSlots);
       }
 
-      const timeSlots = await Promise.all(
-        this.mapRowsToTimeSlots(result.rows).map((timeSlot) =>
-          this.populate(timeSlot)
-        ),
-      );
-
-      table.push(timeSlots);
+      output.push({ timeSlotGroup: timeSlotGroup, timeSlotsByDay: table });
     }
 
-    return table;
+    return output;
   }
 }
