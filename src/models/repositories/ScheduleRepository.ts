@@ -35,8 +35,10 @@ export default class ScheduleRepository {
 
     // column headers
     scheduleTable.push([
-      new ScheduleCell("string", ""),
-      ...dateList.map((date) => new ScheduleCell("dateHeader", date)),
+      { type: "string", content: "" },
+      ...dateList.map((
+        date,
+      ) => ({ type: "dateHeader", content: date } as ScheduleCell)),
     ]);
 
     const shiftContexts = await this.shiftContexts.list();
@@ -65,7 +67,10 @@ export default class ScheduleRepository {
           );
         }
 
-        const cell = new ScheduleCell("ShiftContextNote", shiftContextNote);
+        const cell: ScheduleCell = {
+          type: "ShiftContextNote",
+          content: shiftContextNote,
+        };
         row.push(cell);
       }
 
@@ -109,9 +114,9 @@ export default class ScheduleRepository {
           for (let colNum = 0; colNum < colCount; colNum++) {
             const timeSlot = timeSlotsByDay[rowNum][colNum];
 
-            let newCell = new ScheduleCell("string", "");
+            let newCell: ScheduleCell = { type: "string", content: "" };
             if (timeSlot) {
-              newCell = new ScheduleCell("TimeSlot", timeSlot);
+              newCell = { type: "TimeSlot", content: timeSlot };
             }
 
             // Swapped row and column to transpose array
@@ -122,7 +127,7 @@ export default class ScheduleRepository {
         // Insert header cell at start of each row
         for (let i = 0; i < targetArray.length; i++) {
           targetArray[i].unshift(
-            new ScheduleCell("TimeSlotGroup", timeSlotGroup),
+            { type: "TimeSlotGroup", content: timeSlotGroup },
           );
         }
 
@@ -137,7 +142,10 @@ export default class ScheduleRepository {
     }];
     for (const date of dateList) {
       const substituteList = await this.substitutes.getSubstituteList(date);
-      const cell = new ScheduleCell("SubstituteList", substituteList);
+      const cell: ScheduleCell = {
+        type: "SubstituteList",
+        content: substituteList,
+      };
       substitutesRow.push(cell);
     }
     scheduleTable.push(substitutesRow);

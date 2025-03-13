@@ -1,11 +1,11 @@
+import BetterDate from "../_dates/BetterDate.ts";
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import DateLib from "../_dates/DateLib.ts";
 import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
 import ScheduleWeekViewModel from "../models/viewModels/ScheduleWeekViewModel.ts";
 import ScheduleYearViewModel from "../models/viewModels/ScheduleYearViewModel.ts";
-import ScheduleExportViewModel from "../models/viewModels/ScheduleExportViewModel.ts";
-import BetterDate from "../_dates/BetterDate.ts";
+import ScheduleExportFormViewModel from "../models/viewModels/ScheduleExportViewModel.ts";
 
 export default class ScheduleController extends Controller {
   private schedules: ScheduleRepository;
@@ -121,12 +121,13 @@ export default class ScheduleController extends Controller {
     const endBetterDate = BetterDate.fromDate(end);
     const title =
       `Schedule ${startBetterDate.toDateString()} through ${endBetterDate.toDateString()}`;
-    const model = new ScheduleExportViewModel(
+    const model = new ScheduleExportFormViewModel(
       title,
       startBetterDate,
       endBetterDate,
       null,
       context.csrf_token,
+      [],
     );
 
     return this.HTMLResponse(context, "./views/schedule/export.html", model);
@@ -136,5 +137,79 @@ export default class ScheduleController extends Controller {
    * Schedule export POST
    */
   public async exportPost(context: Context) {
+    const model = await ScheduleExportFormViewModel.fromRequest(
+      context.request,
+    );
+
+    model.validate();
+    if (!model.isValid()) {
+      model.csrf_token = context.csrf_token;
+      return this.HTMLResponse(context, "./views/schedule/export.html", model);
+    }
+
+    const schedule = await this.schedules.getSchedule(
+      model.startDate!.toDate(),
+      model.endDate!.toDate(),
+    );
+
+    if (model.format == "csv") {
+      // Map the schedule table to a 2-dimensional array of strings
+      const destinationTable: string[][] = [];
+      for (const sourceRow of schedule.table) {
+        const destinationRow: string[] = [];
+        for (const sourceCell of sourceRow) {
+          let destinationCell: string = "";
+          switch (sourceCell.type) {
+            case "string":
+              destinationCell = sourceCell.content;
+              break;
+            case "header":
+              destinationCell = sourceCell.content;
+              break;
+            case "dateHeader":
+              destinationCell = BetterDate.fromDate(sourceCell.content)
+                .toDateString();
+              break;
+            case "ShiftContext":
+              destinationCell = sourceCell.content.name;
+              break;
+            case "ShiftContextNote":
+              destinationCell = sourceCell.content.note;
+              break;
+            case "TimeSlotGroup":
+              destinationCell =
+                `${sourceCell.content.startTime} - ${sourceCell.content.endTime}${
+                  sourceCell.content.requiresAdult ? "\nj(18+)" : ""
+                }`;
+              break;
+            case "TimeSlot":
+              destinationCell = sourceCell.content.teamMember?.fullName ?? "";
+              break;
+            case "SubstituteList":
+              destinationCell = sourceCell.content.teamMembers.map((t) =>
+                t.fullName
+              ).join("\n");
+              break;
+          }
+          destinationRow.push(destinationCell);
+        }
+        destinationTable.push(destinationRow);
+      }
+
+      const csvContents = destinationTable.map((row) =>
+        row.map((cell) => cell.replaceAll('"', '""')).map((cell) => `"${cell}"`)
+          .join(",")
+      ).join("\n");
+
+      context.response.headers.set("Content-Type", "text/plain");
+      context.response.headers.set(
+        "Content-Disposition",
+        `attachment; filename="${model.title}.csv"`,
+      );
+      context.response.body = csvContents;
+      return context.response;
+    } else if (model.format == "excel") {
+      ;
+    }
   }
 }

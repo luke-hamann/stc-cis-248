@@ -8,14 +8,21 @@
 {% block content %}
   <h1>{{ title }}</h1>
   <form method="post">
+    {% if model.errors %}
+      <ul>
+        {% for error in model.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
     {{ field("title", model.title, "text", "Title") }}
-    {{ field("startDate", model.startDate, "date", "Start date") }}
-    {{ field("endDate", model.endDate, "date", "End date") }}
+    {{ field("startDate", model.startDate.toDateString(), "date", "Start date") }}
+    {{ field("endDate", model.endDate.toDateString(), "date", "End date") }}
     <div>
-      <label for="format">Format</label>
+      <label for="format" id="format">Format</label>
       <select name="format">
-        <option value="excel">Excel</option>
-        <option value="csv">CSV</option>
+        <option value="excel" {{ "selected" if model.format == "excel" }} >Excel</option>
+        <option value="csv" {{ "selected" if model.format == "csv" }} >CSV</option>
       </select>
     </div>
     <div>

@@ -4,34 +4,15 @@ import SubstituteList from "./SubstituteList.ts";
 import TimeSlot from "./TimeSlot.ts";
 import TimeSlotGroup from "./TimeSlotGroup.ts";
 
-export type ScheduleCellType =
-  | "string"
-  | "header"
-  | "dateHeader"
-  | "ShiftContext"
-  | "ShiftContextNote"
-  | "TimeSlotGroup"
-  | "TimeSlot"
-  | "SubstituteList";
-
-export type ScheduleCellContent =
-  | string
-  | Date
-  | ShiftContext
-  | ShiftContextNote
-  | TimeSlotGroup
-  | TimeSlot
-  | SubstituteList;
-
-export class ScheduleCell {
-  public type: ScheduleCellType;
-  public content: ScheduleCellContent;
-
-  constructor(type: ScheduleCellType, content: ScheduleCellContent) {
-    this.type = type;
-    this.content = content;
-  }
-}
+export type ScheduleCell =
+  | { type: "string"; content: string }
+  | { type: "header"; content: string }
+  | { type: "dateHeader"; content: Date }
+  | { type: "ShiftContext"; content: ShiftContext }
+  | { type: "ShiftContextNote"; content: ShiftContextNote }
+  | { type: "TimeSlotGroup"; content: TimeSlotGroup }
+  | { type: "TimeSlot"; content: TimeSlot }
+  | { type: "SubstituteList"; content: SubstituteList };
 
 export type ScheduleRow = ScheduleCell[];
 export type ScheduleTable = ScheduleRow[];
