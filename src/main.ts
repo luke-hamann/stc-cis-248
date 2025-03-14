@@ -59,8 +59,12 @@ const unavailabilityRepository = new UnavailabilityRepository(database);
 const scheduleRepository = new ScheduleRepository(
   shiftContextRepository,
   shiftContextNoteRepository,
-  timeSlotRepository,
+  shiftContextPreferenceRepository,
   substituteRepository,
+  teamMemberRepository,
+  timeSlotRepository,
+  typicalAvailabilityRepository,
+  unavailabilityRepository,
 );
 
 /** Controllers */
@@ -84,6 +88,7 @@ const controllers: Controller[] = [
     shiftContextRepository,
     teamMemberRepository,
     colorRepository,
+    scheduleRepository,
     shiftContextNoteRepository,
     substituteRepository,
     timeSlotRepository,
@@ -124,7 +129,7 @@ async function fetch(request: Request): Promise<Response> {
   // 404 Page
   response = new ResponseWrapper();
   response.status = 404;
-  response.headers.set("Context-Type", "text/plain");
+  response.headers.set("Content-Type", "text/plain");
   response.body = "404 Not Found";
   return response.toResponse();
 }

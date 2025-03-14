@@ -76,10 +76,7 @@
             {% endif %}
 
             {% if type == "TimeSlot" %}
-              <p>{{ data.startDateTime }}</p>
-              <p>{{ data.endDateTime }}</p>
-              <p>{{ "18+" if data.requiresAdult }}</p>
-              <p>{{ data.id }}</p>
+              <p>{{ data.teamMember.fullName if data.teamMember else "(unassigned)" }}</p>
               <div>
                 <a href="/schedule/time-slot/{{ data.id }}/">Edit</a>
                 <a href="/schedule/time-slot/{{ data.id }}/delete/">Delete</a>

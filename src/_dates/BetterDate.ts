@@ -13,6 +13,10 @@ export default class BetterDate {
     return new Date(this._date.getTime());
   }
 
+  /**
+   * Formats the date in "YYYY-MM-DD" format
+   * @returns The date string
+   */
   public toDateString(): string {
     const year = this._date.getFullYear();
     const month = (this._date.getMonth() + 1).toString().padStart(2, "0");

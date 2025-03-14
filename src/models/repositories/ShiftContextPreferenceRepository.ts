@@ -11,6 +11,11 @@ export default class ShiftContextPreferenceRepository extends Repository {
     return await Promise.resolve([]);
   }
 
+  /**
+   * Gets the ids of preferable and unpreferable shift contexts given a team member
+   * @param teamMemberId
+   * @returns
+   */
   public async get(
     teamMemberId: number,
   ): Promise<{ preferable: number[]; unpreferable: number[] }> {
@@ -36,6 +41,11 @@ export default class ShiftContextPreferenceRepository extends Repository {
     return { preferable, unpreferable };
   }
 
+  /**
+   * Updates the ids of preferable and unpreferable shift contexts given a team member
+   * @param teamMemberId
+   * @param shiftContextPreferences
+   */
   public async update(
     teamMemberId: number,
     shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
@@ -67,5 +77,28 @@ export default class ShiftContextPreferenceRepository extends Repository {
         [teamMemberId, shiftContextId],
       );
     }
+  }
+
+  public async getPreference(
+    teamMemberId: number,
+    shiftContextId: number | null,
+  ): Promise<"positive" | "negative" | "neutral" | "unknown"> {
+    if (shiftContextId == null) return "unknown";
+
+    const result = await this.database.execute(
+      `
+        SELECT isPreference
+        FROM TeamMemberShiftContextPreferences
+        WHERE teamMemberId = ?
+          AND shiftContextId = ?
+      `,
+      [teamMemberId, shiftContextId],
+    );
+
+    if (!result.rows || result.rows.length == 0) return "neutral";
+
+    const isPreference = result.rows[0].isPreference == 1;
+
+    return isPreference ? "positive" : "negative";
   }
 }

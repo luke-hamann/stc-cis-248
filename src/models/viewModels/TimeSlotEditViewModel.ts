@@ -5,10 +5,12 @@ import ShiftContext from "../entities/ShiftContext.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import BetterDate from "../../_dates/BetterDate.ts";
+import Recommendation from "../entities/Recommendation.ts";
 
 export default class TimeSlotEditViewModel extends FormViewModel {
   shiftContexts: ShiftContext[];
   teamMembers: TeamMember[];
+  recommendations: Recommendation[];
   colors: Color[];
   timeSlot: TimeSlot;
   newColor: Color | null;
@@ -17,6 +19,7 @@ export default class TimeSlotEditViewModel extends FormViewModel {
   constructor(
     shiftContexts: ShiftContext[],
     teamMembers: TeamMember[],
+    recommendations: Recommendation[],
     colors: Color[],
     timeSlot: TimeSlot,
     newColor: Color | null,
@@ -28,6 +31,7 @@ export default class TimeSlotEditViewModel extends FormViewModel {
     super(isEdit, errors, csrf_token);
     this.shiftContexts = shiftContexts;
     this.teamMembers = teamMembers;
+    this.recommendations = recommendations;
     this.colors = colors;
     this.timeSlot = timeSlot;
     this.newColor = newColor;
@@ -37,6 +41,7 @@ export default class TimeSlotEditViewModel extends FormViewModel {
   public static async fromRequest(request: Request) {
     const formData = new FormDataWrapper(await request.formData());
 
+    const timeSlotId = formData.getInt("timeSlotId") ?? 0;
     const shiftContextId = formData.getInt("shiftContextId") ?? 0;
     const date = formData.getDate("date");
     const startTime = formData.getTime("startTime");
@@ -61,7 +66,7 @@ export default class TimeSlotEditViewModel extends FormViewModel {
     }
 
     const timeSlot = new TimeSlot(
-      0,
+      timeSlotId,
       shiftContextId,
       null,
       startDateTime,
@@ -80,6 +85,7 @@ export default class TimeSlotEditViewModel extends FormViewModel {
     }
 
     return new TimeSlotEditViewModel(
+      [],
       [],
       [],
       [],

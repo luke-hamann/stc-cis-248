@@ -10,23 +10,43 @@ import ShiftContextRepository from "./ShiftContextRepository.ts";
 import SubstituteRepository from "./SubstituteRepository.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotRepository from "./TimeSlotRepository.ts";
+import TeamMemberRepository from "./TeamMemberRepository.ts";
+import Recommendation, {
+  FieldName,
+  FieldStatus,
+} from "../entities/Recommendation.ts";
+import TypicalAvailabilityRepository from "./TypicalAvailabilityRepository.ts";
+import UnavailabilityRepository from "./UnavailabilityRepository.ts";
+import ShiftContextPreferenceRepository from "./ShiftContextPreferenceRepository.ts";
 
 export default class ScheduleRepository {
   private shiftContexts: ShiftContextRepository;
   private shiftContextNotes: ShiftContextNoteRepository;
-  private timeSlots: TimeSlotRepository;
+  private shiftContextPreferences: ShiftContextPreferenceRepository;
   private substitutes: SubstituteRepository;
+  private teamMembers: TeamMemberRepository;
+  private timeSlots: TimeSlotRepository;
+  private typicalAvailability: TypicalAvailabilityRepository;
+  private unavailability: UnavailabilityRepository;
 
   constructor(
-    shiftContextRepository: ShiftContextRepository,
-    shiftContextNoteRepository: ShiftContextNoteRepository,
-    timeSlotRepository: TimeSlotRepository,
-    substituteRepository: SubstituteRepository,
+    shiftContexts: ShiftContextRepository,
+    shiftContextNotes: ShiftContextNoteRepository,
+    shiftContextPreferences: ShiftContextPreferenceRepository,
+    substitutes: SubstituteRepository,
+    teamMembers: TeamMemberRepository,
+    timeSlots: TimeSlotRepository,
+    typicalAvailability: TypicalAvailabilityRepository,
+    unavailability: UnavailabilityRepository,
   ) {
-    this.shiftContexts = shiftContextRepository;
-    this.shiftContextNotes = shiftContextNoteRepository;
-    this.timeSlots = timeSlotRepository;
-    this.substitutes = substituteRepository;
+    this.shiftContexts = shiftContexts;
+    this.shiftContextNotes = shiftContextNotes;
+    this.shiftContextPreferences = shiftContextPreferences;
+    this.substitutes = substitutes;
+    this.teamMembers = teamMembers;
+    this.timeSlots = timeSlots;
+    this.typicalAvailability = typicalAvailability;
+    this.unavailability = unavailability;
   }
 
   public async getSchedule(start: Date, end: Date): Promise<Schedule> {
@@ -151,5 +171,77 @@ export default class ScheduleRepository {
     scheduleTable.push(substitutesRow);
 
     return new Schedule("", start, end, scheduleTable);
+  }
+
+  public async getRecommendations(
+    timeSlot: TimeSlot,
+  ): Promise<Recommendation[]> {
+    const teamMembers = await this.teamMembers.list();
+
+    const recommendations: Recommendation[] = [];
+    for (const teamMember of teamMembers) {
+      const recommendation = new Recommendation(
+        teamMember,
+        new Map<FieldName, FieldStatus>(),
+      );
+
+      // Age restriction
+
+      if (!timeSlot.requiresAdult) {
+        recommendation.fields.set("adult", "neutral");
+      } else if (
+        teamMember.birthDate == null || timeSlot.startDateTime == null
+      ) {
+        recommendation.fields.set("adult", "unknown");
+      } else {
+        const age = DateLib.getAge(
+          teamMember.birthDate,
+          timeSlot.startDateTime,
+        );
+        const isAdult = age >= 18;
+        const result = isAdult ? "positive" : "negative";
+        recommendation.fields.set("adult", result);
+      }
+
+      // Availability
+
+      const typicallyAvailable = await this.typicalAvailability.isAvailable(
+        teamMember,
+        timeSlot,
+      );
+      const speciallyAvailable = await this.unavailability.isAvailable(
+        teamMember,
+        timeSlot,
+      );
+
+      if (typicallyAvailable == "negative" || speciallyAvailable == "negative") {
+        recommendation.fields.set("available", "negative");
+      } else if (typicallyAvailable == "unknown" || speciallyAvailable == "unknown") {
+        recommendation.fields.set("available", "unknown");
+      } else {
+        recommendation.fields.set("available", "positive");
+      }
+
+      // Shift context preference
+
+      const preference = await this.shiftContextPreferences.getPreference(
+        teamMember.id,
+        timeSlot.shiftContextId,
+      );
+      recommendation.fields.set("prefers", preference);
+
+      // Scheduling conflicts
+
+      const hasConflict = await this.timeSlots.hasNoConflicts(
+        teamMember.id,
+        timeSlot,
+      );
+      recommendation.fields.set("conflict", hasConflict);
+
+      // Add the recommendation for the team member to the list of recommendations
+      recommendations.push(recommendation);
+    }
+
+    return recommendations;
   }
 }

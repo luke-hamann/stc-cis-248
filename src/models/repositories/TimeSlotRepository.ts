@@ -1,3 +1,4 @@
+import BetterDate from "../../_dates/BetterDate.ts";
 import DateLib from "../../_dates/DateLib.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotGroup from "../entities/TimeSlotGroup.ts";
@@ -412,5 +413,55 @@ export default class TimeSlotRepository extends Repository {
     }
 
     return output;
+  }
+
+  public async hasNoConflicts(
+    teamMemberId: number,
+    timeSlot: TimeSlot,
+  ): Promise<"positive" | "negative" | "unknown"> {
+    if (timeSlot.startDateTime == null || timeSlot.endDateTime == null) return "unknown";
+
+    const result = await this.database.execute(
+      `
+        ${this.baseQuery}
+        WHERE id != ?
+          AND teamMemberId = ?
+          AND (
+            startDateTime BETWEEN ? AND ?
+            OR endDateTime BETWEEN ? AND ?
+          )
+      `,
+      [
+        timeSlot.id,
+        teamMemberId,
+        timeSlot.startDateTime,
+        timeSlot.endDateTime,
+        timeSlot.startDateTime,
+        timeSlot.endDateTime,
+      ],
+    );
+
+    if (!result.rows || result.rows.length == 0) return "positive";
+
+    return "negative";
+  }
+
+  public async doesNotWork(teamMemberId: number, date: Date): Promise<boolean> {
+    const dateString = BetterDate.fromDate(date).toDateString();
+
+    const result = await this.database.execute(
+      `
+        SELECT 1
+        FROM TimeSlots
+        WHERE teamMemberId = ?
+          AND (
+            DATE(startDateTime) = ?
+            OR DATE(endDateTime) = ?
+          )
+      `,
+      [teamMemberId, dateString, dateString]
+    );
+
+    return (!result.rows || result.rows.length == 0);
   }
 }

@@ -219,17 +219,20 @@ export default class ScheduleController extends Controller {
       const workbook = new ExcelJS.Workbook();
       workbook.created = new Date();
       const worksheet = workbook.addWorksheet("Schedule");
-      
+
       worksheet.properties.defaultColWidth = 20;
       worksheet.getColumn(1).width = 35;
 
       for (const scheduleRow of schedule.table) {
-        const row = worksheet.addRow(scheduleRow.map(cell => this.cellToString(cell)));
-        
+        const row = worksheet.addRow(
+          scheduleRow.map((cell) => this.cellToString(cell)),
+        );
+
         row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
           cell.alignment = { wrapText: true };
 
-          const sourceCell = schedule.table[parseInt(cell.row) - 1][colNumber - 1];
+          const sourceCell =
+            schedule.table[parseInt(cell.row) - 1][colNumber - 1];
 
           if (
             ["dateHeader", "header", "ShiftContext"].includes(sourceCell.type)
@@ -243,7 +246,7 @@ export default class ScheduleController extends Controller {
             cell.fill = {
               type: "pattern",
               pattern: "solid",
-              fgColor: { argb }
+              fgColor: { argb },
             };
           }
         });

@@ -6,11 +6,13 @@ import Color from "../models/entities/Color.ts";
 import ShiftContextNote from "../models/entities/ShiftContextNote.ts";
 import TimeSlot from "../models/entities/TimeSlot.ts";
 import ColorRepository from "../models/repositories/ColorRepository.ts";
+import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
 import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
 import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
 import SubstituteRepository from "../models/repositories/SubstituteRepository.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
 import TimeSlotRepository from "../models/repositories/TimeSlotRepository.ts";
+import AssigneeRecommendationsViewModel from "../models/viewModels/AssigneeRecommendationsViewModel.ts";
 import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
 import ScheduleClearViewModel from "../models/viewModels/ScheduleClearViewModel.ts";
 import ScheduleCopyViewModel from "../models/viewModels/ScheduleCopyViewModel.ts";
@@ -20,6 +22,7 @@ export default class TimeSlotController extends Controller {
   private shiftContexts: ShiftContextRepository;
   private teamMembers: TeamMemberRepository;
   private colors: ColorRepository;
+  private schedules: ScheduleRepository;
   private shiftContextNotes: ShiftContextNoteRepository;
   private substitutes: SubstituteRepository;
   private timeSlots: TimeSlotRepository;
@@ -28,6 +31,7 @@ export default class TimeSlotController extends Controller {
     shiftContexts: ShiftContextRepository,
     teamMembers: TeamMemberRepository,
     colors: ColorRepository,
+    schedules: ScheduleRepository,
     shiftContextNotes: ShiftContextNoteRepository,
     substitutes: SubstituteRepository,
     timeSlots: TimeSlotRepository,
@@ -36,6 +40,7 @@ export default class TimeSlotController extends Controller {
     this.shiftContexts = shiftContexts;
     this.teamMembers = teamMembers;
     this.colors = colors;
+    this.schedules = schedules;
     this.shiftContextNotes = shiftContextNotes;
     this.substitutes = substitutes;
     this.timeSlots = timeSlots;
@@ -94,6 +99,11 @@ export default class TimeSlotController extends Controller {
           "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.clearPost,
       },
+      {
+        method: "POST",
+        pattern: "/schedule/time-slot/recommendations/",
+        action: this.previewRecommendations,
+      }
     ];
   }
 
@@ -129,12 +139,15 @@ export default class TimeSlotController extends Controller {
    * Schedule time slot add GET
    */
   public async addGet(context: Context) {
+    const timeSlot = TimeSlot.empty();
+
     const model = new TimeSlotEditViewModel(
       await this.shiftContexts.list(),
       await this.teamMembers.list(),
+      await this.schedules.getRecommendations(timeSlot),
       await this.colors.list(),
-      new TimeSlot(0, 0, null, null, null, false, null, null, "", null, null),
-      new Color(0, "", ""),
+      timeSlot,
+      Color.empty(),
       false,
       [],
       context.csrf_token,
@@ -188,6 +201,7 @@ export default class TimeSlotController extends Controller {
     const model = new TimeSlotEditViewModel(
       await this.shiftContexts.list(),
       await this.teamMembers.list(),
+      await this.schedules.getRecommendations(timeSlot),
       await this.colors.list(),
       timeSlot,
       null,
@@ -219,6 +233,7 @@ export default class TimeSlotController extends Controller {
     if (!model.isValid()) {
       model.shiftContexts = await this.shiftContexts.list();
       model.teamMembers = await this.teamMembers.list();
+      model.recommendations = await this.schedules.getRecommendations(model.timeSlot);
       model.colors = await this.colors.list();
       model.isEdit = true;
       model.csrf_token = context.csrf_token;
@@ -423,5 +438,15 @@ export default class TimeSlotController extends Controller {
 
     const url = this.getCancelLink(model.startDate!);
     return this.RedirectResponse(context, url);
+  }
+
+  /**
+   * Provide an HTML fragment with time slot recommendations
+   */
+  public async previewRecommendations(context: Context) {
+    const timeSlot = (await TimeSlotEditViewModel.fromRequest(context.request)).timeSlot;
+    const recommendations = await this.schedules.getRecommendations(timeSlot);
+    const model = new AssigneeRecommendationsViewModel(timeSlot, recommendations);
+    return this.HTMLResponse(context, "./views/timeSlot/assigneeRecommendations.html", model);
   }
 }

@@ -11,6 +11,29 @@
 
 {% block title %}{{ title }}{% endblock %}
 
+{% block scripts %}
+  <script>
+    document.addEventListener("DOMContentLoaded", (event) => {
+      const form = document.querySelector("form");
+      const slot = document.querySelector("#recommendations");
+      form.addEventListener("input", async (event) => {
+        // Do not fetch recommendations again if only the selected team member changed
+        if (event.target.name == "teamMemberId") return;
+
+        try {
+          const response = await fetch("/schedule/time-slot/recommendations/", {
+            method: "POST",
+            body: new FormData(form)
+          });
+          slot.innerHTML = await response.text();
+        } catch (e) {
+          console.log(e);
+        }
+      });
+    });
+  </script>
+{% endblock %}
+
 {% block content %}
   <h1>{{ title }}</h1>
   <form action="{{ action }}" method="post">
@@ -36,6 +59,7 @@
     {{ field("startTime", model.timeSlot.startTimeString, "time", "Start time") }}
     {{ field("endTime", model.timeSlot.endTimeString, "time", "End time") }}
     {{ field("requiresAdult", "", "checkbox", "Requires adult", model.timeSlot.requiresAdult) }}
+    {#
     <div>
       <label>Assignee</label>
       <div class="*:hidden hover:*:block">
@@ -52,6 +76,11 @@
           </div>
         {% endfor %}
       </div>
+    </div>
+    #}
+    <label>Assignee</label>
+    <div id="recommendations">
+      {% include "./assigneeRecommendations.html" %}
     </div>
     {{ field("note", model.timeSlot.note, "text", "Note") }}
     <div>
@@ -77,6 +106,7 @@
       }
     </script>
     <div>
+      <input type="hidden" name="timeSlotId" value="{{ model.timeSlot.id }}" />
       {{ csrf(model) }}
       <input type="submit" value="Save" />
       <a href="{{ model.cancel }}">Cancel</a>

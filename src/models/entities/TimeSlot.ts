@@ -42,6 +42,10 @@ export default class TimeSlot {
     this.color = color;
   }
 
+  public static empty(): TimeSlot {
+    return new TimeSlot(0, 0, null, null, null, false, null, null, "", null, null);
+  }
+
   public get startDateString(): string {
     return this.startDateTime
       ? BetterDate.fromDate(this.startDateTime).toDateString()
