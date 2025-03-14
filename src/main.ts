@@ -74,7 +74,10 @@ const controllers: Controller[] = [
   new SessionMiddleware(),
   new StaticFilesMiddleware(),
   new TeamMemberController(teamMemberRepository),
-  new TypicalAvailabilityController(),
+  new TypicalAvailabilityController(
+    teamMemberRepository,
+    typicalAvailabilityRepository,
+  ),
   new UnavailabilityController(),
   new ShiftContextController(shiftContextRepository),
   new ShiftContextPreferenceController(

@@ -1,6 +1,9 @@
 import TeamMember from "./TeamMember.ts";
 
-export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+const dayOfWeek = [0, 1, 2, 3, 4, 5, 6] as const;
+export type DayOfWeek = (typeof dayOfWeek)[number];
+// deno-lint-ignore no-explicit-any
+export const isDayOfWeek = (x: any): x is DayOfWeek => dayOfWeek.includes(x);
 
 export default class TypicalAvailability {
   public id: number = 0;

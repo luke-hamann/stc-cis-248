@@ -1,0 +1,38 @@
+{% extends "../_shared/_layout.html" %}
+
+{% set dayNames = [
+  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+] %}
+
+{% set title = "Availability of " + model.teamMember.fullName %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <div>
+    <a href="/team-member/{{ model.teamMember.id }}/availability/add/">
+      &plus; Add typical availability
+    </a>
+  </div>
+  {% set currentDayOfWeek = -1 %}
+  {% for typicalAvailability in model.typicalAvailabilities %}
+    {% if typicalAvailability.dayOfWeek > currentDayOfWeek %}
+      <h2>{{ dayNames[typicalAvailability.dayOfWeek] }}</h2>
+      {% set currentDayOfWeek = typicalAvailability.dayOfWeek %}
+    {% endif %}
+    <div>
+      <span>
+        {{ typicalAvailability.startTime }} - {{ typicalAvailability.endTime }}
+      </span>
+      <span>
+        <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/">
+          Edit
+        </a>
+        <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/delete/">
+          Delete
+        </a>
+      </span>
+    </div>
+  {% endfor %}
+{% endblock %}
