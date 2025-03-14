@@ -1,11 +1,12 @@
 {% extends "../_shared/_layout.html" %}
+{% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
 
-{% set title = model.teamMember.fullName %}
+{% set title = model.teamMember.fullName + " | Preferences" %}
 
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ model.teamMember.fullName }}</h1>
+  {{ teamMemberTabs(model.teamMember, "preferences") }}
   <form method="post">
     <table>
       <thead>

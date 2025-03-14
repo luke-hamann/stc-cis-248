@@ -1,23 +1,10 @@
 {% extends "../_shared/_layout.html" %}
+{% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
 
 {% block title %}{{ model.teamMember.fullName }}{% endblock %}
 
 {% block content %}
-  <h1>{{ model.teamMember.fullName }}</h1>
-  <ul>
-    <li>
-      <a href="/team-member/{{ model.teamMember.id }}/">Profile</a>
-    </li>
-    <li>
-      <a href="/team-member/{{ model.teamMember.id }}/preferences/">Preferences</a>
-    </li>
-    <li>
-      <a href="/team-member/{{ model.teamMember.id }}/availability/">Availability</a>
-    </li>
-    <li>
-      <a href="/team-member/{{ model.teamMember.id }}/unavailability/">Unavailability</a>
-    </li>
-  </ul>
+  {{ teamMemberTabs(model.teamMember, "profile") }}
   <div>
     <div>First</div>
     <div>{{ model.teamMember.firstName }}</div>

@@ -1,14 +1,14 @@
 {% extends "../_shared/_layout.html" %}
 
-{% block title %}{{ model.year }}{% endblock %}
+{% block title %}{{ model.title }}{% endblock %}
 
 {% block content %}
   <div class="flex justify-center gap-8 py-8">
-    <a href="/schedule/{{ model.year - 1 }}/" class="self-center">
+    <a href="{{ model.baseUrl }}{{ model.year - 1 }}/" class="self-center">
       {{ model.year - 1}}
     </a>
     <h1 class="font-bold text-5xl">{{ model.year }}</h1>
-    <a href="/schedule/{{ model.year + 1}}/" class="self-center">
+    <a href="{{ model.baseUrl }}{{ model.year + 1}}/" class="self-center">
       {{ model.year + 1}}
     </a>
   </div>
@@ -36,7 +36,7 @@
             {% set datePath = [model.year, "/", month, "/", day] | join %}
 
             <li class="w-1/7 text-center" {{ 'style="color: white; background-color: skyblue;"' | safe if datePath == model.todayPath }} >
-              <a href="/schedule/{{ datePath }}/">
+              <a href="{{ model.baseUrl }}{{ datePath }}/">
                 {{ i }}
               </a>
             </li>

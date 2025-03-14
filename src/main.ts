@@ -78,7 +78,7 @@ const controllers: Controller[] = [
     teamMemberRepository,
     typicalAvailabilityRepository,
   ),
-  new UnavailabilityController(),
+  new UnavailabilityController(teamMemberRepository, unavailabilityRepository),
   new ShiftContextController(shiftContextRepository),
   new ShiftContextPreferenceController(
     shiftContextPreferenceRepository,

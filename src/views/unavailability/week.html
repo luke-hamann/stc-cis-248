@@ -1,0 +1,35 @@
+{% extends "../_shared/_layout.html" %}
+
+{% set title = "Week of " %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <div>
+    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.previousWeekString }}/">
+      &lt;
+    </a>
+    <h1>{{ title }}</h1>
+    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.nextWeekString }}/">
+      &gt;
+    </a>
+  </div>
+  {% for unavailability in model.unavailabilities %}
+    <div>
+      <span>
+        {{ unavailability.startDateTime }}
+      </span>
+      <span>
+        {{ unavailability.endDateTime }}
+      </span>
+      <span>
+        <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/edit/">
+          Edit
+        </a>
+        <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/delete/">
+          Delete
+        </a>
+      </span>
+    </div>
+  {% endfor %}
+{% endblock %}

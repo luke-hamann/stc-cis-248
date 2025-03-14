@@ -1,0 +1,29 @@
+{% macro teamMemberTabs(teamMember, selected) %}
+<h1 class="p-8 text-3xl font-bold">{{ teamMember.fullName }}</h1>
+<ul class="flex ps-4">
+  <li class="p-4">
+    <a href="/team-member/{{ teamMember.id }}/"
+      {{ 'class="border-b-2"' | safe if selected == "profile" }} >
+      Profile
+    </a>
+  </li>
+  <li class="p-4">
+    <a href="/team-member/{{ teamMember.id }}/preferences/"
+      {{ 'class="border-b-2"' | safe if selected == "preferences" }} >
+      Preferences
+    </a>
+  </li>
+  <li class="p-4">
+    <a href="/team-member/{{ teamMember.id }}/availability/"
+      {{ 'class="border-b-2"' | safe if selected == "availability" }} >
+      Availability
+    </a>
+  </li>
+  <li class="p-4">
+    <a href="/team-member/{{ teamMember.id }}/unavailability/"
+      {{ 'class="border-b-2"' | safe if selected == "unavailability" }} >
+      Unavailability
+    </a>
+  </li>
+</ul>
+{% endmacro %}
