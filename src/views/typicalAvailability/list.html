@@ -26,6 +26,9 @@
         {{ typicalAvailability.startTime }} - {{ typicalAvailability.endTime }}
       </span>
       <span>
+        {{ "🙂" if typicalAvailability.isPreference else "☹️" }}
+      </span>
+      <span>
         <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/">
           Edit
         </a>
