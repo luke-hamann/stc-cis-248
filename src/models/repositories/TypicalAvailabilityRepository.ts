@@ -57,12 +57,12 @@ export default class TypicalAvailabilityRepository extends Repository {
 
   /**
    * Lists typical availabilities of a team member grouped by day of week, then ordered by start time, then ordered by end time
-   * @param teamMemberId 
+   * @param teamMemberId
    * @returns 2D array of typical availabilities
    */
   public async list(teamMemberId: number): Promise<TypicalAvailability[][]> {
     const table: TypicalAvailability[][] = [[], [], [], [], [], [], []];
-    
+
     const result = await this.database.execute(
       `
         ${this.baseQuery}
@@ -77,7 +77,7 @@ export default class TypicalAvailabilityRepository extends Repository {
     for (const typicalAvailability of this.mapRows(result.rows)) {
       const dayOfWeek = typicalAvailability.dayOfWeek!;
       table[dayOfWeek].push(typicalAvailability);
-    };
+    }
 
     return table;
   }

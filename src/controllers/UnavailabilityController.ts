@@ -70,6 +70,18 @@ export default class UnavailabilityController extends Controller {
         pattern: "/team-member/(\\d+)/unavailability/(\\d+)/delete/",
         action: this.deletePost,
       },
+      {
+        method: "GET",
+        pattern:
+          "/team-member/(\\d+)/unavailability/(\\d{4})/(\\d{2})/(\\d{2})/clear/",
+        action: this.clearGet,
+      },
+      {
+        method: "POST",
+        pattern:
+          "/team-member/(\\d+)/unavailability/(\\d{4})/(\\d{2})/(\\d{2})/clear/",
+        action: this.clearPost,
+      },
     ];
   }
 
@@ -165,7 +177,7 @@ export default class UnavailabilityController extends Controller {
 
     const endDate = DateLib.addDays(startDate, 6);
 
-    const unavailabilities = await this.unavailabilities.getInRange(
+    const table = await this.unavailabilities.list(
       teamMember.id,
       startDate,
       endDate,
@@ -175,7 +187,7 @@ export default class UnavailabilityController extends Controller {
       teamMember,
       startDate,
       endDate,
-      unavailabilities,
+      table,
     );
 
     return this.HTMLResponse(
@@ -221,6 +233,7 @@ export default class UnavailabilityController extends Controller {
     const model = await UnavailabilityEditViewModel.fromRequest(
       context.request,
     );
+    model.unavailability.teamMemberId = teamMember.id;
 
     model.errors = await this.unavailabilities.validate(model.unavailability);
     if (!model.isValid()) {
@@ -318,7 +331,7 @@ export default class UnavailabilityController extends Controller {
 
     const datePath = BetterDate.fromDate(unavailability.startDateTime!)
       .floorToSunday().toDateString().replaceAll("-", "/");
-    
+
     const cancel = `/team-member/${teamMember.id}/unavailability/${datePath}/`;
 
     const model = new DeleteViewModel(
@@ -348,5 +361,11 @@ export default class UnavailabilityController extends Controller {
     const url = `/team-member/${teamMember.id}/unavailability/${datePath}/`;
 
     return this.RedirectResponse(context, url);
+  }
+
+  public async clearGet(context: Context) {
+  }
+
+  public async clearPost(context: Context) {
   }
 }

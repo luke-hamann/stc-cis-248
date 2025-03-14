@@ -1,4 +1,3 @@
-import BetterDate from "../../_dates/BetterDate.ts";
 import DateLib from "../../_dates/DateLib.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
@@ -15,7 +14,7 @@ interface IUnavailabilityRow {
 
 export default class UnavailabilityRepository extends Repository {
   /** A query for selecting all unavailability */
-  private readonly selectUnavailability = `
+  private readonly baseQuery = `
     SELECT id, teamMemberId, startDateTime, endDateTime, isPreference
     FROM TeamMemberAvailability
   `;
@@ -61,7 +60,7 @@ export default class UnavailabilityRepository extends Repository {
    */
   public async get(id: number): Promise<Unavailability | null> {
     const result = await this.database.execute(
-      `${this.selectUnavailability} WHERE id = ?`,
+      `${this.baseQuery} WHERE id = ?`,
       [id],
     );
 
@@ -70,35 +69,36 @@ export default class UnavailabilityRepository extends Repository {
     return this.mapRow(result.rows[0]);
   }
 
-  /**
-   * Gets unavailability for a given team member and date range
-   * @param teamMemberId Team member id
-   * @param start Date range start
-   * @param end Date range end
-   * @returns Array of unavailability
-   */
-  public async getInRange(
+  public async list(
     teamMemberId: number,
     start: Date,
     end: Date,
-  ): Promise<Unavailability[]> {
-    const result = await this.database.execute(
-      `
-        ${this.selectUnavailability}
-        WHERE teamMemberId = ?
-          AND startDateTime >= ?
-          AND startDateTime < ?
-      `,
-      [
-        teamMemberId,
-        BetterDate.fromDate(start).toDateString(),
-        BetterDate.fromDate(end).addDays(1).toDateString(),
-      ],
-    );
+  ): Promise<{ date: Date; unavailabilities: Unavailability[] }[]> {
+    const table: { date: Date; unavailabilities: Unavailability[] }[] = [];
 
-    if (!result.rows) return [];
+    for (const date of DateLib.getDatesInRange(start, end)) {
+      const row: { date: Date; unavailabilities: Unavailability[] } = {
+        date,
+        unavailabilities: [],
+      };
 
-    return this.mapRows(result.rows);
+      const result = await this.database.execute(
+        `
+          ${this.baseQuery}
+          WHERE teamMemberId = ?
+            AND DATE(startDateTime) = ?
+        `,
+        [teamMemberId, date],
+      );
+
+      if (result.rows) {
+        row.unavailabilities = this.mapRows(result.rows);
+      }
+
+      table.push(row);
+    }
+
+    return table;
   }
 
   /**

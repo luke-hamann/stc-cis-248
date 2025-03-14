@@ -2,7 +2,9 @@ import { parse } from "node:path";
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import TeamMember from "../models/entities/TeamMember.ts";
-import TypicalAvailability, { DayOfWeek } from "../models/entities/TypicalAvailability.ts";
+import TypicalAvailability, {
+  DayOfWeek,
+} from "../models/entities/TypicalAvailability.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
 import TypicalAvailabilityRepository from "../models/repositories/TypicalAvailabilityRepository.ts";
 import TypicalAvailabilityEditViewModel from "../models/viewModels/typicalAvailability/TypicalAvailabilityEditViewModel.ts";

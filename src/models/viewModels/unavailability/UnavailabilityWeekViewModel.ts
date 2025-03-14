@@ -6,18 +6,18 @@ export default class UnavailabilityWeekViewModel {
   public teamMember: TeamMember;
   public startDate: Date;
   public endDate: Date;
-  public unavailabilities: Unavailability[];
+  public table: { date: Date; unavailabilities: Unavailability[] }[];
 
   public constructor(
     teamMember: TeamMember,
     startDate: Date,
     endDate: Date,
-    unavailabilities: Unavailability[],
+    table: { date: Date; unavailabilities: Unavailability[] }[],
   ) {
     this.teamMember = teamMember;
     this.startDate = startDate;
     this.endDate = endDate;
-    this.unavailabilities = unavailabilities;
+    this.table = table;
   }
 
   public get previousWeekString(): string {

@@ -30,7 +30,7 @@ export default class UnavailabilityEditViewModel extends FormViewModel {
     const endTime = formData.getTime("endTime");
     const isPreference = formData.getBool("isPreference");
 
-    const dateString = date ? BetterDate.fromDate(date).toString() : "";
+    const dateString = date ? BetterDate.fromDate(date).toDateString() : "";
 
     let startDateTime: Date | null = null;
     if (date != null && startTime != null) {
@@ -52,5 +52,27 @@ export default class UnavailabilityEditViewModel extends FormViewModel {
     );
 
     return new UnavailabilityEditViewModel(null, unavailability, false, [], "");
+  }
+
+  public get startDateTimeString(): string {
+    const startDateTime = this.unavailability.startDateTime;
+    return startDateTime
+      ? BetterDate.fromDate(startDateTime).toDateString("/")
+      : "";
+  }
+
+  public get endDateTimeString(): string {
+    const endDateTime = this.unavailability.endDateTime;
+    return endDateTime
+      ? BetterDate.fromDate(endDateTime).toDateString("/")
+      : "";
+  }
+
+  public get cancelLink(): string {
+    const startDateTime = this.unavailability.startDateTime;
+    const datePath = startDateTime
+      ? BetterDate.fromDate(startDateTime).floorToSunday().toDateString("/")
+      : new BetterDate().floorToSunday().toDateString("/");
+    return `/team-member/${this.teamMember!.id}/unavailability/${datePath}/`;
   }
 }

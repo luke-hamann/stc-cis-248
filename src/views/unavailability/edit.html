@@ -1,0 +1,23 @@
+{% extends "../_shared/_layout.html" %}
+{% from "../_shared/field.html" import field %}
+
+{% set title = "" %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <form method="post">
+    {{ field("date", model.startDateTimeString, "date", "Date") }}
+    {{ field("startTime", model.endDateTimeString, "time", "Start time") }}
+    {{ field("endTime", model.endDateTimeString, "time", "End time") }}
+    {{ field("isPreference", "", "checkbox", "Preferable", model.unavailability.isPreference) }}
+    <div>
+      {{ csrf(model) }}
+      <input type="submit" value="Save" />
+      <a href="/team-member/{{ model.teamMember.id }}/unavailability/">
+        Cancel
+      </a>
+    </div>
+  </form>
+{% endblock %}
