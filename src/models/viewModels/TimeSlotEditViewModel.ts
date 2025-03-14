@@ -5,12 +5,12 @@ import ShiftContext from "../entities/ShiftContext.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import BetterDate from "../../_dates/BetterDate.ts";
-import Recommendation from "../entities/Recommendation.ts";
+import AssigneeRecommendations from "../entities/AssigneeRecommendation.ts";
 
 export default class TimeSlotEditViewModel extends FormViewModel {
   shiftContexts: ShiftContext[];
   teamMembers: TeamMember[];
-  recommendations: Recommendation[];
+  recommendations: AssigneeRecommendations[];
   colors: Color[];
   timeSlot: TimeSlot;
   newColor: Color | null;
@@ -19,7 +19,7 @@ export default class TimeSlotEditViewModel extends FormViewModel {
   constructor(
     shiftContexts: ShiftContext[],
     teamMembers: TeamMember[],
-    recommendations: Recommendation[],
+    recommendations: AssigneeRecommendations[],
     colors: Color[],
     timeSlot: TimeSlot,
     newColor: Color | null,

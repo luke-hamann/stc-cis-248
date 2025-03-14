@@ -11,10 +11,10 @@ import SubstituteRepository from "./SubstituteRepository.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotRepository from "./TimeSlotRepository.ts";
 import TeamMemberRepository from "./TeamMemberRepository.ts";
-import Recommendation, {
-  FieldName,
-  FieldStatus,
-} from "../entities/Recommendation.ts";
+import AssigneeRecommendations, {
+  AssigneeRecommendationField,
+  AssigneeRecommendationStatus,
+} from "../entities/AssigneeRecommendation.ts";
 import TypicalAvailabilityRepository from "./TypicalAvailabilityRepository.ts";
 import UnavailabilityRepository from "./UnavailabilityRepository.ts";
 import ShiftContextPreferenceRepository from "./ShiftContextPreferenceRepository.ts";
@@ -175,14 +175,14 @@ export default class ScheduleRepository {
 
   public async getRecommendations(
     timeSlot: TimeSlot,
-  ): Promise<Recommendation[]> {
+  ): Promise<AssigneeRecommendations[]> {
     const teamMembers = await this.teamMembers.list();
 
-    const recommendations: Recommendation[] = [];
+    const recommendations: AssigneeRecommendations[] = [];
     for (const teamMember of teamMembers) {
-      const recommendation = new Recommendation(
+      const recommendation = new AssigneeRecommendations(
         teamMember,
-        new Map<FieldName, FieldStatus>(),
+        new Map<AssigneeRecommendationField, AssigneeRecommendationStatus>(),
       );
 
       // Age restriction
@@ -214,9 +214,13 @@ export default class ScheduleRepository {
         timeSlot,
       );
 
-      if (typicallyAvailable == "negative" || speciallyAvailable == "negative") {
+      if (
+        typicallyAvailable == "negative" || speciallyAvailable == "negative"
+      ) {
         recommendation.fields.set("available", "negative");
-      } else if (typicallyAvailable == "unknown" || speciallyAvailable == "unknown") {
+      } else if (
+        typicallyAvailable == "unknown" || speciallyAvailable == "unknown"
+      ) {
         recommendation.fields.set("available", "unknown");
       } else {
         recommendation.fields.set("available", "positive");

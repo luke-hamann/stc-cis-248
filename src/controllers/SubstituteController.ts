@@ -6,16 +6,16 @@ import Controller from "../_framework/Controller.ts";
 import BetterDate from "../_dates/BetterDate.ts";
 
 export default class SubstituteController extends Controller {
-  private teamMemberRepository: TeamMemberRepository;
-  private substituteRepository: SubstituteRepository;
+  private substitutes: SubstituteRepository;
+  private teamMembers: TeamMemberRepository;
 
   constructor(
-    substituteRepository: SubstituteRepository,
-    teamMemberRepository: TeamMemberRepository,
+    substitutes: SubstituteRepository,
+    teamMembers: TeamMemberRepository,
   ) {
     super();
-    this.teamMemberRepository = teamMemberRepository;
-    this.substituteRepository = substituteRepository;
+    this.substitutes = substitutes;
+    this.teamMembers = teamMembers;
     this.routes = [
       {
         method: "GET",
@@ -42,8 +42,8 @@ export default class SubstituteController extends Controller {
     }
 
     const model = new SubstitutesEditViewModel(
-      await this.substituteRepository.getSubstituteList(date),
-      await this.teamMemberRepository.list(),
+      await this.substitutes.getSubstituteList(date),
+      await this.teamMembers.list(),
       context.csrf_token,
     );
 
@@ -59,16 +59,16 @@ export default class SubstituteController extends Controller {
     const model = await SubstitutesEditViewModel.fromRequest(context.request);
     model.substituteList.date = date;
 
-    model.errors = await this.substituteRepository.validate(
+    model.errors = await this.substitutes.validate(
       model.substituteList,
     );
     if (!model.isValid()) {
-      model.teamMembers = await this.teamMemberRepository.list();
+      model.teamMembers = await this.teamMembers.list();
       model.csrf_token = context.csrf_token;
       return this.HTMLResponse(context, "./views/substitute/edit.html", model);
     }
 
-    await this.substituteRepository.update(model.substituteList);
+    await this.substitutes.update(model.substituteList);
 
     const component = BetterDate.fromDate(date).floorToSunday().toDateString()
       .replaceAll("-", "/");

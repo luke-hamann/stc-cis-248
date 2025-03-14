@@ -103,7 +103,7 @@ export default class TimeSlotController extends Controller {
         method: "POST",
         pattern: "/schedule/time-slot/recommendations/",
         action: this.previewRecommendations,
-      }
+      },
     ];
   }
 
@@ -233,7 +233,9 @@ export default class TimeSlotController extends Controller {
     if (!model.isValid()) {
       model.shiftContexts = await this.shiftContexts.list();
       model.teamMembers = await this.teamMembers.list();
-      model.recommendations = await this.schedules.getRecommendations(model.timeSlot);
+      model.recommendations = await this.schedules.getRecommendations(
+        model.timeSlot,
+      );
       model.colors = await this.colors.list();
       model.isEdit = true;
       model.csrf_token = context.csrf_token;
@@ -444,9 +446,17 @@ export default class TimeSlotController extends Controller {
    * Provide an HTML fragment with time slot recommendations
    */
   public async previewRecommendations(context: Context) {
-    const timeSlot = (await TimeSlotEditViewModel.fromRequest(context.request)).timeSlot;
+    const timeSlot =
+      (await TimeSlotEditViewModel.fromRequest(context.request)).timeSlot;
     const recommendations = await this.schedules.getRecommendations(timeSlot);
-    const model = new AssigneeRecommendationsViewModel(timeSlot, recommendations);
-    return this.HTMLResponse(context, "./views/timeSlot/assigneeRecommendations.html", model);
+    const model = new AssigneeRecommendationsViewModel(
+      timeSlot,
+      recommendations,
+    );
+    return this.HTMLResponse(
+      context,
+      "./views/timeSlot/assigneeRecommendations.html",
+      model,
+    );
   }
 }

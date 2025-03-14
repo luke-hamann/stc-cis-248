@@ -25,7 +25,7 @@ export default class Color {
 
   /**
    * Creates a color object with default values
-   * @returns 
+   * @returns
    */
   public static empty() {
     return new Color(0, "", "");

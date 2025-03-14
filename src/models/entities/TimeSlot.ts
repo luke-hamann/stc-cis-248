@@ -43,7 +43,19 @@ export default class TimeSlot {
   }
 
   public static empty(): TimeSlot {
-    return new TimeSlot(0, 0, null, null, null, false, null, null, "", null, null);
+    return new TimeSlot(
+      0,
+      0,
+      null,
+      null,
+      null,
+      false,
+      null,
+      null,
+      "",
+      null,
+      null,
+    );
   }
 
   public get startDateString(): string {

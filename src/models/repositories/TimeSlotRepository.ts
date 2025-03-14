@@ -419,7 +419,9 @@ export default class TimeSlotRepository extends Repository {
     teamMemberId: number,
     timeSlot: TimeSlot,
   ): Promise<"positive" | "negative" | "unknown"> {
-    if (timeSlot.startDateTime == null || timeSlot.endDateTime == null) return "unknown";
+    if (timeSlot.startDateTime == null || timeSlot.endDateTime == null) {
+      return "unknown";
+    }
 
     const result = await this.database.execute(
       `
@@ -459,7 +461,7 @@ export default class TimeSlotRepository extends Repository {
             OR DATE(endDateTime) = ?
           )
       `,
-      [teamMemberId, dateString, dateString]
+      [teamMemberId, dateString, dateString],
     );
 
     return (!result.rows || result.rows.length == 0);
