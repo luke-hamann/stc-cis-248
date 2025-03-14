@@ -2,12 +2,12 @@ import { parse } from "node:path";
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import TeamMember from "../models/entities/TeamMember.ts";
-import TypicalAvailability from "../models/entities/TypicalAvailability.ts";
+import TypicalAvailability, { DayOfWeek } from "../models/entities/TypicalAvailability.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
 import TypicalAvailabilityRepository from "../models/repositories/TypicalAvailabilityRepository.ts";
-import TypicalAvailabilityEditViewModel from "../models/viewModels/TypicalAvailabilityEditViewModel.ts";
-import TypicalAvailabilityListViewModel from "../models/viewModels/TypicalAvailabilityListViewModel.ts";
-import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
+import TypicalAvailabilityEditViewModel from "../models/viewModels/typicalAvailability/TypicalAvailabilityEditViewModel.ts";
+import TypicalAvailabilityListViewModel from "../models/viewModels/typicalAvailability/TypicalAvailabilityListViewModel.ts";
+import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
 export default class TypicalAvailabilityController extends Controller {
@@ -29,7 +29,7 @@ export default class TypicalAvailabilityController extends Controller {
       },
       {
         method: "GET",
-        pattern: "/team-member/(\\d+)/availability/add/",
+        pattern: "/team-member/(\\d+)/availability/add/((\\d+)/)?",
         action: this.addGet,
       },
       {
@@ -127,7 +127,12 @@ export default class TypicalAvailabilityController extends Controller {
       true,
     );
 
+    if (context.match.length > 3) {
+      typicalAvailability.dayOfWeek = parseInt(context.match[3]) as DayOfWeek;
+    }
+
     const model = new TypicalAvailabilityEditViewModel(
+      teamMember,
       typicalAvailability,
       false,
       [],
@@ -182,6 +187,7 @@ export default class TypicalAvailabilityController extends Controller {
     }
 
     const model = new TypicalAvailabilityEditViewModel(
+      teamMember,
       typicalAvailability,
       true,
       [],

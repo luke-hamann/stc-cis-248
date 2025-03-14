@@ -1,4 +1,4 @@
-import TeamMember from "../entities/TeamMember.ts";
+import TeamMember from "../../entities/TeamMember.ts";
 
 export default class TeamMembersViewModel {
   teamMembers: TeamMember[] = [];

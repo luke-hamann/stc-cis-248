@@ -1,0 +1,12 @@
+{% extends "../_shared/_layout.html" %}
+{% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
+{% from "../_shared/calendar.html" import calendar %}
+
+{% set title = model.teamMember.fullName + " | Unavailability | " + model.year %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  {{ teamMemberTabs(model.teamMember, "unavailability") }}
+  {{ calendar(model.calendar) }}
+{% endblock %}

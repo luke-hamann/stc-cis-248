@@ -1,11 +1,11 @@
-import Color from "../entities/Color.ts";
-import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
-import FormViewModel from "./_FormViewModel.ts";
-import ShiftContext from "../entities/ShiftContext.ts";
-import TeamMember from "../entities/TeamMember.ts";
-import TimeSlot from "../entities/TimeSlot.ts";
-import BetterDate from "../../_dates/BetterDate.ts";
-import AssigneeRecommendations from "../entities/AssigneeRecommendation.ts";
+import Color from "../../entities/Color.ts";
+import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import FormViewModel from "../_shared/_FormViewModel.ts";
+import ShiftContext from "../../entities/ShiftContext.ts";
+import TeamMember from "../../entities/TeamMember.ts";
+import TimeSlot from "../../entities/TimeSlot.ts";
+import BetterDate from "../../../_dates/BetterDate.ts";
+import AssigneeRecommendations from "../../entities/AssigneeRecommendation.ts";
 
 export default class TimeSlotEditViewModel extends FormViewModel {
   shiftContexts: ShiftContext[];

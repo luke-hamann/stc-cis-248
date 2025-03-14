@@ -1,7 +1,7 @@
-import Color from "../entities/Color.ts";
-import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
-import FormViewModel from "./_FormViewModel.ts";
-import ShiftContextNote from "../entities/ShiftContextNote.ts";
+import Color from "../../entities/Color.ts";
+import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import FormViewModel from "../_shared/_FormViewModel.ts";
+import ShiftContextNote from "../../entities/ShiftContextNote.ts";
 
 export default class ShiftContextNoteEditViewModel extends FormViewModel {
   shiftContextNote: ShiftContextNote;

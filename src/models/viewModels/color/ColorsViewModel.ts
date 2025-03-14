@@ -1,4 +1,4 @@
-import Color from "../entities/Color.ts";
+import Color from "../../entities/Color.ts";
 
 export default class ColorsViewModel {
   public colors: Color[] = [];

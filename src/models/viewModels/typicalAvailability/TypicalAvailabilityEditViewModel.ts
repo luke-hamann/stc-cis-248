@@ -1,20 +1,23 @@
-import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
-import TeamMember from "../entities/TeamMember.ts";
+import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import TeamMember from "../../entities/TeamMember.ts";
 import TypicalAvailability, {
   isDayOfWeek,
-} from "../entities/TypicalAvailability.ts";
-import FormViewModel from "./_FormViewModel.ts";
+} from "../../entities/TypicalAvailability.ts";
+import FormViewModel from "../_shared/_FormViewModel.ts";
 
 export default class TypicalAvailabilityEditViewModel extends FormViewModel {
+  public teamMember: TeamMember | null;
   public typicalAvailability: TypicalAvailability;
 
   public constructor(
+    teamMember: TeamMember | null,
     typicalAvailability: TypicalAvailability,
     isEdit: boolean,
     errors: string[],
     csrf_token: string,
   ) {
     super(isEdit, errors, csrf_token);
+    this.teamMember = teamMember;
     this.typicalAvailability = typicalAvailability;
   }
 
@@ -52,6 +55,7 @@ export default class TypicalAvailabilityEditViewModel extends FormViewModel {
     );
 
     return new TypicalAvailabilityEditViewModel(
+      null,
       typicalAvailability,
       false,
       [],

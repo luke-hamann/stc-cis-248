@@ -1,4 +1,5 @@
 import BetterDate from "../../_dates/BetterDate.ts";
+import DateLib from "../../_dates/DateLib.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import Unavailability from "../entities/Unavailability.ts";
@@ -33,6 +34,15 @@ export default class UnavailabilityRepository extends Repository {
       row.endDateTime,
       row.isPreference == 1,
     );
+  }
+
+  /**
+   * Validates an unavailability
+   * @param u Unavailability
+   * @returns Promise of array of error messages
+   */
+  public async validate(u: Unavailability): Promise<string[]> {
+    return await Promise.resolve([]);
   }
 
   /**

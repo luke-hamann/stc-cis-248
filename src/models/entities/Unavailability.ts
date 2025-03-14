@@ -1,12 +1,12 @@
 import TeamMember from "./TeamMember.ts";
 
 export default class Unavailability {
-  public id: number = 0;
-  public teamMemberId: number = 0;
-  public teamMember: TeamMember | null = null;
-  public startDateTime: Date | null = null;
-  public endDateTime: Date | null = null;
-  public isPreference: boolean = false;
+  public id: number;
+  public teamMemberId: number;
+  public teamMember: TeamMember | null;
+  public startDateTime: Date | null;
+  public endDateTime: Date | null;
+  public isPreference: boolean;
 
   public constructor(
     id: number,
@@ -22,5 +22,9 @@ export default class Unavailability {
     this.startDateTime = startDateTime;
     this.endDateTime = endDateTime;
     this.isPreference = isPreference;
+  }
+
+  public static empty(): Unavailability {
+    return new Unavailability(0, 0, null, null, null, false);
   }
 }

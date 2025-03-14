@@ -1,8 +1,4 @@
-{% extends "../_shared/_layout.html" %}
-
-{% block title %}{{ model.title }}{% endblock %}
-
-{% block content %}
+{% macro calendar(model) %}
   <div class="flex justify-center gap-8 py-8">
     <a href="{{ model.baseUrl }}{{ model.year - 1 }}/" class="self-center">
       {{ model.year - 1}}
@@ -45,4 +41,4 @@
       </div>
     {% endfor %}
   </div>
-{% endblock %}
+{% endmacro %}

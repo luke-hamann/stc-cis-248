@@ -1,8 +1,8 @@
 import { IColorRepository } from "../models/repositories/ColorRepository.ts";
 import Context from "../_framework/Context.ts";
-import ColorEditViewModel from "../models/viewModels/ColorEditViewModel.ts";
-import ColorsViewModel from "../models/viewModels/ColorsViewModel.ts";
-import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
+import ColorEditViewModel from "../models/viewModels/color/ColorEditViewModel.ts";
+import ColorsViewModel from "../models/viewModels/color/ColorsViewModel.ts";
+import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import Controller from "../_framework/Controller.ts";
 
 /**

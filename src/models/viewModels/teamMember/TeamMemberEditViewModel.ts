@@ -1,6 +1,6 @@
-import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
-import TeamMember from "../entities/TeamMember.ts";
-import FormViewModel from "./_FormViewModel.ts";
+import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import TeamMember from "../../entities/TeamMember.ts";
+import FormViewModel from "../_shared/_FormViewModel.ts";
 
 export default class TeamMemberEditViewModel extends FormViewModel {
   teamMember: TeamMember = TeamMember.empty();

@@ -1,5 +1,5 @@
-import TeamMember from "../entities/TeamMember.ts";
-import TypicalAvailability from "../entities/TypicalAvailability.ts";
+import TeamMember from "../../entities/TeamMember.ts";
+import TypicalAvailability from "../../entities/TypicalAvailability.ts";
 
 export default class TypicalAvailabilityListViewModel {
   public teamMember: TeamMember;

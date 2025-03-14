@@ -1,19 +1,13 @@
-import BetterDate from "../../_dates/BetterDate.ts";
+import BetterDate from "../../../_dates/BetterDate.ts";
 
-export default class CalendarYearViewModel {
-  public title: string;
-  public csrf_token: string;
+export default class CalendarViewPartial {
   public year: number;
   public baseUrl: string;
 
   constructor(
-    title: string,
-    csrf_token: string,
     year: number,
     baseUrl: string,
   ) {
-    this.title = title;
-    this.csrf_token = csrf_token;
     this.year = year;
     this.baseUrl = baseUrl;
   }

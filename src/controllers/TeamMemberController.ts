@@ -1,8 +1,8 @@
 import Context from "../_framework/Context.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
-import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
-import TeamMemberEditViewModel from "../models/viewModels/TeamMemberEditViewModel.ts";
-import TeamMembersViewModel from "../models/viewModels/TeamMembersViewModel.ts";
+import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
+import TeamMemberEditViewModel from "../models/viewModels/teamMember/TeamMemberEditViewModel.ts";
+import TeamMembersViewModel from "../models/viewModels/teamMember/TeamMembersViewModel.ts";
 import Controller from "../_framework/Controller.ts";
 
 export default class TeamMemberController extends Controller {

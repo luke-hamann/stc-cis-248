@@ -12,11 +12,11 @@ import ShiftContextRepository from "../models/repositories/ShiftContextRepositor
 import SubstituteRepository from "../models/repositories/SubstituteRepository.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
 import TimeSlotRepository from "../models/repositories/TimeSlotRepository.ts";
-import AssigneeRecommendationsViewModel from "../models/viewModels/AssigneeRecommendationsViewModel.ts";
-import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
-import ScheduleClearViewModel from "../models/viewModels/ScheduleClearViewModel.ts";
-import ScheduleCopyViewModel from "../models/viewModels/ScheduleCopyViewModel.ts";
-import TimeSlotEditViewModel from "../models/viewModels/TimeSlotEditViewModel.ts";
+import AssigneeRecommendationsViewModel from "../models/viewModels/timeSlot/AssigneeRecommendationsViewModel.ts";
+import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
+import ScheduleClearViewModel from "../models/viewModels/schedule/ScheduleClearViewModel.ts";
+import ScheduleCopyViewModel from "../models/viewModels/schedule/ScheduleCopyViewModel.ts";
+import TimeSlotEditViewModel from "../models/viewModels/timeSlot/TimeSlotEditViewModel.ts";
 
 export default class TimeSlotController extends Controller {
   private shiftContexts: ShiftContextRepository;

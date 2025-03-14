@@ -5,9 +5,9 @@ import DateLib from "../_dates/DateLib.ts";
 import ExcelJS from "npm:exceljs";
 import { ScheduleCell } from "../models/entities/Schedule.ts";
 import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
-import ScheduleWeekViewModel from "../models/viewModels/ScheduleWeekViewModel.ts";
-import CalendarYearViewModel from "../models/viewModels/CalendarYearViewModel.ts";
-import ScheduleExportFormViewModel from "../models/viewModels/ScheduleExportViewModel.ts";
+import ScheduleWeekViewModel from "../models/viewModels/schedule/ScheduleWeekViewModel.ts";
+import CalendarViewPartial from "../models/viewModels/_shared/CalendarViewPartial.ts";
+import ScheduleExportFormViewModel from "../models/viewModels/schedule/ScheduleExportViewModel.ts";
 
 export default class ScheduleController extends Controller {
   private schedules: ScheduleRepository;
@@ -57,13 +57,11 @@ export default class ScheduleController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const model = new CalendarYearViewModel(
-      "Schedule",
-      context.csrf_token,
+    const model = new CalendarViewPartial(
       year,
       "/schedule/",
     );
-    return this.HTMLResponse(context, "./views/_shared/calendar.html", model);
+    return this.HTMLResponse(context, "./views/schedule/year.html", model);
   }
 
   /**

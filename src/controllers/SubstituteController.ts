@@ -1,7 +1,7 @@
 import Context from "../_framework/Context.ts";
 import SubstituteRepository from "../models/repositories/SubstituteRepository.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
-import SubstitutesEditViewModel from "../models/viewModels/SubstitutesEditViewModel.ts";
+import SubstitutesEditViewModel from "../models/viewModels/substitute/SubstitutesEditViewModel.ts";
 import Controller from "../_framework/Controller.ts";
 import BetterDate from "../_dates/BetterDate.ts";
 

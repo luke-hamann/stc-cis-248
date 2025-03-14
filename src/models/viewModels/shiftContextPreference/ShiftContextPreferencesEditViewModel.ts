@@ -1,6 +1,6 @@
-import ShiftContext from "../entities/ShiftContext.ts";
-import TeamMember from "../entities/TeamMember.ts";
-import FormViewModel from "./_FormViewModel.ts";
+import ShiftContext from "../../entities/ShiftContext.ts";
+import TeamMember from "../../entities/TeamMember.ts";
+import FormViewModel from "../_shared/_FormViewModel.ts";
 
 export default class ShiftContextPreferencesEditViewModel
   extends FormViewModel {

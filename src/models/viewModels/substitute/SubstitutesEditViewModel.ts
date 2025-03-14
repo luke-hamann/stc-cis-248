@@ -1,6 +1,6 @@
-import FormViewModel from "./_FormViewModel.ts";
-import TeamMember from "../entities/TeamMember.ts";
-import SubstituteList from "../entities/SubstituteList.ts";
+import FormViewModel from "../_shared/_FormViewModel.ts";
+import TeamMember from "../../entities/TeamMember.ts";
+import SubstituteList from "../../entities/SubstituteList.ts";
 
 export default class SubstitutesEditViewModel extends FormViewModel {
   public substituteList: SubstituteList;

@@ -1,4 +1,4 @@
-import ShiftContext from "../entities/ShiftContext.ts";
+import ShiftContext from "../../entities/ShiftContext.ts";
 
 export default class ShiftContextsViewModel {
   public shiftContexts: ShiftContext[] = [];

@@ -1,9 +1,9 @@
 import Context from "../_framework/Context.ts";
 import ShiftContext from "../models/entities/ShiftContext.ts";
 import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
-import DeleteViewModel from "../models/viewModels/DeleteViewModel.ts";
-import ShiftContextEditViewModel from "../models/viewModels/ShiftContextEditViewModel.ts";
-import ShiftContextsViewModel from "../models/viewModels/ShiftContextsViewModel.ts";
+import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
+import ShiftContextEditViewModel from "../models/viewModels/shiftContext/ShiftContextEditViewModel.ts";
+import ShiftContextsViewModel from "../models/viewModels/shiftContext/ShiftContextsViewModel.ts";
 import Controller from "../_framework/Controller.ts";
 
 export default class ShiftContextController extends Controller {

@@ -1,6 +1,6 @@
-import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
-import Color from "../entities/Color.ts";
-import FormViewModel from "./_FormViewModel.ts";
+import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import Color from "../../entities/Color.ts";
+import FormViewModel from "../_shared/_FormViewModel.ts";
 
 export default class ColorEditViewModel extends FormViewModel {
   color: Color = Color.empty();

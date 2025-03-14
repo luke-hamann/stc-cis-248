@@ -1,0 +1,10 @@
+{% extends "../_shared/_layout.html" %}
+{% from "../_shared/calendar.html" import calendar %}
+
+{% set title = "Schedule | " + model.year %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  {{ calendar(model) }}
+{% endblock %}

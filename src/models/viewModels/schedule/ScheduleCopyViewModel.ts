@@ -1,8 +1,8 @@
-import BetterDate from "../../_dates/BetterDate.ts";
-import DateLib from "../../_dates/DateLib.ts";
-import FormDataWrapper from "../../_framework/FormDataWrapper.ts";
-import ShiftContextNote from "../entities/ShiftContextNote.ts";
-import TimeSlot from "../entities/TimeSlot.ts";
+import BetterDate from "../../../_dates/BetterDate.ts";
+import DateLib from "../../../_dates/DateLib.ts";
+import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import ShiftContextNote from "../../entities/ShiftContextNote.ts";
+import TimeSlot from "../../entities/TimeSlot.ts";
 
 export default class ScheduleCopyViewModel {
   public confirm: boolean;

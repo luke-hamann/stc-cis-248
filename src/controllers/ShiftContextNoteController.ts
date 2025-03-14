@@ -3,7 +3,7 @@ import Controller from "../_framework/Controller.ts";
 import ColorRepository from "../models/repositories/ColorRepository.ts";
 import DateLib from "../_dates/DateLib.ts";
 import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
-import ShiftContextNoteEditViewModel from "../models/viewModels/ShiftContextNoteEditViewModel.ts";
+import ShiftContextNoteEditViewModel from "../models/viewModels/shiftContextNote/ShiftContextNoteEditViewModel.ts";
 import BetterDate from "../_dates/BetterDate.ts";
 import ShiftContext from "../models/entities/ShiftContext.ts";
 import ShiftContextNote from "../models/entities/ShiftContextNote.ts";

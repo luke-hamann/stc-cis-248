@@ -1,5 +1,5 @@
-import AssigneeRecommendations from "../entities/AssigneeRecommendation.ts";
-import TimeSlot from "../entities/TimeSlot.ts";
+import AssigneeRecommendations from "../../entities/AssigneeRecommendation.ts";
+import TimeSlot from "../../entities/TimeSlot.ts";
 
 export default class AssigneeRecommendationsViewModel {
   public timeSlot: TimeSlot;
