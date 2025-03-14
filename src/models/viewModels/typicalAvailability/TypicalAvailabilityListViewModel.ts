@@ -3,13 +3,13 @@ import TypicalAvailability from "../../entities/TypicalAvailability.ts";
 
 export default class TypicalAvailabilityListViewModel {
   public teamMember: TeamMember;
-  public typicalAvailabilities: TypicalAvailability[];
+  public typicalAvailabilityTable: TypicalAvailability[][];
 
   public constructor(
     teamMember: TeamMember,
-    typicalAvailabilities: TypicalAvailability[],
+    typicalAvailabilities: TypicalAvailability[][],
   ) {
     this.teamMember = teamMember;
-    this.typicalAvailabilities = typicalAvailabilities;
+    this.typicalAvailabilityTable = typicalAvailabilities;
   }
 }

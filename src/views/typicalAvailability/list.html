@@ -11,35 +11,32 @@
 
 {% block content %}
   {{ teamMemberTabs(model.teamMember, "availability") }}
-  <div>
-    <a href="/team-member/{{ model.teamMember.id }}/availability/add/">
-      &plus; Add typical availability
-    </a>
-  </div>
-  {% set currentDayOfWeek = -1 %}
-  {% for typicalAvailability in model.typicalAvailabilities %}
-    {% if typicalAvailability.dayOfWeek > currentDayOfWeek %}
-      <h2>{{ dayNames[typicalAvailability.dayOfWeek] }}</h2>
-      {% set currentDayOfWeek = typicalAvailability.dayOfWeek %}
-    {% endif %}
-    <div>
+  {% for row in model.typicalAvailabilityTable %}
+    <h2>
       <span>
-        {{ typicalAvailability.startTime }} - {{ typicalAvailability.endTime }}
+        {{ dayNames[loop.index0] }}
       </span>
-      <span>
-        {{ "🙂" if typicalAvailability.isPreference else "☹️" }}
-      </span>
-      <span>
-        <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/">
-          Edit
-        </a>
-        <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/delete/">
-          Delete
-        </a>
-      </span>
-    </div>
-  {% endfor %}
-  {% for i in range(currentDayOfWeek, 7) %}
-    <h2>{{ dayNames[i] }}</h2>
+      <a href="/team-member/{{ model.teamMember.id }}/availability/add/{{ loop.index0 }}/">
+        &plus;
+      </a>
+    </h2>
+    {% for typicalAvailability in row %}
+      <div>
+        <span>
+          {{ typicalAvailability.startTime }} - {{ typicalAvailability.endTime }}
+        </span>
+        <span>
+          {{ "🙂" if typicalAvailability.isPreference else "☹️" }}
+        </span>
+        <span>
+          <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/">
+            Edit
+          </a>
+          <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/delete/">
+            Delete
+          </a>
+        </span>
+      </div>
+    {% endfor %}
   {% endfor %}
 {% endblock %}

@@ -56,11 +56,13 @@ export default class TypicalAvailabilityRepository extends Repository {
   }
 
   /**
-   * Lists typical availability of a team member
-   * @param teamMemberId
-   * @returns
+   * Lists typical availabilities of a team member grouped by day of week, then ordered by start time, then ordered by end time
+   * @param teamMemberId 
+   * @returns 2D array of typical availabilities
    */
-  public async list(teamMemberId: number): Promise<TypicalAvailability[]> {
+  public async list(teamMemberId: number): Promise<TypicalAvailability[][]> {
+    const table: TypicalAvailability[][] = [[], [], [], [], [], [], []];
+    
     const result = await this.database.execute(
       `
         ${this.baseQuery}
@@ -70,7 +72,14 @@ export default class TypicalAvailabilityRepository extends Repository {
       [teamMemberId],
     );
 
-    return result.rows ? this.mapRows(result.rows) : [];
+    if (!result.rows || result.rows.length == 0) return table;
+
+    for (const typicalAvailability of this.mapRows(result.rows)) {
+      const dayOfWeek = typicalAvailability.dayOfWeek!;
+      table[dayOfWeek].push(typicalAvailability);
+    };
+
+    return table;
   }
 
   /**
@@ -91,6 +100,11 @@ export default class TypicalAvailabilityRepository extends Repository {
     return this.mapRow(result.rows[0]);
   }
 
+  /**
+   * Adds a typical availability
+   * @param t A typical availability
+   * @returns A promise of the new typical availability's id
+   */
   public async add(t: TypicalAvailability): Promise<number> {
     const result = await this.database.execute(
       `
@@ -111,6 +125,10 @@ export default class TypicalAvailabilityRepository extends Repository {
     return result.lastInsertId ?? 0;
   }
 
+  /**
+   * Updates a typical availability
+   * @param t A typical availability
+   */
   public async update(t: TypicalAvailability): Promise<void> {
     await this.database.execute(
       `
@@ -133,6 +151,10 @@ export default class TypicalAvailabilityRepository extends Repository {
     );
   }
 
+  /**
+   * Deletes a typical availability
+   * @param id A typical availability id
+   */
   public async delete(id: number): Promise<void> {
     await this.database.execute(
       `

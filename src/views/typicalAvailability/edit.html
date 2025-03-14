@@ -15,7 +15,7 @@
 
 {% block content %}
   <h1>{{ "Edit" if model.isEdit else "Add" }} Availability</h1>
-  <form method="post">
+  <form method="post" {% if not model.isEdit %}action="/team-member/{{ model.teamMember.id }}/availability/add/"{% endif %} >
     <div>
       <label for="dayOfWeek">Day of week</label>
       <select name="dayOfWeek" id="dayOfWeek">
