@@ -62,7 +62,7 @@ export default class FormDataWrapper {
 
   public getTime(key: string): string {
     const value = this.getString(key);
-    const isValid = /^(([01]\d)|(2[0-3])):[0-5]\d$/g.test(value);
+    const isValid = /^(([01]\d)|(2[0-3]))(:[0-5]\d){1,2}$/g.test(value);
     return isValid ? value : "";
   }
 }

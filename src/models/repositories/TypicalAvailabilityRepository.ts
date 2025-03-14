@@ -128,6 +128,7 @@ export default class TypicalAvailabilityRepository extends Repository {
         t.startTime,
         t.endTime,
         t.isPreference,
+        t.id,
       ],
     );
   }
