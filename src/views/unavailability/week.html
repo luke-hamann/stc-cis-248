@@ -45,15 +45,12 @@
   </div>
   {% for row in model.table %}
     <h2>
-      {{ dayNames[row.date.getDay()] }}
+      {{ row.date.toLocaleDateString() }}
     </h2>
     {% for unavailability in row.unavailabilities %}
       <div>
         <span>
-          {{ unavailability.startDateTime }}
-        </span>
-        <span>
-          {{ unavailability.endDateTime }}
+          {{ unavailability.startDateTime.toLocaleTimeString() }} - {{ unavailability.endDateTime.toLocaleTimeString() }}
         </span>
         <span>
           {{ "🙂" if unavailability.isPreference else "☹️" }}

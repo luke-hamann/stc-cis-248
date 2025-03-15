@@ -364,6 +364,14 @@ export default class UnavailabilityController extends Controller {
   }
 
   public async clearGet(context: Context) {
+    const teamMember = await this.getTeamMemberFromContext(context);
+    if (teamMember == null) return this.NotFoundResponse(context);
+
+    const [_, __, year, month, day] = context.match;
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    if (isNaN(date.getTime())) return this.NotFoundResponse(context);
+
+    
   }
 
   public async clearPost(context: Context) {

@@ -164,6 +164,16 @@ export default class UnavailabilityRepository extends Repository {
   }
 
   /**
+   * Deletes unavailability for a team member within a date range
+   * @param teamMemberId
+   * @param start Date
+   * @param end Date
+   */
+  public async deleteRange(teamMember: number, start: Date, end: Date) {
+    
+  }
+
+  /**
    * Determines if a team member has been marked as unavailable for a time slot
    * @param teamMember
    * @param timeSlot
