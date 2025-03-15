@@ -7,6 +7,7 @@ import FormViewModel from "../_shared/_FormViewModel.ts";
 export default class UnavailabilityEditViewModel extends FormViewModel {
   public teamMember: TeamMember | null;
   public unavailability: Unavailability;
+  public startDate: Date | null = null;
 
   public constructor(
     teamMember: TeamMember | null,
@@ -53,26 +54,15 @@ export default class UnavailabilityEditViewModel extends FormViewModel {
 
     return new UnavailabilityEditViewModel(null, unavailability, false, [], "");
   }
-
-  public get startDateTimeString(): string {
-    const startDateTime = this.unavailability.startDateTime;
-    return startDateTime
-      ? BetterDate.fromDate(startDateTime).toDateString("/")
-      : "";
-  }
-
-  public get endDateTimeString(): string {
-    const endDateTime = this.unavailability.endDateTime;
-    return endDateTime
-      ? BetterDate.fromDate(endDateTime).toDateString("/")
-      : "";
+  
+  public get startDateString(): string {
+    if (!this.startDate) return "";
+    return BetterDate.fromDate(this.startDate).toDateString();
   }
 
   public get cancelLink(): string {
-    const startDateTime = this.unavailability.startDateTime;
-    const datePath = startDateTime
-      ? BetterDate.fromDate(startDateTime).floorToSunday().toDateString("/")
-      : new BetterDate().floorToSunday().toDateString("/");
+    const date = this.unavailability.startDateTime ?? this.startDate ?? new Date();
+    const datePath = BetterDate.fromDate(date).floorToSunday().toDateString("/");
     return `/team-member/${this.teamMember!.id}/unavailability/${datePath}/`;
   }
 }

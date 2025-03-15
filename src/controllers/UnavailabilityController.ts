@@ -42,7 +42,7 @@ export default class UnavailabilityController extends Controller {
       },
       {
         method: "GET",
-        pattern: "/team-member/(\\d+)/unavailability/add/",
+        pattern: "/team-member/(\\d+)/unavailability/add/((\\d{4})/(\\d{2})/(\\d{2})/)?",
         action: this.addGet,
       },
       {
@@ -214,6 +214,14 @@ export default class UnavailabilityController extends Controller {
       context.csrf_token,
     );
 
+    if (context.match.length == 6) {
+      const [_, __, ___, year, month, day] = context.match;
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      if (!isNaN(date.getTime())) {
+        model.startDate = date;
+      }
+    }
+
     return this.HTMLResponse(
       context,
       "./views/unavailability/edit.html",
@@ -293,6 +301,8 @@ export default class UnavailabilityController extends Controller {
     const model = await UnavailabilityEditViewModel.fromRequest(
       context.request,
     );
+    model.unavailability.id = unavailability.id;
+    model.unavailability.teamMemberId = teamMember.id;
 
     model.errors = await this.unavailabilities.validate(model.unavailability);
     if (!model.isValid()) {
@@ -363,6 +373,11 @@ export default class UnavailabilityController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
+  /**
+   * Team member unavailability week clear GET
+   * @param context Application context
+   * @returns 
+   */
   public async clearGet(context: Context) {
     const teamMember = await this.getTeamMemberFromContext(context);
     if (teamMember == null) return this.NotFoundResponse(context);
@@ -374,6 +389,11 @@ export default class UnavailabilityController extends Controller {
     
   }
 
+  /**
+   * Team member unavailability week clear POST
+   * @param context 
+   * @returns 
+   */
   public async clearPost(context: Context) {
   }
 }

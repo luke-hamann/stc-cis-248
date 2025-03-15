@@ -24,7 +24,7 @@
     <div>
       {{ csrf(model) }}
       <button type="submit">Save</button>
-      <a href="/schedule/{{ formatDatePath(model.weekStart) }}/">Cancel</a>
+      <a href="/schedule/{{ formatDate(model.weekStart, '/') }}/">Cancel</a>
     </div>
   </form>
 {% endblock %}

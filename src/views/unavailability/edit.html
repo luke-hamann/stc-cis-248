@@ -1,21 +1,37 @@
 {% extends "../_shared/_layout.html" %}
+{% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
 {% from "../_shared/field.html" import field %}
 
-{% set title = "" %}
+{% set title = model.teamMember.fullName + " | Unavailability" %}
 
-{% block title %}{% endblock %}
+{% if model.isEdit %}
+  {% set action = "/team-member/" + model.teamMember.id + "/unavailability/" + model.unavailability.id + "/edit/" %}
+{% else %}
+  {% set action = "/team-member/" + model.teamMember.id + "/unavailability/add/" %}
+{% endif %}
+
+{% if model.unavailability.startDateString %}
+  {% set startDate = model.unavailability.startDateString %}
+{% else %}
+  {% set startDate = model.startDateString %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ title }}</h1>
-  <form method="post">
-    {{ field("date", model.startDateTimeString, "date", "Date") }}
-    {{ field("startTime", model.endDateTimeString, "time", "Start time") }}
-    {{ field("endTime", model.endDateTimeString, "time", "End time") }}
+  {{ teamMemberTabs(model.teamMember, "unavailability") }}
+  <h1>
+    {{ "Edit" if model.isEdit else "Add" }} unavailability
+  </h1>
+  <form action="{{ action }}" method="post">
+    {{ field("date", startDate, "date", "Date") }}
+    {{ field("startTime", model.unavailability.startTimeString, "time", "Start time") }}
+    {{ field("endTime", model.unavailability.endTimeString, "time", "End time") }}
     {{ field("isPreference", "", "checkbox", "Preferable", model.unavailability.isPreference) }}
     <div>
       {{ csrf(model) }}
       <input type="submit" value="Save" />
-      <a href="/team-member/{{ model.teamMember.id }}/unavailability/">
+      <a href="{{ model.cancelLink }}">
         Cancel
       </a>
     </div>

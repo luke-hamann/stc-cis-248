@@ -31,8 +31,9 @@
             {% set day = ("0" + loop.index).slice(-2) %}
             {% set datePath = [model.year, "/", month, "/", day] | join %}
 
-            <li class="w-1/7 text-center" {{ 'style="color: white; background-color: skyblue;"' | safe if datePath == model.todayPath }} >
-              <a href="{{ model.baseUrl }}{{ datePath }}/">
+            <li class="w-1/7 text-center">
+              <a href="{{ model.baseUrl }}{{ datePath }}/" class="block"
+                {{ 'style="color: white; background-color: skyblue;"' | safe if datePath == model.todayPath }} >
                 {{ i }}
               </a>
             </li>

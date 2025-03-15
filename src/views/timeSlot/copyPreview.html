@@ -51,8 +51,8 @@
     {% endif %}
     <div>
       <input type="submit" value="Confirm" />
-      <a href="/schedule/copy/{{ formatDatePath(model.fromStartDate) }}/to/{{ formatDatePath(model.fromEndDate) }}/">Edit</a>
-      <a href="/schedule/{{ formatDatePath(model.fromStartDate) }}/">Cancel</a>
+      <a href="/schedule/copy/{{ formatDate(model.fromStartDate, '/') }}/to/{{ formatDate(model.fromEndDate, '/') }}/">Edit</a>
+      <a href="/schedule/{{ formatDate(model.fromStartDate, '/') }}/">Cancel</a>
     </div>
   </div>
 {% endblock %}

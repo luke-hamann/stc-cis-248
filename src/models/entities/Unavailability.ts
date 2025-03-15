@@ -1,3 +1,4 @@
+import BetterDate from "../../_dates/BetterDate.ts";
 import TeamMember from "./TeamMember.ts";
 
 export default class Unavailability {
@@ -26,5 +27,20 @@ export default class Unavailability {
 
   public static empty(): Unavailability {
     return new Unavailability(0, 0, null, null, null, false);
+  }
+
+  public get startDateString(): string {
+    if (!this.startDateTime) return "";
+    return BetterDate.fromDate(this.startDateTime).toDateString();
+  }
+
+  public get startTimeString(): string {
+    if (!this.startDateTime) return "";
+    return BetterDate.fromDate(this.startDateTime).toTimeString();
+  }
+
+  public get endTimeString(): string {
+    if (!this.endDateTime) return "";
+    return BetterDate.fromDate(this.endDateTime).toTimeString();
   }
 }

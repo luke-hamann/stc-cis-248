@@ -1,23 +1,6 @@
 {% extends "../_shared/_layout.html" %}
 {% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
-{% from "../_shared/formatDate.html" import formatDatePath %}
-
-{% set monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December"
-] %}
-
-{% set dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] %}
+{% from "../_shared/formatDate.html" import formatDate %}
 
 {% set title = model.teamMember.fullName + " | Unavailability" %}
 
@@ -31,7 +14,7 @@
     </a>
     <h1 class="p-2">
       <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.startDate.getFullYear() }}/">
-        Week of {{ monthNames[model.startDate.getMonth()] }} {{ model.startDate.getDate() }}, {{ model.startDate.getFullYear() }}
+        Week of {{ model.startDate.toLocaleDateString(undefined, { dateStyle: "full" }) }}
       </a>
     </h1>
     <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.nextWeekString }}/" class="p-2">
@@ -39,13 +22,18 @@
     </a>
   </div>
   <div>
-    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ formatDatePath(model.startDate) }}/clear/">
+    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ formatDate(model.startDate, '/') }}/clear/">
       Clear
     </a>
   </div>
   {% for row in model.table %}
     <h2>
-      {{ row.date.toLocaleDateString() }}
+      <span>
+        {{ row.date.toLocaleDateString(undefined, { dateStyle: "full" }) }}
+      </span>
+      <a href="/team-member/{{ model.teamMember.id }}/unavailability/add/{{ formatDate(row.date, '/') }}/">
+        &plus;
+      </a>
     </h2>
     {% for unavailability in row.unavailabilities %}
       <div>
