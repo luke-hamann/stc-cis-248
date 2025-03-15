@@ -169,8 +169,15 @@ export default class UnavailabilityRepository extends Repository {
    * @param start Date
    * @param end Date
    */
-  public async deleteRange(teamMember: number, start: Date, end: Date) {
-    
+  public async deleteRange(teamMemberId: number, start: Date, end: Date) {
+    await this.database.execute(
+      `
+        DELETE FROM TeamMemberAvailability
+        WHERE teamMemberId = ?
+          AND startDateTime BETWEEN ? AND ?
+      `,
+      [teamMemberId, start, end]
+    );
   }
 
   /**

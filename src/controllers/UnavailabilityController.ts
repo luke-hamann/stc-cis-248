@@ -386,7 +386,24 @@ export default class UnavailabilityController extends Controller {
     const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
     if (isNaN(date.getTime())) return this.NotFoundResponse(context);
 
-    
+    if (date.getDay() != 0) {
+      const weekStart = BetterDate.fromDate(date).floorToSunday().toDateString("/");
+      const url = `/team-member/unavailability/${weekStart}/clear/`;
+      return this.RedirectResponse(context, url);
+    }
+
+    const description = `unavailability for ${teamMember.fullName} the week of ${date.toLocaleDateString()}`;
+    const action = context.match[0];
+    const datePath = BetterDate.fromDate(date).toDateString("/");
+    const cancel = `/team-member/${teamMember.id}/unavailability/${datePath}/`;
+
+    const model = new DeleteViewModel(
+      description,
+      action,
+      cancel,
+      context.csrf_token
+    );
+    return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
   /**
@@ -395,5 +412,26 @@ export default class UnavailabilityController extends Controller {
    * @returns 
    */
   public async clearPost(context: Context) {
+    const teamMember = await this.getTeamMemberFromContext(context);
+    if (teamMember == null) return this.NotFoundResponse(context);
+
+    const [_, __, year, month, day] = context.match;
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    if (isNaN(date.getTime())) return this.NotFoundResponse(context);
+
+    if (date.getDay() != 0) {
+      const weekStart = BetterDate.fromDate(date).floorToSunday().toDateString("/");
+      const url = `/team-member/unavailability/${weekStart}/clear/`;
+      return this.RedirectResponse(context, url);
+    }
+
+    await this.unavailabilities.deleteRange(
+      teamMember.id,
+      date,
+      BetterDate.fromDate(date).addDays(6).toDate(),
+    );
+    const datePath = BetterDate.fromDate(date).toDateString("/");
+    const url = `/team-member/${teamMember.id}/unavailability/${datePath}/`;
+    return this.RedirectResponse(context, url);
   }
 }
