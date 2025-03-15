@@ -27,27 +27,27 @@ interface ITimeSlotGroupRow {
 }
 
 interface ITimeSlotTeamMemberRow {
-  timeSlotId : number,
-  timeSlotShiftContextId : number,
-  timeSlotStartDateTime : Date,
-  timeSlotEndDateTime : Date,
-  timeSlotRequiresAdult : number,
-  timeSlotTeamMemberId : number,
-  timeSlotNote : string,
-  timeSlotColorId : number,
-  teamMemberId : number,
-  teamMemberFirstName : string,
-  teamMemberMiddleName : string,
-  teamMemberLastName : string,
-  teamMemberBirthDate : Date,
-  teamMemberEmail : string,
-  teamMemberPhone : string,
-  teamMemberIsExternal : number,
-  teamMemberMaxWeeklyHours : number,
-  teamMemberMaxWeeklyDays : number,
-  teamMemberUsername : string,
-  teamMemberPassword : string,
-  teamMemberIsAdmin: number,
+  timeSlotId: number;
+  timeSlotShiftContextId: number;
+  timeSlotStartDateTime: Date;
+  timeSlotEndDateTime: Date;
+  timeSlotRequiresAdult: number;
+  timeSlotTeamMemberId: number;
+  timeSlotNote: string;
+  timeSlotColorId: number;
+  teamMemberId: number;
+  teamMemberFirstName: string;
+  teamMemberMiddleName: string;
+  teamMemberLastName: string;
+  teamMemberBirthDate: Date;
+  teamMemberEmail: string;
+  teamMemberPhone: string;
+  teamMemberIsExternal: number;
+  teamMemberMaxWeeklyHours: number;
+  teamMemberMaxWeeklyDays: number;
+  teamMemberUsername: string;
+  teamMemberPassword: string;
+  teamMemberIsAdmin: number;
 }
 
 interface ITimeSlotTimeSlotRow {
@@ -538,43 +538,48 @@ export default class TimeSlotRepository extends Repository {
   }
 
   public mapTimeSlotTeamMemberRows(rows: ITimeSlotTeamMemberRow[]): TimeSlot[] {
-    return rows.map(row => new TimeSlot(
-      row.timeSlotId,
-      row.timeSlotShiftContextId,
-      null,
-      row.timeSlotStartDateTime,
-      row.timeSlotEndDateTime,
-      row.timeSlotRequiresAdult == 1,
-      row.timeSlotTeamMemberId,
-      new TeamMember(
-        row.teamMemberId,
-        row.teamMemberFirstName,
-        row.teamMemberMiddleName,
-        row.teamMemberLastName,
-        row.teamMemberBirthDate,
-        row.teamMemberEmail,
-        row.teamMemberPhone,
-        row.teamMemberIsExternal == 1,
-        row.teamMemberMaxWeeklyHours,
-        row.teamMemberMaxWeeklyDays,
-        row.teamMemberUsername,
-        row.teamMemberPassword,
-        row.teamMemberIsAdmin == 1
-      ),
-      row.timeSlotNote,
-      row.timeSlotColorId,
-      null
-    ));
+    return rows.map((row) =>
+      new TimeSlot(
+        row.timeSlotId,
+        row.timeSlotShiftContextId,
+        null,
+        row.timeSlotStartDateTime,
+        row.timeSlotEndDateTime,
+        row.timeSlotRequiresAdult == 1,
+        row.timeSlotTeamMemberId,
+        new TeamMember(
+          row.teamMemberId,
+          row.teamMemberFirstName,
+          row.teamMemberMiddleName,
+          row.teamMemberLastName,
+          row.teamMemberBirthDate,
+          row.teamMemberEmail,
+          row.teamMemberPhone,
+          row.teamMemberIsExternal == 1,
+          row.teamMemberMaxWeeklyHours,
+          row.teamMemberMaxWeeklyDays,
+          row.teamMemberUsername,
+          row.teamMemberPassword,
+          row.teamMemberIsAdmin == 1,
+        ),
+        row.timeSlotNote,
+        row.timeSlotColorId,
+        null,
+      )
+    );
   }
 
-  public async findWithExternalAssignees(start: Date, end: Date): Promise<TimeSlot[]> {
+  public async findWithExternalAssignees(
+    start: Date,
+    end: Date,
+  ): Promise<TimeSlot[]> {
     const result = await this.database.execute(
       `
         ${this.timeSlotTeamMemberQuery}
         WHERE tm.isExternal
           AND DATE(startDateTime) BETWEEN ? AND ?
       `,
-      [start, end]
+      [start, end],
     );
 
     if (!result.rows) return [];
@@ -588,7 +593,10 @@ export default class TimeSlotRepository extends Repository {
    * @param end End date range
    * @returns Pairs of conflicting time slots
    */
-  public async findBilocation(start: Date, end: Date): Promise<[TimeSlot, TimeSlot][]> {
+  public async findBilocation(
+    start: Date,
+    end: Date,
+  ): Promise<[TimeSlot, TimeSlot][]> {
     // Using "less than" (not "equals") to compare the ids prevents a bilocation from being listed twice
     const result = await this.database.execute(
       `
@@ -616,7 +624,7 @@ export default class TimeSlotRepository extends Repository {
             )
             AND DATE(startDateTime) BETWEEN ? AND ?
       `,
-      [start, end]
+      [start, end],
     );
 
     if (!result.rows) return [];
@@ -633,7 +641,7 @@ export default class TimeSlotRepository extends Repository {
         null,
         row.timeSlot1note,
         row.timeSlot1colorId,
-        null
+        null,
       ),
       new TimeSlot(
         row.timeSlot2id,
@@ -646,12 +654,15 @@ export default class TimeSlotRepository extends Repository {
         null,
         row.timeSlot2note,
         row.timeSlot2colorId,
-        null
+        null,
       ),
     ]);
   }
 
-  public async findAdultOnlyViolations(start: Date, end: Date): Promise<TimeSlot[]> {
+  public async findAdultOnlyViolations(
+    start: Date,
+    end: Date,
+  ): Promise<TimeSlot[]> {
     const result = await this.database.execute(
       `
         ${this.timeSlotTeamMemberQuery}
@@ -659,7 +670,7 @@ export default class TimeSlotRepository extends Repository {
           AND DATE(startDateTime) BETWEEN ? AND ?
           AND TIMESTAMPDIFF(YEAR, tm.birthDate, ts.startDateTime) < 18;
       `,
-      [start, end]
+      [start, end],
     );
 
     if (!result.rows) return [];
@@ -667,19 +678,27 @@ export default class TimeSlotRepository extends Repository {
     return this.mapTimeSlotTeamMemberRows(result.rows);
   }
 
-  public async findShiftContextPreferenceViolations(start: Date, end: Date): Promise<TimeSlot[]> {
-
+  public async findPreferenceViolations(
+    start: Date,
+    end: Date,
+  ): Promise<TimeSlot[]> {
   }
 
-  public async findAvailabilityViolations(start: Date, end: Date): Promise<TimeSlot[]> {
-
+  public async findAvailabilityViolations(
+    start: Date,
+    end: Date,
+  ): Promise<TimeSlot[]> {
   }
 
-  public async findMaxWeeklyDaysViolations(start: Date, end: Date): Promise<TeamMember[]> {
-
+  public async findMaxWeeklyDaysViolations(
+    start: Date,
+    end: Date,
+  ): Promise<TeamMember[]> {
   }
 
-  public async findMaxWeeklyHoursViolations(start: Date, end: Date): Promise<TeamMember[]> {
-    
+  public async findMaxWeeklyHoursViolations(
+    start: Date,
+    end: Date,
+  ): Promise<TeamMember[]> {
   }
 }

@@ -42,7 +42,8 @@ export default class UnavailabilityController extends Controller {
       },
       {
         method: "GET",
-        pattern: "/team-member/(\\d+)/unavailability/add/((\\d{4})/(\\d{2})/(\\d{2})/)?",
+        pattern:
+          "/team-member/(\\d+)/unavailability/add/((\\d{4})/(\\d{2})/(\\d{2})/)?",
         action: this.addGet,
       },
       {
@@ -376,7 +377,7 @@ export default class UnavailabilityController extends Controller {
   /**
    * Team member unavailability week clear GET
    * @param context Application context
-   * @returns 
+   * @returns
    */
   public async clearGet(context: Context) {
     const teamMember = await this.getTeamMemberFromContext(context);
@@ -387,12 +388,15 @@ export default class UnavailabilityController extends Controller {
     if (isNaN(date.getTime())) return this.NotFoundResponse(context);
 
     if (date.getDay() != 0) {
-      const weekStart = BetterDate.fromDate(date).floorToSunday().toDateString("/");
+      const weekStart = BetterDate.fromDate(date).floorToSunday().toDateString(
+        "/",
+      );
       const url = `/team-member/unavailability/${weekStart}/clear/`;
       return this.RedirectResponse(context, url);
     }
 
-    const description = `unavailability for ${teamMember.fullName} the week of ${date.toLocaleDateString()}`;
+    const description =
+      `unavailability for ${teamMember.fullName} the week of ${date.toLocaleDateString()}`;
     const action = context.match[0];
     const datePath = BetterDate.fromDate(date).toDateString("/");
     const cancel = `/team-member/${teamMember.id}/unavailability/${datePath}/`;
@@ -401,15 +405,15 @@ export default class UnavailabilityController extends Controller {
       description,
       action,
       cancel,
-      context.csrf_token
+      context.csrf_token,
     );
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
   /**
    * Team member unavailability week clear POST
-   * @param context 
-   * @returns 
+   * @param context
+   * @returns
    */
   public async clearPost(context: Context) {
     const teamMember = await this.getTeamMemberFromContext(context);
@@ -420,7 +424,9 @@ export default class UnavailabilityController extends Controller {
     if (isNaN(date.getTime())) return this.NotFoundResponse(context);
 
     if (date.getDay() != 0) {
-      const weekStart = BetterDate.fromDate(date).floorToSunday().toDateString("/");
+      const weekStart = BetterDate.fromDate(date).floorToSunday().toDateString(
+        "/",
+      );
       const url = `/team-member/unavailability/${weekStart}/clear/`;
       return this.RedirectResponse(context, url);
     }

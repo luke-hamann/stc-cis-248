@@ -176,7 +176,7 @@ export default class UnavailabilityRepository extends Repository {
         WHERE teamMemberId = ?
           AND startDateTime BETWEEN ? AND ?
       `,
-      [teamMemberId, start, end]
+      [teamMemberId, start, end],
     );
   }
 

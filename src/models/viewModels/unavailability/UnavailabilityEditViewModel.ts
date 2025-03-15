@@ -54,15 +54,18 @@ export default class UnavailabilityEditViewModel extends FormViewModel {
 
     return new UnavailabilityEditViewModel(null, unavailability, false, [], "");
   }
-  
+
   public get startDateString(): string {
     if (!this.startDate) return "";
     return BetterDate.fromDate(this.startDate).toDateString();
   }
 
   public get cancelLink(): string {
-    const date = this.unavailability.startDateTime ?? this.startDate ?? new Date();
-    const datePath = BetterDate.fromDate(date).floorToSunday().toDateString("/");
+    const date = this.unavailability.startDateTime ?? this.startDate ??
+      new Date();
+    const datePath = BetterDate.fromDate(date).floorToSunday().toDateString(
+      "/",
+    );
     return `/team-member/${this.teamMember!.id}/unavailability/${datePath}/`;
   }
 }
