@@ -1,5 +1,6 @@
 import BetterDate from "../../_dates/BetterDate.ts";
 import DateLib from "../../_dates/DateLib.ts";
+import TeamMember from "../entities/TeamMember.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotGroup from "../entities/TimeSlotGroup.ts";
 import Database from "./_Database.ts";
@@ -25,13 +26,82 @@ interface ITimeSlotGroupRow {
   requiresAdult: number;
 }
 
+interface ITimeSlotTeamMemberRow {
+  timeSlotId : number,
+  timeSlotShiftContextId : number,
+  timeSlotStartDateTime : Date,
+  timeSlotEndDateTime : Date,
+  timeSlotRequiresAdult : number,
+  timeSlotTeamMemberId : number,
+  timeSlotNote : string,
+  timeSlotColorId : number,
+  teamMemberId : number,
+  teamMemberFirstName : string,
+  teamMemberMiddleName : string,
+  teamMemberLastName : string,
+  teamMemberBirthDate : Date,
+  teamMemberEmail : string,
+  teamMemberPhone : string,
+  teamMemberIsExternal : number,
+  teamMemberMaxWeeklyHours : number,
+  teamMemberMaxWeeklyDays : number,
+  teamMemberUsername : string,
+  teamMemberPassword : string,
+  teamMemberIsAdmin: number,
+}
+
+interface ITimeSlotTimeSlotRow {
+  timeSlot1id: number;
+  timeSlot1shiftContextId: number;
+  timeSlot1startDateTime: Date;
+  timeSlot1endDateTime: Date | null;
+  timeSlot1requiresAdult: number;
+  timeSlot1teamMemberId: number | null;
+  timeSlot1note: string;
+  timeSlot1colorId: number | null;
+  timeSlot2id: number;
+  timeSlot2shiftContextId: number;
+  timeSlot2startDateTime: Date;
+  timeSlot2endDateTime: Date | null;
+  timeSlot2requiresAdult: number;
+  timeSlot2teamMemberId: number | null;
+  timeSlot2note: string;
+  timeSlot2colorId: number | null;
+}
+
 export default class TimeSlotRepository extends Repository {
   private shiftContexts: ShiftContextRepository;
   private colors: ColorRepository;
   private teamMembers: TeamMemberRepository;
-  private readonly baseQuery = `
+  private readonly timeSlotQuery = `
     SELECT id, shiftContextId, startDateTime, endDateTime, requiresAdult, teamMemberId, note, colorId
     FROM Timeslots
+  `;
+  private readonly timeSlotTeamMemberQuery = `
+    SELECT
+      ts.id timeSlotId,
+      ts.shiftContextId timeSlotShiftContextId,
+      ts.startDateTime timeSlotStartDateTime,
+      ts.endDateTime timeSlotEndDateTime,
+      ts.requiresAdult timeSlotRequiresAdult,
+      ts.teamMemberId timeSlotTeamMemberId,
+      ts.note timeSlotNote,
+      ts.colorId timeSlotColorId,
+      tm.id teamMemberId,
+      tm.firstName teamMemberFirstName,
+      tm.middleName teamMemberMiddleName,
+      tm.lastName teamMemberLastName,
+      tm.birthDate teamMemberBirthDate,
+      tm.email teamMemberEmail,
+      tm.phone teamMemberPhone,
+      tm.isExternal teamMemberIsExternal,
+      tm.maxWeeklyHours teamMemberMaxWeeklyHours,
+      tm.maxWeeklyDays teamMemberMaxWeeklyDays,
+      tm.username teamMemberUsername,
+      tm.password teamMemberPassword,
+      tm.isAdmin teamMemberIsAdmin
+    FROM TimeSlots ts
+      JOIN TeamMembers tm ON ts.teamMemberId = tm.id
   `;
 
   constructor(
@@ -100,7 +170,7 @@ export default class TimeSlotRepository extends Repository {
    */
   public async getOnDate(date: Date): Promise<TimeSlot[]> {
     const result = await this.database.execute(
-      `${this.baseQuery} WHERE DATE(startDateTime) = ?`,
+      `${this.timeSlotQuery} WHERE DATE(startDateTime) = ?`,
       [date],
     );
 
@@ -118,7 +188,7 @@ export default class TimeSlotRepository extends Repository {
   public async getInDateRange(start: Date, end: Date): Promise<TimeSlot[]> {
     const result = await this.database.execute(
       `
-        ${this.baseQuery}
+        ${this.timeSlotQuery}
         WHERE DATE(startDateTime) BETWEEN ? AND ?
       `,
       [start, end],
@@ -140,7 +210,7 @@ export default class TimeSlotRepository extends Repository {
     date: Date,
   ): Promise<TimeSlot[]> {
     const result = await this.database.execute(
-      `${this.baseQuery} WHERE shiftContextId = ? AND DATE(startDateTime) = ?`,
+      `${this.timeSlotQuery} WHERE shiftContextId = ? AND DATE(startDateTime) = ?`,
       [shiftContextId, date],
     );
 
@@ -160,7 +230,7 @@ export default class TimeSlotRepository extends Repository {
    */
   public async get(id: number): Promise<TimeSlot | null> {
     const result = await this.database.execute(
-      `${this.baseQuery} WHERE id = ?`,
+      `${this.timeSlotQuery} WHERE id = ?`,
       [id],
     );
 
@@ -379,7 +449,7 @@ export default class TimeSlotRepository extends Repository {
       for (const date of DateLib.getDatesInRange(startDate, endDate)) {
         const result = await this.database.execute(
           `
-            ${this.baseQuery}
+            ${this.timeSlotQuery}
             WHERE shiftContextId = ?
               AND DATE(startDateTime) = ?
               AND TIME(startDateTime) = ?
@@ -425,7 +495,7 @@ export default class TimeSlotRepository extends Repository {
 
     const result = await this.database.execute(
       `
-        ${this.baseQuery}
+        ${this.timeSlotQuery}
         WHERE id != ?
           AND teamMemberId = ?
           AND (
@@ -465,5 +535,151 @@ export default class TimeSlotRepository extends Repository {
     );
 
     return (!result.rows || result.rows.length == 0);
+  }
+
+  public mapTimeSlotTeamMemberRows(rows: ITimeSlotTeamMemberRow[]): TimeSlot[] {
+    return rows.map(row => new TimeSlot(
+      row.timeSlotId,
+      row.timeSlotShiftContextId,
+      null,
+      row.timeSlotStartDateTime,
+      row.timeSlotEndDateTime,
+      row.timeSlotRequiresAdult == 1,
+      row.timeSlotTeamMemberId,
+      new TeamMember(
+        row.teamMemberId,
+        row.teamMemberFirstName,
+        row.teamMemberMiddleName,
+        row.teamMemberLastName,
+        row.teamMemberBirthDate,
+        row.teamMemberEmail,
+        row.teamMemberPhone,
+        row.teamMemberIsExternal == 1,
+        row.teamMemberMaxWeeklyHours,
+        row.teamMemberMaxWeeklyDays,
+        row.teamMemberUsername,
+        row.teamMemberPassword,
+        row.teamMemberIsAdmin == 1
+      ),
+      row.timeSlotNote,
+      row.timeSlotColorId,
+      null
+    ));
+  }
+
+  public async findWithExternalAssignees(start: Date, end: Date): Promise<TimeSlot[]> {
+    const result = await this.database.execute(
+      `
+        ${this.timeSlotTeamMemberQuery}
+        WHERE tm.isExternal
+          AND DATE(startDateTime) BETWEEN ? AND ?
+      `,
+      [start, end]
+    );
+
+    if (!result.rows) return [];
+
+    return this.mapTimeSlotTeamMemberRows(result.rows);
+  }
+
+  /**
+   * Finds pairs of time slots where a team member was scheduled in two places at the same time
+   * @param start Start date range
+   * @param end End date range
+   * @returns Pairs of conflicting time slots
+   */
+  public async findBilocation(start: Date, end: Date): Promise<[TimeSlot, TimeSlot][]> {
+    // Using "less than" (not "equals") to compare the ids prevents a bilocation from being listed twice
+    const result = await this.database.execute(
+      `
+        SELECT
+          t1.id timeSlot1Id,
+          t1.shiftContextId timeSlot1ShiftContextId,
+          t1.startDateTime timeSlot1StartDateTime,
+          t1.endDateTime timeSlot1EndDateTime,
+          t1.requiresAdult timeSlot1RequiresAdult,
+          t1.teamMemberId timeSlot1TeamMemberId,
+          t1.note timeSlot1Note,
+          t2.id timeSlot2Id,
+          t2.shiftContextId timeSlot2ShiftContextId,
+          t2.startDateTime timeSlot2StartDateTime,
+          t2.endDateTime timeSlot2EndDateTime,
+          t2.requiresAdult timeSlot2RequiresAdult,
+          t2.teamMemberId timeSlot2TeamMemberId,
+          t2.note timeSlotNote,
+        FROM TimeSlots t1, TimeSlots t2
+          WHERE t1.id < t2.id
+            AND t1.teamMemberId = t2.teamMemberId
+            AND (
+              t1.startDateTime BETWEEN t2.startDateTime AND t2.endDateTime
+              OR t1.endDateTime BETWEEN t2.startDateTime AND t2.endDateTime
+            )
+            AND DATE(startDateTime) BETWEEN ? AND ?
+      `,
+      [start, end]
+    );
+
+    if (!result.rows) return [];
+
+    return result.rows.map((row: ITimeSlotTimeSlotRow) => [
+      new TimeSlot(
+        row.timeSlot1id,
+        row.timeSlot1shiftContextId,
+        null,
+        row.timeSlot1startDateTime,
+        row.timeSlot1endDateTime,
+        row.timeSlot1requiresAdult == 1,
+        row.timeSlot1teamMemberId,
+        null,
+        row.timeSlot1note,
+        row.timeSlot1colorId,
+        null
+      ),
+      new TimeSlot(
+        row.timeSlot2id,
+        row.timeSlot2shiftContextId,
+        null,
+        row.timeSlot2startDateTime,
+        row.timeSlot2endDateTime,
+        row.timeSlot2requiresAdult == 1,
+        row.timeSlot2teamMemberId,
+        null,
+        row.timeSlot2note,
+        row.timeSlot2colorId,
+        null
+      ),
+    ]);
+  }
+
+  public async findAdultOnlyViolations(start: Date, end: Date): Promise<TimeSlot[]> {
+    const result = await this.database.execute(
+      `
+        ${this.timeSlotTeamMemberQuery}
+        WHERE ts.requiresAdult
+          AND DATE(startDateTime) BETWEEN ? AND ?
+          AND TIMESTAMPDIFF(YEAR, tm.birthDate, ts.startDateTime) < 18;
+      `,
+      [start, end]
+    );
+
+    if (!result.rows) return [];
+
+    return this.mapTimeSlotTeamMemberRows(result.rows);
+  }
+
+  public async findShiftContextPreferenceViolations(start: Date, end: Date): Promise<TimeSlot[]> {
+
+  }
+
+  public async findAvailabilityViolations(start: Date, end: Date): Promise<TimeSlot[]> {
+
+  }
+
+  public async findMaxWeeklyDaysViolations(start: Date, end: Date): Promise<TeamMember[]> {
+
+  }
+
+  public async findMaxWeeklyHoursViolations(start: Date, end: Date): Promise<TeamMember[]> {
+    
   }
 }
