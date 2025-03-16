@@ -438,13 +438,21 @@ export default class TimeSlotRepository extends Repository {
         WHERE id != ?
           AND teamMemberId = ?
           AND (
-            startDateTime BETWEEN ? AND ?
-            OR endDateTime BETWEEN ? AND ?
+            (
+              startDateTime BETWEEN ? AND ?
+              OR endDateTime BETWEEN ? AND ?
+            )
+            OR (
+              startDateTime < ?
+              AND endDateTime > ?
+            )
           )
       `,
       [
         timeSlot.id,
         teamMemberId,
+        timeSlot.startDateTime,
+        timeSlot.endDateTime,
         timeSlot.startDateTime,
         timeSlot.endDateTime,
         timeSlot.startDateTime,

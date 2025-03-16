@@ -5,6 +5,7 @@ import TimeSlot from "./TimeSlot.ts";
 import TimeSlotGroup from "./TimeSlotGroup.ts";
 
 export type ScheduleCell =
+  | { type: "origin"; content: null }
   | { type: "string"; content: string }
   | { type: "header"; content: string }
   | { type: "dateHeader"; content: Date }

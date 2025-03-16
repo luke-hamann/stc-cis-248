@@ -1,20 +1,12 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
 import DateLib from "../../../_dates/DateLib.ts";
 import Schedule from "../../entities/Schedule.ts";
-import TeamMember from "../../entities/TeamMember.ts";
-import TimeSlot from "../../entities/TimeSlot.ts";
+import { ScheduleWarnings } from "../../repositories/ScheduleRepository.ts";
 
 export default class ScheduleWeekViewModel {
   public currentWeek: Date;
   public schedule: Schedule;
-
-  public externalAssigneeWarnings: TimeSlot[] = [];
-  public bilocationWarnings: [TimeSlot, TimeSlot][] = [];
-  public adultOnlyWarnings: TimeSlot[] = [];
-  public preferenceWarnings: TimeSlot[] = [];
-  public availabilityWarnings: TimeSlot[] = [];
-  public maxWeeklyDaysWarnings: [TeamMember, number][] = [];
-  public maxWeeklyHoursWarnings: [TeamMember, number][] = [];
+  public warnings: ScheduleWarnings;
 
   private readonly monthNames = [
     "January",
@@ -34,9 +26,11 @@ export default class ScheduleWeekViewModel {
   constructor(
     currentWeek: Date,
     schedule: Schedule,
+    warnings: ScheduleWarnings,
   ) {
     this.currentWeek = currentWeek;
     this.schedule = schedule;
+    this.warnings = warnings;
   }
 
   private formatDatePath(date: Date): string {

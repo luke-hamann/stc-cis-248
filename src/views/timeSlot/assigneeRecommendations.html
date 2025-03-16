@@ -35,16 +35,16 @@
           </label>
         </td>
         <td class="p-2">
-          {{ symbols[recommendation.fields.get("adult")] }}
+          {{ symbols[recommendation.isAdult] }}
         </td>
         <td class="p-2">
-          {{ symbols[recommendation.fields.get("available")] }}
+          {{ symbols[recommendation.isAvailable] }}
         </td>
         <td class="p-2">
-          {{ symbols[recommendation.fields.get("prefers")] }}
+          {{ symbols[recommendation.prefersShiftContext] }}
         </td>
         <td class="p-2">
-          {{ symbols[recommendation.fields.get("conflict")] }}
+          {{ symbols[recommendation.isConflicting] }}
         </td>
       </tr>
     {% endfor %}

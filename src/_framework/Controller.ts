@@ -68,4 +68,27 @@ export default class Controller {
     context.response.headers.set("Content-Type", "text/html");
     return context.response;
   }
+
+  /**
+   * Return a response wrapper for an attachment download
+   * @param context The current application context
+   * @param contentType The MIME type of the download
+   * @param fileName The file name of the download
+   * @param fileContent The file content of the download
+   * @returns
+   */
+  protected AttachmentResponse(
+    context: Context,
+    contentType: string,
+    fileName: string,
+    fileContent: string | ArrayBuffer,
+  ): ResponseWrapper {
+    context.response.headers.set("Content-Type", contentType);
+    context.response.headers.set(
+      "Content-Disposition",
+      `attachment; filename="${fileName}"`,
+    );
+    context.response.body = fileContent;
+    return context.response;
+  }
 }

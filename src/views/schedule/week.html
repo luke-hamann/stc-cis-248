@@ -1,5 +1,17 @@
 {% extends "../_shared/_layout.html" %}
 
+{% macro teamMemberLink(teamMember) %}
+  <a href="/team-member/{{ teamMember.id }}/" class="underline">{{
+    teamMember.fullName
+  }}</a>
+{% endmacro %}
+
+{% macro timeSlotLink(timeSlot) %}
+  <a href="/schedule/time-slot/{{ timeSlot.id }}/" class="underline">{{
+    timeSlot.startDateTime.toLocaleString()
+  }}</a>
+{% endmacro %}
+
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block content %}
@@ -32,6 +44,12 @@
           <td class="min-w-xs border">
             {% set type = col.type %}
             {% set data = col.content %}
+
+            {% if type == "origin" %}
+              <a href="/schedule/time-slot/add/" class="block w-fit p-2 pe-4 border rounded bg-blue-400 text-white">
+                &plus; Add time slot
+              </a>
+            {% endif %}
 
             {% if type == "header" %}
               <h2 class="text-2xl font-bold">{{ data }}</h2>
@@ -106,24 +124,20 @@
       Warnings
     </h2>
     <ul class="p-4 list-disc">
-      {% for timeSlot in model.externalAssigneeWarnings %}
+      {% for timeSlot in model.warnings.externality %}
         <li>
           [Externality]
-          <a href="/team-member/{{ timeSlot.teamMember.id }}/" class="underline">{{
-            timeSlot.teamMember.fullName
-          }}</a>
+          {{ teamMemberLink(timeSlot.teamMember) }}
           is external and is scheduled on
           <a href="/schedule/time-slot/{{ timeSlot.id }}" class="underline">{{
             timeSlot.startDateTime.toLocaleString()
           }}</a>.
         </li>
       {% endfor %}
-      {% for timeSlot1, timeSlot2 in model.bilocationWarnings %}
+      {% for timeSlot1, timeSlot2 in model.warnings.bilocation %}
         <li>
           [Bilocation]
-          <a href="/team-member/{{ timeSlot.teamMember.id }}/" class="underline">{{
-            timeSlot.teamMember.fullName
-          }}</a>
+          {{ teamMemberLink(timeSlot1.teamMember) }}
           is scheduled at both
           <a href="/schedule/time-slot/{{ timeSlot1.id }}/" class="underline">{{
             timeSlot1.startDateTime.toLocaleString()
@@ -134,22 +148,18 @@
           }}</a>.
         </li>
       {% endfor %}
-      {% for timeSlot in model.adultOnlyWarnings %}
+      {% for timeSlot in model.warnings.adultOnly %}
         <li>
           [Adult Only]
-          <a href="/team-member/{{ timeSlot.teamMember.id }}/" class="underline">{{
-            timeSlot.teamMember.fullName
-          }}</a>
+          {{ teamMemberLink(timeSlot.teamMember) }}
           is sceduled during
           <a href="/schedule/time-slot/{{ timeSlot.id }}/" class="underline">an 18+ time slot</a>.
         </li>
       {% endfor %}
-      {% for timeSlot in model.preferenceWarnings %}
+      {% for timeSlot in model.warnings.shiftContextPreferenceViolations %}
         <li>
           [Preferences]
-          <a href="/team-member/{{ timeSlot.teamMember.id }}/" class="underline">{{
-            timeSlot.teamMember.fullName
-          }}</a>
+          {{ teamMemberLink(timeSlot.teamMember) }}
           is sceduled for
           <a href="/contexts/" class="underline">{{
             timeSlot.shiftContext.name
@@ -158,33 +168,34 @@
           <a href="/team-member/{{ timeSlot.teamMember.id }}/preferences/" class="underline">not preferable</a>.
         </li>
       {% endfor %}
-      {% for timeSlot in model.availabilityWarnings %}
+      {% for timeSlot in model.warnings.availabilityViolations %}
         <li>
           [Availability]
-          {{ timeSlot.teamMember.fullName }}
+          {{ teamMemberLink(timeSlot.teamMember) }}
           has been scheduled at
-          {{ timeSlot.startDateTime.toLocaleString() }},
+          {{ timeSlotLink(timeSlot) }},
           and they are unavailabile.
         </li>
       {% endfor %}
-      {% for teamMember, numberOfDays in model.maxWeeklyDaysWarnings %}
+      {% for teamMember, workDays in model.warnings.maxWeeklyDaysViolations %}
         <li>
           [Max Weekly Days]
-          {{ teamMember.fullName }}
+          {{ teamMemberLink(teamMember) }}
           has been sceduled on
-          {{ numberOfDays }}
-          days(s), and their maximum is
-          {{ teamMember.maxWeekyDays }}.
+          {{ workDays }}
+          day(s), and their maximum is
+          {{ teamMember.maxWeeklyDays }}.
         </li>
       {% endfor %}
-      {% for teamMember, numberOfHours in model.maxWeeklyHoursWarnings %}
+      {% for teamMember, numberOfHours in model.warnings.maxWeeklyHoursViolations %}
         <li>
           [Max Weeky Hours]
-          {{ teamMember.fullName }}
+          {{ teamMemberLink(teamMember) }}
           has been scheduled to work
-          {{ numberOfHours }}
-          hours this week, and their maximum is
-          {{ teamMember.maxWeeklyHours }}.
+          {{ numberOfHours | round(2) }}
+          hour(s) this week, and their maximum is
+          {{ teamMember.maxWeeklyHours }}
+          hour(s).
         </li>
       {% endfor %}
     </ul>

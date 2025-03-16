@@ -200,12 +200,18 @@ export default class UnavailabilityRepository extends Repository {
         FROM TeamMemberAvailability
         WHERE teamMemberId = ?
           AND (
-            startDateTime BETWEEN ? AND ? OR
-            endDateTime BETWEEN ? AND ?
+            startDateTime BETWEEN ? AND ?
+            OR endDateTime BETWEEN ? AND ?
+          )
+          OR (
+            startDateTime < ?
+            AND endDateTime > ?
           )
       `,
       [
         teamMember.id,
+        timeSlot.startDateTime,
+        timeSlot.endDateTime,
         timeSlot.startDateTime,
         timeSlot.endDateTime,
         timeSlot.startDateTime,

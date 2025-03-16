@@ -185,8 +185,8 @@ export default class TypicalAvailabilityRepository extends Repository {
         FROM TeamMemberTypicalAvailability
         WHERE teamMemberId = ?
           AND dayOfWeek = ?
-          AND ? BETWEEN startTime AND endTime
-          AND ? BETWEEN startTime AND endTime
+          AND startTime <= ?
+          AND endTime >= ?
       `,
       [
         teamMember.id,

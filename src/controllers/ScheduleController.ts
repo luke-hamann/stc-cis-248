@@ -88,18 +88,11 @@ export default class ScheduleController extends Controller {
     }
 
     const endDate = DateLib.addDays(startDate, 6);
+
     const schedule = await this.schedules.getSchedule(startDate, endDate);
+    const warnings = await this.schedules.getWarnings(startDate, endDate);
 
-    const model = new ScheduleWeekViewModel(startDate, schedule);
-
-    // Warnings
-    model.externalAssigneeWarnings = await this.schedules.findWithExternalAssignees(startDate, endDate);
-    model.bilocationWarnings = await this.schedules.findBilocation(startDate, endDate);
-    model.adultOnlyWarnings = await this.schedules.findAdultOnlyViolations(startDate, endDate);
-    model.preferenceWarnings = await this.schedules.findPreferenceViolations(startDate, endDate);
-    model.availabilityWarnings = await this.schedules.findAvailabilityViolations(startDate, endDate);
-    model.maxWeeklyDaysWarnings = await this.schedules.findMaxWeeklyDaysViolations(startDate, endDate);
-    model.maxWeeklyHoursWarnings = await this.schedules.findMaxWeeklyHoursViolations(startDate, endDate);
+    const model = new ScheduleWeekViewModel(startDate, schedule, warnings);
 
     return this.HTMLResponse(context, "./views/schedule/week.html", model);
   }
@@ -202,13 +195,12 @@ export default class ScheduleController extends Controller {
           .join(",")
       ).join("\n");
 
-      context.response.headers.set("Content-Type", "text/plain");
-      context.response.headers.set(
-        "Content-Disposition",
-        `attachment; filename="${model.title}.csv"`,
+      return this.AttachmentResponse(
+        context,
+        "text/csv",
+        `${model.title}.csv`,
+        csv,
       );
-      context.response.body = csv;
-      return context.response;
     }
 
     if (model.format == "excel") {
@@ -248,16 +240,12 @@ export default class ScheduleController extends Controller {
         });
       }
 
-      context.response.headers.set(
-        "Content-Type",
+      return this.AttachmentResponse(
+        context,
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        `${model.title}.xlsx`,
+        await workbook.xlsx.writeBuffer() as ArrayBuffer,
       );
-      context.response.headers.set(
-        "Content-Disposition",
-        `attachment; filename="${model.title}.xlsx"`,
-      );
-      context.response.body = await workbook.xlsx.writeBuffer() as ArrayBuffer;
-      return context.response;
     }
   }
 }

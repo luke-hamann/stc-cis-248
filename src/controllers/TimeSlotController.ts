@@ -117,7 +117,7 @@ export default class TimeSlotController extends Controller {
     }
 
     const newDate = BetterDate.fromDate(DateLib.floorToSunday(date))
-      .toDateString().replaceAll("-", "/");
+      .toDateString("/");
     return `/schedule/${newDate}/`;
   }
 

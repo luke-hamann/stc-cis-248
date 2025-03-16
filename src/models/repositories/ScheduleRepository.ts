@@ -11,10 +11,7 @@ import SubstituteRepository from "./SubstituteRepository.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotRepository from "./TimeSlotRepository.ts";
 import TeamMemberRepository from "./TeamMemberRepository.ts";
-import AssigneeRecommendations, {
-  AssigneeRecommendationField,
-  AssigneeRecommendationStatus,
-} from "../entities/AssigneeRecommendation.ts";
+import AssigneeRecommendations from "../entities/AssigneeRecommendation.ts";
 import TypicalAvailabilityRepository from "./TypicalAvailabilityRepository.ts";
 import UnavailabilityRepository from "./UnavailabilityRepository.ts";
 import ShiftContextPreferenceRepository from "./ShiftContextPreferenceRepository.ts";
@@ -22,7 +19,7 @@ import TeamMember from "../entities/TeamMember.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import Database from "./_Database.ts";
 
-interface ITimeSlotRowComponent {
+export interface ITimeSlotRowComponent {
   timeSlotId: number;
   timeSlotShiftContextId: number;
   timeSlotStartDateTime: Date;
@@ -33,7 +30,7 @@ interface ITimeSlotRowComponent {
   timeSlotColorId: number;
 }
 
-interface ITeamMemberRowComponent {
+export interface ITeamMemberRowComponent {
   teamMemberId: number;
   teamMemberFirstName: string;
   teamMemberMiddleName: string;
@@ -49,23 +46,28 @@ interface ITeamMemberRowComponent {
   teamMemberIsAdmin: number;
 }
 
-interface IShiftContextRowComponent {
-  shiftContextId: number,
-  shiftContextName: string,
-  shiftContextAgeGroup: string,
-  shiftContextLocation: string,
-  shiftContextDescription: string
+export interface IShiftContextRowComponent {
+  shiftContextId: number;
+  shiftContextName: string;
+  shiftContextAgeGroup: string;
+  shiftContextLocation: string;
+  shiftContextDescription: string;
 }
 
-interface ITimeSlotTeamMemberRow extends ITimeSlotRowComponent, ITeamMemberRowComponent {}
-
-interface ITimeSlotTeamMemberRow
+export interface ITimeSlotTeamMemberRow
   extends ITimeSlotRowComponent, ITeamMemberRowComponent {}
 
-interface ITimeSlotTeamMemberShiftContextRow
-  extends ITimeSlotRowComponent, ITeamMemberRowComponent, IShiftContextRowComponent {}
+export interface ITimeSlotTeamMemberRow
+  extends ITimeSlotRowComponent, ITeamMemberRowComponent {}
 
-interface ITeamMemberTimeSlotTimeSlotRow extends ITeamMemberRowComponent {
+export interface ITimeSlotTeamMemberShiftContextRow
+  extends
+    ITimeSlotRowComponent,
+    ITeamMemberRowComponent,
+    IShiftContextRowComponent {}
+
+export interface ITeamMemberTimeSlotTimeSlotRow
+  extends ITeamMemberRowComponent {
   timeSlot1Id: number;
   timeSlot1ShiftContextId: number;
   timeSlot1StartDateTime: Date;
@@ -83,6 +85,24 @@ interface ITeamMemberTimeSlotTimeSlotRow extends ITeamMemberRowComponent {
   timeSlot2Note: string;
   timeSlot2ColorId: number | null;
 }
+
+export interface IMaxWeeklyDaysViolationRow extends ITeamMemberRowComponent {
+  workDays: number;
+}
+
+export interface IMaxWeeklyHoursViolationRow extends ITeamMemberRowComponent {
+  totalHours: number;
+}
+
+export type ScheduleWarnings = {
+  externality: TimeSlot[];
+  bilocation: [TimeSlot, TimeSlot][];
+  adultOnly: TimeSlot[];
+  shiftContextPreferenceViolations: TimeSlot[];
+  availabilityViolations: TimeSlot[];
+  maxWeeklyDaysViolations: [TeamMember, number][];
+  maxWeeklyHoursViolations: [TeamMember, number][];
+};
 
 export default class ScheduleRepository {
   private database: Database;
@@ -140,7 +160,7 @@ export default class ScheduleRepository {
       null,
       row.timeSlotNote,
       row.timeSlotColorId,
-      null
+      null,
     );
   }
 
@@ -210,7 +230,7 @@ export default class ScheduleRepository {
 
     // column headers
     scheduleTable.push([
-      { type: "string", content: "" },
+      { type: "origin", content: null },
       ...dateList.map((
         date,
       ) => ({ type: "dateHeader", content: date } as ScheduleCell)),
@@ -337,25 +357,26 @@ export default class ScheduleRepository {
     for (const teamMember of teamMembers) {
       const recommendation = new AssigneeRecommendations(
         teamMember,
-        new Map<AssigneeRecommendationField, AssigneeRecommendationStatus>(),
+        "unknown",
+        "unknown",
+        "unknown",
+        "unknown",
       );
 
       // Age restriction
 
       if (!timeSlot.requiresAdult) {
-        recommendation.fields.set("adult", "neutral");
+        recommendation.isAdult = "neutral";
       } else if (
         teamMember.birthDate == null || timeSlot.startDateTime == null
       ) {
-        recommendation.fields.set("adult", "unknown");
+        recommendation.isAdult = "unknown";
       } else {
         const age = DateLib.getAge(
           teamMember.birthDate,
           timeSlot.startDateTime,
         );
-        const isAdult = age >= 18;
-        const result = isAdult ? "positive" : "negative";
-        recommendation.fields.set("adult", result);
+        recommendation.isAdult = age >= 18 ? "positive" : "negative";
       }
 
       // Availability
@@ -372,13 +393,13 @@ export default class ScheduleRepository {
       if (
         typicallyAvailable == "negative" || speciallyAvailable == "negative"
       ) {
-        recommendation.fields.set("available", "negative");
+        recommendation.isAvailable = "negative";
       } else if (
         typicallyAvailable == "unknown" || speciallyAvailable == "unknown"
       ) {
-        recommendation.fields.set("available", "unknown");
+        recommendation.isAvailable = "unknown";
       } else {
-        recommendation.fields.set("available", "positive");
+        recommendation.isAvailable = "positive";
       }
 
       // Shift context preference
@@ -387,7 +408,7 @@ export default class ScheduleRepository {
         teamMember.id,
         timeSlot.shiftContextId,
       );
-      recommendation.fields.set("prefers", preference);
+      recommendation.prefersShiftContext = preference;
 
       // Scheduling conflicts
 
@@ -395,7 +416,7 @@ export default class ScheduleRepository {
         teamMember.id,
         timeSlot,
       );
-      recommendation.fields.set("conflict", hasConflict);
+      recommendation.isConflicting = hasConflict;
 
       // Add the recommendation for the team member to the list of recommendations
       recommendations.push(recommendation);
@@ -413,11 +434,20 @@ export default class ScheduleRepository {
     });
   }
 
-  public async findWithExternalAssignees(
-    start: Date,
-    end: Date,
-  ): Promise<TimeSlot[]> {
-    const result = await this.database.execute(
+  public async getWarnings(start: Date, end: Date): Promise<ScheduleWarnings> {
+    const warnings: ScheduleWarnings = {
+      externality: [],
+      bilocation: [],
+      adultOnly: [],
+      shiftContextPreferenceViolations: [],
+      availabilityViolations: [],
+      maxWeeklyDaysViolations: [],
+      maxWeeklyHoursViolations: [],
+    };
+
+    // Externality warnings
+
+    let result = await this.database.execute(
       `
         ${this.timeSlotTeamMemberQuery}
         WHERE TeamMembers.isExternal
@@ -426,23 +456,14 @@ export default class ScheduleRepository {
       [start, end],
     );
 
-    if (!result.rows) return [];
+    if (result.rows) {
+      warnings.externality = this.mapTimeSlotTeamMemberRows(result.rows);
+    }
 
-    return this.mapTimeSlotTeamMemberRows(result.rows);
-  }
+    // Bilocation warnings
 
-  /**
-   * Finds pairs of time slots where a team member was scheduled in two places at the same time
-   * @param start Start date range
-   * @param end End date range
-   * @returns Pairs of conflicting time slots
-   */
-  public async findBilocation(
-    start: Date,
-    end: Date,
-  ): Promise<[TimeSlot, TimeSlot][]> {
     // Using "less than" (not "equals") to compare the ids prevents a bilocation from being listed twice
-    const result = await this.database.execute(
+    result = await this.database.execute(
       `
         SELECT
           ${this.teamMemberColumnsSql},
@@ -473,61 +494,60 @@ export default class ScheduleRepository {
       [start, end],
     );
 
-    if (!result.rows) return [];
+    if (result.rows) {
+      warnings.bilocation = result.rows.map(
+        (row: ITeamMemberTimeSlotTimeSlotRow) => {
+          const teamMember = new TeamMember(
+            row.teamMemberId,
+            row.teamMemberFirstName,
+            row.teamMemberMiddleName,
+            row.teamMemberLastName,
+            row.teamMemberBirthDate,
+            row.teamMemberEmail,
+            row.teamMemberPhone,
+            row.teamMemberIsExternal == 1,
+            row.teamMemberMaxWeeklyHours,
+            row.teamMemberMaxWeeklyDays,
+            row.teamMemberUsername,
+            row.teamMemberPassword,
+            row.teamMemberIsAdmin == 1,
+          );
 
-    return result.rows.map((row: ITeamMemberTimeSlotTimeSlotRow) => {
-      const teamMember = new TeamMember(
-        row.teamMemberId,
-        row.teamMemberFirstName,
-        row.teamMemberMiddleName,
-        row.teamMemberLastName,
-        row.teamMemberBirthDate,
-        row.teamMemberEmail,
-        row.teamMemberPhone,
-        row.teamMemberIsExternal == 1,
-        row.teamMemberMaxWeeklyHours,
-        row.teamMemberMaxWeeklyDays,
-        row.teamMemberUsername,
-        row.teamMemberPassword,
-        row.teamMemberIsAdmin == 1
+          return [
+            new TimeSlot(
+              row.timeSlot1Id,
+              row.timeSlot1ShiftContextId,
+              null,
+              row.timeSlot1StartDateTime,
+              row.timeSlot1EndDateTime,
+              row.timeSlot1RequiresAdult == 1,
+              row.timeSlot1TeamMemberId,
+              teamMember,
+              row.timeSlot1Note,
+              row.timeSlot1ColorId,
+              null,
+            ),
+            new TimeSlot(
+              row.timeSlot2Id,
+              row.timeSlot2ShiftContextId,
+              null,
+              row.timeSlot2StartDateTime,
+              row.timeSlot2EndDateTime,
+              row.timeSlot2RequiresAdult == 1,
+              row.timeSlot2TeamMemberId,
+              teamMember,
+              row.timeSlot2Note,
+              row.timeSlot2ColorId,
+              null,
+            ),
+          ];
+        },
       );
+    }
 
-      return [
-        new TimeSlot(
-          row.timeSlot1Id,
-          row.timeSlot1ShiftContextId,
-          null,
-          row.timeSlot1StartDateTime,
-          row.timeSlot1EndDateTime,
-          row.timeSlot1RequiresAdult == 1,
-          row.timeSlot1TeamMemberId,
-          teamMember,
-          row.timeSlot1Note,
-          row.timeSlot1ColorId,
-          null,
-        ),
-        new TimeSlot(
-          row.timeSlot2Id,
-          row.timeSlot2ShiftContextId,
-          null,
-          row.timeSlot2StartDateTime,
-          row.timeSlot2EndDateTime,
-          row.timeSlot2RequiresAdult == 1,
-          row.timeSlot2TeamMemberId,
-          teamMember,
-          row.timeSlot2Note,
-          row.timeSlot2ColorId,
-          null,
-        ),
-      ];
-    });
-  }
+    // Adult only violations
 
-  public async findAdultOnlyViolations(
-    start: Date,
-    end: Date,
-  ): Promise<TimeSlot[]> {
-    const result = await this.database.execute(
+    result = await this.database.execute(
       `
         ${this.timeSlotTeamMemberQuery}
         WHERE TimeSlots.requiresAdult
@@ -537,16 +557,13 @@ export default class ScheduleRepository {
       [start, end],
     );
 
-    if (!result.rows) return [];
+    if (result.rows) {
+      warnings.adultOnly = this.mapTimeSlotTeamMemberRows(result.rows);
+    }
 
-    return this.mapTimeSlotTeamMemberRows(result.rows);
-  }
+    // Shift context preference violations
 
-  public async findPreferenceViolations(
-    start: Date,
-    end: Date,
-  ): Promise<TimeSlot[]> {
-    const result = await this.database.execute(
+    result = await this.database.execute(
       `
         SELECT
           ${this.timeSlotColumnsSql},
@@ -566,21 +583,20 @@ export default class ScheduleRepository {
       [start, end],
     );
 
-    if (!result.rows) return [];
+    if (result.rows) {
+      warnings.shiftContextPreferenceViolations = result.rows.map(
+        (row: ITimeSlotTeamMemberShiftContextRow) => {
+          const timeSlot = this.mapTimeSlotColumns(row);
+          timeSlot.shiftContext = this.mapShiftContextColumns(row);
+          timeSlot.teamMember = this.mapTeamMemberColumns(row);
+          return timeSlot;
+        },
+      );
+    }
 
-    return result.rows.map((row: ITimeSlotTeamMemberShiftContextRow) => {
-      const timeSlot = this.mapTimeSlotColumns(row);
-      timeSlot.shiftContext = this.mapShiftContextColumns(row);
-      timeSlot.teamMember = this.mapTeamMemberColumns(row);
-      return timeSlot;
-    });
-  }
+    // Availability violations
 
-  public async findAvailabilityViolations(
-    start: Date,
-    end: Date,
-  ): Promise<TimeSlot[]> {
-    const result = await this.database.execute(
+    result = await this.database.execute(
       `
         -- Time slots not covered by typical availability
         SELECT
@@ -592,12 +608,13 @@ export default class ScheduleRepository {
           AND TimeSlots.id NOT IN (
             SELECT TimeSlots.id
             FROM TimeSlots, TeamMemberTypicalAvailability
-            WHERE TimeSlots.teamMemberId = TeamMemberTypicalAvailability.teamMemberId
+            WHERE DATE(TimeSlots.startDateTime) BETWEEN ? AND ?
+              AND TimeSlots.teamMemberId = TeamMemberTypicalAvailability.teamMemberId
               AND DAYOFWEEK(TimeSlots.startDateTime) - 1 = TeamMemberTypicalAvailability.dayOfWeek
               AND TIME(TimeSlots.startDateTime)
                 BETWEEN TeamMemberTypicalAvailability.startTime AND TeamMemberTypicalAvailability.endTime
               AND TIME(TimeSlots.endDateTime)
-                BETWEEN TeamMemberTypicalAvailability.startTime and TeamMemberTypicalAvailability.endTime
+                BETWEEN TeamMemberTypicalAvailability.startTime AND TeamMemberTypicalAvailability.endTime
           )
         UNION
         -- Time slots marked as unavailable
@@ -605,42 +622,87 @@ export default class ScheduleRepository {
           ${this.timeSlotColumnsSql},
           ${this.teamMemberColumnsSql}
         FROM TimeSlots
-          JOIN TeamMembers ON TimeSlots.teamMemberId = TeamMembers.id
+          JOIN TeamMembers
+            ON TimeSlots.teamMemberId = TeamMembers.id
           JOIN TeamMemberAvailability
             ON TimeSlots.teamMemberId = TeamMemberAvailability.teamMemberId
-          WHERE DATE(TimeSlots.startDateTime) BETWEEN ? AND ?
-            AND TimeSlots.startDateTime
+        WHERE DATE(TimeSlots.startDateTime) BETWEEN ? AND ?
+          AND (
+            TimeSlots.startDateTime
               BETWEEN TeamMemberAvailability.startDateTime AND TeamMemberAvailability.endDateTime
             OR TimeSlots.endDateTime
               BETWEEN TeamMemberAvailability.startDateTime AND TeamMemberAvailability.endDateTime
-            OR (
-              TimeSlots.startDateTime < TeamMemberAvailability.startDateTime
-              AND TimeSlots.endDateTime > TeamMemberAvailability.endDateTime
-            )
+          )
+          OR (
+            TimeSlots.startDateTime < TeamMemberAvailability.startDateTime
+            AND TimeSlots.endDateTime > TeamMemberAvailability.endDateTime
+          )
       `,
-      [start, end, start, end]
+      [start, end, start, end, start, end],
     );
 
-    if (!result.rows) return [];
+    if (result.rows) {
+      warnings.availabilityViolations = result.rows.map(
+        (row: ITimeSlotTeamMemberRow) => {
+          const timeSlot = this.mapTimeSlotColumns(row);
+          timeSlot.teamMember = this.mapTeamMemberColumns(row);
+          return timeSlot;
+        },
+      );
+    }
 
-    return result.rows.map((row: ITimeSlotTeamMemberRow) => {
-      const timeSlot = this.mapTimeSlotColumns(row);
-      timeSlot.teamMember = this.mapTeamMemberColumns(row);
-      return timeSlot;
-    });
-  }
+    // Max weekly days warnings
+    result = await this.database.execute(
+      `
+        SELECT
+          ${this.teamMemberColumnsSql},
+          COUNT(*) workDays
+        FROM TeamMembers
+          JOIN (
+            SELECT DISTINCT teamMemberId, DAYOFWEEK(TimeSlots.startDateTime)
+            FROM TimeSlots
+            WHERE teamMemberId IS NOT NULL
+          ) TimeSlotDays
+            ON TeamMembers.id = TimeSlotDays.teamMemberId
+        GROUP BY teamMemberId
+        HAVING workDays > TeamMembers.maxWeeklyDays
+      `,
+      [start, end],
+    );
 
-  public async findMaxWeeklyDaysViolations(
-    start: Date,
-    end: Date,
-  ): Promise<[TeamMember, number][]> {
-    return await Promise.resolve([]);
-  }
+    if (result.rows) {
+      warnings.maxWeeklyDaysViolations = result.rows.map((
+        row: IMaxWeeklyDaysViolationRow,
+      ) => [
+        this.mapTeamMemberColumns(row),
+        row.workDays,
+      ]);
+    }
 
-  public async findMaxWeeklyHoursViolations(
-    start: Date,
-    end: Date,
-  ): Promise<[TeamMember, number][]> {
-    return await Promise.resolve([]);
+    // Max weekly hours warnings
+    result = await this.database.execute(
+      `
+        SELECT
+          ${this.teamMemberColumnsSql},
+          SUM(TIMESTAMPDIFF(SECOND, TimeSlots.startDateTime, TimeSlots.endDateTime)) / 60 / 60 totalHours
+        FROM TimeSlots
+	        JOIN TeamMembers ON TimeSlots.teamMemberId = TeamMembers.id
+        WHERE DATE(TimeSlots.startDateTime) BETWEEN ? AND ?
+        GROUP BY TimeSlots.teamMemberId
+        HAVING totalHours > TeamMembers.maxWeeklyHours
+      `,
+      [start, end],
+    );
+
+    if (result.rows) {
+      warnings.maxWeeklyHoursViolations = result.rows.map((
+        row: IMaxWeeklyHoursViolationRow,
+      ) => [
+        this.mapTeamMemberColumns(row),
+        row.totalHours,
+      ]);
+    }
+
+    return warnings;
   }
 }
