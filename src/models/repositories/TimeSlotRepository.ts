@@ -1,5 +1,6 @@
 import BetterDate from "../../_dates/BetterDate.ts";
 import DateLib from "../../_dates/DateLib.ts";
+import ShiftContext from "../entities/ShiftContext.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotGroup from "../entities/TimeSlotGroup.ts";
@@ -26,7 +27,7 @@ interface ITimeSlotGroupRow {
   requiresAdult: number;
 }
 
-interface ITimeSlotTeamMemberRow {
+interface ITimeSlotRowComponent {
   timeSlotId: number;
   timeSlotShiftContextId: number;
   timeSlotStartDateTime: Date;
@@ -35,6 +36,9 @@ interface ITimeSlotTeamMemberRow {
   timeSlotTeamMemberId: number;
   timeSlotNote: string;
   timeSlotColorId: number;
+}
+
+interface ITeamMemberRowComponent {
   teamMemberId: number;
   teamMemberFirstName: string;
   teamMemberMiddleName: string;
@@ -49,6 +53,20 @@ interface ITimeSlotTeamMemberRow {
   teamMemberPassword: string;
   teamMemberIsAdmin: number;
 }
+
+interface IShiftContextRowComponent {
+  shiftContextId: number,
+  shiftContextName: string,
+  shiftContextAgeGroup: string,
+  shiftContextLocation: string,
+  shiftContextDescription: string
+}
+
+interface ITimeSlotTeamMemberRow
+  extends ITimeSlotRowComponent, ITeamMemberRowComponent {}
+
+interface ITimeSlotTeamMemberShiftContextRow
+  extends ITimeSlotRowComponent, ITeamMemberRowComponent, IShiftContextRowComponent {}
 
 interface ITimeSlotTimeSlotRow {
   timeSlot1id: number;
@@ -74,34 +92,51 @@ export default class TimeSlotRepository extends Repository {
   private colors: ColorRepository;
   private teamMembers: TeamMemberRepository;
   private readonly timeSlotQuery = `
-    SELECT id, shiftContextId, startDateTime, endDateTime, requiresAdult, teamMemberId, note, colorId
+    SELECT id,
+      shiftContextId,
+      startDateTime,
+      endDateTime,
+      requiresAdult,
+      teamMemberId,
+      note,
+      colorId
     FROM Timeslots
   `;
+
+  private readonly timeSlotColumnsSql = `
+    TimeSlots.id              timeSlotId,
+    TimeSlots.shiftContextId  timeSlotShiftContextId,
+    TimeSlots.startDateTime   timeSlotStartDateTime,
+    TimeSlots.endDateTime     timeSlotEndDateTime,
+    TimeSlots.requiresAdult   timeSlotRequiresAdult,
+    TimeSlots.teamMemberId    timeSlotTeamMemberId,
+    TimeSlots.note            timeSlotNote,
+    TimeSlots.colorId         timeSlotColorId,
+  `;
+
+  private readonly teamMemberColumnsSql = `
+    TeamMembers.id              teamMemberId,
+    TeamMembers.firstName       teamMemberFirstName,
+    TeamMembers.middleName      teamMemberMiddleName,
+    TeamMembers.lastName        teamMemberLastName,
+    TeamMembers.birthDate       teamMemberBirthDate,
+    TeamMembers.email           teamMemberEmail,
+    TeamMembers.phone           teamMemberPhone,
+    TeamMembers.isExternal      teamMemberIsExternal,
+    TeamMembers.maxWeeklyHours  teamMemberMaxWeeklyHours,
+    TeamMembers.maxWeeklyDays   teamMemberMaxWeeklyDays,
+    TeamMembers.username        teamMemberUsername,
+    TeamMembers.password        teamMemberPassword,
+    TeamMembers.isAdmin         teamMemberIsAdmin
+  `;
+
   private readonly timeSlotTeamMemberQuery = `
     SELECT
-      ts.id timeSlotId,
-      ts.shiftContextId timeSlotShiftContextId,
-      ts.startDateTime timeSlotStartDateTime,
-      ts.endDateTime timeSlotEndDateTime,
-      ts.requiresAdult timeSlotRequiresAdult,
-      ts.teamMemberId timeSlotTeamMemberId,
-      ts.note timeSlotNote,
-      ts.colorId timeSlotColorId,
-      tm.id teamMemberId,
-      tm.firstName teamMemberFirstName,
-      tm.middleName teamMemberMiddleName,
-      tm.lastName teamMemberLastName,
-      tm.birthDate teamMemberBirthDate,
-      tm.email teamMemberEmail,
-      tm.phone teamMemberPhone,
-      tm.isExternal teamMemberIsExternal,
-      tm.maxWeeklyHours teamMemberMaxWeeklyHours,
-      tm.maxWeeklyDays teamMemberMaxWeeklyDays,
-      tm.username teamMemberUsername,
-      tm.password teamMemberPassword,
-      tm.isAdmin teamMemberIsAdmin
-    FROM TimeSlots ts
-      JOIN TeamMembers tm ON ts.teamMemberId = tm.id
+      ${this.timeSlotColumnsSql}
+      ${this.teamMemberColumnsSql}
+    FROM TimeSlots
+      JOIN TeamMembers
+        ON TimeSlots.teamMemberId = TeamMember.id
   `;
 
   constructor(
@@ -576,7 +611,7 @@ export default class TimeSlotRepository extends Repository {
     const result = await this.database.execute(
       `
         ${this.timeSlotTeamMemberQuery}
-        WHERE tm.isExternal
+        WHERE TeamMembers.isExternal
           AND DATE(startDateTime) BETWEEN ? AND ?
       `,
       [start, end],
@@ -666,9 +701,9 @@ export default class TimeSlotRepository extends Repository {
     const result = await this.database.execute(
       `
         ${this.timeSlotTeamMemberQuery}
-        WHERE ts.requiresAdult
-          AND DATE(startDateTime) BETWEEN ? AND ?
-          AND TIMESTAMPDIFF(YEAR, tm.birthDate, ts.startDateTime) < 18;
+        WHERE TimeSlots.requiresAdult
+          AND DATE(TimeSlots.startDateTime) BETWEEN ? AND ?
+          AND TIMESTAMPDIFF(YEAR, TeamMembers.birthDate, TimeSlots.startDateTime) < 18;
       `,
       [start, end],
     );
@@ -682,6 +717,64 @@ export default class TimeSlotRepository extends Repository {
     start: Date,
     end: Date,
   ): Promise<TimeSlot[]> {
+    const result = await this.database.execute(
+      `
+        SELECT
+          ${this.timeSlotColumnsSql}
+          ${this.teamMemberColumnsSql}
+          ShiftContexts.id shiftContextId,
+          ShiftContexts.name shiftContextName,
+          ShiftContexts.location shiftContextLocation,
+          ShiftContexts.description shiftContextDescription
+        FROM TimeSlots,
+          TeamMembers,
+          ShiftContexts,
+          TeamMemberShiftContextPreferences
+        WHERE TimeSlots.teamMemberId = TeamMember.id
+          AND TimeSlots.shiftContextId = ShiftContext.id
+          AND TimeSlots.teamMemberId = TeamMemberShiftContextPreferences.teamMemberId
+          AND TimeSlots.shiftContextId = TeamMemberShiftContextPreferences.shiftContextId
+          AND TeamMemberShiftContextPreferences.isPreference = FALSE
+          AND DATE(TimeSlots.startDateTime) BETWEEN ? AND ?
+      `,
+      [start, end],
+    );
+
+    if (!result.rows) return [];
+
+    return result.rows.map((row: ITimeSlotTeamMemberShiftContextRow) => new TimeSlot(
+      row.timeSlotId,
+      row.timeSlotShiftContextId,
+      new ShiftContext(
+        row.shiftContextId,
+        row.shiftContextName,
+        row.shiftContextAgeGroup,
+        row.shiftContextLocation,
+        row.shiftContextDescription
+      ),
+      row.timeSlotStartDateTime,
+      row.timeSlotEndDateTime,
+      row.timeSlotRequiresAdult == 1,
+      row.timeSlotTeamMemberId,
+      new TeamMember(
+        row.teamMemberId,
+        row.teamMemberFirstName,
+        row.teamMemberMiddleName,
+        row.teamMemberLastName,
+        row.teamMemberBirthDate,
+        row.teamMemberEmail,
+        row.teamMemberPhone,
+        row.teamMemberIsExternal == 1,
+        row.teamMemberMaxWeeklyHours,
+        row.teamMemberMaxWeeklyDays,
+        row.teamMemberUsername,
+        row.teamMemberPassword,
+        row.teamMemberIsAdmin == 1
+      ),
+      row.timeSlotNote,
+      row.timeSlotColorId,
+      null
+    ));
   }
 
   public async findAvailabilityViolations(
