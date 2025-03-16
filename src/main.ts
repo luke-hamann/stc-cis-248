@@ -57,6 +57,7 @@ const typicalAvailabilityRepository = new TypicalAvailabilityRepository(
 );
 const unavailabilityRepository = new UnavailabilityRepository(database);
 const scheduleRepository = new ScheduleRepository(
+  database,
   shiftContextRepository,
   shiftContextNoteRepository,
   shiftContextPreferenceRepository,

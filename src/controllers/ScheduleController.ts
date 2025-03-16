@@ -91,6 +91,16 @@ export default class ScheduleController extends Controller {
     const schedule = await this.schedules.getSchedule(startDate, endDate);
 
     const model = new ScheduleWeekViewModel(startDate, schedule);
+
+    // Warnings
+    model.externalAssigneeWarnings = await this.schedules.findWithExternalAssignees(startDate, endDate);
+    model.bilocationWarnings = await this.schedules.findBilocation(startDate, endDate);
+    model.adultOnlyWarnings = await this.schedules.findAdultOnlyViolations(startDate, endDate);
+    model.preferenceWarnings = await this.schedules.findPreferenceViolations(startDate, endDate);
+    model.availabilityWarnings = await this.schedules.findAvailabilityViolations(startDate, endDate);
+    model.maxWeeklyDaysWarnings = await this.schedules.findMaxWeeklyDaysViolations(startDate, endDate);
+    model.maxWeeklyHoursWarnings = await this.schedules.findMaxWeeklyHoursViolations(startDate, endDate);
+
     return this.HTMLResponse(context, "./views/schedule/week.html", model);
   }
 
