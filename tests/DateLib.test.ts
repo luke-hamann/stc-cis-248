@@ -7,8 +7,8 @@ Deno.test("date lib add days positive", () => {
   const newDate = DateLib.addDays(date, 3);
 
   assertEquals(newDate.getFullYear(), 2000);
-  assertEquals(newDate.getMonth(), 0),
-  assertEquals(newDate.getDate(), 3)
+  assertEquals(newDate.getMonth(), 0);
+  assertEquals(newDate.getDate(), 3);
 });
 
 Deno.test("date lib add days negative", () => {
@@ -18,7 +18,7 @@ Deno.test("date lib add days negative", () => {
 
   assertEquals(newDate.getFullYear(), 1999);
   assertEquals(newDate.getMonth(), 11);
-  assertEquals(newDate.getDate(), 26)
+  assertEquals(newDate.getDate(), 26);
 });
 
 Deno.test("date lib floor days", () => {
@@ -28,7 +28,7 @@ Deno.test("date lib floor days", () => {
 
   assertEquals(newDate.getFullYear(), 2025);
   assertEquals(newDate.getMonth(), 2);
-  assertEquals(newDate.getDate(), 9)
+  assertEquals(newDate.getDate(), 9);
 });
 
 Deno.test("date lib get dates in range", () => {

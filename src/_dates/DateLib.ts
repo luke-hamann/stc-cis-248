@@ -14,7 +14,7 @@ export default class DateLib {
 
   /**
    * Rolls back a date to the most recent Sunday and returns the new date
-   * 
+   *
    * The date does not change if it is a Sunday
    * @param date The date
    * @returns The new date
@@ -51,5 +51,28 @@ export default class DateLib {
     return Math.round(
       (date2.getTime() - date1.getTime()) / (24 * 60 * 60 * 1000),
     );
+  }
+
+  /**
+   * Calculates an age on a given date given a birth date
+   * @param birthDate The birth date
+   * @param date The date to calculate the age for
+   * @returns An age in years
+   */
+  public static getAge(birthDate: Date, date: Date): number {
+    const start = new Date(birthDate);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(date);
+    end.setHours(0, 0, 0, 0);
+
+    let count = 0;
+
+    while (true) {
+      start.setFullYear(start.getFullYear() + 1);
+      if (start.getTime() > end.getTime()) break;
+      count++;
+    }
+
+    return count;
   }
 }
