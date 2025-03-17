@@ -361,6 +361,7 @@ export default class ScheduleRepository {
         "unknown",
         "unknown",
         "unknown",
+        "unknown",
       );
 
       // Age restriction
@@ -379,28 +380,19 @@ export default class ScheduleRepository {
         recommendation.isAdult = age >= 18 ? "positive" : "negative";
       }
 
-      // Availability
+      // Typical availability
 
-      const typicallyAvailable = await this.typicalAvailability.isAvailable(
-        teamMember,
-        timeSlot,
-      );
-      const speciallyAvailable = await this.unavailability.isAvailable(
+      recommendation.isTypicallyAvailable = await this.typicalAvailability.isAvailable(
         teamMember,
         timeSlot,
       );
 
-      if (
-        typicallyAvailable == "negative" || speciallyAvailable == "negative"
-      ) {
-        recommendation.isAvailable = "negative";
-      } else if (
-        typicallyAvailable == "unknown" || speciallyAvailable == "unknown"
-      ) {
-        recommendation.isAvailable = "unknown";
-      } else {
-        recommendation.isAvailable = "positive";
-      }
+      // Unavailability
+
+      recommendation.isNotUnavailable = await this.unavailability.isAvailable(
+        teamMember,
+        timeSlot,
+      );
 
       // Shift context preference
 
@@ -434,6 +426,12 @@ export default class ScheduleRepository {
     });
   }
 
+  /**
+   * Gets schedule warnings for the specified date range
+   * @param start The start date
+   * @param end The end range
+   * @returns The schedule warnings
+   */
   public async getWarnings(start: Date, end: Date): Promise<ScheduleWarnings> {
     const warnings: ScheduleWarnings = {
       externality: [],

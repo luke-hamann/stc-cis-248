@@ -16,7 +16,8 @@
       <td class="p-2"></td>
       <td class="p-2">Team Member</td>
       <td class="p-2">Adult</td>
-      <td class="p-2">Available</td>
+      <td class="p-2">Typically available</td>
+      <td class="p-2">Not marked unavailable</td>
       <td class="p-2">Prefer</td>
       <td class="p-2">No Conflicts</td>
     </tr>
@@ -38,7 +39,10 @@
           {{ symbols[recommendation.isAdult] }}
         </td>
         <td class="p-2">
-          {{ symbols[recommendation.isAvailable] }}
+          {{ symbols[recommendation.isTypicallyAvailable] }}
+        </td>
+        <td class="p-2">
+          {{ symbols[recommendation.isNotUnavailable] }}
         </td>
         <td class="p-2">
           {{ symbols[recommendation.prefersShiftContext] }}
