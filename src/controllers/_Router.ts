@@ -27,17 +27,17 @@ export default class Router extends Controller {
           "500 Internal Server Error",
           message,
           true,
-          context.csrf_token
+          context.csrf_token,
         );
 
         response = this.ErrorResponse(
           context,
           500,
           "./views/_shared/error.html",
-          model
+          model,
         );
       }
-  
+
       if (response) {
         return response.toResponse();
       }

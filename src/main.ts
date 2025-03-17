@@ -25,8 +25,6 @@ import TimeSlotRepository from "./models/repositories/TimeSlotRepository.ts";
 import TypicalAvailabilityRepository from "./models/repositories/TypicalAvailabilityRepository.ts";
 import UnavailabilityRepository from "./models/repositories/UnavailabilityRepository.ts";
 
-export default { fetch };
-
 /** Database */
 
 const database = new Database();
@@ -102,6 +100,14 @@ const controllers: Controller[] = [
 
 const router = new Router(controllers);
 
-async function fetch(request: Request) {
+/**
+ * The entry point of the application
+ *
+ * Passes requests to the router and returns the router's response
+ *
+ * @param request HTTP request
+ * @returns HTTP response
+ */
+export default async function fetch(request: Request): Promise<Response> {
   return await router.route(request);
 }

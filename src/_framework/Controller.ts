@@ -22,11 +22,11 @@ export default class Controller {
 
   /**
    * Executes the controller
-   * 
+   *
    * Interates over each route and calls matching action methods.
    * If an action method returns a response wrapper, that response wrapper is returned.
    * If an action method returns void, the next route and action method are checked.
-   * 
+   *
    * @param context The application context
    * @returns A promise of a response wrapper or void
    */
@@ -83,7 +83,12 @@ export default class Controller {
    * @param model The view model to render in the view
    * @returns A response wrapper for the error
    */
-  protected ErrorResponse(context: Context, status: number, view: string, model: unknown) {
+  protected ErrorResponse(
+    context: Context,
+    status: number,
+    view: string,
+    model: unknown,
+  ) {
     context.response.status = status;
     context.response = this.HTMLResponse(context, view, model);
     return context.response;
@@ -103,8 +108,8 @@ export default class Controller {
         "404 Not Found",
         "The requested page could not be found.",
         false,
-        context.csrf_token
-      )
+        context.csrf_token,
+      ),
     );
   }
 

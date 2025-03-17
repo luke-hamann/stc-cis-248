@@ -1,3 +1,6 @@
+/**
+ * A wrapper class for Date objects that makes common date operations available
+ */
 export default class BetterDate {
   private _date: Date;
 

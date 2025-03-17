@@ -5,7 +5,12 @@ export default class ErrorViewModel extends ViewModel {
   public body: string;
   public isBodyPreformatted: boolean;
 
-  public constructor(title: string, body: string, isBodyPreformatted: boolean, csrf_token: string) {
+  public constructor(
+    title: string,
+    body: string,
+    isBodyPreformatted: boolean,
+    csrf_token: string,
+  ) {
     super(csrf_token);
     this.title = title;
     this.body = body;
