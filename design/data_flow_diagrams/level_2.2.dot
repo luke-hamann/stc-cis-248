@@ -1,0 +1,45 @@
+digraph data_flow_diagram {
+    node [ shape = circle ]
+    
+    "..." [ shape = none ]
+    
+    "..." -> Router -> "..."
+
+    subgraph controllers {
+        rank = same
+        
+        "Color controller"
+        "Shift context notes controller"
+    }
+    
+    Router -> {
+        "Color controller"
+        "Shift context notes controller"
+    } -> Router
+    
+    subgraph repositories {
+        rank = same
+        
+        "Color repository"
+        "Shift context repository"
+        "Shift context notes repository"
+    }
+    
+    "Color controller" -> {
+        "Color repository"
+    } -> "Color controller"
+    
+    "Shift context notes controller" -> {
+        "Color repository"
+        "Shift context repository"
+        "Shift context notes repository"
+    } -> "Shift context notes controller"
+    
+    Database [ shape = folder ]
+    
+    Database -> {
+        "Color repository"
+        "Shift context repository"
+        "Shift context notes repository"
+    } -> Database
+}

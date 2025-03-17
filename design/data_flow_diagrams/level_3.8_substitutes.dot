@@ -1,0 +1,52 @@
+digraph data_flow_diagram {
+    node [ shape = circle ]
+    
+    "..." [ shape = none ]
+    
+    "..." -> "Substitute controller" -> "..."
+
+    subgraph actions {
+        rank = same
+        
+        "Substitute add (GET, POST)"
+        "Substitute delete (GET, POST)"
+    }
+    
+    "Substitute controller" -> {
+        "Substitute add (GET, POST)"
+        "Substitute delete (GET, POST)"
+    } -> "Substitute controller"
+    
+    subgraph repositories {
+        rank = same
+        
+        "Team member repository"
+        "Substitute repository"
+        "Typical availability repository"
+        "Unavailability repository"
+        "Timeshot repository"
+    }
+    
+    "Substitute add (GET, POST)" -> {
+        "Team member repository"
+        "Substitute repository"
+        "Typical availability repository"
+        "Unavailability repository"
+        "Timeshot repository"
+    } -> "Substitute add (GET, POST)"
+    
+    "Substitute delete (GET, POST)" -> {
+        "Team member repository"
+        "Substitute repository"
+    } ->  "Substitute delete (GET, POST)"
+    
+    Database [ shape = folder ]
+    
+    Database -> {
+        "Team member repository"
+        "Substitute repository"
+        "Typical availability repository"
+        "Unavailability repository"
+        "Timeshot repository"
+    } -> Database
+}

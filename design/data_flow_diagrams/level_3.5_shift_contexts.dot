@@ -1,0 +1,34 @@
+digraph data_flow_diagram {
+    node [ shape = circle ]
+    
+    "..." [ shape = none ]
+    
+    "..." -> "Shift context controller" -> "..."
+
+    subgraph actions {
+        rank = same
+        
+        "Shift context list (GET)"
+        "Shift context add (GET, POST)"
+        "Shift context edit (GET, POST)"
+        "Shift context delete (GET, POST)"
+    }
+    
+    "Shift context controller" -> {
+        "Shift context list (GET)"
+        "Shift context add (GET, POST)"
+        "Shift context edit (GET, POST)"
+        "Shift context delete (GET, POST)"
+    } -> "Shift context controller"
+    
+    "Shift context repository" -> {
+        "Shift context list (GET)"
+        "Shift context add (GET, POST)"
+        "Shift context edit (GET, POST)"
+        "Shift context delete (GET, POST)"
+    } -> "Shift context repository"
+    
+    Database [ shape = folder ]
+    
+    Database -> "Shift context repository" -> Database
+}

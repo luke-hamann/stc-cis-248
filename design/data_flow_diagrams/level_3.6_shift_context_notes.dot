@@ -1,0 +1,33 @@
+digraph data_flow_diagram {
+    node [ shape = circle ]
+    
+    "..." [ shape = none ]
+    
+    "..." -> "Shift context note controller" -> "..."
+
+    "Shift context note controller" -> {
+        "Shift context note edit (GET, POST)"
+    } -> "Shift context note controller"
+    
+    subgraph repositories {
+        rank = same
+        
+        "Shift context repository"
+        "Shift context note repository"
+        "Color repository"
+    }
+    
+    "Shift context note edit (GET, POST)" -> {
+        "Shift context repository"
+        "Shift context note repository"
+        "Color repository"
+    } -> "Shift context note edit (GET, POST)"
+    
+    Database [ shape = folder ]
+    
+    Database -> {
+        "Shift context repository"
+        "Shift context note repository"
+        "Color repository"
+    } -> Database
+}
