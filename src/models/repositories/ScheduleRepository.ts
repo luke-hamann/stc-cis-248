@@ -605,11 +605,14 @@ export default class ScheduleRepository {
           JOIN TeamMembers ON TimeSlots.teamMemberId = TeamMembers.id
         WHERE DATE(TimeSlots.startDateTime) BETWEEN ? AND ?
           AND TimeSlots.id NOT IN (
+            -- Time slots falling within typical availability
             SELECT TimeSlots.id
             FROM TimeSlots, TeamMemberTypicalAvailability
             WHERE DATE(TimeSlots.startDateTime) BETWEEN ? AND ?
               AND TimeSlots.teamMemberId = TeamMemberTypicalAvailability.teamMemberId
               AND DAYOFWEEK(TimeSlots.startDateTime) - 1 = TeamMemberTypicalAvailability.dayOfWeek
+
+              -- Timeslot start date time and end date time falls within typical availability entry
               AND TIME(TimeSlots.startDateTime)
                 BETWEEN TeamMemberTypicalAvailability.startTime AND TeamMemberTypicalAvailability.endTime
               AND TIME(TimeSlots.endDateTime)
@@ -627,14 +630,19 @@ export default class ScheduleRepository {
             ON TimeSlots.teamMemberId = TeamMemberAvailability.teamMemberId
         WHERE DATE(TimeSlots.startDateTime) BETWEEN ? AND ?
           AND (
-            TimeSlots.startDateTime
-              BETWEEN TeamMemberAvailability.startDateTime AND TeamMemberAvailability.endDateTime
-            OR TimeSlots.endDateTime
-              BETWEEN TeamMemberAvailability.startDateTime AND TeamMemberAvailability.endDateTime
-          )
-          OR (
-            TimeSlots.startDateTime < TeamMemberAvailability.startDateTime
-            AND TimeSlots.endDateTime > TeamMemberAvailability.endDateTime
+            -- Time slot start or end time overlaps unavailability
+            (
+              TimeSlots.startDateTime
+                BETWEEN TeamMemberAvailability.startDateTime AND TeamMemberAvailability.endDateTime
+              OR TimeSlots.endDateTime
+                BETWEEN TeamMemberAvailability.startDateTime AND TeamMemberAvailability.endDateTime
+            )
+            OR
+            -- Time slot starts before unavailability and ends after unavailability
+            (
+              TimeSlots.startDateTime < TeamMemberAvailability.startDateTime
+              AND TimeSlots.endDateTime > TeamMemberAvailability.endDateTime
+            )
           )
       `,
       [start, end, start, end, start, end],
@@ -660,7 +668,8 @@ export default class ScheduleRepository {
           JOIN (
             SELECT DISTINCT teamMemberId, DAYOFWEEK(TimeSlots.startDateTime)
             FROM TimeSlots
-            WHERE teamMemberId IS NOT NULL
+            WHERE DATE(TimeSlots.startDateTime) BETWEEN ? AND ?
+              AND teamMemberId IS NOT NULL
           ) TimeSlotDays
             ON TeamMembers.id = TimeSlotDays.teamMemberId
         GROUP BY teamMemberId
