@@ -382,10 +382,11 @@ export default class ScheduleRepository {
 
       // Typical availability
 
-      recommendation.isTypicallyAvailable = await this.typicalAvailability.isAvailable(
-        teamMember,
-        timeSlot,
-      );
+      recommendation.isTypicallyAvailable = await this.typicalAvailability
+        .isAvailable(
+          teamMember,
+          timeSlot,
+        );
 
       // Unavailability
 

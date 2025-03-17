@@ -1,5 +1,4 @@
 import Repository from "./_Repository.ts";
-import Substitute from "../entities/Substitute.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import SubstituteList from "../entities/SubstituteList.ts";
 

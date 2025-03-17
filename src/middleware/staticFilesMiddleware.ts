@@ -1,6 +1,7 @@
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 
+/** Middleware for serving static files */
 export default class StaticFilesMiddleware extends Controller {
   private readonly STATIC_DIR = "./static";
 
