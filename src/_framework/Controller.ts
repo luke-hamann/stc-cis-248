@@ -114,7 +114,7 @@ export default class Controller {
    * @param contentType The MIME type of the download
    * @param fileName The file name of the download
    * @param fileContent The file content of the download
-   * @returns
+   * @returns The response wrapper
    */
   protected AttachmentResponse(
     context: Context,
