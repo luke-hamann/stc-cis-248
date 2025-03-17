@@ -1,6 +1,5 @@
-import Context from "./_framework/Context.ts";
 import Controller from "./_framework/Controller.ts";
-import ResponseWrapper from "./_framework/ResponseWrapper.ts";
+import Router from "./controllers/_Router.ts";
 import ColorController from "./controllers/ColorController.ts";
 import ScheduleController from "./controllers/ScheduleController.ts";
 import ShiftContextController from "./controllers/ShiftContextController.ts";
@@ -101,39 +100,8 @@ const controllers: Controller[] = [
   new ScheduleController(scheduleRepository),
 ];
 
-/**
- * Accepts an HTTP {@link Request} and promises an HTTP {@link Response}
- *
- * Application entry point
- *
- * @param request The HTTP request
- * @returns An HTTP response
- */
-async function fetch(request: Request): Promise<Response> {
-  let response;
-  const context = new Context(request, new ResponseWrapper());
+const router = new Router(controllers);
 
-  // Controllers
-  for (const controller of controllers) {
-    try {
-      response = await controller.execute(context);
-    } catch (error: unknown) {
-      response = new ResponseWrapper();
-      response.status = 500;
-      response.headers.set("Content-Type", "text/plain");
-      response.body = (error as Error).message + "\n\n" +
-        (error as Error).stack;
-    }
-
-    if (response) {
-      return response.toResponse();
-    }
-  }
-
-  // 404 Page
-  response = new ResponseWrapper();
-  response.status = 404;
-  response.headers.set("Content-Type", "text/plain");
-  response.body = "404 Not Found";
-  return response.toResponse();
+async function fetch(request: Request) {
+  return await router.route(request);
 }

@@ -1,0 +1,14 @@
+{% extends "./_layout.html" %}
+
+{% block title %}{{ model.title }}{% endblock %}
+
+{% block content %}
+  <h1 class="p-8 text-2xl font-bold">{{ model.title }}</h1>
+    <div class="p-8">
+    {% if model.isBodyPreformatted %}
+      <pre class="p-2 border rounded overflow-x-auto">{{ model.body }}</pre>
+    {% else %}
+      <p class="p-2">{{ model.body }}</p>
+    {% endif %}
+  </div>
+{% endblock %}

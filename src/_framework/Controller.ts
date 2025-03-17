@@ -1,17 +1,35 @@
 import Context from "./Context.ts";
+import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 import { HTTPMethod } from "./HTTPMethod.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 import nunjucks from "npm:nunjucks";
 
+/** Controls routing to action methods based on HTTP method and url patterns */
 export default class Controller {
+  /**
+   * Maps HTTP methods and URL patterns to action methods
+   */
   protected routes: {
+    /** The HTTP method that should be matched */
     method: HTTPMethod;
+    /** The partial regex expression that should match the url */
     pattern: string;
+    /** The action method that should be executed if the method and pattern match */
     action: (
       context: Context,
     ) => void | ResponseWrapper | Promise<void | ResponseWrapper>;
   }[] = [];
 
+  /**
+   * Executes the controller
+   * 
+   * Interates over each route and calls matching action methods.
+   * If an action method returns a response wrapper, that response wrapper is returned.
+   * If an action method returns void, the next route and action method are checked.
+   * 
+   * @param context The application context
+   * @returns A promise of a response wrapper or void
+   */
   public async execute(context: Context): Promise<ResponseWrapper | void> {
     for (const route of this.routes) {
       const regex = new RegExp(`^${route.pattern}$`, "g");
@@ -28,7 +46,7 @@ export default class Controller {
   }
 
   /**
-   * Return an HTML response wrapper
+   * Returns an HTML response wrapper
    * @param context The current application context
    * @param view The path to the view file to render
    * @param model The view model
@@ -45,7 +63,7 @@ export default class Controller {
   }
 
   /**
-   * Return a response wrapper for a redirect
+   * Returns a response wrapper for a redirect
    * @param context The current application context
    * @param url The URL to redirect to
    * @returns The response wrapper object
@@ -58,19 +76,40 @@ export default class Controller {
   }
 
   /**
-   * Return a response wrapper for a 404 not found page
-   * @param context The current application context
-   * @returns The response wrapper object
+   * Returns an response wrapper for a generic error
+   * @param context The application context
+   * @param status The status code
+   * @param view The view to render
+   * @param model The view model to render in the view
+   * @returns A response wrapper for the error
    */
-  protected NotFoundResponse(context: Context): ResponseWrapper {
-    context.response.body = nunjucks.render("./views/_shared/404.html");
-    context.response.status = 404;
-    context.response.headers.set("Content-Type", "text/html");
+  protected ErrorResponse(context: Context, status: number, view: string, model: unknown) {
+    context.response.status = status;
+    context.response = this.HTMLResponse(context, view, model);
     return context.response;
   }
 
   /**
-   * Return a response wrapper for an attachment download
+   * Returns a response wrapper for a 404 not found page
+   * @param context The current application context
+   * @returns The response wrapper object
+   */
+  protected NotFoundResponse(context: Context): ResponseWrapper {
+    return this.ErrorResponse(
+      context,
+      404,
+      "./views/_shared/error.html",
+      new ErrorViewModel(
+        "404 Not Found",
+        "The requested page could not be found.",
+        false,
+        context.csrf_token
+      )
+    );
+  }
+
+  /**
+   * Returns a response wrapper for an attachment download
    * @param context The current application context
    * @param contentType The MIME type of the download
    * @param fileName The file name of the download
