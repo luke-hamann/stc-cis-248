@@ -71,9 +71,9 @@ const scheduleRepository = new ScheduleRepository(
 /** Controllers */
 
 const controllers: Controller[] = [
-  new CsrfMiddleware(),
-  new SessionMiddleware(),
   new StaticFilesMiddleware(),
+  new SessionMiddleware(),
+  new CsrfMiddleware(),
   new TeamMemberController(teamMemberRepository),
   new TypicalAvailabilityController(
     teamMemberRepository,
