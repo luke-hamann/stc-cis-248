@@ -483,4 +483,8 @@ export default class TimeSlotRepository extends Repository {
 
     return (!result.rows || result.rows.length == 0);
   }
+
+  public async getUnassignedTimeSlots(start: Date, end: Date): Promise<TimeSlot[]> {
+    return await Promise.resolve([]);
+  }
 }
