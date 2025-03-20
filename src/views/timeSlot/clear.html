@@ -1,0 +1,22 @@
+{% extends "../_shared/_layout.html" %}
+{% from "../_shared/field.html" import field %}
+
+{% set title = 'Clear schedule' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <form method="post">
+    {{ field("startDate", model.startDateString, "date", "Start date") }}
+    {{ field("endDate", model.endDateString, "date", "End date") }}
+    {{ field("deleteTimeSlots", "", "checkbox", "Delete time slots", model.deleteTimeSlots) }}
+    {{ field("deleteShiftContextNotes", "", "checkbox", "Delete shift context notes", model.deleteShiftContextNotes) }}
+    {{ field("deleteSubstitutes", "", "checkbox", "Delete substitutes", model.deleteSubstitutes) }}
+    <div>
+      {{ csrf(model) }}
+      <input type="submit" value="Delete" />
+      <a href="{{ model.cancelLink }}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

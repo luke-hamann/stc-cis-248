@@ -1,0 +1,30 @@
+{% extends "../_shared/_layout.html" %}
+
+{% set title = "Edit Shift Context Note" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <form method="post">
+    <div>
+      <label for="colorId">Color</label>
+      <select id="colorId" name="colorId">
+        <option {{ "selected" if not model.shiftContextNote.colorId }} >(none)</option>
+        {% for color in model.colors %}
+          <option value="{{ color.id }}"
+            {{ "selected" if model.shiftContextNote.colorId == color.id }} >{{ color.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="note">Note</label>
+      <textarea id="note" name="note">{{ model.shiftContextNote.note }}</textarea>
+    </div>
+    <div>
+      {{ csrf(model) }}
+      <button type="submit">Save</button>
+      <a href="/schedule/{{ formatDate(model.weekStart, '/') }}/">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

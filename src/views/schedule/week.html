@@ -1,0 +1,203 @@
+{% extends "../_shared/_layout.html" %}
+
+{% macro teamMemberLink(teamMember) %}
+  <a href="/team-member/{{ teamMember.id }}/" class="underline">{{
+    teamMember.fullName
+  }}</a>
+{% endmacro %}
+
+{% macro timeSlotLink(timeSlot) %}
+  <a href="/schedule/time-slot/{{ timeSlot.id }}/" class="underline">{{
+    timeSlot.startDateTime.toLocaleString()
+  }}</a>
+{% endmacro %}
+
+{% block title %}{{ model.title }}{% endblock %}
+
+{% block content %}
+
+  {# Navigation Header #}
+  <div class="w-full sm:w-xl mx-auto flex justify-between gap-8 px-4 py-8">
+    <a href="/schedule/{{ model.previousWeekString }}/" class="self-center select-none">
+      &lt;
+    </a>
+    <h1 class="text-center font-bold text-3xl select-none">
+      <a href="/schedule/{{ model.currentWeek.getFullYear() }}/">
+        {{ model.title }}
+      </a>
+    </h1>
+    <a href="/schedule/{{ model.nextWeekString }}/" class="self-center select-none">
+      &gt;
+    </a>
+  </div>
+
+  <div class="w-full text-center pb-8">
+    <a class="inline-block p-2 border rounded" href="{{ model.copyLink }}">Copy</a>
+    <a class="inline-block p-2 border rounded" href="{{ model.clearLink }}">Clear</a>
+    <a class="inline-block p-2 border rounded" href="{{ model.exportLink }}">Export</a>
+  </div>
+
+  <table>
+    {% for row in model.schedule.table %}
+      <tr>
+        {% for col in row %}
+          <td class="min-w-xs border">
+            {% set type = col.type %}
+            {% set data = col.content %}
+
+            {% if type == "origin" %}
+              <a href="/schedule/time-slot/add/" class="block w-fit p-2 pe-4 border rounded bg-blue-400 text-white">
+                &plus; Add time slot
+              </a>
+            {% endif %}
+
+            {% if type == "header" %}
+              <h2 class="text-2xl font-bold">{{ data }}</h2>
+            {% endif %}
+
+            {% if type == "dateHeader" %}
+              <h2 class="text-2xl font-bold">
+                {{ formatDate(data) }}
+              </h2>
+              <p>
+                <a href="/schedule/copy/{{ formatDate(data, '/') }}/to/{{ formatDate(data, '/') }}/">
+                  Copy
+                </a>
+                <a href="/schedule/clear/{{ formatDate(data, '/') }}/to/{{ formatDate(data, '/') }}/">
+                  Clear
+                </a>
+              </p>
+            {% endif %}
+
+            {% if type == "ShiftContext" %}
+              <h2 class="text-2xl font-bold">{{ data.name }}</h2>
+            {% endif %}
+
+            {% if type == "ShiftContextNote" %}
+              {% if data.color.hex %}
+                <p {{ ['style="background-color: ', '#', data.color.hex, '"'] | join | safe }} >
+                  {{ data.note }}
+                </p>
+              {% else %}
+                <p>
+                  {{ data.note }}
+                </p>
+              {% endif %}
+              <p>
+                <a href="/shift-context/{{ data.shiftContextId }}/note/{{ formatDate(data.date, '/') }}/">Edit</a>
+              </p>
+            {% endif %}
+
+            {% if type == "TimeSlotGroup" %}
+              <p>{{ data.startTime }} to {{ data.endTime }}</p>
+              <p>{{ "18+" if data.requiresAdult }}</p>
+            {% endif %}
+
+            {% if type == "TimeSlot" %}
+              <p>{{ data.teamMember.fullName if data.teamMember else "(unassigned)" }}</p>
+              <div>
+                <a href="/schedule/time-slot/{{ data.id }}/">Edit</a>
+                <a href="/schedule/time-slot/{{ data.id }}/delete/">Delete</a>
+              </div>
+            {% endif %}
+
+            {% if type == "SubstituteList" %}
+              {% if data.teamMembers %}
+                <ul class="list-disc">
+                  {% for teamMember in data.teamMembers %}
+                    <li>{{ teamMember }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              <a href="/substitutes/{{ formatDate(data.date, '/') }}/">Edit</a>
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </table>
+
+  {# Schedule warnings #}
+
+  <div class="p-8 w-full">
+    <h2 class="text-2xl font-bold">
+      Warnings
+    </h2>
+    <ul class="p-4 list-disc">
+      {% for timeSlot in model.warnings.externality %}
+        <li>
+          [Externality]
+          {{ teamMemberLink(timeSlot.teamMember) }}
+          is external and is scheduled on
+          <a href="/schedule/time-slot/{{ timeSlot.id }}" class="underline">{{
+            timeSlot.startDateTime.toLocaleString()
+          }}</a>.
+        </li>
+      {% endfor %}
+      {% for timeSlot1, timeSlot2 in model.warnings.bilocation %}
+        <li>
+          [Bilocation]
+          {{ teamMemberLink(timeSlot1.teamMember) }}
+          is scheduled at both
+          <a href="/schedule/time-slot/{{ timeSlot1.id }}/" class="underline">{{
+            timeSlot1.startDateTime.toLocaleString()
+          }}</a>
+          and
+          <a href="/schedule/time-slot/{{ timeSlot2.id }}" class="underline">{{
+            timeSlot2.startDateTime.toLocaleString()
+          }}</a>.
+        </li>
+      {% endfor %}
+      {% for timeSlot in model.warnings.adultOnly %}
+        <li>
+          [Adult Only]
+          {{ teamMemberLink(timeSlot.teamMember) }}
+          is sceduled during
+          <a href="/schedule/time-slot/{{ timeSlot.id }}/" class="underline">an 18+ time slot</a>.
+        </li>
+      {% endfor %}
+      {% for timeSlot in model.warnings.shiftContextPreferenceViolations %}
+        <li>
+          [Preferences]
+          {{ teamMemberLink(timeSlot.teamMember) }}
+          is sceduled for
+          <a href="/contexts/" class="underline">{{
+            timeSlot.shiftContext.name
+          }}</a>,
+          and they have indicated this is
+          <a href="/team-member/{{ timeSlot.teamMember.id }}/preferences/" class="underline">not preferable</a>.
+        </li>
+      {% endfor %}
+      {% for timeSlot in model.warnings.availabilityViolations %}
+        <li>
+          [Availability]
+          {{ teamMemberLink(timeSlot.teamMember) }}
+          has been scheduled at
+          {{ timeSlotLink(timeSlot) }},
+          and they are unavailabile.
+        </li>
+      {% endfor %}
+      {% for teamMember, workDays in model.warnings.maxWeeklyDaysViolations %}
+        <li>
+          [Max Weekly Days]
+          {{ teamMemberLink(teamMember) }}
+          has been sceduled on
+          {{ workDays }}
+          day(s), and their maximum is
+          {{ teamMember.maxWeeklyDays }}.
+        </li>
+      {% endfor %}
+      {% for teamMember, numberOfHours in model.warnings.maxWeeklyHoursViolations %}
+        <li>
+          [Max Weeky Hours]
+          {{ teamMemberLink(teamMember) }}
+          has been scheduled to work
+          {{ numberOfHours | round(2) }}
+          hour(s) this week, and their maximum is
+          {{ teamMember.maxWeeklyHours }}
+          hour(s).
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "../_shared/_layout.html" %}
+
+{% block styles %}
+  <link rel="stylesheet" href="/css/colorPages.css" />
+{% endblock %}
+
+{% block content %}
+<h1>Note Colors</h1>
+
+<form method="post" action="/colors/add/" id="form">
+  <input type="hidden" name="csrf_token" value="{{ model.csrf_token }}" />
+</form>
+
+<table class="color-table">
+  <tbody>
+    <tr class="color-row">
+      <td>
+        <input type="color" form="form" name="hex" class="color-preview" />
+      </td>
+      <td>
+        <input type="text" form="form" name="name" />
+      </td>
+      <td>
+        <button type="submit" form="form" class="color-table-add-button">&plus;</button>
+      </td>
+      <td>
+        <button type="reset" form="form" class="color-table-delete-button">&times;</button>
+      </td>
+    </tr>
+    {% for color in model.colors %}
+      <tr class="color-row">
+        <td>
+          <div class="color-preview" style="background-color: #{{ color.hex }};"></div>
+        </td>
+        <td>
+          {{ color.name }}
+        </td>
+        <td>
+          <a href="/color/{{ color.id }}/" class="color-table-edit-button">✏️</a>
+        </td>
+        <td>
+          <a href="/color/{{ color.id }}/delete/" class="color-table-delete-button">&times;</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

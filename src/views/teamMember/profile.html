@@ -1,0 +1,50 @@
+{% extends "../_shared/_layout.html" %}
+{% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
+
+{% block title %}{{ model.teamMember.fullName }}{% endblock %}
+
+{% block content %}
+  {{ teamMemberTabs(model.teamMember, "profile") }}
+  <div>
+    <div>First</div>
+    <div>{{ model.teamMember.firstName }}</div>
+  </div>
+  <div>
+    <div>Middle</div>
+    <div>{{ model.teamMember.middleName }}</div>
+  </div>
+  <div>
+    <div>Last</div>
+    <div>{{ model.teamMember.lastName }}</div>
+  </div>
+  <div>
+    <div>Birth date</div>
+    <div>{{ model.teamMember.birthDate }}</div>
+  </div>
+  <div>
+    <div>Email</div>
+    <div>{{ model.teamMember.email }}</div>
+  </div>
+  <div>
+    <div>Phone</div>
+    <div>{{ model.teamMember.phone }}</div>
+  </div>
+  <div>
+    <div>External</div>
+    <div>
+      <input type="checkbox" disabled {% if model.teamMember.isExternal %}checked{% endif %} />
+    </div>
+  </div>
+  <div>
+    <div>Max weekly hours</div>
+    <div>{{ model.teamMember.maxWeeklyHours }}</div>
+  </div>
+  <div>
+    <div>Max weekly days</div>
+    <div>{{ model.teamMember.maxWeeklyDays }}</div>
+  </div>
+  <div>
+    <a href="/team-member/{{ model.teamMember.id }}/edit/">Edit</a>
+    <a href="/team-member/{{ model.teamMember.id }}/delete/">Delete</a>
+  </div>
+{% endblock %}

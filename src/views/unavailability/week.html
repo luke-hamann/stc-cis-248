@@ -1,0 +1,59 @@
+{% extends "../_shared/_layout.html" %}
+{% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
+{% from "../_shared/formatDate.html" import formatDate %}
+
+{% set title = model.teamMember.fullName + " | Unavailability" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  {{ teamMemberTabs(model.teamMember, "unavailability") }}
+  <div class="p-8 flex">
+    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.previousWeekString }}/" class="p-2">
+      &lt;
+    </a>
+    <h1 class="p-2">
+      <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.startDate.getFullYear() }}/">
+        Week of {{ model.startDate.toLocaleDateString(undefined, { dateStyle: "full" }) }}
+      </a>
+    </h1>
+    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.nextWeekString }}/" class="p-2">
+      &gt;
+    </a>
+  </div>
+  <div>
+    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ formatDate(model.startDate, '/') }}/clear/">
+      Clear
+    </a>
+  </div>
+  {% for row in model.table %}
+    <h2>
+      <span>
+        {{ row.date.toLocaleDateString(undefined, { dateStyle: "full" }) }}
+      </span>
+      <a href="/team-member/{{ model.teamMember.id }}/unavailability/add/{{ formatDate(row.date, '/') }}/">
+        &plus;
+      </a>
+    </h2>
+    {% for unavailability in row.unavailabilities %}
+      <div>
+        <span>
+          {{ unavailability.startDateTime.toLocaleTimeString() }} - {{ unavailability.endDateTime.toLocaleTimeString() }}
+        </span>
+        <span>
+          {{ "🙂" if unavailability.isPreference else "☹️" }}
+        </span>
+        <span>
+          <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/edit/">
+            Edit
+          </a>
+          <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/delete/">
+            Delete
+          </a>
+        </span>
+      </div>
+    {% else %}
+      <p>(none)</p>
+    {% endfor %}
+  {% endfor %}
+{% endblock %}

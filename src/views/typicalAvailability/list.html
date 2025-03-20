@@ -1,0 +1,42 @@
+{% extends "../_shared/_layout.html" %}
+{% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
+
+{% set dayNames = [
+  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+] %}
+
+{% set title = model.teamMember.fullName + " | Availability" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  {{ teamMemberTabs(model.teamMember, "availability") }}
+  {% for row in model.typicalAvailabilityTable %}
+    <h2>
+      <span>
+        {{ dayNames[loop.index0] }}
+      </span>
+      <a href="/team-member/{{ model.teamMember.id }}/availability/add/{{ loop.index0 }}/">
+        &plus;
+      </a>
+    </h2>
+    {% for typicalAvailability in row %}
+      <div>
+        <span>
+          {{ typicalAvailability.startTime }} - {{ typicalAvailability.endTime }}
+        </span>
+        <span>
+          {{ "🙂" if typicalAvailability.isPreference else "☹️" }}
+        </span>
+        <span>
+          <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/">
+            Edit
+          </a>
+          <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/delete/">
+            Delete
+          </a>
+        </span>
+      </div>
+    {% endfor %}
+  {% endfor %}
+{% endblock %}

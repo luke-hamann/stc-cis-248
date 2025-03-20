@@ -1,0 +1,22 @@
+{% extends "../_shared/_layout.html" %}
+
+{% block title %}Shift Contexts{% endblock %}
+
+{% block content %}
+  <h1>Shift Contexts</h1>
+
+  <a href="/context/add/">&plus; Add</a>
+
+  {% for shiftContext in model.shiftContexts %}
+    <div>
+      <div>{{ shiftContext.name }}</div>
+      <div>
+        <a href="/context/{{ shiftContext.id }}/">✏️</a>
+        <a href="/context/{{ shiftContext.id }}/delete/">❌</a>
+      </div>
+      <div>{{ shiftContext.ageGroup }}</div>
+      <div>{{ shiftContext.location }}</div>
+      <div>{{ shiftContext.description }}</div>
+    </div>
+  {% endfor %}
+{% endblock %}

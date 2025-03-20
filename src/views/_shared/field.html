@@ -1,0 +1,11 @@
+{% macro field(name, value, type, label, isChecked = false) %}
+  <div>
+    <label for="{{ name }}">{{ label }}</label>
+    <input
+      type="{{ type }}"
+      name="{{ name }}"
+      id="{{ name }}"
+      {% if value %}value="{{ value }}"{% endif %}
+      {{ "checked" if isChecked }} />
+  </div>
+{% endmacro %}

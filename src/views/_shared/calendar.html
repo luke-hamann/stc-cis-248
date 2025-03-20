@@ -1,0 +1,45 @@
+{% macro calendar(model) %}
+  <div class="flex justify-center gap-8 py-8">
+    <a href="{{ model.baseUrl }}{{ model.year - 1 }}/" class="self-center">
+      {{ model.year - 1}}
+    </a>
+    <h1 class="font-bold text-5xl">{{ model.year }}</h1>
+    <a href="{{ model.baseUrl }}{{ model.year + 1}}/" class="self-center">
+      {{ model.year + 1}}
+    </a>
+  </div>
+  <div class="flex flex-wrap justify-center gap-8">
+    {% for calendarPage in model.calendar %}
+      {% set month = ("0" + loop.index).slice(-2) %}
+      <div class="max-w-xs">
+        <h2 class="text-center font-bold">{{ calendarPage.monthName }}</h2>
+        <ul class="list-none flex">
+          <li class="w-1/7 text-center">Sun</li>
+          <li class="w-1/7 text-center">Mon</li>
+          <li class="w-1/7 text-center">Tue</li>
+          <li class="w-1/7 text-center">Wed</li>
+          <li class="w-1/7 text-center">Thu</li>
+          <li class="w-1/7 text-center">Fri</li>
+          <li class="w-1/7 text-center">Sat</li>
+        </ul>
+        <ul class="list-none flex flex-wrap">
+          {% for i in range(0, calendarPage.initialDayOfWeek) %}
+            <li class="w-1/7"></li>
+          {% endfor %}
+
+          {% for i in range(1, calendarPage.daysInMonth + 1) %}
+            {% set day = ("0" + loop.index).slice(-2) %}
+            {% set datePath = [model.year, "/", month, "/", day] | join %}
+
+            <li class="w-1/7 text-center">
+              <a href="{{ model.baseUrl }}{{ datePath }}/" class="block"
+                {{ 'style="color: white; background-color: skyblue;"' | safe if datePath == model.todayPath }} >
+                {{ i }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}

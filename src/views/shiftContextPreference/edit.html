@@ -1,0 +1,49 @@
+{% extends "../_shared/_layout.html" %}
+{% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
+
+{% set title = model.teamMember.fullName + " | Preferences" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  {{ teamMemberTabs(model.teamMember, "preferences") }}
+  <form method="post">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>☹️</th>
+          <th>😐</th>
+          <th>🙂</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for shiftContext in model.shiftContexts %}
+          <tr>
+            <td>
+              {{ shiftContext.name }}
+            </td>
+            <td>
+              <input type="radio" name="{{ shiftContext.id }}" value="negative"
+                {{ "checked" if model.shiftContextPreferences.unpreferable.includes(shiftContext.id) }} />
+            </td>
+            <td>
+              <input type="radio" name="{{ shiftContext.id }}" value="neutral"
+                {{ "checked" if not model.shiftContextPreferences.preferable.includes(shiftContext.id) and
+                                not model.shiftContextPreferences.unpreferable.includes(shiftContext.id) }} />
+            </td>
+            <td>
+              <input type="radio" name="{{ shiftContext.id }}" value="positive"
+                {{ "checked" if model.shiftContextPreferences.preferable.includes(shiftContext.id) }} />
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div>
+      {{ csrf(model) }}
+      <a href="/team-member/{{ model.teamMember.id }}/">Cancel</a>
+      <button type="submit">Save</button>
+    </div>
+  </form>
+{% endblock content %}

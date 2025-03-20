@@ -1,0 +1,23 @@
+{% extends "../_shared/_layout.html" %}
+
+{% set title = "Substitutes " + model.substituteList.date %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <form method="post">
+    {% for teamMember in model.teamMembers %}
+      <div>
+        <input type="checkbox" name="{{ teamMember.id }}" id="{{ teamMember.id }}"
+          {{ "checked" if model.substituteList.teamMemberIds.includes(teamMember.id) }} />
+        <label for="{{ teamMember.id }}">{{ teamMember.fullName }}</label>
+      </div>
+    {% endfor %}
+    <div>
+      {{ csrf(model) }}
+      <input type="submit" value="Save" />
+      <a href="/schedule/{{ formatDate(model.substituteList.date, '/') }}/">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

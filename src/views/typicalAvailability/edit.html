@@ -1,0 +1,39 @@
+{% extends "../_shared/_layout.html" %}
+{% from "../_shared/field.html" import field %}
+
+{% set daysOfWeek = [
+  { index: 0, name: "Sunday" },
+  { index: 1, name: "Monday" },
+  { index: 2, name: "Tuesday" },
+  { index: 3, name: "Wednesday" },
+  { index: 4, name: "Thursday" },
+  { index: 5, name: "Friday" },
+  { index: 6, name: "Saturday" }
+] %}
+
+{% block title %}{{ "Edit" if model.isEdit else "Add" }} Availability{% endblock %}
+
+{% block content %}
+  <h1>{{ "Edit" if model.isEdit else "Add" }} Availability</h1>
+  <form method="post" {% if not model.isEdit %}action="/team-member/{{ model.teamMember.id }}/availability/add/"{% endif %} >
+    <div>
+      <label for="dayOfWeek">Day of week</label>
+      <select name="dayOfWeek" id="dayOfWeek">
+        <option value="">Select a day of the week...</option>
+        {% for dayOfWeek in daysOfWeek %}
+          <option value="{{ dayOfWeek.index }}" {{ "selected" if model.typicalAvailability.dayOfWeek == dayOfWeek.index }} >
+            {{ dayOfWeek.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    {{ field("startTime", model.typicalAvailability.startTime, "time", "Start time") }}
+    {{ field("endTime", model.typicalAvailability.endTime, "time", "End time") }}
+    {{ field("isPreference", "", "checkbox", "Preferable", model.typicalAvailability.isPreference) }}
+    <div>
+      {{ csrf(model) }}
+      <input type="submit" value="Save" />
+      <a href="/team-member/{{ model.teamMember.id }}/availability/">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

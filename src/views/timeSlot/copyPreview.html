@@ -1,0 +1,58 @@
+{% extends "../_shared/_layout.html" %}
+
+{% set title = "Copy Preview" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <p class="bg-amber-600 text-white border rounded">
+    ⚠️ <b>WARNING:</b> The target time range will be overwritten if you proceed.
+  </p>
+  {% if model.newTimeSlots %}
+    <p>The following time slots will be created:</p>
+  {% else %}
+    <p>No time slots will be created.</p>
+  {% endif %}
+  {% for timeSlot in model.newTimeSlots %}
+    <div class="border">
+      <div>{{ timeSlot.id }}</div>
+      <div>{{ timeSlot.startDateTime }}</div>
+      <div>{{ timeSlot.endDateTime }}</div>
+    </div>
+  {% endfor %}
+  {% if model.includeShiftContextNotes %}
+    <p>The following shift context notes will be created:</p>
+    {% for shiftContextNote in model.newShiftContextNotes %}
+      <div class="border">
+        <div>{{ shiftContextNote.date }}</div>
+        <div>{{ shiftContextNote.note }}</div>
+      </div>
+    {% endfor %}
+  {% endif %}
+  <form method="post">
+    {{ csrf(model) }}
+    <input type="hidden" name="confirm" />
+    <input type="hidden" name="fromStartDate" value="{{ model.fromStartDateString }}" />
+    <input type="hidden" name="fromEndDate" value="{{ model.fromEndDateString }}" />
+    <input type="hidden" name="toStartDate" value="{{ model.toStartDateString }}" />
+    <input type="hidden" name="toEndDate" value="{{ model.toEndDateString }}" />
+    {% if model.repeatCopy %}
+      <input type="hidden" name="repeatCopy" value="" />
+    {% endif %}
+    {% if model.includeAssignees %}
+      <input type="hidden" name="includeAssignees" value="" />
+    {% endif %}
+    {% if model.includeShiftContextNotes %}
+      <input type="hidden" name="includeShiftContextNotes" />
+    {% endif %}
+    {% if model.includeTimeSlotNotes %}
+      <input type="hidden" name="includeTimeSlotNotes" />
+    {% endif %}
+    <div>
+      <input type="submit" value="Confirm" />
+      <a href="/schedule/copy/{{ formatDate(model.fromStartDate, '/') }}/to/{{ formatDate(model.fromEndDate, '/') }}/">Edit</a>
+      <a href="/schedule/{{ formatDate(model.fromStartDate, '/') }}/">Cancel</a>
+    </div>
+  </div>
+{% endblock %}
