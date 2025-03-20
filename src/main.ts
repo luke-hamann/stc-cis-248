@@ -108,6 +108,8 @@ const router = new Router(controllers);
  * @param request HTTP request
  * @returns HTTP response
  */
-export default async function fetch(request: Request): Promise<Response> {
+async function fetch(request: Request): Promise<Response> {
   return await router.route(request);
 }
+
+export default { fetch };
