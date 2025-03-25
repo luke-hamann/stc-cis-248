@@ -47,8 +47,38 @@ export default class TeamMemberRepository extends Repository {
   }
 
   public async validate(
-    teamMember: TeamMember,
+    t: TeamMember,
   ): Promise<string[]> {
+    const errors: string[] = [];
+
+    if (t.firstName.trim() == "") {
+      errors.push("Please enter a first name.");
+    }
+
+    if (t.lastName.trim() == "") {
+      errors.push("Please enter a last name.");
+    }
+
+    if (t.birthDate == null) {
+      errors.push("Please enter a birth date.");
+    } else if (t.birthDate.getTime() >= new Date().getTime()) {
+      errors.push("Please enter a birth date in the past.");
+    }
+
+    if (
+      t.maxWeeklyHours != null &&
+      (t.maxWeeklyHours < 0 || t.maxWeeklyHours > (7 * 24))
+    ) {
+      errors.push(`Max weekly hours must be between 0 and ${7 * 24}.`);
+    }
+
+    if (
+      t.maxWeeklyDays != null &&
+      (t.maxWeeklyDays < 0 || t.maxWeeklyDays > 7)
+    ) {
+      errors.push("Max weekly days must be between 0 and 7.");
+    }
+
     return await Promise.resolve([]);
   }
 

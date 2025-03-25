@@ -99,7 +99,43 @@ export default class TimeSlotRepository extends Repository {
    * @returns A list of error messages
    */
   public async validate(t: TimeSlot): Promise<string[]> {
-    return await Promise.resolve([]);
+    const errors: string[] = [];
+
+    const shiftContext = await this.shiftContexts.get(t.shiftContextId);
+    if (shiftContext == null) {
+      errors.push("The selected shift context does not exist.");
+    }
+
+    if (t.startDateTime == null) {
+      errors.push("Please enter a start date and time.");
+    }
+
+    // if (t.endDateTime == null) {
+    //   errors.push("Please enter an end date and time.");
+    // }
+
+    if (
+      t.startDateTime != null && t.endDateTime != null &&
+      t.startDateTime.getTime() >= t.endDateTime.getTime()
+    ) {
+      errors.push("Start date and time must be before end date and time.");
+    }
+
+    if (t.teamMemberId != null) {
+      const teamMember = await this.teamMembers.get(t.teamMemberId);
+      if (teamMember == null) {
+        errors.push("The selected team member does not exist.");
+      }
+    }
+
+    if (t.colorId != null) {
+      const color = await this.colors.get(t.colorId);
+      if (color == null) {
+        errors.push("The selected color does not exist.");
+      }
+    }
+
+    return errors;
   }
 
   /**
