@@ -3,6 +3,7 @@ import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 import { HTTPMethod } from "./HTTPMethod.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 import nunjucks from "npm:nunjucks";
+import IViewModel from "../models/viewModels/_shared/IViewModel.ts";
 
 /** Controls routing to action methods based on HTTP method and url patterns */
 export default class Controller {
@@ -55,8 +56,10 @@ export default class Controller {
   protected HTMLResponse(
     context: Context,
     view: string,
-    model: unknown,
+    model: IViewModel,
   ): ResponseWrapper {
+    model.csrf_token = context.csrf_token;
+
     context.response.body = nunjucks.render(view, { model });
     context.response.headers.set("Content-Type", "text/html");
     return context.response;
@@ -87,8 +90,10 @@ export default class Controller {
     context: Context,
     status: number,
     view: string,
-    model: unknown,
+    model: IViewModel,
   ) {
+    model.csrf_token = context.csrf_token;
+
     context.response.status = status;
     context.response = this.HTMLResponse(context, view, model);
     return context.response;

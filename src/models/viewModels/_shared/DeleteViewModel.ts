@@ -1,4 +1,6 @@
-export default class DeleteViewModel {
+import IViewModel from "./IViewModel.ts";
+
+export default class DeleteViewModel implements IViewModel {
   description: string = "";
   action: string = "";
   cancel: string = "";

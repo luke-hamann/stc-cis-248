@@ -1,8 +1,9 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
 import DateLib from "../../../_dates/DateLib.ts";
 import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import IViewModel from "../_shared/IViewModel.ts";
 
-export default class ScheduleClearViewModel {
+export default class ScheduleClearViewModel implements IViewModel {
   public startDate: Date | null;
   public endDate: Date | null;
   public deleteTimeSlots: boolean;

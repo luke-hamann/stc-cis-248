@@ -2,8 +2,10 @@ import BetterDate from "../../../_dates/BetterDate.ts";
 import DateLib from "../../../_dates/DateLib.ts";
 import Schedule from "../../entities/Schedule.ts";
 import { ScheduleWarnings } from "../../repositories/ScheduleRepository.ts";
+import IViewModel from "../_shared/IViewModel.ts";
 
-export default class ScheduleWeekViewModel {
+export default class ScheduleWeekViewModel implements IViewModel {
+  public csrf_token: string = "";
   public currentWeek: Date;
   public schedule: Schedule;
   public warnings: ScheduleWarnings;
@@ -26,7 +28,7 @@ export default class ScheduleWeekViewModel {
   constructor(
     currentWeek: Date,
     schedule: Schedule,
-    warnings: ScheduleWarnings,
+    warnings: ScheduleWarnings
   ) {
     this.currentWeek = currentWeek;
     this.schedule = schedule;

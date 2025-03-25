@@ -1,5 +1,6 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
 import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import IViewModel from "../_shared/IViewModel.ts";
 
 const spreadsheetFormats = ["csv", "excel"] as const;
 export type SpreadsheetFormat = typeof spreadsheetFormats[number];
@@ -7,7 +8,7 @@ export type SpreadsheetFormat = typeof spreadsheetFormats[number];
 export const isSpreadsheetFormat = (x: any): x is SpreadsheetFormat =>
   spreadsheetFormats.includes(x);
 
-export default class ScheduleExportFormViewModel {
+export default class ScheduleExportFormViewModel implements IViewModel {
   public title: string;
   public startDate: BetterDate | null;
   public endDate: BetterDate | null;

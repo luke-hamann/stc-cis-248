@@ -1,32 +1,25 @@
 {% extends "../_shared/_layout.html" %}
+{% from "../_shared/formErrors.html" import formErrors %}
 
 {% block content %}
-  <h1>
+  <h1 class="text-4xl mt-8 font-bold">
     {% if model.isEdit %}Edit{% else %}Add{% endif %} Color
   </h1>
-
-  {% if model.errors %}
-    <ul>
-      {% for error in model.errors %}
-        <li>{{ error }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-
-  <form method="post" action="{% if model.isEdit %}/color/{{ model.color.id }}/{% else %}/colors/add/{% endif %}">
-    <div>
-      <label>Name</label>
-      <input type="text" name="name" value="{{ model.color.name }}" />
+  {{ formErrors(model.errors) }}
+  <form method="post" action="{% if model.isEdit %}/color/{{ model.color.id }}/{% else %}/colors/add/{% endif %}" class="mt-8 max-w-md">
+    <div class="flex gap-4">
+      <label class="flex-1">Name</label>
+      <input type="text" name="name" value="{{ model.color.name }}" class="flex-1 border"/>
     </div>
-    <div>
-      <label>Color</label>
-      <input type="color" name="hex" value="{% if model.color.hex %}#{% endif %}{{ model.color.hex }}" />
+    <div class="flex gap-4 mt-4">
+      <label class="flex-1">Color</label>
+      <input type="color" name="hex" value="{% if model.color.hex %}#{% endif %}{{ model.color.hex }}" class="flex-1 border"/>
     </div>
-    <div>
-      <input type="hidden" name="id" value="{{ model.color.id }}" />
+    <div class="flex gap-4 justify-center mt-4">
+      <input type="hidden" name="id" value="{{ model.color.id }}"/>
       {{ csrf(model) }}
-      <button type="submit">Save</button>
-      <a href="/colors/">Cancel</a>
+      <button type="submit" class="bg-blue-200 p-4 rounded">Save</button>
+      <a href="/colors/" class="bg-red-400 text-white p-4 rounded">Cancel</a>
     </div>
   </form>
 {% endblock %}
