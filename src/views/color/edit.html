@@ -9,11 +9,11 @@
   <form method="post" action="{% if model.isEdit %}/color/{{ model.color.id }}/{% else %}/colors/add/{% endif %}" class="mt-8 max-w-md">
     <div class="flex gap-4">
       <label class="flex-1">Name</label>
-      <input type="text" name="name" value="{{ model.color.name }}" class="flex-1 border"/>
+      <input type="text" name="name" value="{{ model.color.name }}" class="flex-1 border p-1"/>
     </div>
     <div class="flex gap-4 mt-4">
       <label class="flex-1">Color</label>
-      <input type="color" name="hex" value="{% if model.color.hex %}#{% endif %}{{ model.color.hex }}" class="flex-1 border"/>
+      <input type="color" name="hex" value="{% if model.color.hex %}#{% endif %}{{ model.color.hex }}" class="flex-1 border p-1"/>
     </div>
     <div class="flex gap-4 justify-center mt-4">
       <input type="hidden" name="id" value="{{ model.color.id }}"/>
