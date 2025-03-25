@@ -70,7 +70,7 @@ export default class ShiftContextNoteController extends Controller {
       );
 
     if (shiftContextNote == null) {
-      shiftContextNote = new ShiftContextNote(
+        shiftContextNote = new ShiftContextNote(
         shiftContextId,
         null,
         date,
@@ -112,6 +112,7 @@ export default class ShiftContextNoteController extends Controller {
     const model = await ShiftContextNoteEditViewModel.fromRequest(
       context.request,
     );
+    model.shiftContextNote.shiftContextId = shiftContextId;
     model.shiftContextNote.date = date;
 
     model.errors = await this.shiftContextNoteRepository.validate(

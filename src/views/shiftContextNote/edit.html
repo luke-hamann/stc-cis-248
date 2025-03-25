@@ -1,14 +1,36 @@
 {% extends "../_shared/_layout.html" %}
+{% from "../_shared/formErrors.html" import formErrors %}
+{% from "../_shared/formatDate.html" import formatDate %}
 
 {% set title = "Edit Shift Context Note" %}
 
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ title }}</h1>
-  <form method="post">
-    <div>
-      <label for="colorId">Color</label>
+  <h1 class="text-4xl mt-8 font-bold">
+    {{ title }}
+  </h1>
+  {{ formErrors(model.errors) }}
+  <form method="post" class="max-w-lg">
+    <div class="flex mt-4">
+      <div class="flex-1">Date</div>
+      <div class="flex-1">{{ formatDate(model.shiftContextNote.date) }}</div>
+    </div>
+    <div class="mt-4 flex">
+      <label for="colorId" class="flex-1">Color</label>
+      <div class="flex-1">
+        <div>
+          <input type="radio" name="colorId" value="" id="colorId_0" {{ "checked" if not model.shiftContextNote.colorId }} />
+          <label for="colorId_0">(none)</label>
+        </div>
+        {% for color in model.colors %}
+          <div>
+            <input type="radio" name="colorId" value="{{ color.id }}" id="colorId_{{ color.id }}" {{ "checked" if model.shiftContextNote.colorId == color.id }} />
+            <label for="colorId_{{ color.id }}">{{ color.name }}</label>
+          </div>
+        {% endfor %}
+      </div>
+      {#
       <select id="colorId" name="colorId">
         <option {{ "selected" if not model.shiftContextNote.colorId }} >(none)</option>
         {% for color in model.colors %}
@@ -16,15 +38,16 @@
             {{ "selected" if model.shiftContextNote.colorId == color.id }} >{{ color.name }}</option>
         {% endfor %}
       </select>
+      #}
     </div>
-    <div>
-      <label for="note">Note</label>
-      <textarea id="note" name="note">{{ model.shiftContextNote.note }}</textarea>
+    <div class="mt-4">
+      <label for="note" class="block">Note</label>
+      <textarea id="note" name="note" rows="4" class="border rounded p-1 w-full mt-4">{{ model.shiftContextNote.note }}</textarea>
     </div>
-    <div>
+    <div class="mt-4 flex justify-center gap-4">
       {{ csrf(model) }}
-      <button type="submit">Save</button>
-      <a href="/schedule/{{ formatDate(model.weekStart, '/') }}/">Cancel</a>
+      <button type="submit" class="p-4 rounded bg-blue-300">Save</button>
+      <a href="/contexts/" class="p-4 rounded bg-gray-200">Cancel</a>
     </div>
   </form>
 {% endblock %}
