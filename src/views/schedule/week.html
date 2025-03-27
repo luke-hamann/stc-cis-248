@@ -94,7 +94,16 @@
             {% endif %}
 
             {% if type == "TimeSlot" %}
-              <p>{{ data.teamMember.fullName if data.teamMember else "(unassigned)" }}</p>
+              <p>
+                {{ data.teamMember.fullName if data.teamMember else "(unassigned)" }}
+              </p>
+              {% if data.note %}
+                {% if data.color %}
+                  <p style="background-color: #{{ data.color.hex }}">{{ data.note }}</p>
+                {% else %}
+                  <p>{{ data.note }}</p>
+                {% endif %}
+              {% endif %}
               <div>
                 <a href="/schedule/time-slot/{{ data.id }}/">Edit</a>
                 <a href="/schedule/time-slot/{{ data.id }}/delete/">Delete</a>
@@ -198,9 +207,9 @@
           hour(s).
         </li>
       {% endfor %}
-      {% if model.warnings.unassignedTimeSlots %}
+      {% if model.warnings.unassignedTimeSlots.length > 0 %}
         <li>
-          The following time slots are unassigned:
+          [Unassigned] The following time slots are unassigned:
           <ul class="list-disc ms-8">
             {% for timeSlot in model.warnings.unassignedTimeSlots %}
               <li>
