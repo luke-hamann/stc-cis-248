@@ -7,32 +7,32 @@
 
 {% block content %}
   {{ teamMemberTabs(model.teamMember, "preferences") }}
-  <form method="post">
+  <form method="post" class="ms-4 mt-6 max-w-md">
     <table>
       <thead>
         <tr>
-          <th></th>
-          <th>☹️</th>
-          <th>😐</th>
-          <th>🙂</th>
+          <th class="p-4 text-left">Shift Context</th>
+          <th class="p-4">☹️</th>
+          <th class="p-4">😐</th>
+          <th class="p-4">🙂</th>
         </tr>
       </thead>
       <tbody>
         {% for shiftContext in model.shiftContexts %}
           <tr>
-            <td>
+            <td class="p-4">
               {{ shiftContext.name }}
             </td>
-            <td>
+            <td class="p-4 text-center">
               <input type="radio" name="{{ shiftContext.id }}" value="negative"
                 {{ "checked" if model.shiftContextPreferences.unpreferable.includes(shiftContext.id) }} />
             </td>
-            <td>
+            <td class="p-4 text-center">
               <input type="radio" name="{{ shiftContext.id }}" value="neutral"
                 {{ "checked" if not model.shiftContextPreferences.preferable.includes(shiftContext.id) and
                                 not model.shiftContextPreferences.unpreferable.includes(shiftContext.id) }} />
             </td>
-            <td>
+            <td class="p-4 text-center">
               <input type="radio" name="{{ shiftContext.id }}" value="positive"
                 {{ "checked" if model.shiftContextPreferences.preferable.includes(shiftContext.id) }} />
             </td>
@@ -40,10 +40,10 @@
         {% endfor %}
       </tbody>
     </table>
-    <div>
+    <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <a href="/team-member/{{ model.teamMember.id }}/">Cancel</a>
-      <button type="submit">Save</button>
+      <a href="/team-member/{{ model.teamMember.id }}/" class="block p-4 bg-gray-300 rounded">Cancel</a>
+      <button type="submit" class="block p-4 bg-green-300 rounded">Save</button>
     </div>
   </form>
 {% endblock content %}

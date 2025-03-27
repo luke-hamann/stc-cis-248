@@ -198,6 +198,19 @@
           hour(s).
         </li>
       {% endfor %}
+      {% if model.warnings.unassignedTimeSlots %}
+        <li>
+          The following time slots are unassigned:
+          <ul class="list-disc ms-8">
+            {% for timeSlot in model.warnings.unassignedTimeSlots %}
+              <li>
+                {{ timeSlot.shiftContext.name }}: {{ timeSlot.startDateTime.toLocaleDateString () }},
+                {{ timeSlot.startDateTime.toLocaleTimeString() }} - {{ timeSlot.endDateTime.toLocaleTimeString() }}
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endif %}
     </ul>
   </div>
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "../_shared/_layout.html" %}
+{% from "../_shared/formErrors.html" import formErrors %}
 {% from "../_shared/field.html" import field with context %}
 
 {% if model.isEdit %}
@@ -35,81 +36,76 @@
 {% endblock %}
 
 {% block content %}
-  <h1>{{ title }}</h1>
-  <form action="{{ action }}" method="post">
-    {% if model.errors %}
-      <ul>
-        {% for error in model.errors %}
-          <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-    <div>
-      <label for="shiftContextId">Shift Context</label>
-      <select name="shiftContextId" id="shiftContextId">
-        <option value="">Select a shift context...</option>
-        {% for shiftContext in model.shiftContexts %}
-          <option value="{{ shiftContext.id }}" {{ "selected" if shiftContext.id == model.timeSlot.shiftContextId }} >
-            {{ shiftContext.name }}
-          </option>
-        {% endfor %}
-      </select>
-    </div>
-    {{ field("date", model.timeSlot.startDateString, "date", "Date") }}
-    {{ field("startTime", model.timeSlot.startTimeString, "time", "Start time") }}
-    {{ field("endTime", model.timeSlot.endTimeString, "time", "End time") }}
-    {{ field("requiresAdult", "", "checkbox", "Requires adult", model.timeSlot.requiresAdult) }}
-    {#
-    <div>
-      <label>Assignee</label>
-      <div class="*:hidden hover:*:block">
-        <div class="has-checked:block">
-          <input type="radio" name="teamMemberId" value=""
-            id="teamMemberId_0" {{ "checked" if not model.timeSlot.teamMemberId }} />
-          <label for="teamMemberId_0">(none)</label>
+  <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
+  <form action="{{ action }}" method="post" class="mt-4">
+    {{ formErrors(model.errors) }}
+    <h2 class="mt-4 text-2xl font-bold">Basic</h2>
+    <div class="max-w-lg">
+      <div class="mt-8 flex">
+        <label for="shiftContextId" class="flex-1">
+          Shift Context
+        </label>
+        <select name="shiftContextId" id="shiftContextId" class="flex-1 p-1 border rounded">
+          <option value="">Select a shift context...</option>
+          {% for shiftContext in model.shiftContexts %}
+            <option value="{{ shiftContext.id }}" {{ "selected" if shiftContext.id == model.timeSlot.shiftContextId }} >
+              {{ shiftContext.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      {{ field("date", model.timeSlot.startDateString, "date", "Date") }}
+      {{ field("startTime", model.timeSlot.startTimeString, "time", "Start time") }}
+      {{ field("endTime", model.timeSlot.endTimeString, "time", "End time") }}
+      <div class="mt-4 flex">
+        <label for="requiresAdult" class="flex-1">
+          Requires adult
+        </label>
+        <div class="flex-1">
+          <input type="checkbox" name="requiresAdult" {{ "checked" if model.timeSlot.requiresAdult }} />
         </div>
-        {% for teamMember in model.teamMembers %}
-          <div class="has-checked:block">
-            <input type="radio" name="teamMemberId" value="{{ teamMember.id }}"
-              id="teamMemberId_{{ teamMember.id }}" {{ "checked" if model.timeSlot.teamMemberId == teamMember.id }} />
-            <label for="teamMemberId_{{ teamMember.id }}">{{ teamMember.fullName }}</label>
-          </div>
-        {% endfor %}
       </div>
     </div>
-    #}
-    <label>Assignee</label>
-    <div id="recommendations">
-      {% include "./assigneeRecommendations.html" %}
+    <div class="mt-8">
+      <h2 class="text-2xl font-bold">Assignee</h2>
+      <div id="recommendations" class="mt-4">
+        {% include "./assigneeRecommendations.html" %}
+      </div>
     </div>
-    {{ field("note", model.timeSlot.note, "text", "Note") }}
-    <div>
-      <label for="colorId">Note color</label>
-      <select name="colorId" id="colorId" onchange="toggleNewColorSection()">
-        <option value="">(none)</option>
-        {% for color in model.colors %}
-          <option value="{{ color.id }}" {{ "selected" if color.id == model.timeSlot.colorId }} >{{ color.name }}</option>
-        {% endfor %}
-        <option value="0">(new)</option>
-      </select>
-    </div>
-    <div id="newColorSection" {{ 'style="display: none;"' | safe if model.timeSlot.colorId != 0 }}>
-      <label for="newColorHex">New note color</label>
-      <input type="color" name="newColorHex" value="{{ model.newColor.hex }}" />
-      <input type="text" name="newColorName" value="{{ model.newColor.name }}" />
-    </div>
-    <script>
-      function toggleNewColorSection() {
-        const colorId = document.querySelector("#colorId").value;
-        const display = colorId === "0" ? "block" : "none";
-        document.querySelector("#newColorSection").style.display = display;
-      }
-    </script>
-    <div>
-      <input type="hidden" name="timeSlotId" value="{{ model.timeSlot.id }}" />
-      {{ csrf(model) }}
-      <input type="submit" value="Save" />
-      <a href="{{ model.cancel }}">Cancel</a>
+    <div class="max-w-lg">
+      <h2 class="mt-4 text-2xl font-bold">Note</h2>
+      {{ field("note", model.timeSlot.note, "note", "Note") }}
+      <div class="mt-4 flex">
+        <label class="flex-1">Note color</label>
+        <div class="flex-1">
+          <div>
+            <input type="radio" name="colorId" value="" id="colorId_none" {{ "checked" if not model.timeSlot.colorId }} />
+            <label for="colorId_none">(none)</label>
+          </div>
+          {% for color in model.colors %}
+            <div>
+              <input type="radio" name="colorId" id="colorId_{{ color.id }}" value="{{ color.id }}" {{ "checked" if color.id == model.timeSlot.colorId }} />
+              <label for="colorId_{{ color.id }}">
+                <span class="inline-block size-4 rounded" style="background-color: #{{ color.hex }};"></span>
+                {{ color.name }}
+              </label>
+            </div>
+          {% endfor %}
+          <div>
+            <input type="radio" name="colorId" value="0" id="colorId_new" {{ "checked" if model.timeSlot.colorId == 0 }} />
+            <label for="colorId_new">
+              <input type="color" name="newColorHex" value="{{ '#' if model.newColor.hex }}{{ model.newColor.hex }}" class="size-4 rounded" />
+              <input type="text" name="newColorName" value="{{ model.newColor.name }}" placeholder="new..." />
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 flex gap-4 justify-center">
+        <input type="hidden" name="timeSlotId" value="{{ model.timeSlot.id }}" />
+        {{ csrf(model) }}
+        <input type="submit" value="Save" class="block p-2 bg-green-300 rounded" />
+        <a href="{{ model.cancel }}" class="block p-2 bg-gray-300 rounded">Cancel</a>
+      </div>
     </div>
   </form>
 {% endblock %}

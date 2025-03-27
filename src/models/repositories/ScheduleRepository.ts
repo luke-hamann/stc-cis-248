@@ -102,6 +102,7 @@ export type ScheduleWarnings = {
   availabilityViolations: TimeSlot[];
   maxWeeklyDaysViolations: [TeamMember, number][];
   maxWeeklyHoursViolations: [TeamMember, number][];
+  unassignedTimeSlots: TimeSlot[];
 };
 
 export default class ScheduleRepository {
@@ -442,6 +443,7 @@ export default class ScheduleRepository {
       availabilityViolations: [],
       maxWeeklyDaysViolations: [],
       maxWeeklyHoursViolations: [],
+      unassignedTimeSlots: [],
     };
 
     // Externality warnings
@@ -710,6 +712,10 @@ export default class ScheduleRepository {
         row.totalHours,
       ]);
     }
+
+    // Unassigned time slot warnings
+
+    warnings.unassignedTimeSlots = await this.timeSlots.getUnassigned(start, end);
 
     return warnings;
   }

@@ -172,6 +172,7 @@ export default class TimeSlotController extends Controller {
       model.shiftContexts = await this.shiftContexts.list();
       model.teamMembers = await this.teamMembers.list();
       model.colors = await this.colors.list();
+      model.recommendations = await this.schedules.getRecommendations(model.timeSlot);
       model.isEdit = false;
       model.csrf_token = context.csrf_token;
       model.cancel = this.getCancelLink(new Date());

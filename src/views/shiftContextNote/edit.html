@@ -24,9 +24,12 @@
           <label for="colorId_0">(none)</label>
         </div>
         {% for color in model.colors %}
-          <div>
-            <input type="radio" name="colorId" value="{{ color.id }}" id="colorId_{{ color.id }}" {{ "checked" if model.shiftContextNote.colorId == color.id }} />
-            <label for="colorId_{{ color.id }}">{{ color.name }}</label>
+          <div class="align-middle">
+            <input type="radio" name="colorId" value="{{ color.id }}" id="colorId_{{ color.id }}" {{ "checked" if model.shiftContextNote.colorId == color.id }} class="inline-block" />
+            <label for="colorId_{{ color.id }}">
+              <span class="inline-block size-4 rounded align-middle" style="background-color: #{{ color.hex }};"></span>
+              {{ color.name }}
+            </label>
           </div>
         {% endfor %}
       </div>

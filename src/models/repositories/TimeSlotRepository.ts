@@ -93,6 +93,10 @@ export default class TimeSlotRepository extends Repository {
     return timeSlot;
   }
 
+  private async populateAll(timeslots: TimeSlot[]): Promise<TimeSlot[]> {
+    return await Promise.all(timeslots.map(timeslot => this.populate(timeslot)));
+  }
+
   /**
    * Validates a time slot
    * @param t A time slot
@@ -103,7 +107,7 @@ export default class TimeSlotRepository extends Repository {
 
     const shiftContext = await this.shiftContexts.get(t.shiftContextId);
     if (shiftContext == null) {
-      errors.push("The selected shift context does not exist.");
+      errors.push("Please select a shift context.");
     }
 
     if (t.startDateTime == null) {
@@ -128,7 +132,7 @@ export default class TimeSlotRepository extends Repository {
       }
     }
 
-    if (t.colorId != null) {
+    if (t.colorId != null && t.colorId != 0) {
       const color = await this.colors.get(t.colorId);
       if (color == null) {
         errors.push("The selected color does not exist.");
@@ -518,5 +522,20 @@ export default class TimeSlotRepository extends Repository {
     );
 
     return (!result.rows || result.rows.length == 0);
+  }
+
+  public async getUnassigned(start: Date, end: Date): Promise<TimeSlot[]> {
+    const result = await this.database.execute(
+      `
+        ${this.timeSlotQuery}
+        WHERE teamMemberId IS NULL
+          AND DATE(startDateTime) BETWEEN ? AND ?
+      `,
+      [start, end]
+    );
+
+    if (!result.rows || result.rows.length == 0) return [];
+
+    return await this.populateAll(this.mapRowsToTimeSlots(result.rows));
   }
 }
