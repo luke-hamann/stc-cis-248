@@ -10,22 +10,22 @@ jobs:
 
     permissions:
       contents: read
-    
+
     steps:
       - name: Clone Repository
         id: clone
         uses: actions/checkout@v4
-      
+
       - name: Install Deno
         id: install
         uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      
+
       - name: Build Documentation
         id: build
-        run: "deno doc --html --name=\"Scheduler App\" ./src/mod.ts"
-      
+        run: "deno doc --html --name=\"Scheduler App Systems Documentation\" ./src/mod.ts"
+
       - name: Upload static files
         id: deployment
         uses: actions/upload-pages-artifact@v3
