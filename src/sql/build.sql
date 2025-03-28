@@ -42,8 +42,12 @@ CREATE TABLE ShiftContextNotes (
     note VARCHAR(500) NOT NULL,
     colorId INT,
     PRIMARY KEY (shiftContextId, date),
-    FOREIGN KEY (shiftContextId) REFERENCES ShiftContexts(id),
-    FOREIGN KEY (colorId) REFERENCES Colors(id)
+    FOREIGN KEY (shiftContextId)
+        REFERENCES ShiftContexts(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (colorId)
+        REFERENCES Colors(id)
+        ON DELETE SET NULL
 );
 
 CREATE TABLE TeamMemberAvailability (
@@ -52,7 +56,9 @@ CREATE TABLE TeamMemberAvailability (
     startDateTime DATETIME NOT NULL,
     endDateTime DATETIME NOT NULL,
     isPreference BOOLEAN NOT NULL,
-    FOREIGN KEY (teamMemberId) REFERENCES TeamMembers(id),
+    FOREIGN KEY (teamMemberId)
+        REFERENCES TeamMembers(id)
+        ON DELETE CASCADE,
     CHECK (startDateTime < endDateTime)
 );
 
@@ -63,7 +69,9 @@ CREATE TABLE TeamMemberTypicalAvailability (
     startTime TIME NOT NULL,
     endTime TIME NOT NULL,
     isPreference BOOLEAN NOT NULL,
-    FOREIGN KEY (teamMemberId) REFERENCES TeamMembers(id),
+    FOREIGN KEY (teamMemberId)
+        REFERENCES TeamMembers(id)
+        ON DELETE CASCADE,
     CHECK (startTime < endTime)
 );
 
@@ -72,8 +80,12 @@ CREATE TABLE TeamMemberShiftContextPreferences (
     shiftContextId INT,
     isPreference BOOLEAN NOT NULL,
     PRIMARY KEY (teamMemberId, shiftContextId),
-    FOREIGN KEY (teamMemberId) REFERENCES TeamMembers(id),
-    FOREIGN KEY (shiftContextId) REFERENCES ShiftContexts(id)
+    FOREIGN KEY (teamMemberId)
+        REFERENCES TeamMembers(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (shiftContextId)
+        REFERENCES ShiftContexts(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE Timeslots (
@@ -85,9 +97,15 @@ CREATE TABLE Timeslots (
     teamMemberId INT,
     note VARCHAR(1000),
     colorId INT,
-    FOREIGN KEY (shiftContextId) REFERENCES ShiftContexts(id),
-    FOREIGN KEY (teamMemberId) REFERENCES TeamMembers(id),
-    FOREIGN KEY (colorId) REFERENCES Colors(id),
+    FOREIGN KEY (shiftContextId)
+        REFERENCES ShiftContexts(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (teamMemberId)
+        REFERENCES TeamMembers(id)
+        ON DELETE SET NULL,
+    FOREIGN KEY (colorId)
+        REFERENCES Colors(id)
+        ON DELETE SET NULL,
     CHECK (endDateTime IS NULL OR startDateTime < endDateTime)
 );
 
@@ -95,7 +113,9 @@ CREATE TABLE Substitutes (
     teamMemberId INT,
     date DATE,
     PRIMARY KEY (teamMemberId, date),
-    FOREIGN KEY (teamMemberId) REFERENCES TeamMembers(id)
+    FOREIGN KEY (teamMemberId)
+        REFERENCES TeamMembers(id)
+        ON DELETE CASCADE
 );
 
 CREATE USER 'schedulerApp'@'localhost'

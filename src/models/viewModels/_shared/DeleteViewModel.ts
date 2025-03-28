@@ -4,17 +4,18 @@ export default class DeleteViewModel implements IViewModel {
   description: string = "";
   action: string = "";
   cancel: string = "";
+  warnings: string[] = [];
   csrf_token: string = "";
 
   public constructor(
     description: string,
     action: string,
     cancel: string,
-    csrf_token: string,
+    warnings: string[],
   ) {
     this.description = description;
     this.action = action;
     this.cancel = cancel;
-    this.csrf_token = csrf_token;
+    this.warnings = warnings;
   }
 }

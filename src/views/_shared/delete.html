@@ -3,12 +3,28 @@
 {% block title %}Confirm Deletion{% endblock %}
 
 {% block content %}
-  <h1>Confirm Deletion</h1>
-
-  <form method="post" action="{{ model.action }}">
-    <p>Are you sure you want to delete "{{ model.description }}"?</p>
-    <button type="submit">Yes</button>
-    <input type="hidden" name="csrf_token" value="{{ model.csrf_token }}" />
-    <a href="{{ model.cancel }}">Cancel</a>
+  <h1 class="mt-8 text-4xl font-bold">Confirm Deletion</h1>
+  <form method="post" action="{{ model.action }}" class="max-w-lg">
+    <p class="mt-8">
+      Are you sure you want to delete "{{ model.description }}"?
+    </p>
+    {% if model.warnings.length > 0 %}
+      <p class="mt-4">
+        Warning:
+        {{ model.warnings[0] if model.warnings.length == 1 }}
+      </p>
+      {% if model.warnings.length > 1 %}
+        <ul class="mt-4 ms-8 list-disc">
+          {% for warning in model.warnings %}
+            <li>{{ warning }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endif %}
+    <div class="mt-8 flex justify-center gap-4">
+      {{ csrf(model) }}
+      <button type="submit" class="block p-2 bg-red-400 rounded">Yes</button>
+      <a href="{{ model.cancel }}" class="block p-2 bg-gray-300 rounded">No</a>
+    </div>
   </form>
 {% endblock %}

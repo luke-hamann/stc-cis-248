@@ -163,7 +163,10 @@ export default class TeamMemberController extends Controller {
       teamMember.fullName,
       `/team-member/${id}/delete/`,
       `/team-member/${id}/`,
-      context.csrf_token,
+      [
+        "Time slots assigned to this team member will be unassigned.",
+        "This team member will be removed from all substitute lists.",
+      ],
     );
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }

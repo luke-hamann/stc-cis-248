@@ -133,7 +133,9 @@ export default class ShiftContextController extends Controller {
       shiftContext.name,
       `/context/${id}/delete/`,
       "/contexts/",
-      context.csrf_token,
+      [
+        "Time slots and notes associated with this shift context will be deleted.",
+      ],
     );
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }

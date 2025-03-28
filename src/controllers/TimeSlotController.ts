@@ -278,7 +278,7 @@ export default class TimeSlotController extends Controller {
       description,
       action,
       cancel,
-      context.csrf_token,
+      [],
     );
 
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);

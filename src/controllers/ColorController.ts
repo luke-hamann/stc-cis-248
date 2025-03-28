@@ -132,7 +132,9 @@ export default class ColorController extends Controller {
       color.name,
       `/color/${id}/delete/`,
       "/colors/",
-      context.csrf_token,
+      [
+        "Notes with this color will be marked colorless.",
+      ],
     );
 
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
