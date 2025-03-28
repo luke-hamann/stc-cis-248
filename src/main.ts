@@ -32,12 +32,16 @@ const database = new Database();
 /** Repositories */
 
 const colorRepository = new ColorRepository(database);
+const shiftContextRepository = new ShiftContextRepository(database);
 const shiftContextPreferenceRepository = new ShiftContextPreferenceRepository(
   database,
+  shiftContextRepository,
 );
-const shiftContextRepository = new ShiftContextRepository(database);
-const substituteRepository = new SubstituteRepository(database);
 const teamMemberRepository = new TeamMemberRepository(database);
+const substituteRepository = new SubstituteRepository(
+  database,
+  teamMemberRepository,
+);
 const shiftContextNoteRepository = new ShiftContextNoteRepository(
   database,
   colorRepository,
@@ -51,8 +55,12 @@ const timeSlotRepository = new TimeSlotRepository(
 );
 const typicalAvailabilityRepository = new TypicalAvailabilityRepository(
   database,
+  teamMemberRepository,
 );
-const unavailabilityRepository = new UnavailabilityRepository(database);
+const unavailabilityRepository = new UnavailabilityRepository(
+  database,
+  teamMemberRepository,
+);
 const scheduleRepository = new ScheduleRepository(
   database,
   shiftContextRepository,

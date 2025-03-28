@@ -31,17 +31,17 @@
     </a>
   </div>
 
-  <div class="w-full text-center pb-8">
-    <a class="inline-block p-2 border rounded" href="{{ model.copyLink }}">Copy</a>
-    <a class="inline-block p-2 border rounded" href="{{ model.clearLink }}">Clear</a>
-    <a class="inline-block p-2 border rounded" href="{{ model.exportLink }}">Export</a>
+  <div class="w-full flex justify-center gap-4">
+    <a class="block p-2 border rounded" href="{{ model.copyLink }}">Copy</a>
+    <a class="block p-2 border rounded" href="{{ model.clearLink }}">Clear</a>
+    <a class="block p-2 border rounded" href="{{ model.exportLink }}">Export</a>
   </div>
 
-  <table>
+  <table class="mt-8">
     {% for row in model.schedule.table %}
       <tr>
         {% for col in row %}
-          <td class="min-w-xs border">
+          <td class="min-w-xs border p-4">
             {% set type = col.type %}
             {% set data = col.content %}
 
@@ -59,14 +59,14 @@
               <h2 class="text-2xl font-bold">
                 {{ formatDate(data) }}
               </h2>
-              <p>
-                <a href="/schedule/copy/{{ formatDate(data, '/') }}/to/{{ formatDate(data, '/') }}/">
+              <div class="mt-4 flex justify-start gap-4">
+                <a href="/schedule/copy/{{ formatDate(data, '/') }}/to/{{ formatDate(data, '/') }}/" class="block p-2 border rounded">
                   Copy
                 </a>
-                <a href="/schedule/clear/{{ formatDate(data, '/') }}/to/{{ formatDate(data, '/') }}/">
+                <a href="/schedule/clear/{{ formatDate(data, '/') }}/to/{{ formatDate(data, '/') }}/" class="block p-2 border rounded">
                   Clear
                 </a>
-              </p>
+              </div>
             {% endif %}
 
             {% if type == "ShiftContext" %}
@@ -74,17 +74,21 @@
             {% endif %}
 
             {% if type == "ShiftContextNote" %}
-              {% if data.color.hex %}
-                <p style="background-color: #{{ data.color.hex }}; color: #{{ data.color.hexForeground }};" >
-                  {{ data.note }}
-                </p>
-              {% else %}
-                <p>
-                  {{ data.note }}
-                </p>
+              {% if data.note %}
+                {% if data.color.hex %}
+                  <p class="p-4 rounded mb-4" style="background-color: #{{ data.color.hex }}; color: #{{ data.color.hexForeground }};" >
+                    {{ data.note }}
+                  </p>
+                {% else %}
+                  <p class="p-4 rounded mb-4">
+                    {{ data.note }}
+                  </p>
+                {% endif %}
               {% endif %}
               <p>
-                <a href="/shift-context/{{ data.shiftContextId }}/note/{{ formatDate(data.date, '/') }}/">Edit</a>
+                <a href="/shift-context/{{ data.shiftContextId }}/note/{{ formatDate(data.date, '/') }}/" class="block p-2 w-fit border rounded">
+                  Edit
+                </a>
               </p>
             {% endif %}
 
@@ -99,26 +103,32 @@
               </p>
               {% if data.note %}
                 {% if data.color %}
-                  <p style="background-color: #{{ data.color.hex }}; color: #{{ data.color.hexForeground }};">{{ data.note }}</p>
+                  <p class="mt-4 p-4 rounded" style="background-color: #{{ data.color.hex }}; color: #{{ data.color.hexForeground }};">
+                    {{ data.note }}
+                  </p>
                 {% else %}
-                  <p>{{ data.note }}</p>
+                  <p class="mt-4 p-4 rounded">
+                    {{ data.note }}
+                  </p>
                 {% endif %}
               {% endif %}
-              <div>
-                <a href="/schedule/time-slot/{{ data.id }}/">Edit</a>
-                <a href="/schedule/time-slot/{{ data.id }}/delete/">Delete</a>
+              <div class="flex gap-4 mt-4">
+                <a href="/schedule/time-slot/{{ data.id }}/" class="block p-2 border rounded">Edit</a>
+                <a href="/schedule/time-slot/{{ data.id }}/delete/" class="block p-2 border rounded">Delete</a>
               </div>
             {% endif %}
 
             {% if type == "SubstituteList" %}
               {% if data.teamMembers %}
-                <ul class="list-disc">
+                <ul class="list-disc ms-8 mb-4">
                   {% for teamMember in data.teamMembers %}
                     <li>{{ teamMember }}</li>
                   {% endfor %}
                 </ul>
               {% endif %}
-              <a href="/substitutes/{{ formatDate(data.date, '/') }}/">Edit</a>
+              <a href="/substitutes/{{ formatDate(data.date, '/') }}/" class="block p-2 w-fit border rounded">
+                Edit
+              </a>
             {% endif %}
           </td>
         {% endfor %}

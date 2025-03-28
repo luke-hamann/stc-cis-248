@@ -1,34 +1,29 @@
 {% extends "../_shared/_layout.html" %}
 {% from "../_shared/field.html" import field %}
+{% from "../_shared/formErrors.html" import formErrors %}
 
 {% set title = "Export Schedule" %}
 
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ title }}</h1>
-  <form method="post">
-    {% if model.errors %}
-      <ul>
-        {% for error in model.errors %}
-          <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+  <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
+  <form method="post" class="mt-4 max-w-lg">
+    {{ formErrors(model.errors) }}
     {{ field("title", model.title, "text", "Title") }}
     {{ field("startDate", model.startDate.toDateString(), "date", "Start date") }}
     {{ field("endDate", model.endDate.toDateString(), "date", "End date") }}
-    <div>
-      <label for="format" id="format">Format</label>
-      <select name="format">
+    <div class="mt-4 flex gap-4">
+      <label for="format" id="format" class="flex-1">Format</label>
+      <select name="format" class="flex-1 p-1 border rounded">
         <option value="excel" {{ "selected" if model.format == "excel" }} >Excel</option>
         <option value="csv" {{ "selected" if model.format == "csv" }} >CSV</option>
       </select>
     </div>
-    <div>
+    <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <button type="submit">Export</button>
-      <a href="{{ model.cancelLink }}">Cancel</a>
+      <button type="submit" class="block p-2 bg-blue-300 rounded">Export</button>
+      <a href="{{ model.cancelLink }}" class="block p-2 bg-gray-300 rounded">Cancel</a>
     </div>
   </form>
 {% endblock %}
