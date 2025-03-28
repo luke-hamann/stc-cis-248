@@ -5,6 +5,22 @@
  *
  * It follows an MVC architecture and a repository pattern for the data layer.
  *
+ * Models:
+ *
+ * * {@link AssigneeRecommendation Assignee Recommendation}
+ * * {@link Color Color}
+ * * {@link Schedule Schedule}
+ * * {@link ShiftContext Shift Context}
+ * * {@link ShiftContextNote Shift Context Note}
+ * * {@link ShiftContextPreference Shift Context Preference}
+ * * {@link Substitute Substitute}
+ * * {@link SubstituteList Substitute List}
+ * * {@link TeamMember Team Member}
+ * * {@link TimeSlot Time Slot}
+ * * {@link TimeSlotGroup Time Slot Group}
+ * * {@link TypicalAvailability Typical Availability}
+ * * {@link Unavailability Unavailability}
+ *
  * Controllers:
  *
  * * {@link ColorController Color}
@@ -17,6 +33,19 @@
  * * {@link TimeSlotController Time Slot}
  * * {@link TypicalAvailabilityController Typical Availability}
  * * {@link UnavailabilityController Unavailability}
+ *
+ * Repositories:
+ *
+ * * {@link ColorRepository Color}
+ * * {@link ScheduleRepository Schedule}
+ * * {@link ShiftContextRepository Shift Context}
+ * * {@link ShiftContextNoteRepository Shift Context Note}
+ * * {@link ShiftContextPreferenceRepository Shift Context Preference}
+ * * {@link SubstituteRepository Substitute}
+ * * {@link TeamMemberRepository Team Member}
+ * * {@link TimeSlotRepository Time Slot}
+ * * {@link TypicalAvailabilityRepository Typical Availability}
+ * * {@link UnavailabilityRepository Unavailability}
  *
  * @module
  */
