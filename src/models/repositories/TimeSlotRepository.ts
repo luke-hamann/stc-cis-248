@@ -338,7 +338,7 @@ export default class TimeSlotRepository extends Repository {
     );
 
     const sourceTimeSlots = await this.getInDateRange(sourceStart, sourceEnd);
-    const destinationTimeSlots = [];
+    let destinationTimeSlots = [];
 
     for (const timeSlot of sourceTimeSlots) {
       let offset = initialOffset;
@@ -375,6 +375,8 @@ export default class TimeSlotRepository extends Repository {
     destinationTimeSlots.sort((a, b) =>
       a.startDateTime!.getTime() - b.startDateTime!.getTime()
     );
+
+    destinationTimeSlots = await this.populateAll(destinationTimeSlots);
 
     return destinationTimeSlots;
   }

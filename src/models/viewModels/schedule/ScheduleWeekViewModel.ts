@@ -42,13 +42,13 @@ export default class ScheduleWeekViewModel implements IViewModel {
   public get clearLink(): string {
     const start = this.formatDatePath(this.currentWeek);
     const end = this.formatDatePath(DateLib.addDays(this.currentWeek, 6));
-    return `/schedule/clear/${start}/to/${end}/`;
+    return `/schedule/clear/${start}/through/${end}/`;
   }
 
   public get copyLink(): string {
     const start = this.formatDatePath(this.currentWeek);
     const end = this.formatDatePath(DateLib.addDays(this.currentWeek, 6));
-    return `/schedule/copy/${start}/to/${end}/`;
+    return `/schedule/copy/${start}/through/${end}/`;
   }
 
   public get exportLink(): string {

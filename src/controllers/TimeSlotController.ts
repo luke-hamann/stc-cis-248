@@ -78,25 +78,25 @@ export default class TimeSlotController extends Controller {
       {
         method: "GET",
         pattern:
-          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.copyGet,
       },
       {
         method: "POST",
         pattern:
-          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.copyPost,
       },
       {
         method: "GET",
         pattern:
-          "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+          "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.clearGet,
       },
       {
         method: "POST",
         pattern:
-          "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+          "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.clearPost,
       },
       {
