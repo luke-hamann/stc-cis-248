@@ -33,24 +33,17 @@
           </div>
         {% endfor %}
       </div>
-      {#
-      <select id="colorId" name="colorId">
-        <option {{ "selected" if not model.shiftContextNote.colorId }} >(none)</option>
-        {% for color in model.colors %}
-          <option value="{{ color.id }}"
-            {{ "selected" if model.shiftContextNote.colorId == color.id }} >{{ color.name }}</option>
-        {% endfor %}
-      </select>
-      #}
     </div>
     <div class="mt-4">
       <label for="note" class="block">Note</label>
-      <textarea id="note" name="note" rows="4" class="border rounded p-1 w-full mt-4">{{ model.shiftContextNote.note }}</textarea>
+      <textarea id="note" name="note" rows="4" class="border rounded p-1 w-full mt-4">{{
+        model.shiftContextNote.note
+      }}</textarea>
     </div>
     <div class="mt-4 flex justify-center gap-4">
       {{ csrf(model) }}
       <button type="submit" class="p-4 rounded bg-blue-300">Save</button>
-      <a href="/contexts/" class="p-4 rounded bg-gray-200">Cancel</a>
+      <a href="/schedule/{{ formatDate(model.shiftContextNote.date, '/') }}/" class="p-4 rounded bg-gray-200">Cancel</a>
     </div>
   </form>
 {% endblock %}
