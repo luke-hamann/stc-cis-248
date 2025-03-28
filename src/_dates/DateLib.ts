@@ -33,8 +33,9 @@ export default class DateLib {
     const dates = [];
 
     let date = new Date(start);
-    while (date.getTime() <= end.getTime()) {
-      dates.push(date);
+    date.setHours(0, 0, 0, 0);
+    while (date <= end) {
+      dates.push(new Date(date));
       date = this.addDays(date, 1);
     }
 

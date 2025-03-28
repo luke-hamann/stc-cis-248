@@ -384,17 +384,16 @@ export default class TimeSlotRepository extends Repository {
   /**
    * Gets time slots by grouping and then by date for a given shift context and date range
    * @param shiftContextId The shift context
-   * @param startDate The starting date
-   * @param endDate The ending date
+   * @param start The starting date
+   * @param end The ending date
    * @returns Time slot groups with their cooresponsponding time slots broken down by day
    */
   public async getByGroups(
     shiftContextId: number,
-    startDate: Date,
-    endDate: Date,
+    start: Date,
+    end: Date,
   ): Promise<{ timeSlotGroup: TimeSlotGroup; timeSlotsByDay: TimeSlot[][] }[]> {
     // Calculate groupings
-
     const result = await this.database.execute(
       `
         SELECT TIME(startDateTime) startTime, TIME(endDateTime) endTime, requiresAdult
@@ -404,7 +403,7 @@ export default class TimeSlotRepository extends Repository {
         GROUP BY 1, 2, 3
         ORDER BY 1, 2, 3 DESC
       `,
-      [shiftContextId, startDate, endDate],
+      [shiftContextId, start, end],
     );
 
     if (!result.rows || result.rows.length == 0) return [];
@@ -412,8 +411,8 @@ export default class TimeSlotRepository extends Repository {
     const timeSlotGroups = result.rows.map((row: ITimeSlotGroupRow) =>
       new TimeSlotGroup(
         shiftContextId,
-        startDate,
-        endDate,
+        start,
+        end,
         row.startTime,
         row.endTime,
         row.requiresAdult == 1,
@@ -421,15 +420,17 @@ export default class TimeSlotRepository extends Repository {
     );
 
     // Organize time slots by grouping and then by date within date range
-
     const output: {
       timeSlotGroup: TimeSlotGroup;
       timeSlotsByDay: TimeSlot[][];
     }[] = [];
+
+    const dates = DateLib.getDatesInRange(start, end);
+
     for (const timeSlotGroup of timeSlotGroups) {
       const table: TimeSlot[][] = [];
 
-      for (const date of DateLib.getDatesInRange(startDate, endDate)) {
+      for (const date of dates) {
         const result = await this.database.execute(
           `
             ${this.timeSlotQuery}

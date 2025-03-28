@@ -103,7 +103,7 @@ export { default as TypicalAvailabilityRepository } from "./models/repositories/
 export { default as UnavailabilityRepository } from "./models/repositories/UnavailabilityRepository.ts";
 
 export { default as FormViewModel } from "./models/viewModels/_shared/_FormViewModel.ts";
-export { default as ViewModel } from "./models/viewModels/_shared/IViewModel.ts";
+export type { default as ViewModel } from "./models/viewModels/_shared/IViewModel.ts";
 export { default as ColorEditViewModel } from "./models/viewModels/color/ColorEditViewModel.ts";
 export { default as ColorsViewModel } from "./models/viewModels/color/ColorsViewModel.ts";
 export { default as ScheduleClearViewModel } from "./models/viewModels/schedule/ScheduleClearViewModel.ts";

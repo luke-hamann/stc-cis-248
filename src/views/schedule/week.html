@@ -97,6 +97,10 @@
               <p>{{ "18+" if data.requiresAdult }}</p>
             {% endif %}
 
+            {% if type == "TimeSlotPossibility" %}
+              <a href="/schedule/time-slot/add/shift-context/{{ data.shiftContextId }}/on/{{ formatDate(data.startDateTime, '/') }}/from/{{ formatTime(data.startDateTime) }}/to/{{ formatTime(data.endDateTime) }}/{{ 'adult-only/' if data.requiresAdult }}" class="block p-2 w-fit border rounded">&plus; New</a>
+            {% endif %}
+
             {% if type == "TimeSlot" %}
               <p>
                 {{ data.teamMember.fullName if data.teamMember else "(unassigned)" }}

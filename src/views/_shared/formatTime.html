@@ -1,0 +1,6 @@
+{% macro formatTime(date, sep=":") %}{{
+  [
+    date.getHours().toString().padStart(2, "0"),
+    date.getMinutes().toString().padStart(2, "0")
+  ] | join(sep)
+}}{% endmacro %}
