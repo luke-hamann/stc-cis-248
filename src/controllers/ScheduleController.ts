@@ -230,11 +230,13 @@ export default class ScheduleController extends Controller {
             sourceCell.type == "ShiftContextNote" &&
             sourceCell.content.color != null
           ) {
-            const argb = "FF" + sourceCell.content.color.hex;
             cell.fill = {
               type: "pattern",
               pattern: "solid",
-              fgColor: { argb },
+              fgColor: { argb: "FF" + sourceCell.content.color.hex },
+            };
+            cell.font = {
+              color: { argb: "FF" + sourceCell.content.color.hexForeground },
             };
           }
         });

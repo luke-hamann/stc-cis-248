@@ -7,7 +7,7 @@
 {% block content %}
   <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
   <form method="post" class="max-w-md">
-    <div class="flex my-4">
+    <div class="flex mt-8 mb-4">
       <div class="flex-1">Date</div>
       <div class="flex-1">{{ model.substituteList.date.toLocaleDateString() }}</div>
     </div>
@@ -18,7 +18,7 @@
         <label for="{{ teamMember.id }}">{{ teamMember.fullName }}</label>
       </div>
     {% endfor %}
-    <div class="mt-4 flex justify-center gap-4">
+    <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
       <input type="submit" value="Save" class="block p-4 bg-green-300 rounded"/>
       <a href="/schedule/{{ formatDate(model.substituteList.date, '/') }}/" class="block p-4 bg-gray-300 rounded">Cancel</a>

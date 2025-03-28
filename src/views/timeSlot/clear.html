@@ -6,17 +6,17 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ title }}</h1>
-  <form method="post">
+  <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
+  <form method="post" class="mt-8 max-w-lg">
     {{ field("startDate", model.startDateString, "date", "Start date") }}
     {{ field("endDate", model.endDateString, "date", "End date") }}
     {{ field("deleteTimeSlots", "", "checkbox", "Delete time slots", model.deleteTimeSlots) }}
     {{ field("deleteShiftContextNotes", "", "checkbox", "Delete shift context notes", model.deleteShiftContextNotes) }}
     {{ field("deleteSubstitutes", "", "checkbox", "Delete substitutes", model.deleteSubstitutes) }}
-    <div>
+    <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <input type="submit" value="Delete" />
-      <a href="{{ model.cancelLink }}">Cancel</a>
+      <input type="submit" value="Clear" class="block p-2 bg-red-500 text-white rounded" />
+      <a href="{{ model.cancelLink }}" class="block p-2 bg-gray-300 rounded">Cancel</a>
     </div>
   </form>
 {% endblock %}

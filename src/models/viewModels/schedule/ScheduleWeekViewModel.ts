@@ -28,7 +28,7 @@ export default class ScheduleWeekViewModel implements IViewModel {
   constructor(
     currentWeek: Date,
     schedule: Schedule,
-    warnings: ScheduleWarnings
+    warnings: ScheduleWarnings,
   ) {
     this.currentWeek = currentWeek;
     this.schedule = schedule;

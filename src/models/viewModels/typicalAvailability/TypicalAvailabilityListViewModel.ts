@@ -9,7 +9,7 @@ export default class TypicalAvailabilityListViewModel implements IViewModel {
 
   public constructor(
     teamMember: TeamMember,
-    typicalAvailabilities: TypicalAvailability[][]
+    typicalAvailabilities: TypicalAvailability[][],
   ) {
     this.teamMember = teamMember;
     this.typicalAvailabilityTable = typicalAvailabilities;

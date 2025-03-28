@@ -75,7 +75,7 @@
 
             {% if type == "ShiftContextNote" %}
               {% if data.color.hex %}
-                <p {{ ['style="background-color: ', '#', data.color.hex, '"'] | join | safe }} >
+                <p style="background-color: #{{ data.color.hex }}; color: #{{ data.color.hexForeground }};" >
                   {{ data.note }}
                 </p>
               {% else %}
@@ -99,7 +99,7 @@
               </p>
               {% if data.note %}
                 {% if data.color %}
-                  <p style="background-color: #{{ data.color.hex }}">{{ data.note }}</p>
+                  <p style="background-color: #{{ data.color.hex }}; color: #{{ data.color.hexForeground }};">{{ data.note }}</p>
                 {% else %}
                   <p>{{ data.note }}</p>
                 {% endif %}

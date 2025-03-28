@@ -715,7 +715,10 @@ export default class ScheduleRepository {
 
     // Unassigned time slot warnings
 
-    warnings.unassignedTimeSlots = await this.timeSlots.getUnassigned(start, end);
+    warnings.unassignedTimeSlots = await this.timeSlots.getUnassigned(
+      start,
+      end,
+    );
 
     return warnings;
   }

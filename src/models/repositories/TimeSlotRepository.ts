@@ -94,7 +94,9 @@ export default class TimeSlotRepository extends Repository {
   }
 
   private async populateAll(timeslots: TimeSlot[]): Promise<TimeSlot[]> {
-    return await Promise.all(timeslots.map(timeslot => this.populate(timeslot)));
+    return await Promise.all(
+      timeslots.map((timeslot) => this.populate(timeslot)),
+    );
   }
 
   /**
@@ -531,7 +533,7 @@ export default class TimeSlotRepository extends Repository {
         WHERE teamMemberId IS NULL
           AND DATE(startDateTime) BETWEEN ? AND ?
       `,
-      [start, end]
+      [start, end],
     );
 
     if (!result.rows || result.rows.length == 0) return [];

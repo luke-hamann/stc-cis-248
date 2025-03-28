@@ -70,7 +70,7 @@ export default class ShiftContextNoteController extends Controller {
       );
 
     if (shiftContextNote == null) {
-        shiftContextNote = new ShiftContextNote(
+      shiftContextNote = new ShiftContextNote(
         shiftContextId,
         null,
         date,
