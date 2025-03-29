@@ -13,24 +13,28 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block scripts %}
-  <script>
-    document.addEventListener("DOMContentLoaded", (event) => {
-      document.querySelector("form").addEventListener("input", async (event) => {
-        // Do not fetch recommendations again if only the selected team member changed
-        if (event.target.name == "teamMemberId") return;
+<script>
+  document.addEventListener("DOMContentLoaded", (event) => {
+    const form = document.querySelector("form");
+    const slot = document.querySelector("#recommendations");
+    const ignoreFields = ["teamMemberId", "note", "colorId", "newColorHex", "newColorName"];
 
-        try {
-          const response = await fetch("/schedule/time-slot/recommendations/", {
-            method: "POST",
-            body: new FormData(form)
-          });
-          document.querySelector("#recommendations").innerHTML = await response.text();
-        } catch (e) {
-          console.log(e);
-        }
-      });
+    form.addEventListener("input", async (event) => {
+      // Do not fetch recommendations again if the changed field would not affect recommendations
+      if (ignoreFields.includes(event.target.name)) return;
+
+      try {
+        const response = await fetch("/schedule/time-slot/recommendations/", {
+          method: "POST",
+          body: new FormData(form)
+        });
+        slot.innerHTML = await response.text();
+      } catch (e) {
+        console.log(e);
+      }
     });
-  </script>
+  });
+</script>
 {% endblock %}
 
 {% block content %}

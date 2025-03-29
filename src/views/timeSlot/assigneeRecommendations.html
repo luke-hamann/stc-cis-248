@@ -12,51 +12,53 @@
       {{ "checked" if model.timeSlot.teamMemberId == null }} />
   </div>
 </div>
-<table class="mt-4 border">
-  <thead>
-    <tr class="border-b">
-      <td class="p-2"></td>
-      <td class="p-2">Team member</td>
-      <td class="p-2">Adult</td>
-      <td class="p-2">Typically available</td>
-      <td class="p-2">Not marked unavailable</td>
-      <td class="p-2">Prefer</td>
-      <td class="p-2">No conflicts</td>
-      <td class="p-2">Not external</td>
-    </tr>
-  </thead>
-  <tbody>
-    {% for recommendation in model.recommendations %}
-      <tr>
-        <td class="p-2">
-          <input type="radio" name="teamMemberId" value="{{ recommendation.teamMember.id }}"
-            id="teamMemberId_{{ recommendation.teamMember.id }}"
-            {{ "checked" if model.timeSlot.teamMemberId == recommendation.teamMember.id }} />
-        </td>
-        <td class="p-2">
-          <label for="teamMemberId_{{ recommendation.teamMember.id }}">
-            {{ recommendation.teamMember.fullName }}
-          </label>
-        </td>
-        <td class="p-2">
-          {{ symbols[recommendation.isAdult] }}
-        </td>
-        <td class="p-2">
-          {{ symbols[recommendation.isTypicallyAvailable] }}
-        </td>
-        <td class="p-2">
-          {{ symbols[recommendation.isNotUnavailable] }}
-        </td>
-        <td class="p-2">
-          {{ symbols[recommendation.prefersShiftContext] }}
-        </td>
-        <td class="p-2">
-          {{ symbols[recommendation.isConflicting] }}
-        </td>
-        <td class="p-2">
-          {{ symbols["negative"] if recommendation.teamMember.isExternal else symbols["positive"] }}
-        </td>
+<div class="overflow-x-auto">
+  <table class="mt-4 border">
+    <thead>
+      <tr class="border-b">
+        <td class="p-2"></td>
+        <td class="p-2">Team member</td>
+        <td class="p-2">Adult</td>
+        <td class="p-2">Typically available</td>
+        <td class="p-2">Not marked unavailable</td>
+        <td class="p-2">Prefer</td>
+        <td class="p-2">No conflicts</td>
+        <td class="p-2">Not external</td>
       </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {% for recommendation in model.recommendations %}
+        <tr>
+          <td class="p-2">
+            <input type="radio" name="teamMemberId" value="{{ recommendation.teamMember.id }}"
+              id="teamMemberId_{{ recommendation.teamMember.id }}"
+              {{ "checked" if model.timeSlot.teamMemberId == recommendation.teamMember.id }} />
+          </td>
+          <td class="p-2">
+            <label for="teamMemberId_{{ recommendation.teamMember.id }}">
+              {{ recommendation.teamMember.fullName }}
+            </label>
+          </td>
+          <td class="p-2">
+            {{ symbols[recommendation.isAdult] }}
+          </td>
+          <td class="p-2">
+            {{ symbols[recommendation.isTypicallyAvailable] }}
+          </td>
+          <td class="p-2">
+            {{ symbols[recommendation.isNotUnavailable] }}
+          </td>
+          <td class="p-2">
+            {{ symbols[recommendation.prefersShiftContext] }}
+          </td>
+          <td class="p-2">
+            {{ symbols[recommendation.isConflicting] }}
+          </td>
+          <td class="p-2">
+            {{ symbols["negative"] if recommendation.teamMember.isExternal else symbols["positive"] }}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
