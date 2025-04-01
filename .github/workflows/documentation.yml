@@ -33,10 +33,10 @@ jobs:
       - name: Build user guides
         id: build-guides
         run: "./mdbook build user-guides"
-
+      
       - name: Construct upload directory
         id: combine
-        run: "mkdir site/ ; mv docs site/ ; mv user-guides/book site/guides/"
+        run: "mkdir site/ ; mv docs site/ ; mv user-guides/book site/guides/ ; cp user-guides/index.html site/index.html"
 
       - name: Upload static files
         id: deployment
