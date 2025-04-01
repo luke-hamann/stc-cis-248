@@ -8,52 +8,54 @@
 
 {% block content %}
   {{ teamMemberTabs(model.teamMember, "unavailability") }}
-  <div class="p-8 flex">
-    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.previousWeekString }}/" class="p-2">
+  <div class="ms-4 p-8 flex gap-4">
+    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.previousWeekString }}/" class="block py-2 px-4 border rounded">
       &lt;
     </a>
-    <h1 class="p-2">
+    <h1 class="p-2 text-2xl font-bold">
       <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.startDate.getFullYear() }}/">
         Week of {{ model.startDate.toLocaleDateString(undefined, { dateStyle: "full" }) }}
       </a>
     </h1>
-    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.nextWeekString }}/" class="p-2">
+    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.nextWeekString }}/" class="block py-2 px-4 border rounded">
       &gt;
     </a>
   </div>
-  <div>
-    <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ formatDate(model.startDate, '/') }}/clear/">
-      Clear
-    </a>
-  </div>
-  {% for row in model.table %}
-    <h2>
-      <span>
-        {{ row.date.toLocaleDateString(undefined, { dateStyle: "full" }) }}
-      </span>
-      <a href="/team-member/{{ model.teamMember.id }}/unavailability/add/{{ formatDate(row.date, '/') }}/">
-        &plus;
+  <div class="ms-4 max-w-lg">
+    <div>
+      <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ formatDate(model.startDate, '/') }}/clear/" class="block w-fit p-2 border rounded">
+        Clear
       </a>
-    </h2>
-    {% for unavailability in row.unavailabilities %}
-      <div>
+    </div>
+    {% for row in model.table %}
+      <h2 class="mt-4 text-2xl font-bold">
         <span>
-          {{ unavailability.startDateTime.toLocaleTimeString() }} - {{ unavailability.endDateTime.toLocaleTimeString() }}
+          {{ row.date.toLocaleDateString(undefined, { dateStyle: "full" }) }}
         </span>
-        <span>
-          {{ "🙂" if unavailability.isPreference else "☹️" }}
-        </span>
-        <span>
-          <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/edit/">
-            Edit
-          </a>
-          <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/delete/">
-            Delete
-          </a>
-        </span>
-      </div>
-    {% else %}
-      <p>(none)</p>
+        <a href="/team-member/{{ model.teamMember.id }}/unavailability/add/{{ formatDate(row.date, '/') }}/">
+          &plus;
+        </a>
+      </h2>
+      {% for unavailability in row.unavailabilities %}
+        <div class="mt-4 p-2 flex justify-between border rounded">
+          <div>
+            {{ unavailability.startDateTime.toLocaleTimeString() }} - {{ unavailability.endDateTime.toLocaleTimeString() }}
+          </div>
+          <div class="text-2xl">
+            {{ "🙂" if unavailability.isPreference else "☹️" }}
+          </div>
+          <div class="flex gap-4">
+            <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/edit/" class="block p-2 bg-yellow-300 rounded">
+              ✏️
+            </a>
+            <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/delete/" class="block p-2 bg-red-400 rounded">
+              ❌
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <p class="mt-4">(none)</p>
+      {% endfor %}
     {% endfor %}
-  {% endfor %}
+  </div>
 {% endblock %}

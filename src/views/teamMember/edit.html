@@ -1,4 +1,6 @@
 {% extends "../_shared/_layout.html" %}
+{% from "../_shared/field.html" import field %}
+{% from "../_shared/formErrors.html" import formErrors %}
 
 {% if model.isEdit %}
   {% set verb = "Edit" %}
@@ -15,48 +17,22 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ title }}</h1>
-  <form action="{{ action }}" method="post">
-    <div>
-      <label for="firstName">First</label>
-      <input type="text" id="firstName" name="firstName" value="{{ model.teamMember.firstName }}" />
-    </div>
-    <div>
-      <label for="middleName">Middle</label>
-      <input type="text" id="middleName" name="middleName" value="{{ model.teamMember.middleName }}" />
-    </div>
-    <div>
-      <label for="lastName">Last</label>
-      <input type="text" id="lastName" name="lastName" value="{{ model.teamMember.lastName }}" />
-    </div>
-    <div>
-      <label for="birthDate">Birth date</label>
-      <input type="text" id="birthDate" name="birthDate" value="{{ model.teamMember.birthDateString }}" />
-    </div>
-    <div>
-      <label for="email">Email</label>
-      <input type="text" id="email" name="email" value="{{ model.teamMember.email }}" />
-    </div>
-    <div>
-      <label for="phone">Phone</label>
-      <input type="text" id="phone" name="phone" value="{{ model.teamMember.phone }}" />
-    </div>
-    <div>
-      <label for="isExternal">External</label>
-      <input type="checkbox" id="isExternal" name="isExternal" {{ "checked" if model.teamMember.isExternal }} />
-    </div>
-    <div>
-      <label for="maxWeeklyHours">Max weekly hours</label>
-      <input type="text" id="maxWeeklyHours" name="maxWeeklyHours" value="{{ model.teamMember.maxWeeklyHours }}" />
-    </div>
-    <div>
-      <label for="maxWeeklyDays">Max weekly days</label>
-      <input type="text" id="maxWeeklyDays" name="maxWeeklyDays" value="{{ model.teamMember.maxWeeklyDays }}" />
-    </div>
-    <div>
+  <h1 class="text-4xl font-bold mt-8">{{ title }}</h1>
+  {{ formErrors(model.errors) }}
+  <form action="{{ action }}" method="post" class="max-w-lg mt-8">
+    {{ field("firstName", model.teamMember.firstName, "text", "First name") }}
+    {{ field("middleName", model.teamMember.middleName, "text", "Middle name") }}
+    {{ field("lastName", model.teamMember.lastName, "text", "Last name") }}
+    {{ field("birthDate", model.teamMember.birthDateString, "date", "Birth date") }}
+    {{ field("email", model.teamMember.email, "email", "Email address") }}
+    {{ field("phone", model.teamMember.phone, "text", "Phone number") }}
+    {{ field("isExternal", "", "checkbox", "External", model.teamMember.isExternal) }}
+    {{ field("maxWeeklyHours", model.teamMember.maxWeeklyHours, "number", "Max weekly hours") }}
+    {{ field("maxWeeklyDays", model.teamMember.maxWeeklyDays, "number", "Max weekly days") }}
+    <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <button type="submit">Save</button>
-      <a href="{{ cancel }}">Cancel</a>
+      <button type="submit" class="block p-2 bg-green-300 rounded">Save</button>
+      <a href="{{ cancel }}" class="block p-2 bg-gray-300 rounded">Cancel</a>
     </div>
   </form>
 {% endblock %}

@@ -8,15 +8,14 @@ export default class TeamMemberEditViewModel extends FormViewModel {
   public constructor(
     isEdit: boolean,
     errors: string[],
-    csrf_token: string,
     teamMember: TeamMember,
   ) {
-    super(isEdit, errors, csrf_token);
+    super(isEdit, errors);
     this.teamMember = teamMember;
   }
 
   public static empty(): TeamMemberEditViewModel {
-    return new TeamMemberEditViewModel(false, [], "", TeamMember.empty());
+    return new TeamMemberEditViewModel(false, [], TeamMember.empty());
   }
 
   public static async fromRequest(
@@ -27,7 +26,6 @@ export default class TeamMemberEditViewModel extends FormViewModel {
     return new TeamMemberEditViewModel(
       false,
       [],
-      "",
       new TeamMember(
         formData.getInt("id") ?? 0,
         formData.getString("firstName"),

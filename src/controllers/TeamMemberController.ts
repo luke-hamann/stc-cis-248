@@ -65,7 +65,6 @@ export default class TeamMemberController extends Controller {
     const model = new TeamMemberEditViewModel(
       false,
       [],
-      context.csrf_token,
       teamMember,
     );
     return this.HTMLResponse(context, "./views/teamMember/profile.html", model);
@@ -86,11 +85,10 @@ export default class TeamMemberController extends Controller {
   public async addPost(context: Context) {
     const model = await TeamMemberEditViewModel.fromRequest(context.request);
 
-    model.errors = await this.teamMemberRepository.validate(
+    model.errors = this.teamMemberRepository.validate(
       model.teamMember,
     );
     if (!model.isValid()) {
-      model.csrf_token = context.csrf_token;
       return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
     }
 
@@ -115,7 +113,6 @@ export default class TeamMemberController extends Controller {
     const model = new TeamMemberEditViewModel(
       true,
       [],
-      context.csrf_token,
       teamMember,
     );
     return this.HTMLResponse(context, "./views/teamMember/edit.html", model);

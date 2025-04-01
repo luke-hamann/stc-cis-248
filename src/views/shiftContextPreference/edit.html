@@ -42,8 +42,7 @@
     </table>
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <a href="/team-member/{{ model.teamMember.id }}/" class="block p-4 bg-gray-300 rounded">Cancel</a>
-      <button type="submit" class="block p-4 bg-green-300 rounded">Save</button>
+      <button type="submit" class="block p-2 bg-green-300 rounded">Save</button>
     </div>
   </form>
 {% endblock content %}

@@ -15,13 +15,11 @@ export default class UnavailabilityWeekViewModel implements IViewModel {
     startDate: Date,
     endDate: Date,
     table: { date: Date; unavailabilities: Unavailability[] }[],
-    csrf_token: string,
   ) {
     this.teamMember = teamMember;
     this.startDate = startDate;
     this.endDate = endDate;
     this.table = table;
-    this.csrf_token = csrf_token;
   }
 
   public get previousWeekString(): string {

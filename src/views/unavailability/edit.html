@@ -1,6 +1,7 @@
 {% extends "../_shared/_layout.html" %}
 {% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
 {% from "../_shared/field.html" import field %}
+{% from "../_shared/formErrors.html" import formErrors %}
 
 {% set title = model.teamMember.fullName + " | Unavailability" %}
 
@@ -20,20 +21,19 @@
 
 {% block content %}
   {{ teamMemberTabs(model.teamMember, "unavailability") }}
-  <h1>
+  <h1 class="text-3xl font-bold mt-8">
     {{ "Edit" if model.isEdit else "Add" }} unavailability
   </h1>
-  <form action="{{ action }}" method="post">
+  {{ formErrors(model.errors) }}
+  <form action="{{ action }}" method="post" class="mt-8 max-w-lg">
     {{ field("date", startDate, "date", "Date") }}
     {{ field("startTime", model.unavailability.startTimeString, "time", "Start time") }}
     {{ field("endTime", model.unavailability.endTimeString, "time", "End time") }}
     {{ field("isPreference", "", "checkbox", "Preferable", model.unavailability.isPreference) }}
-    <div>
+    <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <input type="submit" value="Save" />
-      <a href="{{ model.cancelLink }}">
-        Cancel
-      </a>
+      <input type="submit" value="Save" class="block p-2 bg-green-300 rounded" />
+      <a href="{{ model.cancelLink }}" class="block p-2 bg-gray-300 rounded">Cancel</a>
     </div>
   </form>
 {% endblock %}
