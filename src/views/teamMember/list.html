@@ -3,22 +3,26 @@
 {% block title %}Team Members{% endblock title %}
 
 {% block content %}
-  <h1>Team Members</h1>
-  <a href="/team-members/add/">&plus; Add</a>
+  <h1 class="mt-8 text-3xl font-bold">Team Members</h1>
+  <p class="mt-4">
+    <a href="/team-members/add/" class="block w-fit p-2 bg-blue-300 rounded">&plus; Add</a>
+  </p>
   {% set isExternalFlag = false %}
   {% for teamMember in model.teamMembers %}
     {% if teamMember.isExternal and not isExternalFlag %}
-      <h2>External</h2>
+      <h2 class="mt-4 text-xl font-bold">External</h2>
       {% set isExternalFlat = true %}
     {% endif %}
-    <div>
-      {{ teamMember.fullName }}
-    </div>
-    <div>
-      <a href="/team-member/{{ teamMember.id }}/">Profile</a>
-      <a href="/team-member/{{ teamMember.id }}/preferences/">Preferences</a>
-      <a href="/team-member/{{ teamMember.id }}/availability/">Availability</a>
-      <a href="/team-member/{{ teamMember.id }}/unavailability/">Unavailability</a>
+    <div class="mt-4 flex max-w-xl">
+      <div class="flex-1 py-2">
+        {{ teamMember.fullName }}
+      </div>
+      <div class="flex gap-4">
+        <a href="/team-member/{{ teamMember.id }}/" class="block p-2 border rounded">Profile</a>
+        <a href="/team-member/{{ teamMember.id }}/preferences/" class="block p-2 border rounded">Preferences</a>
+        <a href="/team-member/{{ teamMember.id }}/availability/" class="block p-2 border rounded">Availability</a>
+        <a href="/team-member/{{ teamMember.id }}/unavailability/" class="block p-2 border rounded  ">Unavailability</a>
+      </div>
     </div>
   {% endfor %}
 {% endblock %}
