@@ -1,0 +1,6 @@
+[book]
+authors = ["Luke Hamann"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Scheduler App User Guides"

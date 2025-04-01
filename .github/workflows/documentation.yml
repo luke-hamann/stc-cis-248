@@ -22,18 +22,30 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Build Documentation
+      - name: Install mdBook
+        id: install-mdbook
+        run: "curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.48/mdbook-v0.4.48-x86_64-unknown-linux-gnu.tar.gz | tar -xz"
+
+      - name: Build systems documentation
         id: build
         run: "deno doc --html --name=\"Scheduler App Systems Documentation\" ./src/mod.ts"
+
+      - name: Build user guides
+        id: build-guides
+        run: "./mdbook build user-guides"
+
+      - name: Construct upload directory
+        id: combine
+        run: "mkdir site/ ; mv docs site/ ; mv user-guides/book site/guides/"
 
       - name: Upload static files
         id: deployment
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/
+          path: site/
 
   deploy:
-    name: Deploy Documentation
+    name: Deploy Website
     needs: build
     runs-on: ubuntu-latest
 
