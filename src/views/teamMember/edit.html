@@ -15,11 +15,12 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ title }}</h1>
+<div class="p-2 w-10/12">
+  <h1 class="text-base font-bold">{{ verb + " " + model.teamMember.firstName + " " + model.teamMember.lastName }}</h1>
   <form action="{{ action }}" method="post">
-    <div>
-      <label for="firstName">First</label>
-      <input type="text" id="firstName" name="firstName" value="{{ model.teamMember.firstName }}" />
+    <div class="mt-4 flex gap-4">
+      <label class="flex-1 max-w-1/2" for="firstName">First</label>
+      <input class="flex-1 p-1 border rounded" type="text" id="firstName" name="firstName" value="{{ model.teamMember.firstName }}" />
     </div>
     <div>
       <label for="middleName">Middle</label>
@@ -59,4 +60,5 @@
       <a href="{{ cancel }}">Cancel</a>
     </div>
   </form>
+</div>
 {% endblock %}

@@ -15,28 +15,30 @@
 <body>
   <div class="flex flex-col min-h-screen">
     <header>
-      <nav>
-        <ul class="md:flex hover:*:not-first:block">
+      <nav class="bg-blue-700 text-white">
+        <ul class="md:flex hover:*:not-first:block m-auto">
           <li class="md:hidden p-4 select-none">
             &equiv;
           </li>
-          <li class="hidden md:block">
-            <a class="block p-4" href="/">Schedule</a>
+          <li class="hidden md:block hover:bg-blue-400">
+            <a class="m-auto block p-4" href="/">Schedule</a>
           </li>
-          <li class="hidden md:block">
-            <a class="block p-4" href="/team-members/">Team members</a>
+          <li class="hidden md:block hover:bg-blue-400">
+            <a class="m-auto block p-4" href="/team-members/">Team members</a>
           </li>
-          <li class="hidden md:block">
-            <a class="block p-4" href="/contexts/">Shift Contexts</a>
+          <li class="hidden md:block hover:bg-blue-400">
+            <a class="m-auto block p-4" href="/contexts/">Shift Contexts</a>
           </li>
-          <li class="hidden md:block">
-            <a class="block p-4" href="/colors/">Colors</a>
+          <li class="hidden md:block hover:bg-blue-400">
+            <a class="m-auto block p-4" href="/colors/">Colors</a>
           </li>
         </ul>
       </nav>
     </header>
     <main class="flex-1 shrink-0">
+      <div class="p-4">
       {% block content %}{% endblock %}
+    </div>
     </main>
     <footer class="p-8 text-center">
       &copy; 2025
