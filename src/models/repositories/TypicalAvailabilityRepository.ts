@@ -1,4 +1,6 @@
+import Database from "../repositories/_Database.ts";
 import TeamMember from "../entities/TeamMember.ts";
+import TeamMemberRepository from "../repositories/TeamMemberRepository.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TypicalAvailability from "../entities/TypicalAvailability.ts";
 import Repository from "./_Repository.ts";
@@ -13,6 +15,13 @@ interface ITypicalAvailabilityRow {
 }
 
 export default class TypicalAvailabilityRepository extends Repository {
+  private teamMembers: TeamMemberRepository;
+
+  public constructor(database: Database, teamMembers: TeamMemberRepository) {
+    super(database);
+    this.teamMembers = teamMembers;
+  }
+
   private readonly baseQuery = `
     SELECT id, teamMemberId, dayOfWeek, startTime, endTime, isPreference
     FROM TeamMemberTypicalAvailability
@@ -52,7 +61,33 @@ export default class TypicalAvailabilityRepository extends Repository {
    * @returns An array of error messages
    */
   public async validate(t: TypicalAvailability): Promise<string[]> {
-    return await Promise.resolve([]);
+    const errors: string[] = [];
+
+    const teamMember = await this.teamMembers.get(t.teamMemberId);
+    if (teamMember == null) {
+      errors.push("The selected team member does not exist.");
+    }
+
+    if (t.dayOfWeek == null) {
+      errors.push("Please select a day of the week.");
+    }
+
+    if (t.startTime == null) {
+      errors.push("Please enter a start time.");
+    }
+
+    if (t.endTime == null) {
+      errors.push("Please enter an end time.");
+    }
+
+    if (
+      t.startTime != null && t.endTime != null &&
+      t.startTime.getTime() >= t.endTime.getTime()
+    ) {
+      errors.push("Start time must be before end time.");
+    }
+
+    return errors;
   }
 
   /**

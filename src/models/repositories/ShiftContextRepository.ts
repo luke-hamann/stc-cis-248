@@ -30,7 +30,7 @@ export default class ShiftContextRepository extends Repository {
     if (s.name.trim() == "") {
       errors.push("Name is required.");
     } else {
-      const duplicateName = await this.database.execute(
+      const result = await this.database.execute(
         `
         SELECT 1
         FROM ShiftContexts
@@ -39,7 +39,7 @@ export default class ShiftContextRepository extends Repository {
         [s.id, s.name],
       );
 
-      if (duplicateName?.affectedRows ?? 0 > 0) {
+      if (result?.affectedRows ?? 0 > 0) {
         errors.push("Name must be unique.");
       }
     }

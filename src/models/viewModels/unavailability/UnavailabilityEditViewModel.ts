@@ -34,12 +34,12 @@ export default class UnavailabilityEditViewModel extends FormViewModel {
     const dateString = date ? BetterDate.fromDate(date).toDateString() : "";
 
     let startDateTime: Date | null = null;
-    if (date != null && startTime != null) {
+    if (date != null && startTime != "") {
       startDateTime = new Date(`${dateString}T${startTime}`);
     }
 
     let endDateTime: Date | null = null;
-    if (date != null && endTime != null) {
+    if (date != null && endTime != "") {
       endDateTime = new Date(`${dateString}T${endTime}`);
     }
 

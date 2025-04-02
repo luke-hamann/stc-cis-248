@@ -3,20 +3,47 @@
 {% block title %}Shift Contexts{% endblock %}
 
 {% block content %}
-  <h1>Shift Contexts</h1>
+  <h1 class="text-4xl mt-8 font-bold">Shift Contexts</h1>
 
-  <a href="/context/add/">&plus; Add</a>
+  <a href="/context/add/" class="block p-4 mt-8 rounded bg-blue-300 text-white w-fit">&plus; Add</a>
 
-  {% for shiftContext in model.shiftContexts %}
-    <div>
-      <div>{{ shiftContext.name }}</div>
-      <div>
-        <a href="/context/{{ shiftContext.id }}/">✏️</a>
-        <a href="/context/{{ shiftContext.id }}/delete/">❌</a>
+  <div class="max-w-xl">
+    {% for shiftContext in model.shiftContexts %}
+      <div class="border rounded p-4 mt-8">
+        <div class="flex justify-between gap-4">
+          <div class="text-3xl">{{ shiftContext.name }}</div>
+          <div class="flex gap-4">
+            <a href="/context/{{ shiftContext.id }}/" class="block size-12 rounded bg-amber-200 text-center align-middle leading-10">✏️</a>
+            <a href="/context/{{ shiftContext.id }}/delete/" class="block size-12 rounded bg-red-500 text-white text-center align-middle leading-10 text-3xl">&times;</a>
+          </div>
+        </div>
+        <div class="flex mt-4">
+          <div class="flex-1">
+            <div><b>Age group</b></div>
+            {% if shiftContext.ageGroup %}
+              <div>{{ shiftContext.ageGroup }}</div>
+            {% else %}
+              <div>(none)</div>
+            {% endif %}
+          </div>
+          <div class="flex-1">
+            <div><b>Location</b></div>
+            {% if shiftContext.location %}
+              <div>{{ shiftContext.location }}</div>
+            {% else %}
+              <div>(none)</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="mt-4">
+          <div><b>Description</b></div>
+          {% if shiftContext.description %}
+            <div>{{ shiftContext.description }}</div>
+          {% else %}
+            <div>(none)</div>
+          {% endif %}
+        </div>
       </div>
-      <div>{{ shiftContext.ageGroup }}</div>
-      <div>{{ shiftContext.location }}</div>
-      <div>{{ shiftContext.description }}</div>
-    </div>
-  {% endfor %}
+    {% endfor %}
+  </div>
 {% endblock %}

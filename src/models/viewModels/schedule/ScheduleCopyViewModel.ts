@@ -3,8 +3,9 @@ import DateLib from "../../../_dates/DateLib.ts";
 import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
 import ShiftContextNote from "../../entities/ShiftContextNote.ts";
 import TimeSlot from "../../entities/TimeSlot.ts";
+import IViewModel from "../_shared/IViewModel.ts";
 
-export default class ScheduleCopyViewModel {
+export default class ScheduleCopyViewModel implements IViewModel {
   public confirm: boolean;
   public fromStartDate: Date | null;
   public fromEndDate: Date | null;

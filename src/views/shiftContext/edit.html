@@ -1,40 +1,43 @@
 {% extends "../_shared/_layout.html" %}
+{% from "../_shared/formErrors.html" import formErrors %}
+
+{% if model.isEdit %}
+  {% set title = "Edit Shift Context" %}
+{% else %}
+  {% set title = "Add Shift Context" %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>
-    {% if model.isEdit %}Edit{% else %}Add{% endif %} Shift Context
+  <h1 class="text-4xl mt-8 font-bold">
+    {{ title }}
   </h1>
 
-  {% if not model.isValid %}
-    <ul>
-      {% for error in model.errors %}
-        <li>{{ error }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+  {{ formErrors(model.errors ) }}
 
-  <form method="post" action="{% if model.isEdit %}/context/{{ model.shiftContext.id }}/{% else %}/context/add/{% endif %}">
-    <div>
-      <label>Name</label>
-      <input type="text" name="name" value="{{ model.shiftContext.name }}" />
+  <form method="post" action="{% if model.isEdit %}/context/{{ model.shiftContext.id }}/{% else %}/context/add/{% endif %}" class="max-w-md">
+    <div class="flex gap-4">
+      <label class="flex-1">Name</label>
+      <input type="text" name="name" value="{{ model.shiftContext.name }}" class="flex-2 border rounded p-1" />
     </div>
-    <div>
-      <label>Age Group</label>
-      <input type="text" name="ageGroup" value="{{ model.shiftContext.ageGroup }}" />
+    <div class="flex gap-4 mt-4">
+      <label class="flex-1">Age group</label>
+      <input type="text" name="ageGroup" value="{{ model.shiftContext.ageGroup }}" class="flex-2 border rounded p-1" />
     </div>
-    <div>
-      <label>Location</label>
-      <input type="text" name="location" value="{{ model.shiftContext.location }}" />
+    <div class="flex gap-4 mt-4">
+      <label class="flex-1">Location</label>
+      <input type="text" name="location" value="{{ model.shiftContext.location }}" class="flex-2 border rounded p-1" />
     </div>
-    <div>
-      <label>Description</label>
-      <textarea name="description">{{ model.shiftContext.description }}</textarea>
+    <div class="mt-4">
+      <label class="block">Description</label>
+      <textarea name="description" class="block border rounded w-full mt-4 p-1" rows="4">{{ model.shiftContext.description }}</textarea>
     </div>
-    <div>
+    <div class="mt-4 flex justify-center gap-4">
       <input type="hidden" name="id" value="{{ model.shiftContext.id }}" />
       {{ csrf(model) }}
-      <button type="submit">Save</button>
-      <a href="/contexts/">Cancel</a>
+      <button type="submit" class="p-4 rounded bg-blue-300">Save</button>
+      <a href="/contexts/" class="p-4 rounded bg-gray-200">Cancel</a>
     </div>
   </form>
 {% endblock %}

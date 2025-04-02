@@ -1,5 +1,6 @@
 {% from "./csrf.html" import csrf %}
 {% from "./formatDate.html" import formatDate %}
+{% from "./formatTime.html" import formatTime %}
 {% from "./inlineStyles.html" import inlineStyles %}
 
 <!DOCTYPE html>
@@ -35,8 +36,7 @@
         </ul>
       </nav>
     </header>
-    <main class="flex-1 shrink-0">
-      <div class="p-4">
+    <main class="flex-1 shrink-0 px-8 pb-8">
       {% block content %}{% endblock %}
     </div>
     </main>

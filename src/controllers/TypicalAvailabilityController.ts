@@ -1,4 +1,3 @@
-import { parse } from "node:path";
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import TeamMember from "../models/entities/TeamMember.ts";
@@ -158,6 +157,7 @@ export default class TypicalAvailabilityController extends Controller {
     const model = await TypicalAvailabilityEditViewModel.fromRequest(
       context.request,
     );
+    model.teamMember = teamMember;
     model.typicalAvailability.teamMemberId = teamMember.id;
 
     model.errors = await this.typicalAvailability.validate(
@@ -272,7 +272,7 @@ export default class TypicalAvailabilityController extends Controller {
       description,
       action,
       cancel,
-      context.csrf_token,
+      [],
     );
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }

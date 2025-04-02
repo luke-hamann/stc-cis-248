@@ -4,3 +4,5 @@ coverage/
 
 tailwindcss-windows-x64.exe
 src/static/css/output.css
+
+user-guides/book/

@@ -5,54 +5,90 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ title }}</h1>
-  <p class="bg-amber-600 text-white border rounded">
-    ⚠️ <b>WARNING:</b> The target time range will be overwritten if you proceed.
-  </p>
-  {% if model.newTimeSlots %}
-    <p>The following time slots will be created:</p>
-  {% else %}
-    <p>No time slots will be created.</p>
-  {% endif %}
-  {% for timeSlot in model.newTimeSlots %}
-    <div class="border">
-      <div>{{ timeSlot.id }}</div>
-      <div>{{ timeSlot.startDateTime }}</div>
-      <div>{{ timeSlot.endDateTime }}</div>
+  <h1 class="mt-8 text-4xl font-bold">{{ title }}</h1>
+  <div class="max-w-lg mt-8">
+    <div>
+      You have elected to copy time slots from
+      {{ model.fromStartDate.toLocaleDateString() }} through
+      {{ model.fromEndDate.toLocaleDateString() }}
+      to
+      {{ model.toStartDate.toLocaleDateString() }} through
+      {{ model.toEndDate.toLocaleDateString() }}.
     </div>
-  {% endfor %}
-  {% if model.includeShiftContextNotes %}
-    <p>The following shift context notes will be created:</p>
-    {% for shiftContextNote in model.newShiftContextNotes %}
-      <div class="border">
-        <div>{{ shiftContextNote.date }}</div>
-        <div>{{ shiftContextNote.note }}</div>
+    <div class="mt-8 p-2 bg-amber-600 text-white border rounded flex">
+      <div>⚠️</div>
+      <div>
+        <p><b>WARNING:</b></p>
+        <p>
+          Data between
+          {{ model.toStartDate.toLocaleDateString() }} and
+          {{ model.toEndDate.toLocaleDateString() }}
+          will be overwritten.
+        </p>
+      </div>
+    </div>
+    <form method="post" class="mt-8">
+      {{ csrf(model) }}
+      <input type="hidden" name="confirm" />
+      <input type="hidden" name="fromStartDate" value="{{ model.fromStartDateString }}" />
+      <input type="hidden" name="fromEndDate" value="{{ model.fromEndDateString }}" />
+      <input type="hidden" name="toStartDate" value="{{ model.toStartDateString }}" />
+      <input type="hidden" name="toEndDate" value="{{ model.toEndDateString }}" />
+      {% if model.repeatCopy %}
+        <input type="hidden" name="repeatCopy" value="" />
+      {% endif %}
+      {% if model.includeAssignees %}
+        <input type="hidden" name="includeAssignees" value="" />
+      {% endif %}
+      {% if model.includeShiftContextNotes %}
+        <input type="hidden" name="includeShiftContextNotes" />
+      {% endif %}
+      {% if model.includeTimeSlotNotes %}
+        <input type="hidden" name="includeTimeSlotNotes" />
+      {% endif %}
+      <div class="flex justify-center gap-4">
+        <input type="submit" value="Confirm" class="block p-2 bg-blue-300 rounded" />
+        <a href="/schedule/copy/{{ formatDate(model.fromStartDate, '/') }}/through/{{ formatDate(model.fromEndDate, '/') }}/" class="block p-2 bg-yellow-200 rounded">
+          Edit
+        </a>
+        <a href="/schedule/{{ formatDate(model.fromStartDate, '/') }}/" class="block p-2 bg-gray-300 rounded">
+          Cancel
+        </a>
+      </div>
+    </form>
+    <p class="mt-8">
+      {% if model.newTimeSlots.length == 0 %}
+        No time slots will be created.
+      {% else %}
+        {{ model.newTimeSlots.length }}
+        time slot{{ 's' if model.newTimeSlots.length != 1 }}
+        will be created:
+      {% endif %}
+    </p>
+    {% for timeSlot in model.newTimeSlots %}
+      <div class="mt-4 p-2 border rounded">
+        <div>
+          <b>{{ timeSlot.shiftContext.name }}</b>
+        </div>
+        <div>{{ timeSlot.startDateTime.toLocaleDateString() }}</div>
+        <div>
+          {{ timeSlot.startDateTime.toLocaleTimeString() }}
+          to
+          {{ timeSlot.endDateTime.toLocaleTimeString() }}
+        </div>
+        <div>
+          {{ timeSlot.teamMember.fullName if timeSlot.teamMember else "(unassigned)" }}
+        </div>
       </div>
     {% endfor %}
-  {% endif %}
-  <form method="post">
-    {{ csrf(model) }}
-    <input type="hidden" name="confirm" />
-    <input type="hidden" name="fromStartDate" value="{{ model.fromStartDateString }}" />
-    <input type="hidden" name="fromEndDate" value="{{ model.fromEndDateString }}" />
-    <input type="hidden" name="toStartDate" value="{{ model.toStartDateString }}" />
-    <input type="hidden" name="toEndDate" value="{{ model.toEndDateString }}" />
-    {% if model.repeatCopy %}
-      <input type="hidden" name="repeatCopy" value="" />
-    {% endif %}
-    {% if model.includeAssignees %}
-      <input type="hidden" name="includeAssignees" value="" />
-    {% endif %}
     {% if model.includeShiftContextNotes %}
-      <input type="hidden" name="includeShiftContextNotes" />
+      <p>The following shift context notes will be created:</p>
+      {% for shiftContextNote in model.newShiftContextNotes %}
+        <div class="border">
+          <div>{{ shiftContextNote.date }}</div>
+          <div>{{ shiftContextNote.note }}</div>
+        </div>
+      {% endfor %}
     {% endif %}
-    {% if model.includeTimeSlotNotes %}
-      <input type="hidden" name="includeTimeSlotNotes" />
-    {% endif %}
-    <div>
-      <input type="submit" value="Confirm" />
-      <a href="/schedule/copy/{{ formatDate(model.fromStartDate, '/') }}/to/{{ formatDate(model.fromEndDate, '/') }}/">Edit</a>
-      <a href="/schedule/{{ formatDate(model.fromStartDate, '/') }}/">Cancel</a>
-    </div>
   </div>
 {% endblock %}

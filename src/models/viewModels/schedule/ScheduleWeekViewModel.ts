@@ -2,8 +2,10 @@ import BetterDate from "../../../_dates/BetterDate.ts";
 import DateLib from "../../../_dates/DateLib.ts";
 import Schedule from "../../entities/Schedule.ts";
 import { ScheduleWarnings } from "../../repositories/ScheduleRepository.ts";
+import IViewModel from "../_shared/IViewModel.ts";
 
-export default class ScheduleWeekViewModel {
+export default class ScheduleWeekViewModel implements IViewModel {
+  public csrf_token: string = "";
   public currentWeek: Date;
   public schedule: Schedule;
   public warnings: ScheduleWarnings;
@@ -40,13 +42,13 @@ export default class ScheduleWeekViewModel {
   public get clearLink(): string {
     const start = this.formatDatePath(this.currentWeek);
     const end = this.formatDatePath(DateLib.addDays(this.currentWeek, 6));
-    return `/schedule/clear/${start}/to/${end}/`;
+    return `/schedule/clear/${start}/through/${end}/`;
   }
 
   public get copyLink(): string {
     const start = this.formatDatePath(this.currentWeek);
     const end = this.formatDatePath(DateLib.addDays(this.currentWeek, 6));
-    return `/schedule/copy/${start}/to/${end}/`;
+    return `/schedule/copy/${start}/through/${end}/`;
   }
 
   public get exportLink(): string {

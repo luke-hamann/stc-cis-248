@@ -3,6 +3,7 @@ import ShiftContextNote from "./ShiftContextNote.ts";
 import SubstituteList from "./SubstituteList.ts";
 import TimeSlot from "./TimeSlot.ts";
 import TimeSlotGroup from "./TimeSlotGroup.ts";
+import TimeSlotPossibility from "./TimeSlotPossiblity.ts";
 
 export type ScheduleCell =
   | { type: "origin"; content: null }
@@ -12,6 +13,7 @@ export type ScheduleCell =
   | { type: "ShiftContext"; content: ShiftContext }
   | { type: "ShiftContextNote"; content: ShiftContextNote }
   | { type: "TimeSlotGroup"; content: TimeSlotGroup }
+  | { type: "TimeSlotPossibility"; content: TimeSlotPossibility }
   | { type: "TimeSlot"; content: TimeSlot }
   | { type: "SubstituteList"; content: SubstituteList };
 

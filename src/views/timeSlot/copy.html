@@ -1,34 +1,36 @@
 {% extends "../_shared/_layout.html" %}
 {% from "../_shared/field.html" import field %}
+{% from "../_shared/formErrors.html" import formErrors %}
 
 {% set title = "Copy Time Slots" %}
 
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ title }}</h1>
-  <form method="post">
-    <fieldset>
-      <legend>Copy from</legend>
+  <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
+  <form method="post" class="mt-8 max-w-lg">
+    {{ formErrors(model.errors) }}
+    <fieldset class="mt-8">
+      <legend class="text-2xl font-bold">From</legend>
       {{ field("fromStartDate", model.fromStartDateString, "date", "Start date") }}
       {{ field("fromEndDate", model.fromEndDateString, "date", "End date") }}
     </fieldset>
-    <fieldset>
-      <legend>Copy to</legend>
+    <fieldset class="mt-8">
+      <legend class="text-2xl font-bold">To</legend>
       {{ field("toStartDate", model.toStartDateString, "date", "Start date") }}
       {{ field("toEndDate", model.toEndDateString, "date", "End date") }}
     </fieldset>
-    <fieldset>
-      <legend>Copy options</legend>
+    <fieldset class="mt-8">
+      <legend class="text-2xl font-bold">Options</legend>
       {{ field("repeatCopy", "", "checkbox", "Repeat copy", model.repeatCopy) }}
       {{ field("includeAssignees", "", "checkbox", "Include assignees", model.includeAssignees) }}
       {{ field("includeShiftContextNotes", "", "checkbox", "Include shift context notes", model.includeShiftContextNotes) }}
       {{ field("includeTimeSlotNotes", "", "checkbox", "Include time slot notes", model.includeTimeSlotNotes) }}
     </fieldset>
-    <div>
+    <div class="mt-10 flex justify-center gap-4">
       {{ csrf(model) }}
-      <input type="submit" value="Preview" />
-      <a href="{{ model.cancelLink }}">Cancel</a>
+      <input type="submit" value="Preview" class="block p-2 bg-blue-300 rounded" />
+      <a href="{{ model.cancelLink }}" class="block p-2 bg-gray-300 rounded">Cancel</a>
     </div>
   </form>
 {% endblock %}

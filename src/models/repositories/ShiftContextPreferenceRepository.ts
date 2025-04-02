@@ -1,14 +1,42 @@
+import Database from "./_Database.ts";
+import ShiftContextRepository from "./ShiftContextRepository.ts";
 import Repository from "./_Repository.ts";
 
 export default class ShiftContextPreferenceRepository extends Repository {
+  private shiftContexts: ShiftContextRepository;
+
+  public constructor(
+    database: Database,
+    shiftContexts: ShiftContextRepository,
+  ) {
+    super(database);
+    this.shiftContexts = shiftContexts;
+  }
+
   public async validate(
-    shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
+    preferences: { preferable: number[]; unpreferable: number[] },
   ): Promise<string[]> {
+    const errors: string[] = [];
+
     // Ensure shift context ids exist
+    for (const id of preferences.preferable) {
+      const shiftContext = await this.shiftContexts.get(id);
+      if (shiftContext == null) {
+        errors.push("A selected shift context does not exist.");
+      }
+    }
 
     // Ensure shift context is not preferable and unpreferable at the same time
+    const intersection = preferences.preferable.filter(
+      (value) => preferences.unpreferable.includes(value),
+    );
+    if (intersection.length > 0) {
+      errors.push(
+        "A shift context cannot be preferable and unpreferable at the same time.",
+      );
+    }
 
-    return await Promise.resolve([]);
+    return errors;
   }
 
   /**

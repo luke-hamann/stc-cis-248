@@ -11,32 +11,36 @@
 
 {% block content %}
   {{ teamMemberTabs(model.teamMember, "availability") }}
-  {% for row in model.typicalAvailabilityTable %}
-    <h2>
-      <span>
-        {{ dayNames[loop.index0] }}
-      </span>
-      <a href="/team-member/{{ model.teamMember.id }}/availability/add/{{ loop.index0 }}/">
-        &plus;
-      </a>
-    </h2>
-    {% for typicalAvailability in row %}
-      <div>
-        <span>
-          {{ typicalAvailability.startTime }} - {{ typicalAvailability.endTime }}
+  <div class="max-w-lg ms-4">
+    {% for row in model.typicalAvailabilityTable %}
+      <h2 class="mt-4 flex gap-4">
+        <span class="text-2xl font-bold">
+          {{ dayNames[loop.index0] }}
         </span>
-        <span>
-          {{ "🙂" if typicalAvailability.isPreference else "☹️" }}
-        </span>
-        <span>
-          <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/">
-            Edit
-          </a>
-          <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/delete/">
-            Delete
-          </a>
-        </span>
-      </div>
+        <a href="/team-member/{{ model.teamMember.id }}/availability/add/{{ loop.index0 }}/" class="block w-fit p-2 bg-blue-300 rounded">
+          ➕
+        </a>
+      </h2>
+      {% for typicalAvailability in row %}
+        <div class="mt-4 p-2 flex border rounded justify-between">
+          <div>
+            {{ typicalAvailability.startTime }} - {{ typicalAvailability.endTime }}
+          </div>
+          <div class="text-3xl">
+            {{ "🙂" if typicalAvailability.isPreference else "☹️" }}
+          </div>
+          <div class="flex gap-4">
+            <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/" class="block p-2 bg-amber-300 rounded">
+              ✏️
+            </a>
+            <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/delete/" class="block p-2 bg-red-400 rounded">
+              ❌
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <div>(none)</div>
+      {% endfor %}
     {% endfor %}
-  {% endfor %}
+  </div>
 {% endblock %}

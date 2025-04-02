@@ -1,50 +1,40 @@
 {% extends "../_shared/_layout.html" %}
 {% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
 
+{% macro profileItem(label, content) %}
+  <div class="mt-4 flex gap-4">
+    <div class="flex-1 font-bold">{{ label }}</div>
+    <div class="flex-1">{{ content }}</div>
+  </div>
+{% endmacro %}
+
+{% if model.teamMember.isExternal %}
+  {% set externalMessage = "yes" %}
+{% else %}
+  {% set externalMessage = "no" %}
+{% endif %}
+
 {% block title %}{{ model.teamMember.fullName }}{% endblock %}
 
 {% block content %}
   {{ teamMemberTabs(model.teamMember, "profile") }}
-  <div>
-    <div>First</div>
-    <div>{{ model.teamMember.firstName }}</div>
-  </div>
-  <div>
-    <div>Middle</div>
-    <div>{{ model.teamMember.middleName }}</div>
-  </div>
-  <div>
-    <div>Last</div>
-    <div>{{ model.teamMember.lastName }}</div>
-  </div>
-  <div>
-    <div>Birth date</div>
-    <div>{{ model.teamMember.birthDate }}</div>
-  </div>
-  <div>
-    <div>Email</div>
-    <div>{{ model.teamMember.email }}</div>
-  </div>
-  <div>
-    <div>Phone</div>
-    <div>{{ model.teamMember.phone }}</div>
-  </div>
-  <div>
-    <div>External</div>
-    <div>
-      <input type="checkbox" disabled {% if model.teamMember.isExternal %}checked{% endif %} />
+  <div class="max-w-lg ms-4">
+    {{ profileItem("First name", model.teamMember.firstName) }}
+    {{ profileItem("Middle name", model.teamMember.middleName) }}
+    {{ profileItem("Last name", model.teamMember.lastName) }}
+    {{ profileItem("Birth date", model.teamMember.birthDate.toLocaleDateString()) }}
+    {{ profileItem("Email address", model.teamMember.email) }}
+    {{ profileItem("Phone number", model.teamMember.phone) }}
+    {{ profileItem("External", externalMessage) }}
+    {{ profileItem("Max weekly hours", model.teamMember.maxWeeklyHours) }}
+    {{ profileItem("Max weekly days", model.teamMember.maxWeeklyDays) }}
+    <div class="mt-8 flex justify-center gap-4">
+      <a href="/team-member/{{ model.teamMember.id }}/edit/" class="block p-2 bg-yellow-300 rounded">
+        Edit
+      </a>
+      <a href="/team-member/{{ model.teamMember.id }}/delete/" class="block p-2 bg-red-400 rounded">
+        Delete
+      </a>
     </div>
-  </div>
-  <div>
-    <div>Max weekly hours</div>
-    <div>{{ model.teamMember.maxWeeklyHours }}</div>
-  </div>
-  <div>
-    <div>Max weekly days</div>
-    <div>{{ model.teamMember.maxWeeklyDays }}</div>
-  </div>
-  <div>
-    <a href="/team-member/{{ model.teamMember.id }}/edit/">Edit</a>
-    <a href="/team-member/{{ model.teamMember.id }}/delete/">Delete</a>
   </div>
 {% endblock %}

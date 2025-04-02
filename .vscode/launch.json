@@ -14,7 +14,7 @@
         "--env-file",
         "--allow-env",
         "--allow-read",
-        "--allow-net=localhost:3306",
+        "--allow-net=127.0.0.1:3306",
         "--unstable-kv",
         "--inspect-wait"
       ],

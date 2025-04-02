@@ -9,7 +9,7 @@ export interface ITeamMemberRow {
   birthDate: Date;
   email: string;
   phone: string;
-  isExternal: boolean;
+  isExternal: number;
   maxWeeklyHours: number;
   maxWeeklyDays: number;
   username: string;
@@ -30,10 +30,14 @@ export default class TeamMemberRepository extends Repository {
       row.firstName,
       row.middleName,
       row.lastName,
-      row.birthDate,
+      new Date(
+        row.birthDate.getUTCFullYear(),
+        row.birthDate.getUTCMonth(),
+        row.birthDate.getUTCDate(),
+      ),
       row.email,
       row.phone,
-      row.isExternal,
+      row.isExternal == 1,
       row.maxWeeklyHours,
       row.maxWeeklyDays,
       row.username,
@@ -46,10 +50,38 @@ export default class TeamMemberRepository extends Repository {
     return rows.map((row) => this.mapRowToTeamMember(row));
   }
 
-  public async validate(
-    teamMember: TeamMember,
-  ): Promise<string[]> {
-    return await Promise.resolve([]);
+  public validate(t: TeamMember): string[] {
+    const errors: string[] = [];
+
+    if (t.firstName.trim() == "") {
+      errors.push("Please enter a first name.");
+    }
+
+    if (t.lastName.trim() == "") {
+      errors.push("Please enter a last name.");
+    }
+
+    if (t.birthDate == null) {
+      errors.push("Please enter a birth date.");
+    } else if (t.birthDate.getTime() >= new Date().getTime()) {
+      errors.push("Please enter a birth date in the past.");
+    }
+
+    if (
+      t.maxWeeklyHours != null &&
+      (t.maxWeeklyHours < 0 || t.maxWeeklyHours > (7 * 24))
+    ) {
+      errors.push(`Max weekly hours must be between 0 and ${7 * 24}.`);
+    }
+
+    if (
+      t.maxWeeklyDays != null &&
+      (t.maxWeeklyDays < 0 || t.maxWeeklyDays > 7)
+    ) {
+      errors.push("Max weekly days must be between 0 and 7.");
+    }
+
+    return errors;
   }
 
   public async list(): Promise<TeamMember[]> {

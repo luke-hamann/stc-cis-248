@@ -117,7 +117,6 @@ export default class ScheduleController extends Controller {
       startBetterDate,
       endBetterDate,
       null,
-      context.csrf_token,
       [],
     );
 
@@ -150,7 +149,8 @@ export default class ScheduleController extends Controller {
         }`;
         break;
       case "TimeSlot":
-        value = cell.content.teamMember?.fullName ?? "";
+        value = cell.content.teamMember?.fullName ?? "(unassigned)";
+        if (cell.content.note) value += "\n" + cell.content.note;
         break;
       case "SubstituteList":
         value = cell.content.teamMembers.map((t) => t.fullName).join("\n");
@@ -230,11 +230,13 @@ export default class ScheduleController extends Controller {
             sourceCell.type == "ShiftContextNote" &&
             sourceCell.content.color != null
           ) {
-            const argb = "FF" + sourceCell.content.color.hex;
             cell.fill = {
               type: "pattern",
               pattern: "solid",
-              fgColor: { argb },
+              fgColor: { argb: "FF" + sourceCell.content.color.hex },
+            };
+            cell.font = {
+              color: { argb: "FF" + sourceCell.content.color.hexForeground },
             };
           }
         });

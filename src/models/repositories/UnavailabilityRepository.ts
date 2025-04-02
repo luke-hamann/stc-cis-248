@@ -1,4 +1,5 @@
 import DateLib from "../../_dates/DateLib.ts";
+import { Database, TeamMemberRepository } from "../../mod.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import Unavailability from "../entities/Unavailability.ts";
@@ -13,6 +14,13 @@ interface IUnavailabilityRow {
 }
 
 export default class UnavailabilityRepository extends Repository {
+  private teamMembers: TeamMemberRepository;
+
+  public constructor(database: Database, teamMembers: TeamMemberRepository) {
+    super(database);
+    this.teamMembers = teamMembers;
+  }
+
   /** A query for selecting all unavailability */
   private readonly baseQuery = `
     SELECT id, teamMemberId, startDateTime, endDateTime, isPreference
@@ -41,7 +49,29 @@ export default class UnavailabilityRepository extends Repository {
    * @returns Promise of array of error messages
    */
   public async validate(u: Unavailability): Promise<string[]> {
-    return await Promise.resolve([]);
+    const errors: string[] = [];
+
+    const teamMember = await this.teamMembers.get(u.teamMemberId);
+    if (teamMember == null) {
+      errors.push("Please select a team member.");
+    }
+
+    if (u.startDateTime == null) {
+      errors.push("Please enter a start date and time.");
+    }
+
+    if (u.endDateTime == null) {
+      errors.push("Please enter an end date and time.");
+    }
+
+    if (
+      u.startDateTime != null && u.endDateTime != null &&
+      u.startDateTime.getTime() >= u.endDateTime.getTime()
+    ) {
+      errors.push("Start date and time must be before end date and time.");
+    }
+
+    return errors;
   }
 
   /**

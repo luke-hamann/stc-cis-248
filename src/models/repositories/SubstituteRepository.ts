@@ -1,5 +1,7 @@
+import Database from "./_Database.ts";
 import Repository from "./_Repository.ts";
 import TeamMember from "../entities/TeamMember.ts";
+import TeamMemberRepository from "./TeamMemberRepository.ts";
 import SubstituteList from "../entities/SubstituteList.ts";
 
 export interface ISubstituteRow {
@@ -11,6 +13,13 @@ export interface ISubstituteRow {
 }
 
 export default class SubstituteRepository extends Repository {
+  private teamMembers: TeamMemberRepository;
+
+  public constructor(database: Database, teamMembers: TeamMemberRepository) {
+    super(database);
+    this.teamMembers = teamMembers;
+  }
+
   private mapRowToSubstitute(row: ISubstituteRow): TeamMember {
     return new TeamMember(
       row.id,
@@ -39,7 +48,21 @@ export default class SubstituteRepository extends Repository {
    * @returns A promise of an array of error messages
    */
   public async validate(substituteList: SubstituteList): Promise<string[]> {
-    return await Promise.resolve([]);
+    const errors: string[] = [];
+
+    if (substituteList.date == null) {
+      errors.push("A date is required to specify substitutes.");
+    }
+
+    for (const id of substituteList.teamMemberIds) {
+      const teamMember = await this.teamMembers.get(id);
+      if (teamMember == null) {
+        errors.push("A selected team member does not exist.");
+        break;
+      }
+    }
+
+    return errors;
   }
 
   public async getSubstituteList(date: Date): Promise<SubstituteList> {

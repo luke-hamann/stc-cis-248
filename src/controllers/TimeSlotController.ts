@@ -47,7 +47,27 @@ export default class TimeSlotController extends Controller {
     this.routes = [
       {
         method: "GET",
-        pattern: "/schedule/time-slot/add/",
+        pattern: [
+          "/schedule/time-slot/add/(shift-context/",
+          "(\\d+)", // shift context id
+          "/on/",
+          "(\\d{4})", // start year
+          "/",
+          "(\\d{2})", // start month
+          "/",
+          "(\\d{2})", // start date
+          "/from/",
+          "(([01]\\d)|(2[0-3]))", // start hour
+          ":",
+          "([0-5]\\d)", // start minute
+          "/to/",
+          "(([01]\\d)|(2[0-3]))", // end hour
+          ":",
+          "([0-5]\\d)", // end minute
+          "/",
+          "((adult-only)/)?", // age requirement
+          ")?",
+        ].join(""),
         action: this.addGet,
       },
       {
@@ -78,25 +98,25 @@ export default class TimeSlotController extends Controller {
       {
         method: "GET",
         pattern:
-          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.copyGet,
       },
       {
         method: "POST",
         pattern:
-          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.copyPost,
       },
       {
         method: "GET",
         pattern:
-          "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+          "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.clearGet,
       },
       {
         method: "POST",
         pattern:
-          "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+          "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
         action: this.clearPost,
       },
       {
@@ -141,6 +161,41 @@ export default class TimeSlotController extends Controller {
   public async addGet(context: Context) {
     const timeSlot = TimeSlot.empty();
 
+    // If we are attempting to prepopulate the form using route data
+    if (context.match[1]) {
+      const shiftContextId = Number(context.match[2]);
+      if (this.shiftContexts.get(shiftContextId) == null) {
+        return this.NotFoundResponse(context);
+      }
+
+      const year = Number(context.match[3]);
+      const month = Number(context.match[4]);
+      const day = Number(context.match[5]);
+      const startHour = Number(context.match[6]);
+      const startMinute = Number(context.match[9]);
+      const endHour = Number(context.match[10]);
+      const endMinute = Number(context.match[13]);
+      const requiresAdult = context.match[15] != undefined;
+
+      const startDateTime = new Date(
+        year,
+        month - 1,
+        day,
+        startHour,
+        startMinute,
+      );
+      if (isNaN(startDateTime.getTime())) {
+        return this.NotFoundResponse(context);
+      }
+
+      const endDateTime = new Date(year, month - 1, day, endHour, endMinute);
+
+      timeSlot.shiftContextId = shiftContextId;
+      timeSlot.startDateTime = startDateTime;
+      timeSlot.endDateTime = endDateTime;
+      timeSlot.requiresAdult = requiresAdult;
+    }
+
     const model = new TimeSlotEditViewModel(
       await this.shiftContexts.list(),
       await this.teamMembers.list(),
@@ -172,6 +227,9 @@ export default class TimeSlotController extends Controller {
       model.shiftContexts = await this.shiftContexts.list();
       model.teamMembers = await this.teamMembers.list();
       model.colors = await this.colors.list();
+      model.recommendations = await this.schedules.getRecommendations(
+        model.timeSlot,
+      );
       model.isEdit = false;
       model.csrf_token = context.csrf_token;
       model.cancel = this.getCancelLink(new Date());
@@ -275,7 +333,7 @@ export default class TimeSlotController extends Controller {
       description,
       action,
       cancel,
-      context.csrf_token,
+      [],
     );
 
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);

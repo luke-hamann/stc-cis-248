@@ -31,91 +31,116 @@
     </a>
   </div>
 
-  <div class="w-full text-center pb-8">
-    <a class="inline-block p-2 border rounded" href="{{ model.copyLink }}">Copy</a>
-    <a class="inline-block p-2 border rounded" href="{{ model.clearLink }}">Clear</a>
-    <a class="inline-block p-2 border rounded" href="{{ model.exportLink }}">Export</a>
+  <div class="w-full flex justify-center gap-4">
+    <a class="block p-2 border rounded" href="{{ model.copyLink }}">Copy</a>
+    <a class="block p-2 border rounded" href="{{ model.clearLink }}">Clear</a>
+    <a class="block p-2 border rounded" href="{{ model.exportLink }}">Export</a>
   </div>
 
-  <table>
-    {% for row in model.schedule.table %}
-      <tr>
-        {% for col in row %}
-          <td class="min-w-xs border">
-            {% set type = col.type %}
-            {% set data = col.content %}
+  <div class="max-w-full mt-8 overflow-y-auto max-h-screen">
+    <table class="border-separate">
+      {% for row in model.schedule.table %}
+        <tr class="{% if loop.index0 == 0 %}sticky top-0 bg-white z-1{% endif %}">
+          {% for col in row %}
+            <td class="min-w-xs p-4 border {% if loop.index0 == 0 %}sticky left-0 bg-white{% endif %}">
+              {% set type = col.type %}
+              {% set data = col.content %}
 
-            {% if type == "origin" %}
-              <a href="/schedule/time-slot/add/" class="block w-fit p-2 pe-4 border rounded bg-blue-400 text-white">
-                &plus; Add time slot
-              </a>
-            {% endif %}
-
-            {% if type == "header" %}
-              <h2 class="text-2xl font-bold">{{ data }}</h2>
-            {% endif %}
-
-            {% if type == "dateHeader" %}
-              <h2 class="text-2xl font-bold">
-                {{ formatDate(data) }}
-              </h2>
-              <p>
-                <a href="/schedule/copy/{{ formatDate(data, '/') }}/to/{{ formatDate(data, '/') }}/">
-                  Copy
+              {% if type == "origin" %}
+                <a href="/schedule/time-slot/add/" class="block w-fit p-2 pe-4 border rounded bg-blue-400 text-white">
+                  &plus; Add time slot
                 </a>
-                <a href="/schedule/clear/{{ formatDate(data, '/') }}/to/{{ formatDate(data, '/') }}/">
-                  Clear
-                </a>
-              </p>
-            {% endif %}
+              {% endif %}
 
-            {% if type == "ShiftContext" %}
-              <h2 class="text-2xl font-bold">{{ data.name }}</h2>
-            {% endif %}
+              {% if type == "header" %}
+                <h2 class="text-2xl font-bold">{{ data }}</h2>
+              {% endif %}
 
-            {% if type == "ShiftContextNote" %}
-              {% if data.color.hex %}
-                <p {{ ['style="background-color: ', '#', data.color.hex, '"'] | join | safe }} >
-                  {{ data.note }}
-                </p>
-              {% else %}
+              {% if type == "dateHeader" %}
+                <h2 class="text-2xl font-bold">
+                  {{ formatDate(data) }}
+                </h2>
+                <div class="mt-4 flex justify-start gap-4">
+                  <a href="/schedule/copy/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block p-2 border rounded">
+                    Copy
+                  </a>
+                  <a href="/schedule/clear/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block p-2 border rounded">
+                    Clear
+                  </a>
+                </div>
+              {% endif %}
+
+              {% if type == "ShiftContext" %}
+                <h2 class="text-2xl font-bold">{{ data.name }}</h2>
+              {% endif %}
+
+              {% if type == "ShiftContextNote" %}
+                {% if data.note %}
+                  {% if data.color.hex %}
+                    <p class="p-4 rounded mb-4" style="background-color: #{{ data.color.hex }}; color: #{{ data.color.hexForeground }};" >
+                      {{ data.note }}
+                    </p>
+                  {% else %}
+                    <p class="p-4 rounded mb-4">
+                      {{ data.note }}
+                    </p>
+                  {% endif %}
+                {% endif %}
                 <p>
-                  {{ data.note }}
+                  <a href="/shift-context/{{ data.shiftContextId }}/note/{{ formatDate(data.date, '/') }}/" class="block p-2 w-fit border rounded">
+                    Edit
+                  </a>
                 </p>
               {% endif %}
-              <p>
-                <a href="/shift-context/{{ data.shiftContextId }}/note/{{ formatDate(data.date, '/') }}/">Edit</a>
-              </p>
-            {% endif %}
 
-            {% if type == "TimeSlotGroup" %}
-              <p>{{ data.startTime }} to {{ data.endTime }}</p>
-              <p>{{ "18+" if data.requiresAdult }}</p>
-            {% endif %}
-
-            {% if type == "TimeSlot" %}
-              <p>{{ data.teamMember.fullName if data.teamMember else "(unassigned)" }}</p>
-              <div>
-                <a href="/schedule/time-slot/{{ data.id }}/">Edit</a>
-                <a href="/schedule/time-slot/{{ data.id }}/delete/">Delete</a>
-              </div>
-            {% endif %}
-
-            {% if type == "SubstituteList" %}
-              {% if data.teamMembers %}
-                <ul class="list-disc">
-                  {% for teamMember in data.teamMembers %}
-                    <li>{{ teamMember }}</li>
-                  {% endfor %}
-                </ul>
+              {% if type == "TimeSlotGroup" %}
+                <p>{{ data.startTime }} to {{ data.endTime }}</p>
+                <p>{{ "18+" if data.requiresAdult }}</p>
               {% endif %}
-              <a href="/substitutes/{{ formatDate(data.date, '/') }}/">Edit</a>
-            {% endif %}
-          </td>
-        {% endfor %}
-      </tr>
-    {% endfor %}
-  </table>
+
+              {% if type == "TimeSlotPossibility" %}
+                <a href="/schedule/time-slot/add/shift-context/{{ data.shiftContextId }}/on/{{ formatDate(data.startDateTime, '/') }}/from/{{ formatTime(data.startDateTime) }}/to/{{ formatTime(data.endDateTime) }}/{{ 'adult-only/' if data.requiresAdult }}" class="block p-2 w-fit border rounded">&plus; New</a>
+              {% endif %}
+
+              {% if type == "TimeSlot" %}
+                <p>
+                  {{ data.teamMember.fullName if data.teamMember else "(unassigned)" }}
+                </p>
+                {% if data.note %}
+                  {% if data.color %}
+                    <p class="mt-4 p-4 rounded" style="background-color: #{{ data.color.hex }}; color: #{{ data.color.hexForeground }};">
+                      {{ data.note }}
+                    </p>
+                  {% else %}
+                    <p class="mt-4 p-4 rounded">
+                      {{ data.note }}
+                    </p>
+                  {% endif %}
+                {% endif %}
+                <div class="flex gap-4 mt-4">
+                  <a href="/schedule/time-slot/{{ data.id }}/" class="block p-2 border rounded">Edit</a>
+                  <a href="/schedule/time-slot/{{ data.id }}/delete/" class="block p-2 border rounded">Delete</a>
+                </div>
+              {% endif %}
+
+              {% if type == "SubstituteList" %}
+                {% if data.teamMembers %}
+                  <ul class="list-disc ms-8 mb-4">
+                    {% for teamMember in data.teamMembers %}
+                      <li>{{ teamMember }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+                <a href="/substitutes/{{ formatDate(data.date, '/') }}/" class="block p-2 w-fit border rounded">
+                  Edit
+                </a>
+              {% endif %}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
 
   {# Schedule warnings #}
 
@@ -198,6 +223,19 @@
           hour(s).
         </li>
       {% endfor %}
+      {% if model.warnings.unassignedTimeSlots.length > 0 %}
+        <li>
+          [Unassigned] The following time slots are unassigned:
+          <ul class="list-disc ms-8">
+            {% for timeSlot in model.warnings.unassignedTimeSlots %}
+              <li>
+                {{ timeSlot.shiftContext.name }}: {{ timeSlot.startDateTime.toLocaleDateString () }},
+                {{ timeSlot.startDateTime.toLocaleTimeString() }} - {{ timeSlot.endDateTime.toLocaleTimeString() }}
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endif %}
     </ul>
   </div>
 {% endblock %}

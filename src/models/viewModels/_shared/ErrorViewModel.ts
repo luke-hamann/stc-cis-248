@@ -1,6 +1,7 @@
-import ViewModel from "./_ViewModel.ts";
+import IViewModel from "./IViewModel.ts";
 
-export default class ErrorViewModel extends ViewModel {
+export default class ErrorViewModel implements IViewModel {
+  public csrf_token: string;
   public title: string;
   public body: string;
   public isBodyPreformatted: boolean;
@@ -11,7 +12,7 @@ export default class ErrorViewModel extends ViewModel {
     isBodyPreformatted: boolean,
     csrf_token: string,
   ) {
-    super(csrf_token);
+    this.csrf_token = csrf_token;
     this.title = title;
     this.body = body;
     this.isBodyPreformatted = isBodyPreformatted;

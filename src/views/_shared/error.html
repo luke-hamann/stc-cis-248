@@ -3,12 +3,12 @@
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block content %}
-  <h1 class="p-8 text-2xl font-bold">{{ model.title }}</h1>
-    <div class="p-8">
+  <h1 class="mt-8 text-4xl font-bold">{{ model.title }}</h1>
+  <div class="mt-8">
     {% if model.isBodyPreformatted %}
-      <pre class="p-2 border rounded overflow-x-auto">{{ model.body }}</pre>
+      <pre class="border rounded overflow-x-auto">{{ model.body }}</pre>
     {% else %}
-      <p class="p-2">{{ model.body }}</p>
+      <p>{{ model.body }}</p>
     {% endif %}
   </div>
 {% endblock %}

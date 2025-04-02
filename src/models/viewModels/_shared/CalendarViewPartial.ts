@@ -1,8 +1,10 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
+import IViewModel from "./IViewModel.ts";
 
-export default class CalendarViewPartial {
+export default class CalendarViewPartial implements IViewModel {
   public year: number;
   public baseUrl: string;
+  public csrf_token: string;
 
   constructor(
     year: number,
@@ -10,6 +12,7 @@ export default class CalendarViewPartial {
   ) {
     this.year = year;
     this.baseUrl = baseUrl;
+    this.csrf_token = "";
   }
 
   public get todayPath(): string {

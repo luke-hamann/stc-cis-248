@@ -68,7 +68,6 @@ export default class ColorController extends Controller {
 
     model.errors = await this.colorRepository.validate(model.color);
     if (!model.isValid()) {
-      model.csrf_token = context.csrf_token;
       return this.HTMLResponse(context, "./views/color/edit.html", model);
     }
 
@@ -133,7 +132,9 @@ export default class ColorController extends Controller {
       color.name,
       `/color/${id}/delete/`,
       "/colors/",
-      context.csrf_token,
+      [
+        "Notes with this color will be marked colorless.",
+      ],
     );
 
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);

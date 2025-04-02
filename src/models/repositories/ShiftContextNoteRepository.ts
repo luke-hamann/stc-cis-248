@@ -40,7 +40,31 @@ export default class ShiftContextNoteRepository extends Repository {
   public async validate(
     shiftContextNote: ShiftContextNote,
   ): Promise<string[]> {
-    return await Promise.resolve([]);
+    const errors: string[] = [];
+
+    const shiftContext = await this.shiftContexts.get(
+      shiftContextNote.shiftContextId,
+    );
+    if (shiftContext == null) {
+      errors.push("That shift context does not exist.");
+    }
+
+    if (shiftContextNote.date == null) {
+      errors.push("Please enter a date.");
+    }
+
+    if (shiftContextNote.note.trim() == "") {
+      errors.push("Please enter a note.");
+    }
+
+    if (shiftContextNote.colorId) {
+      const color = await this.colors.get(shiftContextNote.colorId);
+      if (color == null) {
+        errors.push("That color does not exist.");
+      }
+    }
+
+    return errors;
   }
 
   private async populate(shiftContextNote: ShiftContextNote) {
@@ -59,17 +83,6 @@ export default class ShiftContextNoteRepository extends Repository {
     return shiftContextNote;
   }
 
-  private sanitizeDate(d: Date): Date {
-    const newDate = new Date(d.getTime());
-
-    newDate.setFullYear(newDate.getUTCFullYear());
-    newDate.setMonth(newDate.getUTCMonth());
-    newDate.setDate(newDate.getUTCDate());
-    newDate.setHours(0, 0, 0, 0);
-
-    return newDate;
-  }
-
   /**
    * Convert a database row to a shift context note
    * @param row The database row
@@ -78,7 +91,11 @@ export default class ShiftContextNoteRepository extends Repository {
   private mapRowToShiftContextNote(
     row: IShiftContextNoteRow,
   ): ShiftContextNote {
-    row.date = this.sanitizeDate(row.date);
+    // Clamp note date to always appear on the same date no matter the timezone
+    const year = row.date.getUTCFullYear();
+    const monthIndex = row.date.getUTCMonth();
+    const date = row.date.getUTCDate();
+    row.date = new Date(year, monthIndex, date);
 
     return new ShiftContextNote(
       row.shiftContextId,
@@ -135,10 +152,7 @@ export default class ShiftContextNoteRepository extends Repository {
     end: Date,
     shiftContextId?: number,
   ): Promise<ShiftContextNote[]> {
-    start = this.sanitizeDate(start);
-    end = this.sanitizeDate(end);
-
-    let query = `${this.baseQuery} WHERE date BETWEEN ? AND ?`;
+    let query = `${this.baseQuery} WHERE DATE(date) BETWEEN ? AND ?`;
     if (shiftContextId) query += " AND shiftContextId = ?";
 
     const result = await this.database.execute(

@@ -1,8 +1,10 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
 import TeamMember from "../../entities/TeamMember.ts";
 import Unavailability from "../../entities/Unavailability.ts";
+import IViewModel from "../_shared/IViewModel.ts";
 
-export default class UnavailabilityWeekViewModel {
+export default class UnavailabilityWeekViewModel implements IViewModel {
+  public csrf_token: string;
   public teamMember: TeamMember;
   public startDate: Date;
   public endDate: Date;

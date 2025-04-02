@@ -1,11 +1,14 @@
 {% macro field(name, value, type, label, isChecked = false) %}
-  <div>
-    <label for="{{ name }}">{{ label }}</label>
+  <div class="mt-4 flex gap-4">
+    <label for="{{ name }}" class="flex-1 max-w-1/2">
+      {{ label }}
+    </label>
     <input
       type="{{ type }}"
       name="{{ name }}"
       id="{{ name }}"
       {% if value %}value="{{ value }}"{% endif %}
-      {{ "checked" if isChecked }} />
+      {{ "checked" if isChecked }}
+      class="{% if type != 'radio' and type != 'checkbox' %}flex-1{% endif %} p-1 border rounded" />
   </div>
 {% endmacro %}

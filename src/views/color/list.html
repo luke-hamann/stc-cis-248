@@ -1,45 +1,47 @@
 {% extends "../_shared/_layout.html" %}
 
+{% block title %}Colors{% endblock %}
+
 {% block styles %}
   <link rel="stylesheet" href="/css/colorPages.css" />
 {% endblock %}
 
 {% block content %}
-<h1>Note Colors</h1>
+<h1 class="text-4xl mt-8 font-bold">Note Colors</h1>
 
 <form method="post" action="/colors/add/" id="form">
   <input type="hidden" name="csrf_token" value="{{ model.csrf_token }}" />
 </form>
 
-<table class="color-table">
+<table class="mt-4">
   <tbody>
     <tr class="color-row">
-      <td>
-        <input type="color" form="form" name="hex" class="color-preview" />
+      <td class="p-2">
+        <input type="color" form="form" name="hex" class="size-12 rounded" />
       </td>
-      <td>
-        <input type="text" form="form" name="name" />
+      <td class="p-2">
+        <input type="text" form="form" name="name" placeholder="New color..." class="border rounded" />
       </td>
-      <td>
-        <button type="submit" form="form" class="color-table-add-button">&plus;</button>
+      <td class="p-2">
+        <button type="submit" form="form" class="block size-12 rounded bg-blue-200 text-white text-3xl">&plus;</button>
       </td>
-      <td>
-        <button type="reset" form="form" class="color-table-delete-button">&times;</button>
+      <td class="p-2">
+        <button type="reset" form="form" class="block size-12 rounded bg-red-400 text-white text-3xl">&times;</button>
       </td>
     </tr>
     {% for color in model.colors %}
-      <tr class="color-row">
-        <td>
-          <div class="color-preview" style="background-color: #{{ color.hex }};"></div>
+      <tr>
+        <td class="p-2">
+          <div class="size-12 rounded" style="background-color: #{{ color.hex }};"></div>
         </td>
-        <td>
+        <td class="p-2">
           {{ color.name }}
         </td>
-        <td>
-          <a href="/color/{{ color.id }}/" class="color-table-edit-button">✏️</a>
+        <td class="p-2">
+          <a href="/color/{{ color.id }}/" class="block size-12 rounded bg-amber-200 text-center align-middle leading-10">✏️</a>
         </td>
-        <td>
-          <a href="/color/{{ color.id }}/delete/" class="color-table-delete-button">&times;</a>
+        <td class="p-2">
+          <a href="/color/{{ color.id }}/delete/" class="block size-12 rounded bg-red-400 text-white text-center align-middle leading-10 text-3xl">&times;</a>
         </td>
       </tr>
     {% endfor %}

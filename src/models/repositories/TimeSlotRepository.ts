@@ -93,13 +93,55 @@ export default class TimeSlotRepository extends Repository {
     return timeSlot;
   }
 
+  private async populateAll(timeslots: TimeSlot[]): Promise<TimeSlot[]> {
+    return await Promise.all(
+      timeslots.map((timeslot) => this.populate(timeslot)),
+    );
+  }
+
   /**
    * Validates a time slot
    * @param t A time slot
    * @returns A list of error messages
    */
   public async validate(t: TimeSlot): Promise<string[]> {
-    return await Promise.resolve([]);
+    const errors: string[] = [];
+
+    const shiftContext = await this.shiftContexts.get(t.shiftContextId);
+    if (shiftContext == null) {
+      errors.push("Please select a shift context.");
+    }
+
+    if (t.startDateTime == null) {
+      errors.push("Please enter a start date and time.");
+    }
+
+    // if (t.endDateTime == null) {
+    //   errors.push("Please enter an end date and time.");
+    // }
+
+    if (
+      t.startDateTime != null && t.endDateTime != null &&
+      t.startDateTime.getTime() >= t.endDateTime.getTime()
+    ) {
+      errors.push("Start date and time must be before end date and time.");
+    }
+
+    if (t.teamMemberId != null) {
+      const teamMember = await this.teamMembers.get(t.teamMemberId);
+      if (teamMember == null) {
+        errors.push("The selected team member does not exist.");
+      }
+    }
+
+    if (t.colorId != null && t.colorId != 0) {
+      const color = await this.colors.get(t.colorId);
+      if (color == null) {
+        errors.push("The selected color does not exist.");
+      }
+    }
+
+    return errors;
   }
 
   /**
@@ -296,7 +338,7 @@ export default class TimeSlotRepository extends Repository {
     );
 
     const sourceTimeSlots = await this.getInDateRange(sourceStart, sourceEnd);
-    const destinationTimeSlots = [];
+    let destinationTimeSlots = [];
 
     for (const timeSlot of sourceTimeSlots) {
       let offset = initialOffset;
@@ -334,23 +376,24 @@ export default class TimeSlotRepository extends Repository {
       a.startDateTime!.getTime() - b.startDateTime!.getTime()
     );
 
+    destinationTimeSlots = await this.populateAll(destinationTimeSlots);
+
     return destinationTimeSlots;
   }
 
   /**
    * Gets time slots by grouping and then by date for a given shift context and date range
    * @param shiftContextId The shift context
-   * @param startDate The starting date
-   * @param endDate The ending date
+   * @param start The starting date
+   * @param end The ending date
    * @returns Time slot groups with their cooresponsponding time slots broken down by day
    */
   public async getByGroups(
     shiftContextId: number,
-    startDate: Date,
-    endDate: Date,
+    start: Date,
+    end: Date,
   ): Promise<{ timeSlotGroup: TimeSlotGroup; timeSlotsByDay: TimeSlot[][] }[]> {
     // Calculate groupings
-
     const result = await this.database.execute(
       `
         SELECT TIME(startDateTime) startTime, TIME(endDateTime) endTime, requiresAdult
@@ -360,7 +403,7 @@ export default class TimeSlotRepository extends Repository {
         GROUP BY 1, 2, 3
         ORDER BY 1, 2, 3 DESC
       `,
-      [shiftContextId, startDate, endDate],
+      [shiftContextId, start, end],
     );
 
     if (!result.rows || result.rows.length == 0) return [];
@@ -368,8 +411,8 @@ export default class TimeSlotRepository extends Repository {
     const timeSlotGroups = result.rows.map((row: ITimeSlotGroupRow) =>
       new TimeSlotGroup(
         shiftContextId,
-        startDate,
-        endDate,
+        start,
+        end,
         row.startTime,
         row.endTime,
         row.requiresAdult == 1,
@@ -377,15 +420,17 @@ export default class TimeSlotRepository extends Repository {
     );
 
     // Organize time slots by grouping and then by date within date range
-
     const output: {
       timeSlotGroup: TimeSlotGroup;
       timeSlotsByDay: TimeSlot[][];
     }[] = [];
+
+    const dates = DateLib.getDatesInRange(start, end);
+
     for (const timeSlotGroup of timeSlotGroups) {
       const table: TimeSlot[][] = [];
 
-      for (const date of DateLib.getDatesInRange(startDate, endDate)) {
+      for (const date of dates) {
         const result = await this.database.execute(
           `
             ${this.timeSlotQuery}
@@ -482,5 +527,20 @@ export default class TimeSlotRepository extends Repository {
     );
 
     return (!result.rows || result.rows.length == 0);
+  }
+
+  public async getUnassigned(start: Date, end: Date): Promise<TimeSlot[]> {
+    const result = await this.database.execute(
+      `
+        ${this.timeSlotQuery}
+        WHERE teamMemberId IS NULL
+          AND DATE(startDateTime) BETWEEN ? AND ?
+      `,
+      [start, end],
+    );
+
+    if (!result.rows || result.rows.length == 0) return [];
+
+    return await this.populateAll(this.mapRowsToTimeSlots(result.rows));
   }
 }

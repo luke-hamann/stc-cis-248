@@ -1,5 +1,14 @@
 {% extends "../_shared/_layout.html" %}
 {% from "../_shared/field.html" import field %}
+{% from "../_shared/formErrors.html" import formErrors %}
+
+{% if model.isEdit %}
+  {% set title = "Edit Availability" %}
+  {% set action = "" %}
+{% else %}
+  {% set title = "Add Availability" %}
+  {% set action = ["/team-member/", model.teamMember.id, "/availability/add/"] | join %}
+{% endif %}
 
 {% set daysOfWeek = [
   { index: 0, name: "Sunday" },
@@ -11,14 +20,15 @@
   { index: 6, name: "Saturday" }
 ] %}
 
-{% block title %}{{ "Edit" if model.isEdit else "Add" }} Availability{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ "Edit" if model.isEdit else "Add" }} Availability</h1>
-  <form method="post" {% if not model.isEdit %}action="/team-member/{{ model.teamMember.id }}/availability/add/"{% endif %} >
-    <div>
-      <label for="dayOfWeek">Day of week</label>
-      <select name="dayOfWeek" id="dayOfWeek">
+  <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
+  <form method="post" action="{{ action }}" class="max-w-lg">
+    {{ formErrors(model.errors) }}
+    <div class="mt-8 flex gap-4">
+      <label for="dayOfWeek" class="flex-1">Day of week</label>
+      <select name="dayOfWeek" id="dayOfWeek" class="flex-1 p-1 border rounded">
         <option value="">Select a day of the week...</option>
         {% for dayOfWeek in daysOfWeek %}
           <option value="{{ dayOfWeek.index }}" {{ "selected" if model.typicalAvailability.dayOfWeek == dayOfWeek.index }} >
@@ -30,10 +40,10 @@
     {{ field("startTime", model.typicalAvailability.startTime, "time", "Start time") }}
     {{ field("endTime", model.typicalAvailability.endTime, "time", "End time") }}
     {{ field("isPreference", "", "checkbox", "Preferable", model.typicalAvailability.isPreference) }}
-    <div>
+    <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <input type="submit" value="Save" />
-      <a href="/team-member/{{ model.teamMember.id }}/availability/">Cancel</a>
+      <input type="submit" value="Save" class="block p-2 bg-blue-300 rounded" />
+      <a href="/team-member/{{ model.teamMember.id }}/availability/" class="block p-2 bg-gray-300 rounded">Cancel</a>
     </div>
   </form>
 {% endblock %}

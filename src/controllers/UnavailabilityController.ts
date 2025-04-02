@@ -246,7 +246,7 @@ export default class UnavailabilityController extends Controller {
 
     model.errors = await this.unavailabilities.validate(model.unavailability);
     if (!model.isValid()) {
-      model.teamMember = teamMember, model.csrf_token = context.csrf_token;
+      model.teamMember = teamMember;
       return this.HTMLResponse(
         context,
         "./views/unavailability/edit.html",
@@ -349,7 +349,7 @@ export default class UnavailabilityController extends Controller {
       description,
       action,
       cancel,
-      context.csrf_token,
+      [],
     );
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
@@ -405,7 +405,7 @@ export default class UnavailabilityController extends Controller {
       description,
       action,
       cancel,
-      context.csrf_token,
+      [],
     );
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }

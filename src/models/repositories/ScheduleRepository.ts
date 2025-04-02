@@ -18,6 +18,7 @@ import ShiftContextPreferenceRepository from "./ShiftContextPreferenceRepository
 import TeamMember from "../entities/TeamMember.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import Database from "./_Database.ts";
+import TimeSlotPossibility from "../entities/TimeSlotPossiblity.ts";
 
 export interface ITimeSlotRowComponent {
   timeSlotId: number;
@@ -102,6 +103,7 @@ export type ScheduleWarnings = {
   availabilityViolations: TimeSlot[];
   maxWeeklyDaysViolations: [TeamMember, number][];
   maxWeeklyHoursViolations: [TeamMember, number][];
+  unassignedTimeSlots: TimeSlot[];
 };
 
 export default class ScheduleRepository {
@@ -288,7 +290,7 @@ export default class ScheduleRepository {
         );
 
         // fill the array with nulls to convert it from jagged to rectangular
-        for (let i = 0; i < timeSlotsByDay.length; i++) {
+        for (let i = 0; i < rowCount; i++) {
           while (timeSlotsByDay[i].length < colCount) {
             timeSlotsByDay[i].push(null);
           }
@@ -309,9 +311,38 @@ export default class ScheduleRepository {
           for (let colNum = 0; colNum < colCount; colNum++) {
             const timeSlot = timeSlotsByDay[rowNum][colNum];
 
-            let newCell: ScheduleCell = { type: "string", content: "" };
+            let newCell: ScheduleCell;
+
             if (timeSlot) {
               newCell = { type: "TimeSlot", content: timeSlot };
+            } else {
+              const startDateTime = new Date(dateList[rowNum]);
+              startDateTime.setHours(
+                Number(timeSlotGroup.startTime.substring(0, 2)),
+              );
+              startDateTime.setMinutes(
+                Number(timeSlotGroup.startTime.substring(3, 5)),
+              );
+
+              const endDateTime = new Date(dateList[rowNum]);
+              endDateTime.setHours(
+                Number(timeSlotGroup.endTime.substring(0, 2)),
+              );
+              endDateTime.setMinutes(
+                Number(timeSlotGroup.endTime.substring(3, 5)),
+              );
+
+              const timeSlotPossibility = new TimeSlotPossibility(
+                timeSlotGroup.shiftContextId,
+                startDateTime,
+                endDateTime,
+                timeSlotGroup.requiresAdult,
+              );
+
+              newCell = {
+                type: "TimeSlotPossibility",
+                content: timeSlotPossibility,
+              };
             }
 
             // Swapped row and column to transpose array
@@ -442,6 +473,7 @@ export default class ScheduleRepository {
       availabilityViolations: [],
       maxWeeklyDaysViolations: [],
       maxWeeklyHoursViolations: [],
+      unassignedTimeSlots: [],
     };
 
     // Externality warnings
@@ -710,6 +742,13 @@ export default class ScheduleRepository {
         row.totalHours,
       ]);
     }
+
+    // Unassigned time slot warnings
+
+    warnings.unassignedTimeSlots = await this.timeSlots.getUnassigned(
+      start,
+      end,
+    );
 
     return warnings;
   }
