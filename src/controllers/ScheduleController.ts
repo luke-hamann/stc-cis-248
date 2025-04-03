@@ -80,9 +80,10 @@ export default class ScheduleController extends Controller {
 
     // If the start date is not a Sunday
     if (startDate.getDay() != 0) {
-      let newDate = BetterDate.fromDate(startDate);
-      newDate = newDate.floorToSunday();
-      const component = newDate.toDateString().replaceAll("-", "/");
+      const component = BetterDate.fromDate(startDate).floorToSunday()
+        .toDateString(
+          "/",
+        );
       const url = `/schedule/${component}/`;
       return this.RedirectResponse(context, url);
     }

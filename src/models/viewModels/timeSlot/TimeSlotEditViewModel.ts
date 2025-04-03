@@ -25,10 +25,9 @@ export default class TimeSlotEditViewModel extends FormViewModel {
     newColor: Color | null,
     isEdit: boolean,
     errors: [],
-    csrf_token: string,
     cancel: string,
   ) {
-    super(isEdit, errors, csrf_token);
+    super(isEdit, errors);
     this.shiftContexts = shiftContexts;
     this.teamMembers = teamMembers;
     this.recommendations = recommendations;
@@ -93,7 +92,6 @@ export default class TimeSlotEditViewModel extends FormViewModel {
       newColor,
       true,
       [],
-      "",
       "",
     );
   }

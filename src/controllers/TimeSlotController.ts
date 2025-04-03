@@ -205,7 +205,6 @@ export default class TimeSlotController extends Controller {
       Color.empty(),
       false,
       [],
-      context.csrf_token,
       this.getCancelLink(),
     );
 
@@ -265,7 +264,6 @@ export default class TimeSlotController extends Controller {
       null,
       true,
       [],
-      context.csrf_token,
       this.getCancelLink(timeSlot.startDateTime!),
     );
 
@@ -375,7 +373,6 @@ export default class TimeSlotController extends Controller {
       false,
       false,
       false,
-      context.csrf_token,
       [],
     );
 
@@ -464,7 +461,6 @@ export default class TimeSlotController extends Controller {
     const model = ScheduleClearViewModel.default(
       start,
       end,
-      context.csrf_token,
     );
 
     return this.HTMLResponse(context, "./views/timeSlot/clear.html", model);

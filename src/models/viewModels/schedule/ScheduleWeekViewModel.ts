@@ -1,13 +1,12 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
 import DateLib from "../../../_dates/DateLib.ts";
 import Schedule from "../../entities/Schedule.ts";
-import { ScheduleWarnings } from "../../repositories/ScheduleRepository.ts";
-import IViewModel from "../_shared/IViewModel.ts";
+import ScheduleWarnings from "../../entities/ScheduleWarnings.ts";
+import ViewModel from "../_shared/_ViewModel.ts";
 
-export default class ScheduleWeekViewModel implements IViewModel {
-  public csrf_token: string = "";
+export default class ScheduleWeekViewModel extends ViewModel {
   public currentWeek: Date;
-  public schedule: Schedule;
+  public schedule: Schedule | null;
   public warnings: ScheduleWarnings;
 
   private readonly monthNames = [
@@ -27,9 +26,10 @@ export default class ScheduleWeekViewModel implements IViewModel {
 
   constructor(
     currentWeek: Date,
-    schedule: Schedule,
+    schedule: Schedule | null,
     warnings: ScheduleWarnings,
   ) {
+    super();
     this.currentWeek = currentWeek;
     this.schedule = schedule;
     this.warnings = warnings;
@@ -92,10 +92,7 @@ export default class ScheduleWeekViewModel implements IViewModel {
   public get previousWeekString(): string {
     const previousWeek = new Date(this.currentWeek.getTime());
     previousWeek.setDate(previousWeek.getDate() - 7);
-    return BetterDate.fromDate(previousWeek).toDateString().replaceAll(
-      "-",
-      "/",
-    );
+    return BetterDate.fromDate(previousWeek).toDateString("/");
   }
 
   /**
@@ -104,6 +101,6 @@ export default class ScheduleWeekViewModel implements IViewModel {
   public get nextWeekString(): string {
     const nextWeek = new Date(this.currentWeek.getTime());
     nextWeek.setDate(nextWeek.getDate() + 7);
-    return BetterDate.fromDate(nextWeek).toDateString().replaceAll("-", "/");
+    return BetterDate.fromDate(nextWeek).toDateString("/");
   }
 }

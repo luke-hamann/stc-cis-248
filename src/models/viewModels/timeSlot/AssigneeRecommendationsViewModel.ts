@@ -1,16 +1,16 @@
 import AssigneeRecommendations from "../../entities/AssigneeRecommendation.ts";
 import TimeSlot from "../../entities/TimeSlot.ts";
-import IViewModel from "../_shared/IViewModel.ts";
+import ViewModel from "../_shared/_ViewModel.ts";
 
-export default class AssigneeRecommendationsViewModel implements IViewModel {
+export default class AssigneeRecommendationsViewModel extends ViewModel {
   public timeSlot: TimeSlot;
   public recommendations: AssigneeRecommendations[];
-  public csrf_token: string = "";
 
   public constructor(
     timeSlot: TimeSlot,
     recommendations: AssigneeRecommendations[],
   ) {
+    super();
     this.timeSlot = timeSlot;
     this.recommendations = recommendations;
   }

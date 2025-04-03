@@ -1,11 +1,10 @@
-import IViewModel from "./IViewModel.ts";
+import ViewModel from "./_ViewModel.ts";
 
-export default class DeleteViewModel implements IViewModel {
+export default class DeleteViewModel extends ViewModel {
   description: string = "";
   action: string = "";
   cancel: string = "";
   warnings: string[] = [];
-  csrf_token: string = "";
 
   public constructor(
     description: string,
@@ -13,6 +12,7 @@ export default class DeleteViewModel implements IViewModel {
     cancel: string,
     warnings: string[],
   ) {
+    super();
     this.description = description;
     this.action = action;
     this.cancel = cancel;

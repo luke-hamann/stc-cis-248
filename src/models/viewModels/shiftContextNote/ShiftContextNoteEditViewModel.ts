@@ -10,12 +10,11 @@ export default class ShiftContextNoteEditViewModel extends FormViewModel {
 
   public constructor(
     errors: string[],
-    csrf_token: string,
     shiftContextNote: ShiftContextNote,
     colors: Color[],
     weekStart: Date,
   ) {
-    super(true, errors, csrf_token);
+    super(true, errors);
     this.shiftContextNote = shiftContextNote;
     this.colors = colors;
     this.weekStart = weekStart;
@@ -40,7 +39,6 @@ export default class ShiftContextNoteEditViewModel extends FormViewModel {
 
     return new ShiftContextNoteEditViewModel(
       [],
-      "",
       shiftContextNote,
       [],
       new Date(),

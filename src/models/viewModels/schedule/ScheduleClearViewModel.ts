@@ -1,15 +1,14 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
 import DateLib from "../../../_dates/DateLib.ts";
 import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
-import IViewModel from "../_shared/IViewModel.ts";
+import ViewModel from "../_shared/_ViewModel.ts";
 
-export default class ScheduleClearViewModel implements IViewModel {
+export default class ScheduleClearViewModel extends ViewModel {
   public startDate: Date | null;
   public endDate: Date | null;
   public deleteTimeSlots: boolean;
   public deleteShiftContextNotes: boolean;
   public deleteSubstitutes: boolean;
-  public csrf_token: string;
   public errors: string[];
 
   constructor(
@@ -18,22 +17,20 @@ export default class ScheduleClearViewModel implements IViewModel {
     deleteTimeSlots: boolean,
     deleteShiftContextNotes: boolean,
     deleteSubstitutes: boolean,
-    csrf_token: string,
     errors: string[],
   ) {
+    super();
     this.startDate = startDate;
     this.endDate = endDate;
     this.deleteTimeSlots = deleteTimeSlots;
     this.deleteShiftContextNotes = deleteShiftContextNotes;
     this.deleteSubstitutes = deleteSubstitutes;
-    this.csrf_token = csrf_token;
     this.errors = errors;
   }
 
   public static default(
     startDate: Date,
     endDate: Date,
-    csrf_token: string,
   ): ScheduleClearViewModel {
     return new ScheduleClearViewModel(
       startDate,
@@ -41,7 +38,6 @@ export default class ScheduleClearViewModel implements IViewModel {
       true,
       true,
       true,
-      csrf_token,
       [],
     );
   }
@@ -63,7 +59,6 @@ export default class ScheduleClearViewModel implements IViewModel {
       deleteTimeSlots,
       deleteShiftContextNotes,
       deleteSubstitutes,
-      "",
       [],
     );
   }

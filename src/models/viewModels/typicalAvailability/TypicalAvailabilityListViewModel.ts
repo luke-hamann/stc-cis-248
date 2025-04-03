@@ -1,9 +1,8 @@
 import TeamMember from "../../entities/TeamMember.ts";
 import TypicalAvailability from "../../entities/TypicalAvailability.ts";
-import IViewModel from "../_shared/IViewModel.ts";
+import ViewModel from "../_shared/_ViewModel.ts";
 
-export default class TypicalAvailabilityListViewModel implements IViewModel {
-  public csrf_token: string = "";
+export default class TypicalAvailabilityListViewModel extends ViewModel {
   public teamMember: TeamMember;
   public typicalAvailabilityTable: TypicalAvailability[][];
 
@@ -11,6 +10,7 @@ export default class TypicalAvailabilityListViewModel implements IViewModel {
     teamMember: TeamMember,
     typicalAvailabilities: TypicalAvailability[][],
   ) {
+    super();
     this.teamMember = teamMember;
     this.typicalAvailabilityTable = typicalAvailabilities;
   }

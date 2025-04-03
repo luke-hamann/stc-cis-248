@@ -9,9 +9,8 @@ export default class SubstitutesEditViewModel extends FormViewModel {
   constructor(
     substituteList: SubstituteList,
     teamMembers: TeamMember[],
-    csrf_token: string,
   ) {
-    super(true, [], csrf_token);
+    super(true, []);
     this.substituteList = substituteList;
     this.teamMembers = teamMembers;
   }
@@ -52,6 +51,6 @@ export default class SubstitutesEditViewModel extends FormViewModel {
     );
     const substituteList = new SubstituteList(new Date(), teamMembers);
 
-    return new SubstitutesEditViewModel(substituteList, [], "");
+    return new SubstitutesEditViewModel(substituteList, []);
   }
 }

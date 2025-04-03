@@ -3,9 +3,9 @@ import DateLib from "../../../_dates/DateLib.ts";
 import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
 import ShiftContextNote from "../../entities/ShiftContextNote.ts";
 import TimeSlot from "../../entities/TimeSlot.ts";
-import IViewModel from "../_shared/IViewModel.ts";
+import ViewModel from "../_shared/_ViewModel.ts";
 
-export default class ScheduleCopyViewModel implements IViewModel {
+export default class ScheduleCopyViewModel extends ViewModel {
   public confirm: boolean;
   public fromStartDate: Date | null;
   public fromEndDate: Date | null;
@@ -15,7 +15,6 @@ export default class ScheduleCopyViewModel implements IViewModel {
   public includeAssignees: boolean;
   public includeShiftContextNotes: boolean;
   public includeTimeSlotNotes: boolean;
-  public csrf_token: string;
   public errors: string[];
 
   public newTimeSlots: TimeSlot[] = [];
@@ -31,9 +30,9 @@ export default class ScheduleCopyViewModel implements IViewModel {
     includeAssignees: boolean,
     includeShiftContextNotes: boolean,
     includeTimeSlotNotes: boolean,
-    csrf_token: string,
     errors: string[],
   ) {
+    super();
     this.confirm = confirm;
     this.fromStartDate = fromStartDate;
     this.fromEndDate = fromEndDate;
@@ -43,7 +42,6 @@ export default class ScheduleCopyViewModel implements IViewModel {
     this.includeAssignees = includeAssignees;
     this.includeShiftContextNotes = includeShiftContextNotes;
     this.includeTimeSlotNotes = includeTimeSlotNotes;
-    this.csrf_token = csrf_token;
     this.errors = errors;
   }
 
@@ -62,7 +60,6 @@ export default class ScheduleCopyViewModel implements IViewModel {
       formData.getBool("includeAssignees"),
       formData.getBool("includeShiftContextNotes"),
       formData.getBool("includeTimeSlotNotes"),
-      "",
       [],
     );
   }

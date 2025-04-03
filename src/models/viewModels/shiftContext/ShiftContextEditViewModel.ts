@@ -7,18 +7,19 @@ export default class ShiftContextEditViewModel extends FormViewModel {
   public constructor(
     isEdit: boolean,
     errors: string[],
-    csrf_token: string,
     shiftContext: ShiftContext,
   ) {
-    super(isEdit, errors, csrf_token);
+    super(isEdit, errors);
     this.shiftContext = shiftContext;
   }
 
   public static empty() {
-    return new ShiftContextEditViewModel(false, [], "", ShiftContext.empty());
+    return new ShiftContextEditViewModel(false, [], ShiftContext.empty());
   }
 
-  public static fromFormData(formData: FormData) {
+  public static async fromRequest(request: Request) {
+    const formData = await request.formData();
+
     const id = parseInt(formData.get("id") as string ?? "0");
     const name = formData.get("name") as string ?? "";
     const ageGroup = formData.get("ageGroup") as string ?? "";
@@ -32,11 +33,6 @@ export default class ShiftContextEditViewModel extends FormViewModel {
       location,
       description,
     );
-    return new ShiftContextEditViewModel(false, [], "", shiftContext);
-  }
-
-  static async fromRequest(request: Request) {
-    const formData = await request.formData();
-    return this.fromFormData(formData);
+    return new ShiftContextEditViewModel(false, [], shiftContext);
   }
 }

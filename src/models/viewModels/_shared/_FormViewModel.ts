@@ -1,11 +1,11 @@
-import IViewModel from "./IViewModel.ts";
+import ViewModel from "./_ViewModel.ts";
 
-export default abstract class FormViewModel implements IViewModel {
-  public csrf_token: string = "";
+export default abstract class FormViewModel extends ViewModel {
   public isEdit: boolean = false;
   public errors: string[] = [];
 
   constructor(isEdit: boolean, errors: string[]) {
+    super();
     this.isEdit = isEdit;
     this.errors = errors;
   }

@@ -1,12 +1,11 @@
 import Color from "../../entities/Color.ts";
-import IViewModel from "../_shared/IViewModel.ts";
+import ViewModel from "../_shared/_ViewModel.ts";
 
-export default class ColorsViewModel implements IViewModel {
+export default class ColorsViewModel extends ViewModel {
   public colors: Color[] = [];
-  public csrf_token: string = "";
 
-  public constructor(colors: Color[], csrf_token: string) {
+  public constructor(colors: Color[]) {
+    super();
     this.colors = colors;
-    this.csrf_token = csrf_token;
   }
 }

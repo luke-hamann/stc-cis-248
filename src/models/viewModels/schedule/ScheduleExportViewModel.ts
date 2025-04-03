@@ -1,6 +1,6 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
 import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
-import IViewModel from "../_shared/IViewModel.ts";
+import ViewModel from "../_shared/_ViewModel.ts";
 
 const spreadsheetFormats = ["csv", "excel"] as const;
 export type SpreadsheetFormat = typeof spreadsheetFormats[number];
@@ -8,12 +8,11 @@ export type SpreadsheetFormat = typeof spreadsheetFormats[number];
 export const isSpreadsheetFormat = (x: any): x is SpreadsheetFormat =>
   spreadsheetFormats.includes(x);
 
-export default class ScheduleExportFormViewModel implements IViewModel {
+export default class ScheduleExportFormViewModel extends ViewModel {
   public title: string;
   public startDate: BetterDate | null;
   public endDate: BetterDate | null;
   public format: SpreadsheetFormat | null;
-  public csrf_token: string = "";
   public errors: string[];
 
   public constructor(
@@ -23,6 +22,7 @@ export default class ScheduleExportFormViewModel implements IViewModel {
     format: SpreadsheetFormat | null,
     errors: string[],
   ) {
+    super();
     this.title = title;
     this.startDate = startDate;
     this.endDate = endDate;
@@ -50,14 +50,12 @@ export default class ScheduleExportFormViewModel implements IViewModel {
       start ? BetterDate.fromDate(start) : null,
       end ? BetterDate.fromDate(end) : null,
       spreadsheetFormat,
-      "",
       [],
     );
   }
 
   public get cancelLink() {
-    const weekStart = this.startDate!.floorToSunday();
-    const component = weekStart.toDateString().replaceAll("-", "/");
+    const component = this.startDate!.floorToSunday().toDateString("/");
     return `/schedule/${component}/`;
   }
 

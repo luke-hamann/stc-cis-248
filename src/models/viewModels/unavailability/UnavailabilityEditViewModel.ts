@@ -14,9 +14,8 @@ export default class UnavailabilityEditViewModel extends FormViewModel {
     unavailability: Unavailability,
     isEdit: boolean,
     errors: [],
-    csrf_token: string,
   ) {
-    super(isEdit, errors, csrf_token);
+    super(isEdit, errors);
     this.teamMember = teamMember;
     this.unavailability = unavailability;
   }
@@ -52,7 +51,7 @@ export default class UnavailabilityEditViewModel extends FormViewModel {
       isPreference,
     );
 
-    return new UnavailabilityEditViewModel(null, unavailability, false, [], "");
+    return new UnavailabilityEditViewModel(null, unavailability, false, []);
   }
 
   public get startDateString(): string {

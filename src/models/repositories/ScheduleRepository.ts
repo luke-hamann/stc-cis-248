@@ -19,6 +19,7 @@ import TeamMember from "../entities/TeamMember.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import Database from "./_Database.ts";
 import TimeSlotPossibility from "../entities/TimeSlotPossiblity.ts";
+import ScheduleWarnings from "../entities/ScheduleWarnings.ts";
 
 export interface ITimeSlotRowComponent {
   timeSlotId: number;
@@ -94,17 +95,6 @@ export interface IMaxWeeklyDaysViolationRow extends ITeamMemberRowComponent {
 export interface IMaxWeeklyHoursViolationRow extends ITeamMemberRowComponent {
   totalHours: number;
 }
-
-export type ScheduleWarnings = {
-  externality: TimeSlot[];
-  bilocation: [TimeSlot, TimeSlot][];
-  adultOnly: TimeSlot[];
-  shiftContextPreferenceViolations: TimeSlot[];
-  availabilityViolations: TimeSlot[];
-  maxWeeklyDaysViolations: [TeamMember, number][];
-  maxWeeklyHoursViolations: [TeamMember, number][];
-  unassignedTimeSlots: TimeSlot[];
-};
 
 export default class ScheduleRepository {
   private database: Database;
@@ -465,16 +455,7 @@ export default class ScheduleRepository {
    * @returns The schedule warnings
    */
   public async getWarnings(start: Date, end: Date): Promise<ScheduleWarnings> {
-    const warnings: ScheduleWarnings = {
-      externality: [],
-      bilocation: [],
-      adultOnly: [],
-      shiftContextPreferenceViolations: [],
-      availabilityViolations: [],
-      maxWeeklyDaysViolations: [],
-      maxWeeklyHoursViolations: [],
-      unassignedTimeSlots: [],
-    };
+    const warnings = new ScheduleWarnings();
 
     // Externality warnings
 

@@ -6,7 +6,7 @@
   <h1 class="mt-8 text-4xl font-bold">{{ model.title }}</h1>
   <div class="mt-8">
     {% if model.isBodyPreformatted %}
-      <pre class="border rounded overflow-x-auto">{{ model.body }}</pre>
+      <pre class="p-1 border rounded overflow-x-auto">{{ model.body }}</pre>
     {% else %}
       <p>{{ model.body }}</p>
     {% endif %}

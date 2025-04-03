@@ -14,9 +14,8 @@ export default class TypicalAvailabilityEditViewModel extends FormViewModel {
     typicalAvailability: TypicalAvailability,
     isEdit: boolean,
     errors: string[],
-    csrf_token: string,
   ) {
-    super(isEdit, errors, csrf_token);
+    super(isEdit, errors);
     this.teamMember = teamMember;
     this.typicalAvailability = typicalAvailability;
   }
@@ -59,7 +58,6 @@ export default class TypicalAvailabilityEditViewModel extends FormViewModel {
       typicalAvailability,
       false,
       [],
-      "",
     );
   }
 }

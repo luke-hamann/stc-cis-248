@@ -9,12 +9,11 @@ export default class ShiftContextPreferencesEditViewModel
   shiftContextPreferences: { preferable: number[]; unpreferable: number[] };
 
   public constructor(
-    csrf_token: string,
     teamMember: TeamMember | null,
     shiftContexts: ShiftContext[],
     shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
   ) {
-    super(true, [], csrf_token);
+    super(true, []);
     this.teamMember = teamMember;
     this.shiftContexts = shiftContexts;
     this.shiftContextPreferences = shiftContextPreferences;
@@ -42,7 +41,6 @@ export default class ShiftContextPreferencesEditViewModel
     const shiftContextPreferences = { preferable, unpreferable };
 
     return new ShiftContextPreferencesEditViewModel(
-      "",
       null,
       [],
       shiftContextPreferences,
