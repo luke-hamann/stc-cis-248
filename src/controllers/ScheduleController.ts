@@ -8,10 +8,17 @@ import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
 import ScheduleWeekViewModel from "../models/viewModels/schedule/ScheduleWeekViewModel.ts";
 import CalendarViewPartial from "../models/viewModels/_shared/CalendarViewPartial.ts";
 import ScheduleExportFormViewModel from "../models/viewModels/schedule/ScheduleExportViewModel.ts";
+import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
+/** Handles the schedule year, week, and export pages */
 export default class ScheduleController extends Controller {
+  /** The schedule repository */
   private schedules: ScheduleRepository;
 
+  /**
+   * Constructs the controller using the schedule repository
+   * @param schedules The schedule repository
+   */
   constructor(
     schedules: ScheduleRepository,
   ) {
@@ -41,17 +48,21 @@ export default class ScheduleController extends Controller {
   }
 
   /**
-   * Schedule index GET
+   * Redirect from the index page to the schedule calendar for the current year
+   * @param context The application context
+   * @returns The response
    */
-  public index(context: Context) {
+  public index(context: Context): ResponseWrapper {
     const year = new Date().getFullYear();
     return this.RedirectResponse(context, `/schedule/${year}/`);
   }
 
   /**
-   * Schedule year GET
+   * Gets the schedule year calendar page
+   * @param context The application context
+   * @returns The response
    */
-  public year(context: Context) {
+  public year(context: Context): ResponseWrapper {
     const year = parseInt(context.match[1]);
     if (isNaN(year)) {
       return this.NotFoundResponse(context);
@@ -65,9 +76,11 @@ export default class ScheduleController extends Controller {
   }
 
   /**
-   * Schedule week GET
+   * Gets the schedule week editor page
+   * @param context The application context
+   * @returns The response
    */
-  public async week(context: Context) {
+  public async week(context: Context): Promise<ResponseWrapper> {
     const [_, year, month, day] = context.match;
     const startDate = new Date(
       parseInt(year),
@@ -99,9 +112,11 @@ export default class ScheduleController extends Controller {
   }
 
   /**
-   * Schedule export GET
+   * Gets the scedule export form
+   * @param context The application context
+   * @returns The response
    */
-  public exportGet(context: Context) {
+  public exportGet(context: Context): ResponseWrapper {
     const [_, y1, m1, d1, y2, m2, d2] = context.match;
     const start = new Date(parseInt(y1), parseInt(m1) - 1, parseInt(d1));
     const end = new Date(parseInt(y2), parseInt(m2) - 1, parseInt(d2));
@@ -124,6 +139,14 @@ export default class ScheduleController extends Controller {
     return this.HTMLResponse(context, "./views/schedule/export.html", model);
   }
 
+  /**
+   * Converts a schedule cell object to a plain text string based on its type
+   *
+   * Helper method
+   *
+   * @param cell The schedule cell
+   * @returns The schedule cell's plain text string representation
+   */
   public cellToString(cell: ScheduleCell): string {
     let value = "";
 
@@ -162,9 +185,11 @@ export default class ScheduleController extends Controller {
   }
 
   /**
-   * Schedule export POST
+   * Accepts requests to export the schedule to a file
+   * @param context The application context
+   * @returns The response
    */
-  public async exportPost(context: Context) {
+  public async exportPost(context: Context): Promise<ResponseWrapper> {
     const model = await ScheduleExportFormViewModel.fromRequest(
       context.request,
     );
@@ -250,5 +275,7 @@ export default class ScheduleController extends Controller {
         await workbook.xlsx.writeBuffer() as ArrayBuffer,
       );
     }
+
+    return this.NotFoundResponse(context);
   }
 }

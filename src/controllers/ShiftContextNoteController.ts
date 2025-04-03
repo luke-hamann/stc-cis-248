@@ -5,18 +5,28 @@ import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteR
 import ShiftContextNoteEditViewModel from "../models/viewModels/shiftContextNote/ShiftContextNoteEditViewModel.ts";
 import BetterDate from "../_dates/BetterDate.ts";
 import ShiftContextNote from "../models/entities/ShiftContextNote.ts";
+import { ResponseWrapper } from "../mod.ts";
 
+/** Controls the shift context note pages */
 export default class ShiftContextNoteController extends Controller {
-  private shiftContextNoteRepository: ShiftContextNoteRepository;
-  private colorRepository: ColorRepository;
+  /** The shift context note repository */
+  private _shiftContextNoteRepository: ShiftContextNoteRepository;
 
+  /** The color repository */
+  private _colorRepository: ColorRepository;
+
+  /**
+   * Constructs the shift context note controller based on the necessary repositories
+   * @param shiftContextNoteRepository The shift context note repository
+   * @param colorRepository The color repository
+   */
   constructor(
     shiftContextNoteRepository: ShiftContextNoteRepository,
     colorRepository: ColorRepository,
   ) {
     super();
-    this.shiftContextNoteRepository = shiftContextNoteRepository;
-    this.colorRepository = colorRepository;
+    this._shiftContextNoteRepository = shiftContextNoteRepository;
+    this._colorRepository = colorRepository;
     this.routes = [
       {
         method: "GET",
@@ -32,7 +42,7 @@ export default class ShiftContextNoteController extends Controller {
   }
 
   /**
-   * Extract a shift context note date from URL string matches
+   * Extracts a shift context note date from URL string matches
    * @param context The application context
    * @returns The extracted date or null
    */
@@ -50,9 +60,11 @@ export default class ShiftContextNoteController extends Controller {
   }
 
   /**
-   * Shift context note edit GET
+   * Gets the shift context note edit page
+   * @param context The application context
+   * @returns The response
    */
-  public async editGet(context: Context) {
+  public async editGet(context: Context): Promise<ResponseWrapper> {
     const shiftContextId = parseInt(context.match[1]);
     if (isNaN(shiftContextId)) {
       return this.NotFoundResponse(context);
@@ -63,7 +75,7 @@ export default class ShiftContextNoteController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    let shiftContextNote = await this.shiftContextNoteRepository
+    let shiftContextNote = await this._shiftContextNoteRepository
       .get(
         shiftContextId,
         date,
@@ -82,9 +94,8 @@ export default class ShiftContextNoteController extends Controller {
 
     const model = new ShiftContextNoteEditViewModel(
       [],
-      context.csrf_token,
       shiftContextNote,
-      await this.colorRepository.list(),
+      await this._colorRepository.list(),
       BetterDate.fromDate(date).floorToSunday().toDate(),
     );
 
@@ -96,9 +107,11 @@ export default class ShiftContextNoteController extends Controller {
   }
 
   /**
-   * Shift context note edit POST
+   * Accepts a request to update a shift context note
+   * @param context The application context
+   * @returns The response
    */
-  public async editPost(context: Context) {
+  public async editPost(context: Context): Promise<ResponseWrapper> {
     const shiftContextId = parseInt(context.match[1]);
     if (isNaN(shiftContextId)) {
       return this.NotFoundResponse(context);
@@ -115,12 +128,12 @@ export default class ShiftContextNoteController extends Controller {
     model.shiftContextNote.shiftContextId = shiftContextId;
     model.shiftContextNote.date = date;
 
-    model.errors = await this.shiftContextNoteRepository.validate(
+    model.errors = await this._shiftContextNoteRepository.validate(
       model.shiftContextNote,
     );
     if (!model.isValid()) {
       model.csrf_token = context.csrf_token;
-      model.colors = await this.colorRepository.list();
+      model.colors = await this._colorRepository.list();
       return this.HTMLResponse(
         context,
         "./views/shiftContextNote/edit.html",
@@ -131,14 +144,11 @@ export default class ShiftContextNoteController extends Controller {
     model.shiftContextNote.shiftContextId = shiftContextId;
     model.shiftContextNote.date = date;
 
-    await this.shiftContextNoteRepository.update(
+    await this._shiftContextNoteRepository.update(
       model.shiftContextNote,
     );
 
-    const newDate = new BetterDate(date.getTime()).toDateString().replaceAll(
-      "-",
-      "/",
-    );
+    const newDate = new BetterDate(date.getTime()).toDateString("/");
     return this.RedirectResponse(context, `/schedule/${newDate}/`);
   }
 }

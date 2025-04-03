@@ -1,18 +1,26 @@
 import ResponseWrapper from "./ResponseWrapper.ts";
 
-/**
- * A class for representing an application state context
- */
+/** A class for representing an application state context */
 export default class Context {
+  /** The incoming HTTP request */
   public readonly request: Request;
+
+  /** The incoming HTTP cookies */
   public readonly requestCookies: Map<string, string>;
+
+  /** The outgoing HTTP response */
   public response: ResponseWrapper;
   public match: string[] = [];
+
+  /** The anti-cross-site-request-forgery token from the session */
   public csrf_token: string = "";
 
   /**
-   * Construct the application state context
-   * @param request The HTTP request
+   * Constructs the application state context
+   *
+   * Also converts the Cookie HTTP header into a Map
+   *
+   * @param request The incoming HTTP request
    * @param response A response wrapper
    */
   public constructor(request: Request, response: ResponseWrapper) {

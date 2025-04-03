@@ -4,74 +4,96 @@ import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts
 import SubstitutesEditViewModel from "../models/viewModels/substitute/SubstitutesEditViewModel.ts";
 import Controller from "../_framework/Controller.ts";
 import BetterDate from "../_dates/BetterDate.ts";
+import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
+/** Controls the substitute pages */
 export default class SubstituteController extends Controller {
-  private substitutes: SubstituteRepository;
-  private teamMembers: TeamMemberRepository;
+  /** The substitutes repository */
+  private _substitutes: SubstituteRepository;
 
+  /** The team members repository */
+  private _teamMembers: TeamMemberRepository;
+
+  /**
+   * Constructs the substitutes controller using the necessary repositories
+   * @param substitutes The substitutes repository
+   * @param teamMembers The team members repository
+   */
   constructor(
     substitutes: SubstituteRepository,
     teamMembers: TeamMemberRepository,
   ) {
     super();
-    this.substitutes = substitutes;
-    this.teamMembers = teamMembers;
+    this._substitutes = substitutes;
+    this._teamMembers = teamMembers;
     this.routes = [
       {
         method: "GET",
         pattern: "/substitutes/(\\d{4})/(\\d{2})/(\\d{2})/",
-        action: this.editSubstitutesGet,
+        action: this.editGet,
       },
       {
         method: "POST",
         pattern: "/substitutes/(\\d{4})/(\\d{2})/(\\d{2})/",
-        action: this.editSubstitutesPost,
+        action: this.editPost,
       },
     ];
   }
 
-  private getDateFromContext(context: Context): Date {
+  /**
+   * Gets a date from the application context url, or null if the date is invalid
+   * @param context The application context
+   * @returns The date
+   */
+  private getDateFromContext(context: Context): Date | null {
     const [_, y, m, d] = context.match;
-    return new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+    const date = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+    if (isNaN(date.getTime())) return null;
+    return date;
   }
 
-  public async editSubstitutesGet(context: Context) {
+  /**
+   * Gets the substitute list edit form for a given date
+   * @param context The application context
+   * @returns The response
+   */
+  public async editGet(context: Context): Promise<ResponseWrapper> {
     const date = this.getDateFromContext(context);
-    if (isNaN(date.getTime())) {
-      return this.NotFoundResponse(context);
-    }
+    if (date == null) return this.NotFoundResponse(context);
 
     const model = new SubstitutesEditViewModel(
-      await this.substitutes.getSubstituteList(date),
-      await this.teamMembers.list(),
-      context.csrf_token,
+      await this._substitutes.getSubstituteList(date),
+      await this._teamMembers.list(),
     );
 
     return this.HTMLResponse(context, "./views/substitute/edit.html", model);
   }
 
-  public async editSubstitutesPost(context: Context) {
+  /**
+   * Accepts requests to update the substitute list for a given date
+   * @param context The application context
+   * @returns The response
+   */
+  public async editPost(context: Context): Promise<ResponseWrapper> {
     const date = this.getDateFromContext(context);
-    if (isNaN(date.getTime())) {
-      return this.NotFoundResponse(context);
-    }
+    if (date == null) return this.NotFoundResponse(context);
 
     const model = await SubstitutesEditViewModel.fromRequest(context.request);
     model.substituteList.date = date;
 
-    model.errors = await this.substitutes.validate(
+    model.errors = await this._substitutes.validate(
       model.substituteList,
     );
     if (!model.isValid()) {
-      model.teamMembers = await this.teamMembers.list();
-      model.csrf_token = context.csrf_token;
+      model.teamMembers = await this._teamMembers.list();
       return this.HTMLResponse(context, "./views/substitute/edit.html", model);
     }
 
-    await this.substitutes.update(model.substituteList);
+    await this._substitutes.update(model.substituteList);
 
-    const component = BetterDate.fromDate(date).floorToSunday().toDateString()
-      .replaceAll("-", "/");
+    const component = BetterDate.fromDate(date).floorToSunday().toDateString(
+      "/",
+    );
     const url = `/schedule/${component}/`;
     return this.RedirectResponse(context, url);
   }

@@ -4,20 +4,23 @@ import ColorEditViewModel from "../models/viewModels/color/ColorEditViewModel.ts
 import ColorsViewModel from "../models/viewModels/color/ColorsViewModel.ts";
 import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import Controller from "../_framework/Controller.ts";
+import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
 /**
  * Controls the color pages of the application
  */
 export default class ColorController extends Controller {
   /** The data store for color CRUD */
-  private colorRepository: IColorRepository;
+  private _colorRepository: IColorRepository;
 
   /**
-   * @param colorRepository
+   * Constructs the color controller given the color repository
+   *
+   * @constructor
    */
   constructor(colorRepository: IColorRepository) {
     super();
-    this.colorRepository = colorRepository;
+    this._colorRepository = colorRepository;
     this.routes = [
       { method: "GET", pattern: "/colors/", action: this.list },
       { method: "GET", pattern: "/colors/add/", action: this.addGet },
@@ -38,20 +41,22 @@ export default class ColorController extends Controller {
   }
 
   /**
-   * @param context
-   * @returns
+   * Gets the color list page
+   * @param context The application context
+   * @returns The response
    */
-  public async list(context: Context) {
-    const colors = await this.colorRepository.list();
-    const model = new ColorsViewModel(colors, context.csrf_token);
+  public async list(context: Context): Promise<ResponseWrapper> {
+    const colors = await this._colorRepository.list();
+    const model = new ColorsViewModel(colors);
     return this.HTMLResponse(context, "./views/color/list.html", model);
   }
 
   /**
-   * @param context
-   * @returns
+   * Gets the color add form
+   * @param context The application context
+   * @returns The response
    */
-  public addGet(context: Context) {
+  public addGet(context: Context): ResponseWrapper {
     return this.HTMLResponse(
       context,
       "./views/color/edit.html",
@@ -60,70 +65,75 @@ export default class ColorController extends Controller {
   }
 
   /**
-   * @param context
-   * @returns
+   * Accepts requests to add a color
+   * @param context The application context
+   * @returns The response
    */
-  public async addPost(context: Context) {
+  public async addPost(context: Context): Promise<ResponseWrapper> {
     const model = await ColorEditViewModel.fromRequest(context.request);
 
-    model.errors = await this.colorRepository.validate(model.color);
+    model.errors = await this._colorRepository.validate(model.color);
     if (!model.isValid()) {
       return this.HTMLResponse(context, "./views/color/edit.html", model);
     }
 
-    await this.colorRepository.add(model.color);
+    await this._colorRepository.add(model.color);
     return this.RedirectResponse(context, "/colors/");
   }
 
   /**
-   * @param context
-   * @returns
+   * Gets the color edit form
+   * @param context The application context
+   * @returns The response
    */
-  public async editGet(context: Context) {
+  public async editGet(context: Context): Promise<ResponseWrapper> {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return this.NotFoundResponse(context);
     }
 
-    const color = await this.colorRepository.get(id);
+    const color = await this._colorRepository.get(id);
     if (color == null) {
       return this.NotFoundResponse(context);
     }
 
-    const model = new ColorEditViewModel(true, [], context.csrf_token, color);
+    const model = new ColorEditViewModel(true, [], color);
     return this.HTMLResponse(context, "./views/color/edit.html", model);
   }
 
   /**
-   * @param context
-   * @returns
+   * Accepts a request to edit a color
+   * @param context The application context
+   * @returns The response
    */
-  public async editPost(context: Context) {
+  public async editPost(context: Context): Promise<ResponseWrapper> {
     const model = await ColorEditViewModel.fromRequest(context.request);
     model.color.id = parseInt(context.match[1]);
 
-    model.errors = await this.colorRepository.validate(model.color);
+    model.errors = await this._colorRepository.validate(model.color);
     if (!model.isValid()) {
       model.isEdit = true;
       model.csrf_token = context.csrf_token;
       return this.HTMLResponse(context, "./views/color/edit.html", model);
     }
 
-    await this.colorRepository.update(model.color);
+    await this._colorRepository.update(model.color);
     return this.RedirectResponse(context, "/colors/");
   }
 
   /**
-   * @param context
-   * @returns
+   * Gets the delete color confirmation form
+   *
+   * @param context The application context
+   * @returns The response
    */
-  public async deleteGet(context: Context) {
+  public async deleteGet(context: Context): Promise<ResponseWrapper> {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return this.NotFoundResponse(context);
     }
 
-    const color = await this.colorRepository.get(id);
+    const color = await this._colorRepository.get(id);
     if (color == null) {
       return this.NotFoundResponse(context);
     }
@@ -141,21 +151,22 @@ export default class ColorController extends Controller {
   }
 
   /**
-   * @param context
-   * @returns
+   * Accepts a request to delete a color
+   * @param context The application context
+   * @returns The response
    */
-  public async deletePost(context: Context) {
+  public async deletePost(context: Context): Promise<ResponseWrapper> {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return this.NotFoundResponse(context);
     }
 
-    const color = await this.colorRepository.get(id);
+    const color = await this._colorRepository.get(id);
     if (color == null) {
       return this.NotFoundResponse(context);
     }
 
-    await this.colorRepository.delete(id);
+    await this._colorRepository.delete(id);
     return this.RedirectResponse(context, "/colors/");
   }
 }

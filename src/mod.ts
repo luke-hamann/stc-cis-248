@@ -56,7 +56,6 @@ export { default as DateLib } from "./_dates/DateLib.ts";
 export { default as Context } from "./_framework/Context.ts";
 export { default as Controller } from "./_framework/Controller.ts";
 export { default as FormDataWrapper } from "./_framework/FormDataWrapper.ts";
-export { type HTTPMethod } from "./_framework/HTTPMethod.ts";
 export { default as ResponseWrapper } from "./_framework/ResponseWrapper.ts";
 
 export { default as Router } from "./controllers/_Router.ts";

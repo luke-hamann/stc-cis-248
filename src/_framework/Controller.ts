@@ -1,18 +1,15 @@
 import Context from "./Context.ts";
 import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
-import { HTTPMethod } from "./HTTPMethod.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 import nunjucks from "npm:nunjucks";
 import ViewModel from "../models/viewModels/_shared/_ViewModel.ts";
 
 /** Controls routing to action methods based on HTTP method and url patterns */
 export default class Controller {
-  /**
-   * Maps HTTP methods and URL patterns to action methods
-   */
+  /** Maps HTTP methods and URL patterns to action methods */
   protected routes: {
     /** The HTTP method that should be matched */
-    method: HTTPMethod;
+    method: "GET" | "POST";
     /** The partial regex expression that should match the url */
     pattern: string;
     /** The action method that should be executed if the method and pattern match */
@@ -113,7 +110,6 @@ export default class Controller {
         "404 Not Found",
         "The requested page could not be found.",
         false,
-        context.csrf_token,
       ),
     );
   }

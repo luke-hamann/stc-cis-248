@@ -2,8 +2,13 @@
  * A wrapper class for Date objects that makes common date operations available
  */
 export default class BetterDate {
+  /** The date object being wrapped */
   private _date: Date;
 
+  /**
+   * Constructs the BetterDate
+   * @param timestamp The Unix time
+   */
   public constructor(timestamp: number = new Date().getTime()) {
     this._date = new Date(timestamp);
   }
@@ -47,16 +52,31 @@ export default class BetterDate {
     return `${hours}:${minutes}`;
   }
 
+  /**
+   * Converts the date and time to a string representation
+   *
+   * Formatted as "yyyy-mm-ddThh:ii"
+   * @returns
+   */
   public toString(): string {
     return `${this.toDateString()}T${this.toTimeString()}`;
   }
 
+  /**
+   * Returns a new date with the number of days added to it
+   * @param days The number of days to add
+   * @returns The new date
+   */
   public addDays(days: number): BetterDate {
     const newDate = new Date(this._date.getTime());
     newDate.setDate(newDate.getDate() + days);
     return new BetterDate(newDate.getTime());
   }
 
+  /**
+   * Returns a new date floored to the most recent past Sunday
+   * @returns The new date
+   */
   public floorToSunday(): BetterDate {
     return this.addDays(-this._date.getDay());
   }
