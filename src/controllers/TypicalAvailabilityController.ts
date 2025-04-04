@@ -11,17 +11,26 @@ import TypicalAvailabilityListViewModel from "../models/viewModels/typicalAvaila
 import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
+/** Controls the typical availability pages */
 export default class TypicalAvailabilityController extends Controller {
-  public teamMembers: TeamMemberRepository;
-  public typicalAvailability: TypicalAvailabilityRepository;
+  /** The team member repository */
+  public _teamMembers: TeamMemberRepository;
 
+  /** The typical availability repository */
+  public _typicalAvailability: TypicalAvailabilityRepository;
+
+  /**
+   * Constructs the controller using the necessary repositories
+   * @param teamMembers The team member repository
+   * @param typicalAvailability The typical availability repository
+   */
   public constructor(
     teamMembers: TeamMemberRepository,
     typicalAvailability: TypicalAvailabilityRepository,
   ) {
     super();
-    this.teamMembers = teamMembers;
-    this.typicalAvailability = typicalAvailability;
+    this._teamMembers = teamMembers;
+    this._typicalAvailability = typicalAvailability;
     this.routes = [
       {
         method: "GET",
@@ -61,14 +70,27 @@ export default class TypicalAvailabilityController extends Controller {
     ];
   }
 
+  /**
+   * Gets a team member object based on the application context url, or null if they do not exist
+   * @param context The application context
+   * @returns The team member or null
+   */
   private async getTeamMemberFromContext(
     context: Context,
   ): Promise<TeamMember | null> {
     const teamMemberId = parseInt(context.match[1]);
     if (isNaN(teamMemberId)) return null;
-    return await this.teamMembers.get(teamMemberId);
+    return await this._teamMembers.get(teamMemberId);
   }
 
+  /**
+   * Attempts to get a team member object and typical availability objects based on the context
+   *
+   * Returns null if either objects cannot be retrieved
+   *
+   * @param context The application context
+   * @returns The team member or null, and the typical availability or null
+   */
   private async getObjectsFromContext(
     context: Context,
   ): Promise<[
@@ -78,13 +100,13 @@ export default class TypicalAvailabilityController extends Controller {
     const teamMemberId = parseInt(context.match[1]);
     let teamMember: TeamMember | null = null;
     if (!isNaN(teamMemberId)) {
-      teamMember = await this.teamMembers.get(teamMemberId);
+      teamMember = await this._teamMembers.get(teamMemberId);
     }
 
     const typicalAvailabilityId = parseInt(context.match[2]);
     let typicalAvailability: TypicalAvailability | null = null;
     if (!isNaN(typicalAvailabilityId)) {
-      typicalAvailability = await this.typicalAvailability.get(
+      typicalAvailability = await this._typicalAvailability.get(
         typicalAvailabilityId,
       );
     }
@@ -93,7 +115,9 @@ export default class TypicalAvailabilityController extends Controller {
   }
 
   /**
-   * Team member typical availability GET
+   * Gets the team member typical availability list page
+   * @param context The application context
+   * @returns The response
    */
   public async list(context: Context): Promise<ResponseWrapper> {
     const teamMember = await this.getTeamMemberFromContext(context);
@@ -101,7 +125,7 @@ export default class TypicalAvailabilityController extends Controller {
 
     const model = new TypicalAvailabilityListViewModel(
       teamMember,
-      await this.typicalAvailability.list(teamMember.id),
+      await this._typicalAvailability.list(teamMember.id),
     );
 
     return this.HTMLResponse(
@@ -112,7 +136,9 @@ export default class TypicalAvailabilityController extends Controller {
   }
 
   /**
-   * Team member typical availability add GET
+   * Gets the typical availability add form
+   * @param context The application context
+   * @returns The response
    */
   public async addGet(context: Context): Promise<ResponseWrapper> {
     const teamMember = await this.getTeamMemberFromContext(context);
@@ -137,7 +163,6 @@ export default class TypicalAvailabilityController extends Controller {
       typicalAvailability,
       false,
       [],
-      context.csrf_token,
     );
 
     return this.HTMLResponse(
@@ -148,7 +173,9 @@ export default class TypicalAvailabilityController extends Controller {
   }
 
   /**
-   * Team member typical availability add POST
+   * Accepts requests to add a typical availability
+   * @param context The application context
+   * @returns The response
    */
   public async addPost(context: Context): Promise<ResponseWrapper> {
     const teamMember = await this.getTeamMemberFromContext(context);
@@ -160,7 +187,7 @@ export default class TypicalAvailabilityController extends Controller {
     model.teamMember = teamMember;
     model.typicalAvailability.teamMemberId = teamMember.id;
 
-    model.errors = await this.typicalAvailability.validate(
+    model.errors = await this._typicalAvailability.validate(
       model.typicalAvailability,
     );
     if (!model.isValid()) {
@@ -172,13 +199,15 @@ export default class TypicalAvailabilityController extends Controller {
       );
     }
 
-    await this.typicalAvailability.add(model.typicalAvailability);
+    await this._typicalAvailability.add(model.typicalAvailability);
     const url = `/team-member/${teamMember.id}/availability/`;
     return this.RedirectResponse(context, url);
   }
 
   /**
-   * Team member typical availability edit GET
+   * Gets the typical availability edit form
+   * @param context The application context
+   * @returns The response
    */
   public async editGet(context: Context): Promise<ResponseWrapper> {
     const [teamMember, typicalAvailability] = await this.getObjectsFromContext(
@@ -193,7 +222,6 @@ export default class TypicalAvailabilityController extends Controller {
       typicalAvailability,
       true,
       [],
-      context.csrf_token,
     );
 
     return this.HTMLResponse(
@@ -204,7 +232,9 @@ export default class TypicalAvailabilityController extends Controller {
   }
 
   /**
-   * Team member typical availability edit POST
+   * Accepts requests to edit a typical availability
+   * @param context The application context
+   * @returns The response
    */
   public async editPost(context: Context): Promise<ResponseWrapper> {
     const [teamMember, typicalAvailability] = await this.getObjectsFromContext(
@@ -220,11 +250,10 @@ export default class TypicalAvailabilityController extends Controller {
     model.typicalAvailability.teamMemberId = teamMember.id;
     model.typicalAvailability.id = typicalAvailability.id;
 
-    model.errors = await this.typicalAvailability.validate(
+    model.errors = await this._typicalAvailability.validate(
       model.typicalAvailability,
     );
     if (!model.isValid()) {
-      model.csrf_token = context.csrf_token;
       return this.HTMLResponse(
         context,
         "./views/typicalAvailability/edit.html",
@@ -232,13 +261,15 @@ export default class TypicalAvailabilityController extends Controller {
       );
     }
 
-    await this.typicalAvailability.update(model.typicalAvailability);
+    await this._typicalAvailability.update(model.typicalAvailability);
     const url = `/team-member/${teamMember.id}/availability/`;
     return this.RedirectResponse(context, url);
   }
 
   /**
-   * Team member typical availability delete GET
+   * Gets the typical availability delete confirmation form
+   * @param context The application context
+   * @returns The response
    */
   public async deleteGet(context: Context): Promise<ResponseWrapper> {
     const [teamMember, availability] = await this.getObjectsFromContext(
@@ -278,7 +309,9 @@ export default class TypicalAvailabilityController extends Controller {
   }
 
   /**
-   * Team member typical availability delete POST
+   * Accepts requests to delete a typical availability
+   * @param context The application context
+   * @returns The response
    */
   public async deletePost(context: Context): Promise<ResponseWrapper> {
     const [teamMember, typicalAvailability] = await this.getObjectsFromContext(
@@ -288,7 +321,7 @@ export default class TypicalAvailabilityController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    await this.typicalAvailability.delete(typicalAvailability.id);
+    await this._typicalAvailability.delete(typicalAvailability.id);
     const url = `/team-member/${teamMember.id}/availability/`;
     return this.RedirectResponse(context, url);
   }

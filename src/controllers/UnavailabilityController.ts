@@ -2,6 +2,7 @@ import BetterDate from "../_dates/BetterDate.ts";
 import DateLib from "../_dates/DateLib.ts";
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
+import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 import TeamMember from "../models/entities/TeamMember.ts";
 import Unavailability from "../models/entities/Unavailability.ts";
 import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
@@ -12,17 +13,26 @@ import UnavailabilityEditViewModel from "../models/viewModels/unavailability/Una
 import UnavailabilityWeekViewModel from "../models/viewModels/unavailability/UnavailabilityWeekViewModel.ts";
 import UnavailabilityYearViewModel from "../models/viewModels/unavailability/UnavailabilityYearViewModel.ts";
 
+/** Controls the team member unavailability pages */
 export default class UnavailabilityController extends Controller {
-  private teamMembers: TeamMemberRepository;
-  private unavailabilities: UnavailabilityRepository;
+  /** The team members repository */
+  private _teamMembers: TeamMemberRepository;
 
+  /** The unavailability repository */
+  private _unavailabilities: UnavailabilityRepository;
+
+  /**
+   * Constructs the controlling using the necessary repositories
+   * @param teamMembers The team member repository
+   * @param unavailabilities The unavailabilities repository
+   */
   constructor(
     teamMembers: TeamMemberRepository,
     unavailabilities: UnavailabilityRepository,
   ) {
     super();
-    this.teamMembers = teamMembers;
-    this.unavailabilities = unavailabilities;
+    this._teamMembers = teamMembers;
+    this._unavailabilities = unavailabilities;
     this.routes = [
       {
         method: "GET",
@@ -38,7 +48,7 @@ export default class UnavailabilityController extends Controller {
         method: "GET",
         pattern:
           "/team-member/(\\d+)/unavailability/(\\d{4})/(\\d{2})/(\\d{2})/",
-        action: this.weekGet,
+        action: this.week,
       },
       {
         method: "GET",
@@ -86,22 +96,46 @@ export default class UnavailabilityController extends Controller {
     ];
   }
 
+  /**
+   * Attempts to get a team member object based on the application context URL
+   *
+   * Returns null if the team member cannot be retrieved
+   *
+   * @param context The application context
+   * @returns The team member or null
+   */
   public async getTeamMemberFromContext(
     context: Context,
   ): Promise<TeamMember | null> {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) return null;
-    return await this.teamMembers.get(id);
+    return await this._teamMembers.get(id);
   }
 
+  /**
+   * Attempts to get an unavailability object based on the application context URL
+   *
+   * Returns null if the unavailability cannot be retrieved
+   *
+   * @param context The application context
+   * @returns The unavailability or null
+   */
   public async getUnavailabilityFromContext(
     context: Context,
   ): Promise<Unavailability | null> {
     const id = parseInt(context.match[2]);
     if (isNaN(id)) return null;
-    return await this.unavailabilities.get(id);
+    return await this._unavailabilities.get(id);
   }
 
+  /**
+   * Attempts to get a team member object and unavailability object based on the application context URL
+   *
+   * Returns null for an object if the object cannot be retrieved
+   *
+   * @param context The application context
+   * @returns The team member or null, and the unavailability or null
+   */
   public async getObjectsFromContext(
     context: Context,
   ): Promise<
@@ -114,9 +148,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability calendar redirect GET
+   * Redirects the unavailability index page to the unavailability calendar for the current year
+   * @param context The application context
+   * @returns The response
    */
-  public index(context: Context) {
+  public index(context: Context): ResponseWrapper {
     const id = context.match[1];
     const year = new Date().getFullYear();
     const url = `/team-member/${id}/unavailability/${year}/`;
@@ -125,9 +161,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability calendar GET
+   * Gets the unavailality calendar for a given year and team member
+   * @param context The application context
+   * @returns The response
    */
-  public async year(context: Context) {
+  public async year(context: Context): Promise<ResponseWrapper> {
     const teamMember = await this.getTeamMemberFromContext(context);
     if (teamMember == null) return this.NotFoundResponse(context);
 
@@ -140,7 +178,6 @@ export default class UnavailabilityController extends Controller {
     const model = new UnavailabilityYearViewModel(
       teamMember,
       calendar,
-      context.csrf_token,
     );
 
     return this.HTMLResponse(
@@ -151,9 +188,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability week GET
+   * Gets the unavailability list for a given week and team member
+   * @param context The application context
+   * @returns The response
    */
-  public async weekGet(context: Context) {
+  public async week(context: Context): Promise<ResponseWrapper> {
     const teamMember = await this.getTeamMemberFromContext(context);
     if (teamMember == null) return this.NotFoundResponse(context);
 
@@ -178,7 +217,7 @@ export default class UnavailabilityController extends Controller {
 
     const endDate = DateLib.addDays(startDate, 6);
 
-    const table = await this.unavailabilities.list(
+    const table = await this._unavailabilities.list(
       teamMember.id,
       startDate,
       endDate,
@@ -199,9 +238,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability week timeslot add GET
+   * Gets the unavailability add form
+   * @param context The application context
+   * @returns The response
    */
-  public async addGet(context: Context) {
+  public async addGet(context: Context): Promise<ResponseWrapper> {
     const teamMember = await this.getTeamMemberFromContext(context);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
@@ -212,7 +253,6 @@ export default class UnavailabilityController extends Controller {
       Unavailability.empty(),
       false,
       [],
-      context.csrf_token,
     );
 
     if (context.match.length == 6) {
@@ -231,9 +271,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability week timeslot add POST
+   * Accepts requests to add unavailability
+   * @param context The application context
+   * @returns The response
    */
-  public async addPost(context: Context) {
+  public async addPost(context: Context): Promise<ResponseWrapper> {
     const teamMember = await this.getTeamMemberFromContext(context);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
@@ -244,7 +286,7 @@ export default class UnavailabilityController extends Controller {
     );
     model.unavailability.teamMemberId = teamMember.id;
 
-    model.errors = await this.unavailabilities.validate(model.unavailability);
+    model.errors = await this._unavailabilities.validate(model.unavailability);
     if (!model.isValid()) {
       model.teamMember = teamMember;
       return this.HTMLResponse(
@@ -254,7 +296,7 @@ export default class UnavailabilityController extends Controller {
       );
     }
 
-    await this.unavailabilities.add(model.unavailability);
+    await this._unavailabilities.add(model.unavailability);
 
     const datePath = BetterDate.fromDate(model.unavailability.startDateTime!)
       .floorToSunday().toDateString().replaceAll("-", "/");
@@ -263,9 +305,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability week timeslot edit GET
+   * Gets the unavailability edit form
+   * @param context The application context
+   * @returns The response
    */
-  public async editGet(context: Context) {
+  public async editGet(context: Context): Promise<ResponseWrapper> {
     const [teamMember, unavailability] = await this.getObjectsFromContext(
       context,
     );
@@ -278,7 +322,6 @@ export default class UnavailabilityController extends Controller {
       unavailability,
       true,
       [],
-      context.csrf_token,
     );
 
     return this.HTMLResponse(
@@ -289,9 +332,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability week timeslot edit POST
+   * Accepts requests to edit an unavailability
+   * @param context The application context
+   * @returns The response
    */
-  public async editPost(context: Context) {
+  public async editPost(context: Context): Promise<ResponseWrapper> {
     const [teamMember, unavailability] = await this.getObjectsFromContext(
       context,
     );
@@ -305,7 +350,7 @@ export default class UnavailabilityController extends Controller {
     model.unavailability.id = unavailability.id;
     model.unavailability.teamMemberId = teamMember.id;
 
-    model.errors = await this.unavailabilities.validate(model.unavailability);
+    model.errors = await this._unavailabilities.validate(model.unavailability);
     if (!model.isValid()) {
       model.teamMember = teamMember;
       model.csrf_token = context.csrf_token;
@@ -316,7 +361,7 @@ export default class UnavailabilityController extends Controller {
       );
     }
 
-    await this.unavailabilities.update(model.unavailability);
+    await this._unavailabilities.update(model.unavailability);
 
     const datePath = BetterDate.fromDate(model.unavailability.startDateTime!)
       .floorToSunday().toDateString().replaceAll("-", "/");
@@ -325,9 +370,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability week timeslot delete GET
+   * Gets the unavailability delete confirmation form
+   * @param context The application context
+   * @returns The response
    */
-  public async deleteGet(context: Context) {
+  public async deleteGet(context: Context): Promise<ResponseWrapper> {
     const [teamMember, unavailability] = await this.getObjectsFromContext(
       context,
     );
@@ -355,9 +402,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability week timeslot delete POST
+   * Accepts requests to delete an unavailability
+   * @param context The application context
+   * @returns The response
    */
-  public async deletePost(context: Context) {
+  public async deletePost(context: Context): Promise<ResponseWrapper> {
     const [teamMember, unavailability] = await this.getObjectsFromContext(
       context,
     );
@@ -365,7 +414,7 @@ export default class UnavailabilityController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    await this.unavailabilities.delete(unavailability.id);
+    await this._unavailabilities.delete(unavailability.id);
 
     const datePath = BetterDate.fromDate(unavailability.startDateTime!)
       .floorToSunday().toDateString().replaceAll("-", "/");
@@ -375,11 +424,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability week clear GET
-   * @param context Application context
-   * @returns
+   * Gets the unavailability week clear form
+   * @param context The application context
+   * @returns The response
    */
-  public async clearGet(context: Context) {
+  public async clearGet(context: Context): Promise<ResponseWrapper> {
     const teamMember = await this.getTeamMemberFromContext(context);
     if (teamMember == null) return this.NotFoundResponse(context);
 
@@ -411,11 +460,11 @@ export default class UnavailabilityController extends Controller {
   }
 
   /**
-   * Team member unavailability week clear POST
-   * @param context
-   * @returns
+   * Accepts requests to clear an unavailability week
+   * @param context The application context
+   * @returns The response
    */
-  public async clearPost(context: Context) {
+  public async clearPost(context: Context): Promise<ResponseWrapper> {
     const teamMember = await this.getTeamMemberFromContext(context);
     if (teamMember == null) return this.NotFoundResponse(context);
 
@@ -431,7 +480,7 @@ export default class UnavailabilityController extends Controller {
       return this.RedirectResponse(context, url);
     }
 
-    await this.unavailabilities.deleteRange(
+    await this._unavailabilities.deleteRange(
       teamMember.id,
       date,
       BetterDate.fromDate(date).addDays(6).toDate(),

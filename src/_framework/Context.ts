@@ -1,3 +1,4 @@
+import { FormDataWrapper } from "../mod.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 
 /** A class for representing an application state context */
@@ -10,7 +11,12 @@ export default class Context {
 
   /** The outgoing HTTP response */
   public response: ResponseWrapper;
+
+  /** The regex match results for the incoming request URL */
   public match: string[] = [];
+
+  /** A wrapper for the request form data */
+  public formData: FormDataWrapper | null = null;
 
   /** The anti-cross-site-request-forgery token from the session */
   public csrf_token: string = "";
@@ -27,6 +33,7 @@ export default class Context {
     this.request = request;
     this.response = response;
 
+    // Cookies
     this.requestCookies = new Map<string, string>();
     const cookieHeader = request.headers.get("Cookie") ?? "";
     const cookiePairs = cookieHeader
@@ -40,5 +47,15 @@ export default class Context {
       value = decodeURIComponent(value);
       this.requestCookies.set(key, value);
     }
+  }
+
+  /**
+   * Initializes the form data of the application context
+   *
+   * Form data must be fetched asyncronously.
+   * Constructors cannot be asyncronous.
+   */
+  public async initializeFormData(): Promise<void> {
+    this.formData = new FormDataWrapper(await this.request.clone().formData());
   }
 }

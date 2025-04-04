@@ -40,6 +40,10 @@ export default class Router extends Controller {
     let response: ResponseWrapper | void;
     const context = new Context(request, new ResponseWrapper());
 
+    if (request.method == "POST") {
+      context.initializeFormData();
+    }
+
     // Controllers
     for (const controller of this._controllers) {
       try {

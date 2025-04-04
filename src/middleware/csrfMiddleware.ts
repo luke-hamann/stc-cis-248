@@ -1,5 +1,6 @@
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
+import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
 /** Middleware for enforcing anti request forgery */
 export default class CsrfMiddleware extends Controller {
@@ -14,9 +15,11 @@ export default class CsrfMiddleware extends Controller {
   /**
    * Ensures that requests include the correct anti request forgery token
    * @param context The application context
-   * @returns A 403 Forbidden response wrapper if the request appears forged
+   * @returns A 403 Forbidden response wrapper if the request appears forged, void otherwise
    */
-  public async checkCsrfToken(context: Context) {
+  public async checkCsrfToken(
+    context: Context,
+  ): Promise<ResponseWrapper | void> {
     const formData = await context.request.clone().formData();
     const submitted_csrf_token = formData.get("csrf_token") as string ?? "";
 
