@@ -472,7 +472,7 @@ export default class TimeSlotController extends Controller {
     }
 
     // Confirm mode
-    await this._timeSlots.deleteInDateRange(
+    await this._timeSlots.deleteRange(
       model.toStartDate!,
       model.toEndDate!,
     );
@@ -529,11 +529,11 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.deleteTimeSlots) {
-      this._timeSlots.deleteInDateRange(model.startDate!, model.endDate!);
+      this._timeSlots.deleteRange(model.startDate!, model.endDate!);
     }
 
     if (model.deleteSubstitutes) {
-      this._substitutes.deleteDateRange(model.startDate!, model.endDate!);
+      this._substitutes.deleteWhere(model.startDate!, model.endDate!);
     }
 
     if (model.deleteShiftContextNotes) {

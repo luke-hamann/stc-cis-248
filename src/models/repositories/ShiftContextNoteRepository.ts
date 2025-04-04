@@ -5,7 +5,7 @@ import Repository from "./_Repository.ts";
 import { IColorRepository } from "./ColorRepository.ts";
 import ShiftContextRepository from "./ShiftContextRepository.ts";
 
-/** Represents a  */
+/** Represents a repository for manipulating shift context notes */
 export interface IShiftContextNoteRepository {
   /**
    * Validates a shift context note
