@@ -481,7 +481,7 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.includeShiftContextNotes) {
-      await this._shiftContextNotes.deleteInDateRange(
+      await this._shiftContextNotes.deleteWhere(
         model.toStartDate!,
         model.toEndDate!,
       );
@@ -537,7 +537,7 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.deleteShiftContextNotes) {
-      this._shiftContextNotes.deleteInDateRange(
+      this._shiftContextNotes.deleteWhere(
         model.startDate!,
         model.endDate!,
       );

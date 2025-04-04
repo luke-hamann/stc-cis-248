@@ -3,9 +3,7 @@ import {
   ExecuteResult,
 } from "https://deno.land/x/mysql@v2.12.1/mod.ts";
 
-/**
- * Represents a database connection
- */
+/** Represents a database connection */
 export default class Database {
   /** The database client connection */
   private _client: Client | null = null;

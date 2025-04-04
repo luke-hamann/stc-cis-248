@@ -5,15 +5,91 @@ import Repository from "./_Repository.ts";
 import { IColorRepository } from "./ColorRepository.ts";
 import ShiftContextRepository from "./ShiftContextRepository.ts";
 
+/** Represents a  */
+export interface IShiftContextNoteRepository {
+  /**
+   * Validates a shift context note
+   * @param shiftContextNote The shift context note
+   * @returns An array of error message strings
+   */
+  validate(shiftContextNote: ShiftContextNote): Promise<string[]>;
+
+  /**
+   * Gets a shift context note by its shift context id and date
+   * @param shiftContextId The shift context id
+   * @param date The date of the shift context note
+   * @returns The shift context note
+   */
+  get(shiftContextId: number, date: Date): Promise<ShiftContextNote | null>;
+
+  /**
+   * Gets all the shift context notes within a date range and optionally a shift context
+   * @param start The start date
+   * @param end The end date
+   * @param shiftContextId The shift context id
+   * @returns The array of shift context notes
+   */
+  getWhere(
+    start: Date,
+    end: Date,
+    shiftContextId?: number,
+  ): Promise<ShiftContextNote[]>;
+
+  /**
+   * Updates a shift context note, deleting the note if the content is empty
+   *
+   * Refers to the shift context id and date of the note to update it
+   *
+   * @param shiftContextNote The shift context note
+   */
+  update(shiftContextNote: ShiftContextNote): Promise<void>;
+
+  /**
+   * Deletes all shift context notes within a given date range
+   * @param start The start date
+   * @param end The end date
+   */
+  deleteWhere(start: Date, end: Date): Promise<void>;
+
+  /**
+   * Computes the results of a potential shift context note copy operation
+   * @param sourceStart The start date of the source range
+   * @param sourceEnd The end date of the source range
+   * @param destinationStart The start date of the destination range
+   * @param destinationEnd The end date of the destination range
+   * @param repeatCopy Whether the source range should be repeated in the destination range
+   * @returns An array of shift context notes that would be created
+   */
+  calculateCopy(
+    sourceStart: Date,
+    sourceEnd: Date,
+    destinationStart: Date,
+    destinationEnd: Date,
+    repeatCopy: boolean,
+  ): Promise<ShiftContextNote[]>;
+}
+
+/** Represents the database row of a shift context note */
 export interface IShiftContextNoteRow {
+  /** The id of the shift context related to the shift context note */
   shiftContextId: number;
+
+  /** The date of the shift context note */
   date: Date;
+
+  /** The content of the note */
   note: string;
+
+  /** The id of the color associated with the note */
   colorId: number;
 }
 
-export default class ShiftContextNoteRepository extends Repository {
+export default class ShiftContextNoteRepository extends Repository
+  implements IShiftContextNoteRepository {
+  /** The color repository */
   private colors: IColorRepository;
+
+  /** The shift context repository */
   private shiftContexts: ShiftContextRepository;
 
   /** Defines a generic SQL query for fetching all shift context notes */
@@ -22,6 +98,12 @@ export default class ShiftContextNoteRepository extends Repository {
     FROM ShiftContextNotes
   `;
 
+  /**
+   * Constructs the shift context note repository using a database connection and other repositories
+   * @param database
+   * @param colors
+   * @param shiftContexts
+   */
   constructor(
     database: Database,
     colors: IColorRepository,
@@ -33,7 +115,7 @@ export default class ShiftContextNoteRepository extends Repository {
   }
 
   /**
-   * Validate a shift context note
+   * Validates a shift context note
    * @param shiftContextNote The shift context note
    * @returns An array of error message strings
    */
@@ -67,6 +149,11 @@ export default class ShiftContextNoteRepository extends Repository {
     return errors;
   }
 
+  /**
+   * Populates a shift context note with its cooresponding shift context and color information
+   * @param shiftContextNote The shift context note
+   * @returns The shift context note with related entities
+   */
   private async populate(shiftContextNote: ShiftContextNote) {
     const shiftContextId = shiftContextNote.shiftContextId;
     if (shiftContextId) {
@@ -84,7 +171,7 @@ export default class ShiftContextNoteRepository extends Repository {
   }
 
   /**
-   * Convert a database row to a shift context note
+   * Converts a database row to a shift context note
    * @param row The database row
    * @returns The shift context note
    */
@@ -108,7 +195,7 @@ export default class ShiftContextNoteRepository extends Repository {
   }
 
   /**
-   * Convert database rows to an array of shift context notes
+   * Converts database rows to an array of shift context notes
    * @param rows The database rows
    * @returns The array of shift context notes
    */
@@ -119,7 +206,7 @@ export default class ShiftContextNoteRepository extends Repository {
   }
 
   /**
-   * Get a shift context note by its shift context id and date
+   * Gets a shift context note by its shift context id and date
    * @param shiftContextId The shift context id
    * @param date The date of the shift context note
    * @returns The shift context note
@@ -128,7 +215,7 @@ export default class ShiftContextNoteRepository extends Repository {
     shiftContextId: number,
     date: Date,
   ): Promise<ShiftContextNote | null> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `${this.baseQuery} WHERE shiftContextId = ? AND date = ?`,
       [shiftContextId, date],
     );
@@ -141,9 +228,9 @@ export default class ShiftContextNoteRepository extends Repository {
   }
 
   /**
-   * Get all the shift context notes within a date range
-   * @param start The starting date of the range
-   * @param end The ending date of the range
+   * Gets all the shift context notes within a date range and optionally a shift context
+   * @param start The start date
+   * @param end The end date
    * @param shiftContextId The shift context id
    * @returns The array of shift context notes
    */
@@ -155,7 +242,7 @@ export default class ShiftContextNoteRepository extends Repository {
     let query = `${this.baseQuery} WHERE DATE(date) BETWEEN ? AND ?`;
     if (shiftContextId) query += " AND shiftContextId = ?";
 
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       query,
       [start, end, shiftContextId],
     );
@@ -172,16 +259,16 @@ export default class ShiftContextNoteRepository extends Repository {
   }
 
   /**
-   * Update a shift context note
+   * Updates a shift context note, deleting the note if the content is empty
    *
-   * Deletes the shift context note if the content is empty
+   * Refers to the shift context id and date of the note to update it
    *
-   * @param shiftContextNote The shift context note to update
+   * @param shiftContextNote The shift context note
    */
   public async update(
     shiftContextNote: ShiftContextNote,
-  ) {
-    await this.database.execute(
+  ): Promise<void> {
+    await this._database.execute(
       `
       DELETE FROM ShiftContextNotes
       WHERE shiftContextId = ? AND date = ?
@@ -190,7 +277,7 @@ export default class ShiftContextNoteRepository extends Repository {
     );
 
     if (shiftContextNote.note.length > 0) {
-      await this.database.execute(
+      await this._database.execute(
         `
           INSERT INTO ShiftContextNotes (shiftContextId, date, note, colorId)
           VALUES (?, ?, ?, ?)
@@ -205,22 +292,36 @@ export default class ShiftContextNoteRepository extends Repository {
     }
   }
 
-  public async deleteInDateRange(
-    startDate: Date,
-    endDate: Date,
+  /**
+   * Deletes all shift context notes within a given date range
+   * @param start The start date
+   * @param end The end date
+   */
+  public async deleteWhere(
+    start: Date,
+    end: Date,
   ): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         DELETE FROM ShiftContextNotes
         WHERE date BETWEEN ? AND ?
       `,
       [
-        startDate,
-        endDate,
+        start,
+        end,
       ],
     );
   }
 
+  /**
+   * Computes the results of a potential shift context note copy operation
+   * @param sourceStart The start date of the source range
+   * @param sourceEnd The end date of the source range
+   * @param destinationStart The start date of the destination range
+   * @param destinationEnd The end date of the destination range
+   * @param repeatCopy Whether the source range should be repeated in the destination range
+   * @returns An array of shift context notes that would be created
+   */
   public async calculateCopy(
     sourceStart: Date,
     sourceEnd: Date,

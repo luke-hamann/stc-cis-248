@@ -66,7 +66,7 @@ export default class SubstituteRepository extends Repository {
   }
 
   public async getSubstituteList(date: Date): Promise<SubstituteList> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         SELECT t.id, t.firstName, t.middleName, t.lastName
         FROM Substitutes s
@@ -82,7 +82,7 @@ export default class SubstituteRepository extends Repository {
   }
 
   public async update(substituteList: SubstituteList): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         DELETE FROM Substitutes
         WHERE date = ?
@@ -91,7 +91,7 @@ export default class SubstituteRepository extends Repository {
     );
 
     for (const teamMember of substituteList.teamMembers) {
-      await this.database.execute(
+      await this._database.execute(
         `
           INSERT INTO Substitutes (teamMemberId, date)
           VALUES (?, ?)
@@ -107,7 +107,7 @@ export default class SubstituteRepository extends Repository {
    * @param end Ending date
    */
   public async deleteDateRange(start: Date, end: Date): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         DELETE FROM Substitutes
         WHERE date BETWEEN ? AND ?

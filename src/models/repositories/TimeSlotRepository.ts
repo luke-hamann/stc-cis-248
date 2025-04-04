@@ -150,7 +150,7 @@ export default class TimeSlotRepository extends Repository {
    * @returns A list of time slots
    */
   public async getOnDate(date: Date): Promise<TimeSlot[]> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `${this.timeSlotQuery} WHERE DATE(startDateTime) = ?`,
       [date],
     );
@@ -167,7 +167,7 @@ export default class TimeSlotRepository extends Repository {
    * @returns The list of time slots
    */
   public async getInDateRange(start: Date, end: Date): Promise<TimeSlot[]> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         ${this.timeSlotQuery}
         WHERE DATE(startDateTime) BETWEEN ? AND ?
@@ -190,7 +190,7 @@ export default class TimeSlotRepository extends Repository {
     shiftContextId: number,
     date: Date,
   ): Promise<TimeSlot[]> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `${this.timeSlotQuery} WHERE shiftContextId = ? AND DATE(startDateTime) = ?`,
       [shiftContextId, date],
     );
@@ -210,7 +210,7 @@ export default class TimeSlotRepository extends Repository {
    * @param id
    */
   public async get(id: number): Promise<TimeSlot | null> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `${this.timeSlotQuery} WHERE id = ?`,
       [id],
     );
@@ -228,7 +228,7 @@ export default class TimeSlotRepository extends Repository {
    * @returns The new time slot id
    */
   public async add(t: TimeSlot): Promise<number> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         INSERT INTO TimeSlots
           (shiftContextId, startDateTime, endDateTime, requiresAdult, teamMemberId, note, colorId)
@@ -254,7 +254,7 @@ export default class TimeSlotRepository extends Repository {
    * @param t The time slot
    */
   public async update(t: TimeSlot): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         UPDATE TimeSlots
         SET shiftContextId = ?,
@@ -284,7 +284,7 @@ export default class TimeSlotRepository extends Repository {
    * @param id The time slot id
    */
   public async delete(id: number): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         DELETE FROM TimeSlots
         WHERE id = ?
@@ -302,7 +302,7 @@ export default class TimeSlotRepository extends Repository {
     start: Date,
     end: Date,
   ): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         DELETE FROM TimeSlots
         WHERE DATE(startDateTime) BETWEEN ? AND ?
@@ -394,7 +394,7 @@ export default class TimeSlotRepository extends Repository {
     end: Date,
   ): Promise<{ timeSlotGroup: TimeSlotGroup; timeSlotsByDay: TimeSlot[][] }[]> {
     // Calculate groupings
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         SELECT TIME(startDateTime) startTime, TIME(endDateTime) endTime, requiresAdult
         FROM TimeSlots
@@ -431,7 +431,7 @@ export default class TimeSlotRepository extends Repository {
       const table: TimeSlot[][] = [];
 
       for (const date of dates) {
-        const result = await this.database.execute(
+        const result = await this._database.execute(
           `
             ${this.timeSlotQuery}
             WHERE shiftContextId = ?
@@ -477,7 +477,7 @@ export default class TimeSlotRepository extends Repository {
       return "unknown";
     }
 
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         ${this.timeSlotQuery}
         WHERE id != ?
@@ -513,7 +513,7 @@ export default class TimeSlotRepository extends Repository {
   public async doesNotWork(teamMemberId: number, date: Date): Promise<boolean> {
     const dateString = BetterDate.fromDate(date).toDateString();
 
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         SELECT 1
         FROM TimeSlots
@@ -530,7 +530,7 @@ export default class TimeSlotRepository extends Repository {
   }
 
   public async getUnassigned(start: Date, end: Date): Promise<TimeSlot[]> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         ${this.timeSlotQuery}
         WHERE teamMemberId IS NULL

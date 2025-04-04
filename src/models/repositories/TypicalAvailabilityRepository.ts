@@ -98,7 +98,7 @@ export default class TypicalAvailabilityRepository extends Repository {
   public async list(teamMemberId: number): Promise<TypicalAvailability[][]> {
     const table: TypicalAvailability[][] = [[], [], [], [], [], [], []];
 
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         ${this.baseQuery}
         WHERE teamMemberId = ?
@@ -122,7 +122,7 @@ export default class TypicalAvailabilityRepository extends Repository {
    * @param id
    */
   public async get(id: number): Promise<TypicalAvailability | null> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         ${this.baseQuery}
         WHERE id = ?
@@ -141,7 +141,7 @@ export default class TypicalAvailabilityRepository extends Repository {
    * @returns A promise of the new typical availability's id
    */
   public async add(t: TypicalAvailability): Promise<number> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         INSERT INTO TeamMemberTypicalAvailability
           (teamMemberId, dayOfWeek, startTime, endTime, isPreference)
@@ -165,7 +165,7 @@ export default class TypicalAvailabilityRepository extends Repository {
    * @param t A typical availability
    */
   public async update(t: TypicalAvailability): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         UPDATE TeamMemberTypicalAvailability
         SET teamMemberId = ?, 
@@ -191,7 +191,7 @@ export default class TypicalAvailabilityRepository extends Repository {
    * @param id A typical availability id
    */
   public async delete(id: number): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         DELETE FROM TeamMemberTypicalAvailability
         WHERE id = ?
@@ -214,7 +214,7 @@ export default class TypicalAvailabilityRepository extends Repository {
       return "unknown";
     }
 
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         SELECT 1
         FROM TeamMemberTypicalAvailability

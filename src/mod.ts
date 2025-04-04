@@ -90,7 +90,11 @@ export { default as Unavailability } from "./models/entities/Unavailability.ts";
 
 export { default as Database } from "./models/repositories/_Database.ts";
 export { default as Repository } from "./models/repositories/_Repository.ts";
-export { default as ColorRepository } from "./models/repositories/ColorRepository.ts";
+export type {
+  default as ColorRepository,
+  IColorRepository,
+  IColorRow,
+} from "./models/repositories/ColorRepository.ts";
 export { default as ScheduleRepository } from "./models/repositories/ScheduleRepository.ts";
 export { default as ShiftContextNoteRepository } from "./models/repositories/ShiftContextNoteRepository.ts";
 export { default as ShiftContextPreferenceRepository } from "./models/repositories/ShiftContextPreferenceRepository.ts";

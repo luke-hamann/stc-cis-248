@@ -89,7 +89,7 @@ export default class UnavailabilityRepository extends Repository {
    * @returns The unavailability or null
    */
   public async get(id: number): Promise<Unavailability | null> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `${this.baseQuery} WHERE id = ?`,
       [id],
     );
@@ -112,7 +112,7 @@ export default class UnavailabilityRepository extends Repository {
         unavailabilities: [],
       };
 
-      const result = await this.database.execute(
+      const result = await this._database.execute(
         `
           ${this.baseQuery}
           WHERE teamMemberId = ?
@@ -137,7 +137,7 @@ export default class UnavailabilityRepository extends Repository {
    * @returns The promise for the id of the new unavailability
    */
   public async add(u: Unavailability): Promise<number> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         INSERT INTO TeamMemberAvailability
           (teamMemberId, startDateTime, endDateTime, isPreference)
@@ -160,7 +160,7 @@ export default class UnavailabilityRepository extends Repository {
    * @param u The unavailability
    */
   public async update(u: Unavailability): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         UPDATE TeamMemberAvailability
         SET teamMemberId = ?,
@@ -184,7 +184,7 @@ export default class UnavailabilityRepository extends Repository {
    * @param id Unavailability id
    */
   public async delete(id: number): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         DELETE FROM TeamMemberTypicalAvailability
         WHERE id = ?
@@ -200,7 +200,7 @@ export default class UnavailabilityRepository extends Repository {
    * @param end Date
    */
   public async deleteRange(teamMemberId: number, start: Date, end: Date) {
-    await this.database.execute(
+    await this._database.execute(
       `
         DELETE FROM TeamMemberAvailability
         WHERE teamMemberId = ?
@@ -224,7 +224,7 @@ export default class UnavailabilityRepository extends Repository {
       return "unknown";
     }
 
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         SELECT 1
         FROM TeamMemberAvailability

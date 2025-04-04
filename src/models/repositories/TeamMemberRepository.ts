@@ -85,7 +85,7 @@ export default class TeamMemberRepository extends Repository {
   }
 
   public async list(): Promise<TeamMember[]> {
-    const result = await this.database.execute(`
+    const result = await this._database.execute(`
       ${this.baseQuery}
       ORDER BY isExternal,
         LOWER(lastName),
@@ -97,7 +97,7 @@ export default class TeamMemberRepository extends Repository {
   }
 
   public async get(id: number): Promise<TeamMember | null> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
       ${this.baseQuery}
       WHERE id = ?
@@ -111,7 +111,7 @@ export default class TeamMemberRepository extends Repository {
   }
 
   public async add(t: TeamMember): Promise<number> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
       INSERT INTO TeamMembers
       (firstName, middleName, lastName, birthDate, email, phone, isExternal,
@@ -135,7 +135,7 @@ export default class TeamMemberRepository extends Repository {
   }
 
   public async update(t: TeamMember): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
       UPDATE TeamMembers
       SET firstName = ?,
@@ -165,6 +165,6 @@ export default class TeamMemberRepository extends Repository {
   }
 
   public async delete(id: number): Promise<void> {
-    await this.database.execute("DELETE FROM TeamMembers WHERE id = ?", [id]);
+    await this._database.execute("DELETE FROM TeamMembers WHERE id = ?", [id]);
   }
 }
