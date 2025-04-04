@@ -25,16 +25,28 @@ export default class ColorController extends Controller {
       { method: "GET", pattern: "/colors/", action: this.list },
       { method: "GET", pattern: "/colors/add/", action: this.addGet },
       { method: "POST", pattern: "/colors/add/", action: this.addPost },
-      { method: "GET", pattern: "/color/(\\d+)/", action: this.editGet },
-      { method: "POST", pattern: "/color/(\\d+)/", action: this.editPost },
+      {
+        method: "GET",
+        pattern: "/color/(\\d+)/",
+        mappings: [[1, "id"]],
+        action: this.editGet,
+      },
+      {
+        method: "POST",
+        pattern: "/color/(\\d+)/",
+        mappings: [[1, "id"]],
+        action: this.editPost,
+      },
       {
         method: "GET",
         pattern: "/color/(\\d+)/delete/",
+        mappings: [[1, "id"]],
         action: this.deleteGet,
       },
       {
         method: "POST",
         pattern: "/color/(\\d+)/delete/",
+        mappings: [[1, "id"]],
         action: this.deletePost,
       },
     ];

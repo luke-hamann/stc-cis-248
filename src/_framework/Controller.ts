@@ -3,20 +3,13 @@ import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 import nunjucks from "npm:nunjucks";
 import ViewModel from "../models/viewModels/_shared/_ViewModel.ts";
+import RouteData from "./RouteDataWrapper.ts";
+import Route from "./Route.ts";
 
 /** Controls routing to action methods based on HTTP method and url patterns */
 export default class Controller {
   /** Maps HTTP methods and URL patterns to action methods */
-  protected routes: {
-    /** The HTTP method that should be matched */
-    method: "GET" | "POST";
-    /** The partial regex expression that should match the url */
-    pattern: string;
-    /** The action method that should be executed if the method and pattern match */
-    action: (
-      context: Context,
-    ) => void | ResponseWrapper | Promise<void | ResponseWrapper>;
-  }[] = [];
+  protected routes: Route[] = [];
 
   /**
    * Executes the controller
@@ -39,6 +32,11 @@ export default class Controller {
       if (!match) continue;
 
       context.match = match;
+
+      if (route.mappings) {
+        context.routeData = new RouteData(context.match, route.mappings);
+      }
+
       return await route.action.call(this, context);
     }
   }

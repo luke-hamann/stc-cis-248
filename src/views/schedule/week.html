@@ -12,14 +12,6 @@
   }}</a>
 {% endmacro %}
 
-{% block styles %}
-  <style>
-    :target {
-      border-width: 4pt;
-    }
-  </style>
-{% endblock %}
-
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block content %}
@@ -51,7 +43,7 @@
           {% for col in row %}
             {% set type = col.type %}
             {% set data = col.content %}
-            <td class="p-1 w-[10rem] border" {% if type == "TimeSlot" %}id="time_slot_{{ data.id }}"{% endif %}>
+            <td class="p-1 w-[10rem] border has-target:border-4">
               {% if type == "origin" %}
                 <a href="/schedule/time-slot/add/" class="block w-fit p-1 pe-4 border rounded bg-blue-400 text-white">
                   &plus; Add time slot
@@ -113,6 +105,10 @@
               {% if type == "TimeSlot" %}
                 {% set timeSlotWarnings = model.warnings.getTimeSlotWarnings(data.id) %}
 
+                <div class="relative">
+                  <a id="time_slot_{{ data.id }}" class="absolute top-[-40vh]"></a>
+                </div>
+
                 <div class="flex">
                   <div class="flex-1">
                     {{ data.teamMember.fullName if data.teamMember else "(unassigned)" }}
@@ -166,7 +162,7 @@
                 {% if data.teamMembers %}
                   <ul class="list-disc ms-8 mb-4">
                     {% for teamMember in data.teamMembers %}
-                      <li>{{ teamMember }}</li>
+                      <li>{{ teamMember.fullName }}</li>
                     {% endfor %}
                   </ul>
                 {% endif %}
@@ -326,7 +322,7 @@
     {% if model.warnings.unassignedTimeSlots.length > 0 %}
       <details class="mt-4">
         {{ warningSummary('Unassigned Time Slots', model.warnings.unassignedTimeSlots.length) }}
-        <ul>
+        <ul class="ps-8 list-disc">
           {% for timeSlot in model.warnings.unassignedTimeSlots %}
             <li>
               {{ timeSlot.shiftContext.name }}: {{ timeSlot.startDateTime.toLocaleDateString () }},

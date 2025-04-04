@@ -1,5 +1,6 @@
 import { FormDataWrapper } from "../mod.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
+import RouteData from "./RouteDataWrapper.ts";
 
 /** A class for representing an application state context */
 export default class Context {
@@ -14,6 +15,8 @@ export default class Context {
 
   /** The regex match results for the incoming request URL */
   public match: string[] = [];
+
+  public routeData: RouteData | null = null;
 
   /** A wrapper for the request form data */
   public formData: FormDataWrapper | null = null;
