@@ -2,7 +2,9 @@ import Database from "../repositories/_Database.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import TeamMemberRepository from "../repositories/TeamMemberRepository.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
-import TypicalAvailability from "../entities/TypicalAvailability.ts";
+import TypicalAvailability, {
+  DayOfWeek,
+} from "../entities/TypicalAvailability.ts";
 import Repository from "./_Repository.ts";
 
 /** An interface for manipulating typical availability */
@@ -73,17 +75,8 @@ interface ITypicalAvailabilityRow {
   teamMemberId: number;
 
   /** The day of the week of the typical availability
-   *
-   * * 0: Sunday
-   * * 1: Monday
-   * * 2: Tuesday
-   * * 3: Wednesday
-   * * 4: Thursday
-   * * 5: Friday
-   * * 6: Saturday
-   * * 7: Sunday
    */
-  dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  dayOfWeek: DayOfWeek;
 
   /** The start time */
   startTime: Date;
