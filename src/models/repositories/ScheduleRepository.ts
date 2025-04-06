@@ -812,7 +812,7 @@ export default class ScheduleRepository implements IScheduleRepository {
               AND TimeSlots.teamMemberId = TeamMemberTypicalAvailability.teamMemberId
               AND DAYOFWEEK(TimeSlots.startDateTime) - 1 = TeamMemberTypicalAvailability.dayOfWeek
 
-              -- Timeslot start date time and end date time falls within typical availability entry
+              -- Time slot start date time and end date time falls within typical availability entry
               AND TIME(TimeSlots.startDateTime)
                 BETWEEN TeamMemberTypicalAvailability.startTime AND TeamMemberTypicalAvailability.endTime
               AND TIME(TimeSlots.endDateTime)

@@ -183,7 +183,7 @@ export default class TimeSlotRepository extends Repository {
       teamMemberId,
       note,
       colorId
-    FROM Timeslots
+    FROM TimeSlots
   `;
 
   /** Constructs the repository based on a database connection and other repositories

@@ -1,8 +1,4 @@
-DROP DATABASE IF EXISTS schedulerApp;
-DROP USER IF EXISTS 'schedulerApp'@'localhost';
-
-CREATE DATABASE schedulerApp;
-USE schedulerApp;
+USE schedulerapp;
 
 SET default_storage_engine=INNODB;
 
@@ -88,7 +84,7 @@ CREATE TABLE TeamMemberShiftContextPreferences (
         ON DELETE CASCADE
 );
 
-CREATE TABLE Timeslots (
+CREATE TABLE TimeSlots (
     id INT PRIMARY KEY AUTO_INCREMENT,
     shiftContextId INT NOT NULL,
     startDateTime DATETIME NOT NULL,
@@ -117,10 +113,3 @@ CREATE TABLE Substitutes (
         REFERENCES TeamMembers(id)
         ON DELETE CASCADE
 );
-
-CREATE USER 'schedulerApp'@'localhost'
-IDENTIFIED BY 'password';
-
-GRANT SELECT, INSERT, UPDATE, DELETE
-ON schedulerApp.*
-TO 'schedulerApp'@'localhost';
