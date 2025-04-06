@@ -9,21 +9,6 @@ export default class ScheduleWeekViewModel extends ViewModel {
   public schedule: Schedule | null;
   public warnings: ScheduleWarnings;
 
-  private readonly monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "Semptember",
-    "October",
-    "November",
-    "December",
-  ];
-
   constructor(
     currentWeek: Date,
     schedule: Schedule | null,
@@ -61,10 +46,13 @@ export default class ScheduleWeekViewModel extends ViewModel {
    * @returns The title
    */
   public get title(): string {
-    const monthName = this.monthNames[this.currentWeek.getMonth()];
-    const date = this.currentWeek.getDate();
-    const year = this.currentWeek.getFullYear();
-    return `Week of ${monthName} ${date}, ${year}`;
+    const dateString = this.currentWeek.toLocaleDateString(undefined, {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    return `Week of ${dateString}`;
   }
 
   /** Get a list of dates for the current week

@@ -5,21 +5,56 @@ import ShiftContextNote from "../../entities/ShiftContextNote.ts";
 import TimeSlot from "../../entities/TimeSlot.ts";
 import ViewModel from "../_shared/_ViewModel.ts";
 
+/** A view model for the schedule copy form */
 export default class ScheduleCopyViewModel extends ViewModel {
+  /** Whether the model is in confirmation mode (as opposed to to preview mode) */
   public confirm: boolean;
+
+  /** The start date of the source range */
   public fromStartDate: Date | null;
+
+  /** The end date of the source range */
   public fromEndDate: Date | null;
+
+  /** The start date of the destination range */
   public toStartDate: Date | null;
+
+  /** The end date of the destination range */
   public toEndDate: Date | null;
+
+  /** Whether the source range copy should be repeated to fill the destination range */
   public repeatCopy: boolean;
+
+  /** Whether the copy should include time slot assignees */
   public includeAssignees: boolean;
+
+  /** Whether the copy should include shift context notes */
   public includeShiftContextNotes: boolean;
+
+  /** Whether the copy should include time slot notes */
   public includeTimeSlotNotes: boolean;
+
+  /** An array of validation messages */
   public errors: string[];
 
+  /** The time slots that would be created by a copy operation */
   public newTimeSlots: TimeSlot[] = [];
+
+  /** The shift context notes that would be created by a copy operation */
   public newShiftContextNotes: ShiftContextNote[] = [];
 
+  /** Constructs the view model
+   * @param confirm
+   * @param fromStartDate
+   * @param fromEndDate
+   * @param toStartDate
+   * @param toEndDate
+   * @param repeatCopy
+   * @param includeAssignees
+   * @param includeShiftContextNotes
+   * @param includeTimeSlotNotes
+   * @param errors
+   */
   public constructor(
     confirm: boolean,
     fromStartDate: Date | null,
@@ -45,6 +80,10 @@ export default class ScheduleCopyViewModel extends ViewModel {
     this.errors = errors;
   }
 
+  /** Constructs the view model based on an incoming request
+   * @param request The HTTP request
+   * @returns The view model
+   */
   public static async fromRequest(
     request: Request,
   ): Promise<ScheduleCopyViewModel> {
@@ -64,6 +103,7 @@ export default class ScheduleCopyViewModel extends ViewModel {
     );
   }
 
+  /** Validates the view model and stores the error messages */
   public validate() {
     this.errors = [];
 
@@ -104,31 +144,41 @@ export default class ScheduleCopyViewModel extends ViewModel {
     }
   }
 
+  /** Gets whether the view model is valid */
   public isValid(): boolean {
     return this.errors.length == 0;
   }
 
+  /** Formats a data as a string in yyyy-mm-dd format
+   * @param date The date
+   * @returns The string
+   */
   private formatDate(date: Date | null): string {
     if (date == null) return "";
     return BetterDate.fromDate(date).toDateString();
   }
 
+  /** Gets the source range start date as a string in yyyy-mm-dd format */
   public get fromStartDateString(): string {
     return this.formatDate(this.fromStartDate);
   }
 
+  /** Gets the source range end date as a string in yyyy-mm-dd format */
   public get fromEndDateString(): string {
     return this.formatDate(this.fromEndDate);
   }
 
+  /** Gets the destination start date as a string in yyyy-mm-dd format */
   public get toStartDateString(): string {
     return this.formatDate(this.toStartDate);
   }
 
+  /** Gets the destination end date as a string in yyyy-mm-dd format */
   public get toEndDateString(): string {
     return this.formatDate(this.toEndDate);
   }
 
+  /** Gets the url for the cancel link on the form */
   public get cancelLink(): string {
     const date = DateLib.floorToSunday(this.fromStartDate ?? new Date());
     const dateString = this.formatDate(date).replaceAll("-", "/");
