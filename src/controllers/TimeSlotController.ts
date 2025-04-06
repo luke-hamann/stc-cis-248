@@ -495,7 +495,7 @@ export default class TimeSlotController extends Controller {
       return this.NotFoundResponse(context);
     }
 
-    const model = ScheduleClearViewModel.empty(
+    const model = ScheduleClearViewModel.default(
       start,
       end,
     );
