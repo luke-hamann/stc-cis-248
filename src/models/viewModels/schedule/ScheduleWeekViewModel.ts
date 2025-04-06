@@ -16,9 +16,9 @@ export default class ScheduleWeekViewModel extends ViewModel {
   public warnings: ScheduleWarnings;
 
   /** Constructs the view model
-   * @param currentWeek 
-   * @param schedule 
-   * @param warnings 
+   * @param currentWeek
+   * @param schedule
+   * @param warnings
    */
   constructor(
     currentWeek: Date,
