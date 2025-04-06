@@ -38,8 +38,7 @@ export default class Schedule {
   /** The schedule table of the schedule */
   public table: ScheduleTable;
 
-  /**
-   * Constructs the schedule
+  /** Constructs the schedule
    * @param title The title
    * @param start The start date
    * @param end The end date

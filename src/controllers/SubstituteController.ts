@@ -14,8 +14,7 @@ export default class SubstituteController extends Controller {
   /** The team members repository */
   private _teamMembers: TeamMemberRepository;
 
-  /**
-   * Constructs the substitutes controller using the necessary repositories
+  /** Constructs the substitutes controller using the necessary repositories
    * @param substitutes The substitutes repository
    * @param teamMembers The team members repository
    */
@@ -40,8 +39,7 @@ export default class SubstituteController extends Controller {
     ];
   }
 
-  /**
-   * Gets a date from the application context url, or null if the date is invalid
+  /** Gets a date from the application context url, or null if the date is invalid
    * @param context The application context
    * @returns The date
    */
@@ -52,8 +50,7 @@ export default class SubstituteController extends Controller {
     return date;
   }
 
-  /**
-   * Gets the substitute list edit form for a given date
+  /** Gets the substitute list edit form for a given date
    * @param context The application context
    * @returns The response
    */
@@ -69,8 +66,7 @@ export default class SubstituteController extends Controller {
     return this.HTMLResponse(context, "./views/substitute/edit.html", model);
   }
 
-  /**
-   * Accepts requests to update the substitute list for a given date
+  /** Accepts requests to update the substitute list for a given date
    * @param context The application context
    * @returns The response
    */

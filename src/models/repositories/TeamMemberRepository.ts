@@ -3,21 +3,18 @@ import Repository from "./_Repository.ts";
 
 /** Represents actions for manipulating a set of team members */
 export interface ITeamMemberRepository {
-  /**
-   * Validates a team member
+  /** Validates a team member
    * @param teamMember The team member
    * @returns An array of error messages
    */
   validate(teamMember: TeamMember): string[];
 
-  /**
-   * Lists all team members
+  /** Lists all team members
    * @returns An array of team members
    */
   list(): Promise<TeamMember[]>;
 
-  /**
-   * Gets a team member
+  /** Gets a team member
    *
    * Returns null if the team member does not exist
    *
@@ -26,15 +23,13 @@ export interface ITeamMemberRepository {
    */
   get(id: number): Promise<TeamMember | null>;
 
-  /**
-   * Adds a team member
+  /** Adds a team member
    * @param teamMember The team member
    * @returns The id of the newly added team member
    */
   add(teamMember: TeamMember): Promise<number>;
 
-  /**
-   * Updates a team member
+  /** Updates a team member
    *
    * Refers to the id to update the correct team member
    *
@@ -42,8 +37,7 @@ export interface ITeamMemberRepository {
    */
   update(teamMember: TeamMember): Promise<void>;
 
-  /**
-   * Deletes a team member
+  /** Deletes a team member
    * @param id The team member id
    */
   delete(id: number): Promise<void>;
@@ -72,8 +66,7 @@ export interface ITeamMemberRow {
   /** The team member's phone number */
   phone: string;
 
-  /**
-   * Whether the team member is an external resource
+  /** Whether the team member is an external resource
    *
    * 0 is false, 1 is true.
    */
@@ -104,8 +97,7 @@ export default class TeamMemberRepository extends Repository
     FROM TeamMembers
   `;
 
-  /**
-   * Converts a database row to a team member
+  /** Converts a database row to a team member
    * @param row The database row
    * @returns The team member
    */
@@ -131,8 +123,7 @@ export default class TeamMemberRepository extends Repository
     );
   }
 
-  /**
-   * Converts an array of database rows to an array of team members
+  /** Converts an array of database rows to an array of team members
    * @param rows The array of database rows
    * @returns The array of team members
    */
@@ -140,8 +131,7 @@ export default class TeamMemberRepository extends Repository
     return rows.map((row) => this.mapRowToTeamMember(row));
   }
 
-  /**
-   * Validates a team member
+  /** Validates a team member
    * @param teamMember The team member
    * @returns An array of error messages
    */
@@ -179,8 +169,7 @@ export default class TeamMemberRepository extends Repository
     return errors;
   }
 
-  /**
-   * Lists all team members
+  /** Lists all team members
    * @returns An array of team members
    */
   public async list(): Promise<TeamMember[]> {
@@ -195,8 +184,7 @@ export default class TeamMemberRepository extends Repository
     return this.mapRowsToTeamMembers(result.rows as ITeamMemberRow[]);
   }
 
-  /**
-   * Gets a team member
+  /** Gets a team member
    *
    * Returns null if the team member does not exist
    *
@@ -217,8 +205,7 @@ export default class TeamMemberRepository extends Repository
       : null;
   }
 
-  /**
-   * Adds a team member
+  /** Adds a team member
    * @param teamMember The team member
    * @returns The id of the newly added team member
    */
@@ -246,8 +233,7 @@ export default class TeamMemberRepository extends Repository
     return result.lastInsertId ?? 0;
   }
 
-  /**
-   * Updates a team member
+  /** Updates a team member
    *
    * Refers to the id to update the correct team member
    *
@@ -283,8 +269,7 @@ export default class TeamMemberRepository extends Repository
     );
   }
 
-  /**
-   * Deletes a team member
+  /** Deletes a team member
    * @param id The team member id
    */
   public async delete(id: number): Promise<void> {

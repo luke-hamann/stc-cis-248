@@ -23,23 +23,20 @@ import ScheduleWarnings from "../entities/ScheduleWarnings.ts";
 
 /** Represents a repository for compiling schedule information */
 export interface IScheduleRepository {
-  /**
-   * Compiles all necessary data and computes a schedule for a given date range
+  /** Compiles all necessary data and computes a schedule for a given date range
    * @param start The start date
    * @param end The end date
    * @returns The schedule
    */
   getSchedule(start: Date, end: Date): Promise<Schedule>;
 
-  /**
-   * Gets assignee recommendations for a given time slot
+  /** Gets assignee recommendations for a given time slot
    * @param timeSlot The time slot
    * @returns A list of recommendations
    */
   getRecommendations(timeSlot: TimeSlot): Promise<AssigneeRecommendations[]>;
 
-  /**
-   * Gets schedule warnings for the specified date range
+  /** Gets schedule warnings for the specified date range
    * @param start The start date
    * @param end The end range
    * @returns The schedule warnings
@@ -61,8 +58,7 @@ export interface ITimeSlotRowComponent {
   /** The end date and time of the time slot */
   timeSlotEndDateTime: Date;
 
-  /**
-   * Whether the time slot requires an adult
+  /** Whether the time slot requires an adult
    *
    * 0 is false, 1 is true.
    */
@@ -101,8 +97,7 @@ export interface ITeamMemberRowComponent {
   /** The team member's phone number */
   teamMemberPhone: string;
 
-  /**
-   * Whether the team member is an external resource
+  /** Whether the team member is an external resource
    *
    * 0 is false, 1 is true.
    */
@@ -120,8 +115,7 @@ export interface ITeamMemberRowComponent {
   /** The team member's password */
   teamMemberPassword: string;
 
-  /**
-   * Whether the team member is an admin user
+  /** Whether the team member is an admin user
    *
    * 0 is false, 1 is true.
    */
@@ -172,8 +166,7 @@ export interface ITeamMemberTimeSlotTimeSlotRow
   /** The end date and time of the first time slot */
   timeSlot1EndDateTime: Date | null;
 
-  /**
-   * Whether the first time slot requires an adult
+  /** Whether the first time slot requires an adult
    *
    * 0 is false, 1 is true.
    */
@@ -200,8 +193,7 @@ export interface ITeamMemberTimeSlotTimeSlotRow
   /** The end date and time of the second time slot */
   timeSlot2EndDateTime: Date | null;
 
-  /**
-   * Whether the second time slot requires an adult
+  /** Whether the second time slot requires an adult
    *
    * 0 is false, 1 is true.
    */
@@ -258,8 +250,7 @@ export default class ScheduleRepository implements IScheduleRepository {
   /** The unavailability repository */
   private _unavailability: UnavailabilityRepository;
 
-  /**
-   * Constructs the schedule repository given a database connection and the necessary entity repositories
+  /** Constructs the schedule repository given a database connection and the necessary entity repositories
    * @param database
    * @param shiftContexts
    * @param shiftContextNotes
@@ -304,8 +295,7 @@ export default class ScheduleRepository implements IScheduleRepository {
     TimeSlots.colorId         timeSlotColorId
   `;
 
-  /**
-   * Converts a database row to a time slot
+  /** Converts a database row to a time slot
    * @param row The database row
    * @returns The time slot
    */
@@ -342,8 +332,7 @@ export default class ScheduleRepository implements IScheduleRepository {
     TeamMembers.isAdmin         teamMemberIsAdmin
   `;
 
-  /**
-   * Converts a database row to a team member
+  /** Converts a database row to a team member
    * @param row The database row
    * @returns The team member
    */
@@ -373,8 +362,7 @@ export default class ScheduleRepository implements IScheduleRepository {
     ShiftContexts.description  shiftContextDescription
   `;
 
-  /**
-   * Converts a database row to a shift context
+  /** Converts a database row to a shift context
    * @param row The database row
    * @returns The shift context
    */
@@ -398,8 +386,7 @@ export default class ScheduleRepository implements IScheduleRepository {
         ON TimeSlots.teamMemberId = TeamMembers.id
   `;
 
-  /**
-   * Compiles all necessary data and computes a schedule for a given date range
+  /** Compiles all necessary data and computes a schedule for a given date range
    * @param start The start date
    * @param end The end date
    * @returns The schedule
@@ -557,8 +544,7 @@ export default class ScheduleRepository implements IScheduleRepository {
     return new Schedule("", start, end, scheduleTable);
   }
 
-  /**
-   * Gets assignee recommendations for a given time slot
+  /** Gets assignee recommendations for a given time slot
    * @param timeSlot The time slot
    * @returns A list of recommendations
    */
@@ -632,8 +618,7 @@ export default class ScheduleRepository implements IScheduleRepository {
     return recommendations;
   }
 
-  /**
-   * Converts database rows containing a time slot and team member into a list of time slots
+  /** Converts database rows containing a time slot and team member into a list of time slots
    *
    * The resulting time slots contain their cooresponding team member.
    *
@@ -651,8 +636,7 @@ export default class ScheduleRepository implements IScheduleRepository {
     });
   }
 
-  /**
-   * Gets schedule warnings for the specified date range
+  /** Gets schedule warnings for the specified date range
    * @param start The start date
    * @param end The end range
    * @returns The schedule warnings

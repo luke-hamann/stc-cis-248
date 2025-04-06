@@ -10,52 +10,45 @@ import TeamMemberRepository from "./TeamMemberRepository.ts";
 
 /** Represents actions for manipulating a set of time slots */
 export interface ITimeSlotRepository {
-  /**
-   * Validates a time slot
+  /** Validates a time slot
    * @param timeSlot A time slot
    * @returns An array of error messages
    */
   validate(timeSlot: TimeSlot): Promise<string[]>;
 
-  /**
-   * Gets all time slots starting on a given date
+  /** Gets all time slots starting on a given date
    * @param date The date
    * @returns An array of time slots
    */
   getOnDate(date: Date): Promise<TimeSlot[]>;
 
-  /**
-   * Gets all time slots starting within a given date range
+  /** Gets all time slots starting within a given date range
    * @param start The start date and time
    * @param end The end date and time
    * @returns The array of time slots
    */
   getRange(start: Date, end: Date): Promise<TimeSlot[]>;
 
-  /**
-   * Lists all time slots within a given shift context and date
+  /** Lists all time slots within a given shift context and date
    * @param shiftContextId The shift context id
    * @param date The date
    * @returns An array of time slots
    */
   list(shiftContextId: number, date: Date): Promise<TimeSlot[]>;
 
-  /**
-   * Gets a time slot by id
+  /** Gets a time slot by id
    * @param id The id
    * @returns The time slot
    */
   get(id: number): Promise<TimeSlot | null>;
 
-  /**
-   * Adds a time slot
+  /** Adds a time slot
    * @param timeSlot The time slot
    * @returns The id of the newly added time slot
    */
   add(timeSlot: TimeSlot): Promise<number>;
 
-  /**
-   * Updates a time slot
+  /** Updates a time slot
    *
    * Refers to the id to update the time slot
    *
@@ -63,21 +56,18 @@ export interface ITimeSlotRepository {
    */
   update(timeSlot: TimeSlot): Promise<void>;
 
-  /**
-   * Deletes a time slot
+  /** Deletes a time slot
    * @param id The time slot id
    */
   delete(id: number): Promise<void>;
 
-  /**
-   * Deletes all time slots starting within a given date range
+  /** Deletes all time slots starting within a given date range
    * @param start The start date
    * @param end The end date
    */
   deleteRange(start: Date, end: Date): Promise<void>;
 
-  /**
-   * Generates time slots for a prospective copy operation
+  /** Generates time slots for a prospective copy operation
    * @param sourceStart The beginning of the time range to copy
    * @param sourceEnd The end of the time range to copy
    * @param destinationStart The beginning of the time range to copy to
@@ -97,8 +87,7 @@ export interface ITimeSlotRepository {
     includeNotes: boolean,
   ): Promise<TimeSlot[]>;
 
-  /**
-   * Gets time slots by grouping and then by date for a given shift context and date range
+  /** Gets time slots by grouping and then by date for a given shift context and date range
    * @param shiftContextId The shift context
    * @param start The starting date
    * @param end The ending date
@@ -110,8 +99,7 @@ export interface ITimeSlotRepository {
     end: Date,
   ): Promise<{ timeSlotGroup: TimeSlotGroup; timeSlotsByDay: TimeSlot[][] }[]>;
 
-  /**
-   * Determines if a team member would have no scheduling conflicts if they were assigned to a time slot
+  /** Determines if a team member would have no scheduling conflicts if they were assigned to a time slot
    * @param teamMemberId The team member id
    * @param timeSlot The time slot
    * @returns Whether the assignment would avoid scheduling conflicts
@@ -121,8 +109,7 @@ export interface ITimeSlotRepository {
     timeSlot: TimeSlot,
   ): Promise<"positive" | "negative" | "unknown">;
 
-  /**
-   * Gets time slots without assignees within the date range
+  /** Gets time slots without assignees within the date range
    * @param start The start date
    * @param end The end date
    * @returns The array of time slots
@@ -144,8 +131,7 @@ interface ITimeSlotRow {
   /** The time slot end date and time */
   endDateTime: Date | null;
 
-  /**
-   * Whether the time slot requires an adult assignee
+  /** Whether the time slot requires an adult assignee
    *
    * 0 is false, 1 is true.
    */
@@ -169,8 +155,7 @@ interface ITimeSlotGroupRow {
   /** The time slot group end time */
   endTime: string;
 
-  /**
-   * Whether the time slot group requires an adult assignee
+  /** Whether the time slot group requires an adult assignee
    *
    * 0 is false, 1 is true.
    */
@@ -201,8 +186,7 @@ export default class TimeSlotRepository extends Repository {
     FROM Timeslots
   `;
 
-  /**
-   * Constructs the repository based on a database connection and other repositories
+  /** Constructs the repository based on a database connection and other repositories
    * @param database The database connection
    * @param shiftContextRepository The shift context repository
    * @param colorRepository The color repository
@@ -220,8 +204,7 @@ export default class TimeSlotRepository extends Repository {
     this._teamMembers = teamMemberRepository;
   }
 
-  /**
-   * Converts a database row to a time slot
+  /** Converts a database row to a time slot
    * @param row The database row
    * @returns The time slot
    */
@@ -241,8 +224,7 @@ export default class TimeSlotRepository extends Repository {
     );
   }
 
-  /**
-   * Converts an array of database rows to an array of time slots
+  /** Converts an array of database rows to an array of time slots
    * @param rows The array of database rows
    * @returns The array of time slots
    */
@@ -250,8 +232,7 @@ export default class TimeSlotRepository extends Repository {
     return rows.map((row) => this.mapRowToTimeSlot(row));
   }
 
-  /**
-   * Populates a time slot with its associated shift context, color, and team member, if it has them
+  /** Populates a time slot with its associated shift context, color, and team member, if it has them
    *
    * @param originalTimeSlot
    * @returns The populated time slot
@@ -274,8 +255,7 @@ export default class TimeSlotRepository extends Repository {
     return timeSlot;
   }
 
-  /**
-   * Populates all the time slots in an array of time slots with their associated shift context, color, and team member, if they have them
+  /** Populates all the time slots in an array of time slots with their associated shift context, color, and team member, if they have them
    * @param timeslots The time slots
    * @returns The populated time slots
    */
@@ -285,8 +265,7 @@ export default class TimeSlotRepository extends Repository {
     );
   }
 
-  /**
-   * Validates a time slot
+  /** Validates a time slot
    * @param timeSlot A time slot
    * @returns An array of error messages
    */
@@ -330,8 +309,7 @@ export default class TimeSlotRepository extends Repository {
     return errors;
   }
 
-  /**
-   * Gets all time slots starting on a given date
+  /** Gets all time slots starting on a given date
    * @param date The date
    * @returns An array of time slots
    */
@@ -346,8 +324,7 @@ export default class TimeSlotRepository extends Repository {
     return this.mapRowsToTimeSlots(result.rows);
   }
 
-  /**
-   * Gets all time slots starting within a given date range
+  /** Gets all time slots starting within a given date range
    * @param start The start date and time
    * @param end The end date and time
    * @returns The array of time slots
@@ -366,8 +343,7 @@ export default class TimeSlotRepository extends Repository {
     return this.mapRowsToTimeSlots(result.rows);
   }
 
-  /**
-   * Lists all time slots within a given shift context and date
+  /** Lists all time slots within a given shift context and date
    * @param shiftContextId The shift context id
    * @param date The date
    * @returns An array of time slots
@@ -391,8 +367,7 @@ export default class TimeSlotRepository extends Repository {
     return timeSlots;
   }
 
-  /**
-   * Gets a time slot by id
+  /** Gets a time slot by id
    * @param id The id
    * @returns The time slot
    */
@@ -409,8 +384,7 @@ export default class TimeSlotRepository extends Repository {
     return await this.populate(this.mapRowToTimeSlot(result.rows[0]));
   }
 
-  /**
-   * Adds a time slot
+  /** Adds a time slot
    * @param timeSlot The time slot
    * @returns The id of the newly added time slot
    */
@@ -436,8 +410,7 @@ export default class TimeSlotRepository extends Repository {
     return result.lastInsertId ?? 0;
   }
 
-  /**
-   * Updates a time slot
+  /** Updates a time slot
    *
    * Refers to the id to update the time slot
    *
@@ -469,8 +442,7 @@ export default class TimeSlotRepository extends Repository {
     );
   }
 
-  /**
-   * Deletes a time slot
+  /** Deletes a time slot
    * @param id The time slot id
    */
   public async delete(id: number): Promise<void> {
@@ -483,8 +455,7 @@ export default class TimeSlotRepository extends Repository {
     );
   }
 
-  /**
-   * Deletes all time slots starting within a given date range
+  /** Deletes all time slots starting within a given date range
    * @param start The start date
    * @param end The end date
    */
@@ -501,8 +472,7 @@ export default class TimeSlotRepository extends Repository {
     );
   }
 
-  /**
-   * Generates time slots for a prospective copy operation
+  /** Generates time slots for a prospective copy operation
    * @param sourceStart The beginning of the time range to copy
    * @param sourceEnd The end of the time range to copy
    * @param destinationStart The beginning of the time range to copy to
@@ -571,8 +541,7 @@ export default class TimeSlotRepository extends Repository {
     return destinationTimeSlots;
   }
 
-  /**
-   * Gets time slots by grouping and then by date for a given shift context and date range
+  /** Gets time slots by grouping and then by date for a given shift context and date range
    * @param shiftContextId The shift context
    * @param start The starting date
    * @param end The ending date
@@ -659,8 +628,7 @@ export default class TimeSlotRepository extends Repository {
     return output;
   }
 
-  /**
-   * Determines if a team member would have no scheduling conflicts if they were assigned to a time slot
+  /** Determines if a team member would have no scheduling conflicts if they were assigned to a time slot
    * @param teamMemberId The team member id
    * @param timeSlot The time slot
    * @returns Whether the assignment would avoid scheduling conflicts
@@ -706,8 +674,7 @@ export default class TimeSlotRepository extends Repository {
     return "negative";
   }
 
-  /**
-   * Gets time slots without assignees within the date range
+  /** Gets time slots without assignees within the date range
    * @param start The start date
    * @param end The end date
    * @returns The array of time slots

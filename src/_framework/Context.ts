@@ -24,8 +24,7 @@ export default class Context {
   /** The anti-cross-site-request-forgery token from the session */
   public csrf_token: string = "";
 
-  /**
-   * Constructs the application state context
+  /** Constructs the application state context
    *
    * Also converts the Cookie HTTP header into a Map
    *
@@ -52,8 +51,7 @@ export default class Context {
     }
   }
 
-  /**
-   * Initializes the form data of the application context
+  /** Initializes the form data of the application context
    *
    * Form data must be fetched asyncronously.
    * Constructors cannot be asyncronous.

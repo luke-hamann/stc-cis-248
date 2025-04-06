@@ -3,8 +3,7 @@ import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 
-/**
- * Routes requests through a given list of controllers
+/** Routes requests through a given list of controllers
  *
  * Note:
  *
@@ -16,8 +15,7 @@ export default class Router extends Controller {
   /** The controllers to route through */
   private _controllers: Controller[];
 
-  /**
-   * Construct the router given controllers
+  /** Construct the router given controllers
    *
    * @constructor
    */
@@ -26,8 +24,7 @@ export default class Router extends Controller {
     this._controllers = controllers;
   }
 
-  /**
-   * Route a given request through the controllers to deliver a response
+  /** Route a given request through the controllers to deliver a response
    *
    * Returns a 500 Internal Server Error response if a controller throws an exception
    *

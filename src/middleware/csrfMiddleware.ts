@@ -12,8 +12,7 @@ export default class CsrfMiddleware extends Controller {
     ];
   }
 
-  /**
-   * Ensures that requests include the correct anti request forgery token
+  /** Ensures that requests include the correct anti request forgery token
    * @param context The application context
    * @returns A 403 Forbidden response wrapper if the request appears forged, void otherwise
    */

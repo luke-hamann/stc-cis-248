@@ -15,8 +15,7 @@ export default class ShiftContextNoteController extends Controller {
   /** The color repository */
   private _colorRepository: ColorRepository;
 
-  /**
-   * Constructs the shift context note controller based on the necessary repositories
+  /** Constructs the shift context note controller based on the necessary repositories
    * @param shiftContextNoteRepository The shift context note repository
    * @param colorRepository The color repository
    */
@@ -41,8 +40,7 @@ export default class ShiftContextNoteController extends Controller {
     ];
   }
 
-  /**
-   * Extracts a shift context note date from URL string matches
+  /** Extracts a shift context note date from URL string matches
    * @param context The application context
    * @returns The extracted date or null
    */
@@ -59,8 +57,7 @@ export default class ShiftContextNoteController extends Controller {
     return date;
   }
 
-  /**
-   * Gets the shift context note edit page
+  /** Gets the shift context note edit page
    * @param context The application context
    * @returns The response
    */
@@ -106,8 +103,7 @@ export default class ShiftContextNoteController extends Controller {
     );
   }
 
-  /**
-   * Accepts a request to update a shift context note
+  /** Accepts a request to update a shift context note
    * @param context The application context
    * @returns The response
    */

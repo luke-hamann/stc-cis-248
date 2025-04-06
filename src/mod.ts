@@ -1,5 +1,4 @@
-/**
- * This is the systems documentation of Scheduler App.
+/** This is the systems documentation of Scheduler App.
  *
  * Scheduler App is a program for managing the schedules of team members.
  *

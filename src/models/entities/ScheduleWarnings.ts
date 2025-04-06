@@ -19,15 +19,13 @@ export default class ScheduleWarnings {
   /** Time slots where the assignee is not typically available or specially marked as unavailable */
   public availabilityViolations: TimeSlot[] = [];
 
-  /**
-   * Team members that have been scheduled to work too many days
+  /** Team members that have been scheduled to work too many days
    *
    * Includes the number of days they have been scheduled
    */
   public maxWeeklyDaysViolations: [TeamMember, number][] = [];
 
-  /**
-   * Team members that have been scheduled to work too many hours
+  /** Team members that have been scheduled to work too many hours
    *
    * Includes the number of hours they have been scheduled
    */
@@ -50,8 +48,7 @@ export default class ScheduleWarnings {
     ].map((list) => list.length).reduce((a, b) => a + b, 0);
   }
 
-  /**
-   * Gets all the warnings relating to a given time slot
+  /** Gets all the warnings relating to a given time slot
    * @param timeSlotId The time slot id
    * @returns The time slot warnings
    */

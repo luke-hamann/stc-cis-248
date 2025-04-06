@@ -7,23 +7,20 @@ import ShiftContextRepository from "./ShiftContextRepository.ts";
 
 /** Represents a repository for manipulating shift context notes */
 export interface IShiftContextNoteRepository {
-  /**
-   * Validates a shift context note
+  /** Validates a shift context note
    * @param shiftContextNote The shift context note
    * @returns An array of error message strings
    */
   validate(shiftContextNote: ShiftContextNote): Promise<string[]>;
 
-  /**
-   * Gets a shift context note by its shift context id and date
+  /** Gets a shift context note by its shift context id and date
    * @param shiftContextId The shift context id
    * @param date The date of the shift context note
    * @returns The shift context note
    */
   get(shiftContextId: number, date: Date): Promise<ShiftContextNote | null>;
 
-  /**
-   * Gets all the shift context notes within a date range and optionally a shift context
+  /** Gets all the shift context notes within a date range and optionally a shift context
    * @param start The start date
    * @param end The end date
    * @param shiftContextId The shift context id
@@ -35,8 +32,7 @@ export interface IShiftContextNoteRepository {
     shiftContextId?: number,
   ): Promise<ShiftContextNote[]>;
 
-  /**
-   * Updates a shift context note, deleting the note if the content is empty
+  /** Updates a shift context note, deleting the note if the content is empty
    *
    * Refers to the shift context id and date of the note to update it
    *
@@ -44,15 +40,13 @@ export interface IShiftContextNoteRepository {
    */
   update(shiftContextNote: ShiftContextNote): Promise<void>;
 
-  /**
-   * Deletes all shift context notes within a given date range
+  /** Deletes all shift context notes within a given date range
    * @param start The start date
    * @param end The end date
    */
   deleteWhere(start: Date, end: Date): Promise<void>;
 
-  /**
-   * Computes the results of a potential shift context note copy operation
+  /** Computes the results of a potential shift context note copy operation
    * @param sourceStart The start date of the source range
    * @param sourceEnd The end date of the source range
    * @param destinationStart The start date of the destination range
@@ -98,8 +92,7 @@ export default class ShiftContextNoteRepository extends Repository
     FROM ShiftContextNotes
   `;
 
-  /**
-   * Constructs the shift context note repository using a database connection and other repositories
+  /** Constructs the shift context note repository using a database connection and other repositories
    * @param database
    * @param colors
    * @param shiftContexts
@@ -114,8 +107,7 @@ export default class ShiftContextNoteRepository extends Repository
     this.shiftContexts = shiftContexts;
   }
 
-  /**
-   * Validates a shift context note
+  /** Validates a shift context note
    * @param shiftContextNote The shift context note
    * @returns An array of error message strings
    */
@@ -149,8 +141,7 @@ export default class ShiftContextNoteRepository extends Repository
     return errors;
   }
 
-  /**
-   * Populates a shift context note with its cooresponding shift context and color information
+  /** Populates a shift context note with its cooresponding shift context and color information
    * @param shiftContextNote The shift context note
    * @returns The shift context note with related entities
    */
@@ -170,8 +161,7 @@ export default class ShiftContextNoteRepository extends Repository
     return shiftContextNote;
   }
 
-  /**
-   * Converts a database row to a shift context note
+  /** Converts a database row to a shift context note
    * @param row The database row
    * @returns The shift context note
    */
@@ -194,8 +184,7 @@ export default class ShiftContextNoteRepository extends Repository
     );
   }
 
-  /**
-   * Converts database rows to an array of shift context notes
+  /** Converts database rows to an array of shift context notes
    * @param rows The database rows
    * @returns The array of shift context notes
    */
@@ -205,8 +194,7 @@ export default class ShiftContextNoteRepository extends Repository
     return rows.map((row) => this.mapRowToShiftContextNote(row));
   }
 
-  /**
-   * Gets a shift context note by its shift context id and date
+  /** Gets a shift context note by its shift context id and date
    * @param shiftContextId The shift context id
    * @param date The date of the shift context note
    * @returns The shift context note
@@ -227,8 +215,7 @@ export default class ShiftContextNoteRepository extends Repository
     return this.populate(this.mapRowToShiftContextNote(result.rows[0]));
   }
 
-  /**
-   * Gets all the shift context notes within a date range and optionally a shift context
+  /** Gets all the shift context notes within a date range and optionally a shift context
    * @param start The start date
    * @param end The end date
    * @param shiftContextId The shift context id
@@ -258,8 +245,7 @@ export default class ShiftContextNoteRepository extends Repository
     return shiftContextNotes;
   }
 
-  /**
-   * Updates a shift context note, deleting the note if the content is empty
+  /** Updates a shift context note, deleting the note if the content is empty
    *
    * Refers to the shift context id and date of the note to update it
    *
@@ -292,8 +278,7 @@ export default class ShiftContextNoteRepository extends Repository
     }
   }
 
-  /**
-   * Deletes all shift context notes within a given date range
+  /** Deletes all shift context notes within a given date range
    * @param start The start date
    * @param end The end date
    */
@@ -313,8 +298,7 @@ export default class ShiftContextNoteRepository extends Repository
     );
   }
 
-  /**
-   * Computes the results of a potential shift context note copy operation
+  /** Computes the results of a potential shift context note copy operation
    * @param sourceStart The start date of the source range
    * @param sourceEnd The end date of the source range
    * @param destinationStart The start date of the destination range

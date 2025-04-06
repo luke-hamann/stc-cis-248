@@ -57,8 +57,7 @@ export default class ScheduleWeekViewModel extends ViewModel {
     return `/schedule/export/${start}/to/${end}/`;
   }
 
-  /**
-   * Get the view's title formatted as "Week of Month DD, YYYY"
+  /** Get the view's title formatted as "Week of Month DD, YYYY"
    * @returns The title
    */
   public get title(): string {
@@ -68,8 +67,7 @@ export default class ScheduleWeekViewModel extends ViewModel {
     return `Week of ${monthName} ${date}, ${year}`;
   }
 
-  /**
-   * Get a list of dates for the current week
+  /** Get a list of dates for the current week
    *
    * Always returns 7 elements
    *
@@ -85,8 +83,7 @@ export default class ScheduleWeekViewModel extends ViewModel {
     return dates;
   }
 
-  /**
-   * Get the string representation of the date one week before the current week
+  /** Get the string representation of the date one week before the current week
    * @returns
    */
   public get previousWeekString(): string {
@@ -95,8 +92,7 @@ export default class ScheduleWeekViewModel extends ViewModel {
     return BetterDate.fromDate(previousWeek).toDateString("/");
   }
 
-  /**
-   * Get the string representation of the date one week after the current week
+  /** Get the string representation of the date one week after the current week
    */
   public get nextWeekString(): string {
     const nextWeek = new Date(this.currentWeek.getTime());

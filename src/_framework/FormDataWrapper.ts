@@ -3,16 +3,14 @@ export default class FormDataWrapper {
   /** The form data being wrapped */
   private _formData: FormData;
 
-  /**
-   * Constructs the form data wrapper
+  /** Constructs the form data wrapper
    * @param formData The original form data object
    */
   public constructor(formData: FormData) {
     this._formData = formData;
   }
 
-  /**
-   * Gets a boolean value for a form data key
+  /** Gets a boolean value for a form data key
    * @param key The key
    * @returns The boolean
    */
@@ -20,8 +18,7 @@ export default class FormDataWrapper {
     return this._formData.has(key);
   }
 
-  /**
-   * Gets a string value for a form data key
+  /** Gets a string value for a form data key
    *
    * Returns an empty string if the key does not have a value
    *
@@ -32,8 +29,7 @@ export default class FormDataWrapper {
     return (this._formData.get(key) as string ?? "").trim();
   }
 
-  /**
-   * Gets a numerical value for a form data key, or null if the key does not exist
+  /** Gets a numerical value for a form data key, or null if the key does not exist
    * @param key The form data key
    * @returns The number or null
    */
@@ -47,8 +43,7 @@ export default class FormDataWrapper {
     return value;
   }
 
-  /**
-   * Gets an integer value for a form data key, or null if the key does not exist
+  /** Gets an integer value for a form data key, or null if the key does not exist
    * @param key The form data key
    * @returns The integer or null
    */
@@ -66,8 +61,7 @@ export default class FormDataWrapper {
     return value;
   }
 
-  /**
-   * Gets a hexadecimal color string for a form data key, or an empty string if the value is invalid
+  /** Gets a hexadecimal color string for a form data key, or an empty string if the value is invalid
    *
    * The string is in format of hash symbol, followed by 6 hex digit characters.
    *
@@ -80,8 +74,7 @@ export default class FormDataWrapper {
     return isValid ? value.substring(1) : "";
   }
 
-  /**
-   * Gets a date object for a form data key, or null if the key does not exist or the date is invalid
+  /** Gets a date object for a form data key, or null if the key does not exist or the date is invalid
    *
    * The incoming form data value is expected to be in "yyyy-mm-dd" format.
    *
@@ -105,8 +98,7 @@ export default class FormDataWrapper {
     return date;
   }
 
-  /**
-   * Gets a time string for a form data key, or an empty string if the key does not exist or the time is invalid
+  /** Gets a time string for a form data key, or an empty string if the key does not exist or the time is invalid
    *
    * The time string is expected to be in 24-hour "HH:MM" or "HH:MM:SS" format.
    *

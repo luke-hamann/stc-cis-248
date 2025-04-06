@@ -8,8 +8,7 @@ export default class SubstituteList {
   /** The list of substitutes */
   public teamMembers: TeamMember[];
 
-  /**
-   * Constructs the substitute list
+  /** Constructs the substitute list
    * @param date
    * @param teamMembers
    */

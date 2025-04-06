@@ -6,15 +6,13 @@ import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
-/**
- * Controls the color pages of the application
+/** Controls the color pages of the application
  */
 export default class ColorController extends Controller {
   /** The data store for color CRUD */
   private _colorRepository: IColorRepository;
 
-  /**
-   * Constructs the color controller given the color repository
+  /** Constructs the color controller given the color repository
    *
    * @constructor
    */
@@ -52,8 +50,7 @@ export default class ColorController extends Controller {
     ];
   }
 
-  /**
-   * Gets the color list page
+  /** Gets the color list page
    * @param context The application context
    * @returns The response
    */
@@ -63,8 +60,7 @@ export default class ColorController extends Controller {
     return this.HTMLResponse(context, "./views/color/list.html", model);
   }
 
-  /**
-   * Gets the color add form
+  /** Gets the color add form
    * @param context The application context
    * @returns The response
    */
@@ -76,8 +72,7 @@ export default class ColorController extends Controller {
     );
   }
 
-  /**
-   * Accepts requests to add a color
+  /** Accepts requests to add a color
    * @param context The application context
    * @returns The response
    */
@@ -93,8 +88,7 @@ export default class ColorController extends Controller {
     return this.RedirectResponse(context, "/colors/");
   }
 
-  /**
-   * Gets the color edit form
+  /** Gets the color edit form
    * @param context The application context
    * @returns The response
    */
@@ -113,8 +107,7 @@ export default class ColorController extends Controller {
     return this.HTMLResponse(context, "./views/color/edit.html", model);
   }
 
-  /**
-   * Accepts a request to edit a color
+  /** Accepts a request to edit a color
    * @param context The application context
    * @returns The response
    */
@@ -133,8 +126,7 @@ export default class ColorController extends Controller {
     return this.RedirectResponse(context, "/colors/");
   }
 
-  /**
-   * Gets the delete color confirmation form
+  /** Gets the delete color confirmation form
    *
    * @param context The application context
    * @returns The response
@@ -162,8 +154,7 @@ export default class ColorController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /**
-   * Accepts a request to delete a color
+  /** Accepts a request to delete a color
    * @param context The application context
    * @returns The response
    */

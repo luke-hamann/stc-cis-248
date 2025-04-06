@@ -13,22 +13,19 @@ export type ShiftContextPreferencesList = {
 
 /** A generic interface for manipulating shift context preferences */
 export interface IShiftContextPreferenceRepository {
-  /**
-   * Verifies the existance of shift context ids within a preferences list
+  /** Verifies the existance of shift context ids within a preferences list
    * @param preferences The preferable and unpreferable shift contexts (as ids)
    * @returns An array of error messages
    */
   validate(preferences: ShiftContextPreferencesList): Promise<string[]>;
 
-  /**
-   * Gets the ids of preferable and unpreferable shift contexts given a team member
+  /** Gets the ids of preferable and unpreferable shift contexts given a team member
    * @param teamMemberId The team member's id
    * @returns The preferences
    */
   get(teamMemberId: number): Promise<ShiftContextPreferencesList>;
 
-  /**
-   * Updates the shift context preferences of a team member
+  /** Updates the shift context preferences of a team member
    * @param teamMemberId The team member's id
    * @param preferences The preferences
    */
@@ -37,8 +34,7 @@ export interface IShiftContextPreferenceRepository {
     preferences: ShiftContextPreferencesList,
   ): Promise<void>;
 
-  /**
-   * Determines a team member's preference for a shift context
+  /** Determines a team member's preference for a shift context
    *
    * If a shift context id is not given, the preference is unknown.
    *
@@ -58,8 +54,7 @@ export default class ShiftContextPreferenceRepository extends Repository
   /** The shift context repository */
   private shiftContexts: ShiftContextRepository;
 
-  /**
-   * Constructs the repository given a database connection and shift context repository
+  /** Constructs the repository given a database connection and shift context repository
    * @param database
    * @param shiftContexts
    */
@@ -71,8 +66,7 @@ export default class ShiftContextPreferenceRepository extends Repository
     this.shiftContexts = shiftContexts;
   }
 
-  /**
-   * Verifies the existance of shift context ids within a preferences list
+  /** Verifies the existance of shift context ids within a preferences list
    * @param preferences The preferable and unpreferable shift contexts (as ids)
    * @returns An array of error messages
    */
@@ -102,8 +96,7 @@ export default class ShiftContextPreferenceRepository extends Repository
     return errors;
   }
 
-  /**
-   * Gets the ids of preferable and unpreferable shift contexts given a team member
+  /** Gets the ids of preferable and unpreferable shift contexts given a team member
    * @param teamMemberId The team member's id
    * @returns The preferences
    */
@@ -132,8 +125,7 @@ export default class ShiftContextPreferenceRepository extends Repository
     return { preferable, unpreferable };
   }
 
-  /**
-   * Updates the shift context preferences of a team member
+  /** Updates the shift context preferences of a team member
    * @param teamMemberId The team member's id
    * @param preferences The preferences
    */
@@ -170,8 +162,7 @@ export default class ShiftContextPreferenceRepository extends Repository
     }
   }
 
-  /**
-   * Determines a team member's preference for a shift context
+  /** Determines a team member's preference for a shift context
    *
    * If a shift context id is not given, the preference is unknown.
    *

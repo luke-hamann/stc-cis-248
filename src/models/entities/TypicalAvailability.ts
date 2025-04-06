@@ -2,8 +2,7 @@ import TeamMember from "./TeamMember.ts";
 
 const dayOfWeek = [0, 1, 2, 3, 4, 5, 6] as const;
 
-/**
- * Represents days of the week as integers
+/** Represents days of the week as integers
  *
  * * 0: Sunday
  * * 1: Monday
@@ -42,8 +41,7 @@ export default class TypicalAvailability {
   /** Whether the availability is preferable */
   public isPreference: boolean = false;
 
-  /**
-   * Constructs the typical availability
+  /** Constructs the typical availability
    * @param id
    * @param teamMemberId
    * @param teamMember

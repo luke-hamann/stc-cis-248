@@ -21,8 +21,7 @@ export default class UnavailabilityController extends Controller {
   /** The unavailability repository */
   private _unavailabilities: UnavailabilityRepository;
 
-  /**
-   * Constructs the controlling using the necessary repositories
+  /** Constructs the controlling using the necessary repositories
    * @param teamMembers The team member repository
    * @param unavailabilities The unavailabilities repository
    */
@@ -96,8 +95,7 @@ export default class UnavailabilityController extends Controller {
     ];
   }
 
-  /**
-   * Attempts to get a team member object based on the application context URL
+  /** Attempts to get a team member object based on the application context URL
    *
    * Returns null if the team member cannot be retrieved
    *
@@ -112,8 +110,7 @@ export default class UnavailabilityController extends Controller {
     return await this._teamMembers.get(id);
   }
 
-  /**
-   * Attempts to get an unavailability object based on the application context URL
+  /** Attempts to get an unavailability object based on the application context URL
    *
    * Returns null if the unavailability cannot be retrieved
    *
@@ -128,8 +125,7 @@ export default class UnavailabilityController extends Controller {
     return await this._unavailabilities.get(id);
   }
 
-  /**
-   * Attempts to get a team member object and unavailability object based on the application context URL
+  /** Attempts to get a team member object and unavailability object based on the application context URL
    *
    * Returns null for an object if the object cannot be retrieved
    *
@@ -147,8 +143,7 @@ export default class UnavailabilityController extends Controller {
     ];
   }
 
-  /**
-   * Redirects the unavailability index page to the unavailability calendar for the current year
+  /** Redirects the unavailability index page to the unavailability calendar for the current year
    * @param context The application context
    * @returns The response
    */
@@ -160,8 +155,7 @@ export default class UnavailabilityController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the unavailality calendar for a given year and team member
+  /** Gets the unavailality calendar for a given year and team member
    * @param context The application context
    * @returns The response
    */
@@ -187,8 +181,7 @@ export default class UnavailabilityController extends Controller {
     );
   }
 
-  /**
-   * Gets the unavailability list for a given week and team member
+  /** Gets the unavailability list for a given week and team member
    * @param context The application context
    * @returns The response
    */
@@ -237,8 +230,7 @@ export default class UnavailabilityController extends Controller {
     );
   }
 
-  /**
-   * Gets the unavailability add form
+  /** Gets the unavailability add form
    * @param context The application context
    * @returns The response
    */
@@ -270,8 +262,7 @@ export default class UnavailabilityController extends Controller {
     );
   }
 
-  /**
-   * Accepts requests to add unavailability
+  /** Accepts requests to add unavailability
    * @param context The application context
    * @returns The response
    */
@@ -304,8 +295,7 @@ export default class UnavailabilityController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the unavailability edit form
+  /** Gets the unavailability edit form
    * @param context The application context
    * @returns The response
    */
@@ -331,8 +321,7 @@ export default class UnavailabilityController extends Controller {
     );
   }
 
-  /**
-   * Accepts requests to edit an unavailability
+  /** Accepts requests to edit an unavailability
    * @param context The application context
    * @returns The response
    */
@@ -369,8 +358,7 @@ export default class UnavailabilityController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the unavailability delete confirmation form
+  /** Gets the unavailability delete confirmation form
    * @param context The application context
    * @returns The response
    */
@@ -401,8 +389,7 @@ export default class UnavailabilityController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /**
-   * Accepts requests to delete an unavailability
+  /** Accepts requests to delete an unavailability
    * @param context The application context
    * @returns The response
    */
@@ -423,8 +410,7 @@ export default class UnavailabilityController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the unavailability week clear form
+  /** Gets the unavailability week clear form
    * @param context The application context
    * @returns The response
    */
@@ -459,8 +445,7 @@ export default class UnavailabilityController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /**
-   * Accepts requests to clear an unavailability week
+  /** Accepts requests to clear an unavailability week
    * @param context The application context
    * @returns The response
    */

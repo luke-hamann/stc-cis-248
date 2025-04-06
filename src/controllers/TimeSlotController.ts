@@ -41,8 +41,7 @@ export default class TimeSlotController extends Controller {
   /** The time slots repository */
   private _timeSlots: TimeSlotRepository;
 
-  /**
-   * Constucts the controller using the necessary repositories
+  /** Constucts the controller using the necessary repositories
    * @param shiftContexts The shift context repository
    * @param teamMembers The team members repository
    * @param colors The colors repository
@@ -151,8 +150,7 @@ export default class TimeSlotController extends Controller {
     ];
   }
 
-  /**
-   * Calculates a schedule cancel link url based on a date
+  /** Calculates a schedule cancel link url based on a date
    *
    * Floors the date to the most recent past Sunday to generate the url path
    *
@@ -168,8 +166,7 @@ export default class TimeSlotController extends Controller {
     return `/schedule/${newDate}/`;
   }
 
-  /**
-   * Gets a time slot based on the application context, null if not found
+  /** Gets a time slot based on the application context, null if not found
    * @param context The application context
    * @returns A time slot or null
    */
@@ -182,8 +179,7 @@ export default class TimeSlotController extends Controller {
     return await this._timeSlots.get(id);
   }
 
-  /**
-   * Gets the time slot add form
+  /** Gets the time slot add form
    * @param context The application context
    * @returns The response
    */
@@ -240,8 +236,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
   }
 
-  /**
-   * Accepts requests to add a time slot
+  /** Accepts requests to add a time slot
    * @param context The application context
    * @returns The response
    */
@@ -277,8 +272,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the time slot edit form
+  /** Gets the time slot edit form
    * @param context The application context
    * @returns The response
    */
@@ -303,8 +297,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
   }
 
-  /**
-   * Accepts requests to edit a time slot
+  /** Accepts requests to edit a time slot
    * @param context The application context
    * @returns The response
    */
@@ -346,8 +339,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the time slot delete confirmation form
+  /** Gets the time slot delete confirmation form
    * @param context The application context
    * @returns The response
    */
@@ -373,8 +365,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /**
-   * Accepts requests to delete a time slot
+  /** Accepts requests to delete a time slot
    * @param context The application context
    * @returns The response
    */
@@ -390,8 +381,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the time slot copy form
+  /** Gets the time slot copy form
    * @param context The application context
    * @returns The response
    */
@@ -419,8 +409,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/copy.html", model);
   }
 
-  /**
-   * Accepts requests to copy time slots
+  /** Accepts requests to copy time slots
    *
    * The action operates in two modes: preview and confirm.
    * In preview mode, a form will display to confirm the copy.
@@ -494,8 +483,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the time slot copy form
+  /** Gets the time slot copy form
    * @param context The application context
    * @returns The response
    */
@@ -515,8 +503,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/clear.html", model);
   }
 
-  /**
-   * Accepts requests to clear a section of the schedule of time slots
+  /** Accepts requests to clear a section of the schedule of time slots
    * @param context The application context
    * @returns The response
    */
@@ -547,8 +534,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Accepts requests to render a time slot assignees recommendation HTML fragment
+  /** Accepts requests to render a time slot assignees recommendation HTML fragment
    * @param context The application context
    * @returns The resonse
    */

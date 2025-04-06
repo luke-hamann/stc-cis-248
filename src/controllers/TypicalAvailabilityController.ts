@@ -19,8 +19,7 @@ export default class TypicalAvailabilityController extends Controller {
   /** The typical availability repository */
   public _typicalAvailability: TypicalAvailabilityRepository;
 
-  /**
-   * Constructs the controller using the necessary repositories
+  /** Constructs the controller using the necessary repositories
    * @param teamMembers The team member repository
    * @param typicalAvailability The typical availability repository
    */
@@ -70,8 +69,7 @@ export default class TypicalAvailabilityController extends Controller {
     ];
   }
 
-  /**
-   * Gets a team member object based on the application context url, or null if they do not exist
+  /** Gets a team member object based on the application context url, or null if they do not exist
    * @param context The application context
    * @returns The team member or null
    */
@@ -83,8 +81,7 @@ export default class TypicalAvailabilityController extends Controller {
     return await this._teamMembers.get(teamMemberId);
   }
 
-  /**
-   * Attempts to get a team member object and typical availability objects based on the context
+  /** Attempts to get a team member object and typical availability objects based on the context
    *
    * Returns null if either objects cannot be retrieved
    *
@@ -114,8 +111,7 @@ export default class TypicalAvailabilityController extends Controller {
     return [teamMember, typicalAvailability];
   }
 
-  /**
-   * Gets the team member typical availability list page
+  /** Gets the team member typical availability list page
    * @param context The application context
    * @returns The response
    */
@@ -135,8 +131,7 @@ export default class TypicalAvailabilityController extends Controller {
     );
   }
 
-  /**
-   * Gets the typical availability add form
+  /** Gets the typical availability add form
    * @param context The application context
    * @returns The response
    */
@@ -172,8 +167,7 @@ export default class TypicalAvailabilityController extends Controller {
     );
   }
 
-  /**
-   * Accepts requests to add a typical availability
+  /** Accepts requests to add a typical availability
    * @param context The application context
    * @returns The response
    */
@@ -204,8 +198,7 @@ export default class TypicalAvailabilityController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the typical availability edit form
+  /** Gets the typical availability edit form
    * @param context The application context
    * @returns The response
    */
@@ -231,8 +224,7 @@ export default class TypicalAvailabilityController extends Controller {
     );
   }
 
-  /**
-   * Accepts requests to edit a typical availability
+  /** Accepts requests to edit a typical availability
    * @param context The application context
    * @returns The response
    */
@@ -266,8 +258,7 @@ export default class TypicalAvailabilityController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the typical availability delete confirmation form
+  /** Gets the typical availability delete confirmation form
    * @param context The application context
    * @returns The response
    */
@@ -308,8 +299,7 @@ export default class TypicalAvailabilityController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /**
-   * Accepts requests to delete a typical availability
+  /** Accepts requests to delete a typical availability
    * @param context The application context
    * @returns The response
    */

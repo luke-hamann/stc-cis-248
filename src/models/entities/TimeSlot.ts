@@ -38,8 +38,7 @@ export default class TimeSlot {
   /** The color for the time slot note */
   public color: Color | null;
 
-  /**
-   * Constructs the time slot
+  /** Constructs the time slot
    * @param id
    * @param shiftContextId
    * @param shiftContext
@@ -78,8 +77,7 @@ export default class TimeSlot {
     this.color = color;
   }
 
-  /**
-   * Constructs an empty time slot object with default values
+  /** Constructs an empty time slot object with default values
    * @returns The time slot
    * @constructor
    */
@@ -120,8 +118,7 @@ export default class TimeSlot {
       : "";
   }
 
-  /**
-   * Clones the current time slot and returns a new time slot
+  /** Clones the current time slot and returns a new time slot
    * @returns The new time slot
    */
   public clone(): TimeSlot {

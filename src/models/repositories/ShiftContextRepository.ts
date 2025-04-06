@@ -3,21 +3,18 @@ import Repository from "./_Repository.ts";
 
 /** Represents actions for manipulating shift contexts */
 export interface IShiftContextRepository {
-  /**
-   * Validates a shift context
+  /** Validates a shift context
    * @param shiftContext The shift context
    * @returns An array of error messages
    */
   validate(shiftContext: ShiftContext): Promise<string[]>;
 
-  /**
-   * Lists all shift contexts
+  /** Lists all shift contexts
    * @returns An array of shift contexts
    */
   list(): Promise<ShiftContext[]>;
 
-  /**
-   * Gets a shift context
+  /** Gets a shift context
    *
    * Returns null if the shift context does not exist
    *
@@ -26,15 +23,13 @@ export interface IShiftContextRepository {
    */
   get(id: number): Promise<ShiftContext | null>;
 
-  /**
-   * Adds a shift context
+  /** Adds a shift context
    * @param shiftContext The shift context
    * @returns The id of the new shift context
    */
   add(shiftContext: ShiftContext): Promise<number>;
 
-  /**
-   * Updates a shift context
+  /** Updates a shift context
    *
    * Refers to the id to update the correct shift context
    *
@@ -42,8 +37,7 @@ export interface IShiftContextRepository {
    */
   update(shiftContext: ShiftContext): Promise<void>;
 
-  /**
-   * Deletes a shift context
+  /** Deletes a shift context
    * @param id The id of the shift context
    */
   delete(id: number): Promise<void>;
@@ -69,8 +63,7 @@ export interface IShiftContextRow {
 
 export default class ShiftContextRepository extends Repository
   implements IShiftContextRepository {
-  /**
-   * Converts a database row to a shift context
+  /** Converts a database row to a shift context
    * @param row The database row
    * @returns The shift context
    */
@@ -84,8 +77,7 @@ export default class ShiftContextRepository extends Repository
     );
   }
 
-  /**
-   * Converts an array of database rows to an array of shift contexts
+  /** Converts an array of database rows to an array of shift contexts
    * @param rows The array of database rows
    * @returns The array of shift contexts
    */
@@ -93,8 +85,7 @@ export default class ShiftContextRepository extends Repository
     return rows.map(this.mapRowToShiftContext);
   }
 
-  /**
-   * Validates a shift context
+  /** Validates a shift context
    * @param shiftContext The shift context
    * @returns An array of error messages
    */
@@ -121,8 +112,7 @@ export default class ShiftContextRepository extends Repository
     return errors;
   }
 
-  /**
-   * Lists all shift contexts
+  /** Lists all shift contexts
    * @returns An array of shift contexts
    */
   public async list(): Promise<ShiftContext[]> {
@@ -135,8 +125,7 @@ export default class ShiftContextRepository extends Repository
     return result.rows ? this.mapRowsToShiftContexts(result.rows) : [];
   }
 
-  /**
-   * Gets a shift context
+  /** Gets a shift context
    *
    * Returns null if the shift context does not exist
    *
@@ -162,8 +151,7 @@ export default class ShiftContextRepository extends Repository
     }
   }
 
-  /**
-   * Adds a shift context
+  /** Adds a shift context
    * @param shiftContext The shift context
    * @returns The id of the new shift context
    */
@@ -179,8 +167,7 @@ export default class ShiftContextRepository extends Repository
     return result.lastInsertId ?? 0;
   }
 
-  /**
-   * Updates a shift context
+  /** Updates a shift context
    *
    * Refers to the id to update the correct shift context
    *
@@ -197,8 +184,7 @@ export default class ShiftContextRepository extends Repository
     );
   }
 
-  /**
-   * Deletes a shift context
+  /** Deletes a shift context
    * @param id The id of the shift context
    */
   public async delete(id: number): Promise<void> {

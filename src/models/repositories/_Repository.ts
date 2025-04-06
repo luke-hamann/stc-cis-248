@@ -5,8 +5,7 @@ export default abstract class Repository {
   /** The database connection */
   protected _database: Database;
 
-  /**
-   * Constructs the repository using a database connection
+  /** Constructs the repository using a database connection
    * @param database The database connection
    */
   constructor(database: Database) {

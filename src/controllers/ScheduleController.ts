@@ -15,8 +15,7 @@ export default class ScheduleController extends Controller {
   /** The schedule repository */
   private schedules: ScheduleRepository;
 
-  /**
-   * Constructs the controller using the schedule repository
+  /** Constructs the controller using the schedule repository
    * @param schedules The schedule repository
    */
   constructor(
@@ -47,8 +46,7 @@ export default class ScheduleController extends Controller {
     ];
   }
 
-  /**
-   * Redirect from the index page to the schedule calendar for the current year
+  /** Redirect from the index page to the schedule calendar for the current year
    * @param context The application context
    * @returns The response
    */
@@ -57,8 +55,7 @@ export default class ScheduleController extends Controller {
     return this.RedirectResponse(context, `/schedule/${year}/`);
   }
 
-  /**
-   * Gets the schedule year calendar page
+  /** Gets the schedule year calendar page
    * @param context The application context
    * @returns The response
    */
@@ -75,8 +72,7 @@ export default class ScheduleController extends Controller {
     return this.HTMLResponse(context, "./views/schedule/year.html", model);
   }
 
-  /**
-   * Gets the schedule week editor page
+  /** Gets the schedule week editor page
    * @param context The application context
    * @returns The response
    */
@@ -111,8 +107,7 @@ export default class ScheduleController extends Controller {
     return this.HTMLResponse(context, "./views/schedule/week.html", model);
   }
 
-  /**
-   * Gets the scedule export form
+  /** Gets the scedule export form
    * @param context The application context
    * @returns The response
    */
@@ -139,8 +134,7 @@ export default class ScheduleController extends Controller {
     return this.HTMLResponse(context, "./views/schedule/export.html", model);
   }
 
-  /**
-   * Converts a schedule cell object to a plain text string based on its type
+  /** Converts a schedule cell object to a plain text string based on its type
    *
    * Helper method
    *
@@ -184,8 +178,7 @@ export default class ScheduleController extends Controller {
     return value;
   }
 
-  /**
-   * Accepts requests to export the schedule to a file
+  /** Accepts requests to export the schedule to a file
    * @param context The application context
    * @returns The response
    */

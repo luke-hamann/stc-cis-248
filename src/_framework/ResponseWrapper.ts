@@ -1,5 +1,4 @@
-/**
- * Encapsulates data in an HTTP Request
+/** Encapsulates data in an HTTP Request
  *
  * Fetch Request objects are immutable.
  * This class allows the values for the outgoing response to be mutated before finally constructing and sending the response.
@@ -14,8 +13,7 @@ export default class ResponseWrapper {
   /** The status code of the response */
   public status: number | null = null;
 
-  /**
-   * Converts the response wrapper to a response
+  /** Converts the response wrapper to a response
    * @returns The HTTP response
    */
   public toResponse() {

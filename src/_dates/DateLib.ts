@@ -1,7 +1,6 @@
 /** A static class for performing date calculations */
 export default class DateLib {
-  /**
-   * Adds a number of days to a date and returns the new date
+  /** Adds a number of days to a date and returns the new date
    * @param date The original date
    * @param days A number of days to add
    * @returns The new date
@@ -12,8 +11,7 @@ export default class DateLib {
     return newDate;
   }
 
-  /**
-   * Rolls back a date to the most recent Sunday and returns the new date
+  /** Rolls back a date to the most recent Sunday and returns the new date
    *
    * The date does not change if it is a Sunday
    * @param date The date
@@ -23,8 +21,7 @@ export default class DateLib {
     return this.addDays(date, -date.getDay());
   }
 
-  /**
-   * Gets a list of dates within a date range, inclusive
+  /** Gets a list of dates within a date range, inclusive
    * @param start The start date
    * @param end The end date
    * @returns The list of dates within range
@@ -42,8 +39,7 @@ export default class DateLib {
     return dates;
   }
 
-  /**
-   * Calculates the difference between 2 dates in days
+  /** Calculates the difference between 2 dates in days
    * @param date1 The first date
    * @param date2 The second date
    * @returns The difference in days
@@ -54,8 +50,7 @@ export default class DateLib {
     );
   }
 
-  /**
-   * Calculates an age on a given date given a birth date
+  /** Calculates an age on a given date given a birth date
    * @param birthDate The birth date
    * @param date The date to calculate the age for
    * @returns An age in years

@@ -15,8 +15,7 @@ export default class SubstitutesEditViewModel extends FormViewModel {
     this.teamMembers = teamMembers;
   }
 
-  /**
-   * Maps an HTTP request to a substitutes edit view model
+  /** Maps an HTTP request to a substitutes edit view model
    * @param request Fetch HTTP request
    * @returns New model
    */

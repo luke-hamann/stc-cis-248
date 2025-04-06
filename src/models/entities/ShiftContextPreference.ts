@@ -18,8 +18,7 @@ export default class ShiftContextPreference {
   /** Whether the team member prefers the shift context */
   public isPreferable: boolean = false;
 
-  /**
-   * Constructs the shift context preference
+  /** Constructs the shift context preference
    * @param teamMemberId
    * @param teamMember
    * @param shiftContextId

@@ -17,8 +17,7 @@ export default class ShiftContextPreferenceController extends Controller {
   /** The shift context repository */
   private _shiftContextRepository: ShiftContextRepository;
 
-  /**
-   * Constructs the shift context preference controller using the necessary repositories
+  /** Constructs the shift context preference controller using the necessary repositories
    * @param shiftContextPreferenceRepository The shift context preference repository
    * @param teamMemberRepository The team member repository
    * @param shiftContextRepository The shift context repository
@@ -46,8 +45,7 @@ export default class ShiftContextPreferenceController extends Controller {
     ];
   }
 
-  /**
-   * Gets the shift context preference list page for a team member
+  /** Gets the shift context preference list page for a team member
    * @param context The application context
    * @returns The response
    */
@@ -79,8 +77,7 @@ export default class ShiftContextPreferenceController extends Controller {
     );
   }
 
-  /**
-   * Accepts requests to update a team member's shift context preferences
+  /** Accepts requests to update a team member's shift context preferences
    * @param context The application context
    * @returns The response
    */

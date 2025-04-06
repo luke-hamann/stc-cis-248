@@ -6,28 +6,24 @@ import SubstituteList from "../entities/SubstituteList.ts";
 
 /** Represents actions for manipulating daily substitute lists */
 export interface ISubstituteRepository {
-  /**
-   * Validates a list of team member ids to use as substitutes
+  /** Validates a list of team member ids to use as substitutes
    * @param teamMemberIds The list of team member ids
    * @returns A promise of an array of error messages
    */
   validate(substituteList: SubstituteList): Promise<string[]>;
 
-  /**
-   * Gets the substitute list for a given date
+  /** Gets the substitute list for a given date
    * @param date The date
    * @returns The substitute list
    */
   getSubstituteList(date: Date): Promise<SubstituteList>;
 
-  /**
-   * Updates substitutes for a given day
+  /** Updates substitutes for a given day
    * @param substituteList The substitute list
    */
   update(substituteList: SubstituteList): Promise<void>;
 
-  /**
-   * Deletes all substitutes within a date range
+  /** Deletes all substitutes within a date range
    * @param start The start date
    * @param end The end date
    */
@@ -58,8 +54,7 @@ export default class SubstituteRepository extends Repository
   /** The team member repository */
   private _teamMembers: TeamMemberRepository;
 
-  /**
-   * Constructs the repository given a database connection and a team member repository
+  /** Constructs the repository given a database connection and a team member repository
    * @param database
    * @param teamMembers
    */
@@ -68,8 +63,7 @@ export default class SubstituteRepository extends Repository
     this._teamMembers = teamMembers;
   }
 
-  /**
-   * Converts a substitute database row to a team member
+  /** Converts a substitute database row to a team member
    * @param row The database row
    * @returns The team member
    */
@@ -91,8 +85,7 @@ export default class SubstituteRepository extends Repository
     );
   }
 
-  /**
-   * Converts an array of substitute database rows to an array of team members
+  /** Converts an array of substitute database rows to an array of team members
    * @param rows The database rows
    * @returns The team members
    */
@@ -100,8 +93,7 @@ export default class SubstituteRepository extends Repository
     return rows.map((row) => this.mapRowToSubstitute(row));
   }
 
-  /**
-   * Validates a list of team member ids to use as substitutes
+  /** Validates a list of team member ids to use as substitutes
    * @param teamMemberIds The list of team member ids
    * @returns A promise of an array of error messages
    */
@@ -123,8 +115,7 @@ export default class SubstituteRepository extends Repository
     return errors;
   }
 
-  /**
-   * Gets the substitute list for a given date
+  /** Gets the substitute list for a given date
    * @param date The date
    * @returns The substitute list
    */
@@ -144,8 +135,7 @@ export default class SubstituteRepository extends Repository
     return new SubstituteList(date, this.mapRowsToSubstitutes(result.rows));
   }
 
-  /**
-   * Updates substitutes for a given day
+  /** Updates substitutes for a given day
    * @param substituteList The substitute list
    */
   public async update(substituteList: SubstituteList): Promise<void> {
@@ -168,8 +158,7 @@ export default class SubstituteRepository extends Repository
     }
   }
 
-  /**
-   * Deletes all substitutes within a date range
+  /** Deletes all substitutes within a date range
    * @param start The start date
    * @param end The end date
    */

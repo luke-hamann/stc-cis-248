@@ -21,8 +21,7 @@ export default class ShiftContextNote {
   /** The associated color */
   public color: Color | null = null;
 
-  /**
-   * Constructs the shift context
+  /** Constructs the shift context
    * @param shiftContextId
    * @param shiftContext
    * @param date
@@ -46,8 +45,7 @@ export default class ShiftContextNote {
     this.color = color;
   }
 
-  /**
-   * Construct a new shift context note by cloning the current one
+  /** Construct a new shift context note by cloning the current one
    * @returns The new shift context note
    */
   public clone(): ShiftContextNote {

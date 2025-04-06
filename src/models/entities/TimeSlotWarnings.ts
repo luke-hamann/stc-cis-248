@@ -20,8 +20,7 @@ export default class TimeSlotWarnings {
   /** Whether the time slot has no assignee */
   public unassigned: boolean = false;
 
-  /**
-   * Determines whether any warnings exist for the time slot
+  /** Determines whether any warnings exist for the time slot
    * @returns The result
    */
   public hasWarning(): boolean {

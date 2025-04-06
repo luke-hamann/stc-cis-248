@@ -1,5 +1,4 @@
-/**
- * Represents settings for the possible creation of a time slot
+/** Represents settings for the possible creation of a time slot
  *
  * These are created when a time slot in a unique grouping exists on a different date during the week
  * but a cooresponding time slot in that grouping does not exist on the current day being inspected.
@@ -18,8 +17,7 @@ export default class TimeSlotPossibility {
   /** Whether the possible time slot is predicted to require an adult assignee */
   public requiresAdult: boolean;
 
-  /**
-   * Constructs the time slot possibility
+  /** Constructs the time slot possibility
    * @param shiftContextId
    * @param startDateTime
    * @param endDateTime
