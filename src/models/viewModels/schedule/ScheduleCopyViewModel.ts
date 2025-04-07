@@ -1,6 +1,6 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
 import DateLib from "../../../_dates/DateLib.ts";
-import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import MapWrapper from "../../../_framework/MapWrapper.ts";
 import ShiftContextNote from "../../entities/ShiftContextNote.ts";
 import TimeSlot from "../../entities/TimeSlot.ts";
 import ViewModel from "../_shared/_ViewModel.ts";
@@ -87,7 +87,7 @@ export default class ScheduleCopyViewModel extends ViewModel {
   public static async fromRequest(
     request: Request,
   ): Promise<ScheduleCopyViewModel> {
-    const formData = new FormDataWrapper(await request.formData());
+    const formData = MapWrapper.fromFormData(await request.formData());
 
     return new ScheduleCopyViewModel(
       formData.getBool("confirm"),

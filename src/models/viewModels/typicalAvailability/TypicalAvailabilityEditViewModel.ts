@@ -1,4 +1,4 @@
-import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import MapWrapper from "../../../_framework/MapWrapper.ts";
 import TeamMember from "../../entities/TeamMember.ts";
 import TypicalAvailability, {
   isDayOfWeek,
@@ -37,7 +37,7 @@ export default class TypicalAvailabilityEditViewModel extends FormViewModel {
   public static async fromRequest(
     request: Request,
   ): Promise<TypicalAvailabilityEditViewModel> {
-    const formData = new FormDataWrapper(await request.formData());
+    const formData = MapWrapper.fromFormData(await request.formData());
 
     const teamMemberId = formData.getInt("teamMemberId") ?? 0;
     let dayOfWeek = formData.getInt("dayOfWeek");

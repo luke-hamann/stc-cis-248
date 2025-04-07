@@ -4,8 +4,8 @@ import TeamMember from "../models/entities/TeamMember.ts";
 import TypicalAvailability, {
   DayOfWeek,
 } from "../models/entities/TypicalAvailability.ts";
-import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
-import TypicalAvailabilityRepository from "../models/repositories/TypicalAvailabilityRepository.ts";
+import { ITeamMemberRepository } from "../models/repositories/TeamMemberRepository.ts";
+import { ITypicalAvailabilityRepository } from "../models/repositories/TypicalAvailabilityRepository.ts";
 import TypicalAvailabilityEditViewModel from "../models/viewModels/typicalAvailability/TypicalAvailabilityEditViewModel.ts";
 import TypicalAvailabilityListViewModel from "../models/viewModels/typicalAvailability/TypicalAvailabilityListViewModel.ts";
 import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
@@ -14,18 +14,18 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Controls the typical availability pages */
 export default class TypicalAvailabilityController extends Controller {
   /** The team member repository */
-  public _teamMembers: TeamMemberRepository;
+  public _teamMembers: ITeamMemberRepository;
 
   /** The typical availability repository */
-  public _typicalAvailability: TypicalAvailabilityRepository;
+  public _typicalAvailability: ITypicalAvailabilityRepository;
 
   /** Constructs the controller using the necessary repositories
    * @param teamMembers The team member repository
    * @param typicalAvailability The typical availability repository
    */
   public constructor(
-    teamMembers: TeamMemberRepository,
-    typicalAvailability: TypicalAvailabilityRepository,
+    teamMembers: ITeamMemberRepository,
+    typicalAvailability: ITypicalAvailabilityRepository,
   ) {
     super();
     this._teamMembers = teamMembers;

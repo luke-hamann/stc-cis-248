@@ -1,18 +1,6 @@
 import Color from "../entities/Color.ts";
 import Repository from "./_Repository.ts";
 
-/** Color database row */
-export interface IColorRow {
-  /** Color id */
-  id: number;
-
-  /** Color name */
-  name: string;
-
-  /** 6-character RBG color hexadecimal code */
-  hex: string;
-}
-
 /** Represents a repository of color entities */
 export interface IColorRepository {
   /** Validates a color
@@ -50,6 +38,18 @@ export interface IColorRepository {
    * @param id The color id
    */
   delete(id: number): Promise<void>;
+}
+
+/** Color database row */
+export interface IColorRow {
+  /** Color id */
+  id: number;
+
+  /** Color name */
+  name: string;
+
+  /** 6-character RBG color hexadecimal code */
+  hex: string;
 }
 
 /** Repository for manipulating color entities */

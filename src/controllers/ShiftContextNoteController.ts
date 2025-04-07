@@ -1,7 +1,7 @@
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
-import ColorRepository from "../models/repositories/ColorRepository.ts";
-import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
+import { IColorRepository } from "../models/repositories/ColorRepository.ts";
+import { IShiftContextNoteRepository } from "../models/repositories/ShiftContextNoteRepository.ts";
 import ShiftContextNoteEditViewModel from "../models/viewModels/shiftContextNote/ShiftContextNoteEditViewModel.ts";
 import BetterDate from "../_dates/BetterDate.ts";
 import ShiftContextNote from "../models/entities/ShiftContextNote.ts";
@@ -10,18 +10,18 @@ import { ResponseWrapper } from "../mod.ts";
 /** Controls the shift context note pages */
 export default class ShiftContextNoteController extends Controller {
   /** The shift context note repository */
-  private _shiftContextNoteRepository: ShiftContextNoteRepository;
+  private _shiftContextNoteRepository: IShiftContextNoteRepository;
 
   /** The color repository */
-  private _colorRepository: ColorRepository;
+  private _colorRepository: IColorRepository;
 
   /** Constructs the shift context note controller based on the necessary repositories
    * @param shiftContextNoteRepository The shift context note repository
    * @param colorRepository The color repository
    */
   constructor(
-    shiftContextNoteRepository: ShiftContextNoteRepository,
-    colorRepository: ColorRepository,
+    shiftContextNoteRepository: IShiftContextNoteRepository,
+    colorRepository: IColorRepository,
   ) {
     super();
     this._shiftContextNoteRepository = shiftContextNoteRepository;
@@ -93,7 +93,6 @@ export default class ShiftContextNoteController extends Controller {
       [],
       shiftContextNote,
       await this._colorRepository.list(),
-      BetterDate.fromDate(date).floorToSunday().toDate(),
     );
 
     return this.HTMLResponse(

@@ -1,4 +1,3 @@
-import BetterDate from "../../_dates/BetterDate.ts";
 import DateLib from "../../_dates/DateLib.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
 import TimeSlotGroup from "../entities/TimeSlotGroup.ts";
@@ -118,7 +117,7 @@ export interface ITimeSlotRepository {
 }
 
 /** Describes a time slot database row */
-interface ITimeSlotRow {
+export interface ITimeSlotRow {
   /** The time slot id */
   id: number;
 
@@ -148,7 +147,7 @@ interface ITimeSlotRow {
 }
 
 /** Describes a time slot group database row */
-interface ITimeSlotGroupRow {
+export interface ITimeSlotGroupRow {
   /** The time slot group start time */
   startTime: string;
 
@@ -329,7 +328,7 @@ export default class TimeSlotRepository extends Repository {
    * @param end The end date and time
    * @returns The array of time slots
    */
-  public async getInRange(start: Date, end: Date): Promise<TimeSlot[]> {
+  public async getRange(start: Date, end: Date): Promise<TimeSlot[]> {
     const result = await this._database.execute(
       `
         ${this._timeSlotQuery}
@@ -497,7 +496,7 @@ export default class TimeSlotRepository extends Repository {
       destinationStart,
     );
 
-    const sourceTimeSlots = await this.getInRange(sourceStart, sourceEnd);
+    const sourceTimeSlots = await this.getRange(sourceStart, sourceEnd);
     let destinationTimeSlots = [];
 
     for (const timeSlot of sourceTimeSlots) {

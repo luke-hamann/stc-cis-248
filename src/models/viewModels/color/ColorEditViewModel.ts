@@ -1,4 +1,4 @@
-import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import MapWrapper from "../../../_framework/MapWrapper.ts";
 import Color from "../../entities/Color.ts";
 import FormViewModel from "../_shared/_FormViewModel.ts";
 
@@ -34,7 +34,7 @@ export default class ColorEditViewModel extends FormViewModel {
   public static async fromRequest(
     request: Request,
   ): Promise<ColorEditViewModel> {
-    const formData = new FormDataWrapper(await request.formData());
+    const formData = MapWrapper.fromFormData(await request.formData());
     const id = formData.getInt("id") ?? 0;
     const name = formData.getString("name");
     const hex = formData.getColorHex("hex");

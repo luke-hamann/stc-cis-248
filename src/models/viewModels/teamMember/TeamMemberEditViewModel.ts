@@ -1,4 +1,4 @@
-import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import MapWrapper from "../../../_framework/MapWrapper.ts";
 import TeamMember from "../../entities/TeamMember.ts";
 import FormViewModel from "../_shared/_FormViewModel.ts";
 
@@ -35,7 +35,7 @@ export default class TeamMemberEditViewModel extends FormViewModel {
   public static async fromRequest(
     request: Request,
   ): Promise<TeamMemberEditViewModel> {
-    const formData = new FormDataWrapper(await request.formData());
+    const formData = MapWrapper.fromFormData(await request.formData());
 
     return new TeamMemberEditViewModel(
       false,

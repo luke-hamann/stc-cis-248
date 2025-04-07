@@ -67,7 +67,7 @@ export interface ITypicalAvailabilityRepository {
 }
 
 /** Represents a typical availability database row */
-interface ITypicalAvailabilityRow {
+export interface ITypicalAvailabilityRow {
   /** The id */
   id: number;
 

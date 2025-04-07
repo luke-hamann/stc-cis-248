@@ -1,6 +1,6 @@
 import Context from "../_framework/Context.ts";
-import SubstituteRepository from "../models/repositories/SubstituteRepository.ts";
-import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
+import { ISubstituteRepository } from "../models/repositories/SubstituteRepository.ts";
+import { ITeamMemberRepository } from "../models/repositories/TeamMemberRepository.ts";
 import SubstitutesEditViewModel from "../models/viewModels/substitute/SubstitutesEditViewModel.ts";
 import Controller from "../_framework/Controller.ts";
 import BetterDate from "../_dates/BetterDate.ts";
@@ -9,18 +9,18 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Controls the substitute pages */
 export default class SubstituteController extends Controller {
   /** The substitutes repository */
-  private _substitutes: SubstituteRepository;
+  private _substitutes: ISubstituteRepository;
 
   /** The team members repository */
-  private _teamMembers: TeamMemberRepository;
+  private _teamMembers: ITeamMemberRepository;
 
   /** Constructs the substitutes controller using the necessary repositories
    * @param substitutes The substitutes repository
    * @param teamMembers The team members repository
    */
   constructor(
-    substitutes: SubstituteRepository,
-    teamMembers: TeamMemberRepository,
+    substitutes: ISubstituteRepository,
+    teamMembers: ITeamMemberRepository,
   ) {
     super();
     this._substitutes = substitutes;

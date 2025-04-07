@@ -3,8 +3,8 @@ import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 import nunjucks from "npm:nunjucks";
 import ViewModel from "../models/viewModels/_shared/_ViewModel.ts";
-import RouteData from "./RouteDataWrapper.ts";
 import Route from "./Route.ts";
+import MapWrapper from "./MapWrapper.ts";
 
 /** Controls routing to action methods based on HTTP method and url patterns */
 export default class Controller {
@@ -33,7 +33,10 @@ export default class Controller {
       context.match = match;
 
       if (route.mappings) {
-        context.routeData = new RouteData(context.match, route.mappings);
+        context.routeData = MapWrapper.fromRouteData(
+          context.match,
+          route.mappings,
+        );
       }
 
       return await route.action.call(this, context);

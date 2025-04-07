@@ -16,10 +16,11 @@ export default class Router extends Controller {
   private _controllers: Controller[];
 
   /** Construct the router given controllers
-   *
-   * @constructor
+   * @param controllers
    */
-  constructor(controllers: Controller[]) {
+  constructor(
+    controllers: Controller[],
+  ) {
     super();
     this._controllers = controllers;
   }
@@ -36,10 +37,7 @@ export default class Router extends Controller {
   public async route(request: Request): Promise<Response> {
     let response: ResponseWrapper | void;
     const context = new Context(request, new ResponseWrapper());
-
-    if (request.method == "POST") {
-      context.initializeFormData();
-    }
+    context.initializeFormData();
 
     // Controllers
     for (const controller of this._controllers) {

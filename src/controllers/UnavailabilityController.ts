@@ -5,8 +5,8 @@ import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 import TeamMember from "../models/entities/TeamMember.ts";
 import Unavailability from "../models/entities/Unavailability.ts";
-import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
-import UnavailabilityRepository from "../models/repositories/UnavailabilityRepository.ts";
+import { ITeamMemberRepository } from "../models/repositories/TeamMemberRepository.ts";
+import { IUnavailabilityRepository } from "../models/repositories/UnavailabilityRepository.ts";
 import CalendarViewPartial from "../models/viewModels/_shared/CalendarViewPartial.ts";
 import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import UnavailabilityEditViewModel from "../models/viewModels/unavailability/UnavailabilityEditViewModel.ts";
@@ -16,18 +16,18 @@ import UnavailabilityYearViewModel from "../models/viewModels/unavailability/Una
 /** Controls the team member unavailability pages */
 export default class UnavailabilityController extends Controller {
   /** The team members repository */
-  private _teamMembers: TeamMemberRepository;
+  private _teamMembers: ITeamMemberRepository;
 
   /** The unavailability repository */
-  private _unavailabilities: UnavailabilityRepository;
+  private _unavailabilities: IUnavailabilityRepository;
 
   /** Constructs the controlling using the necessary repositories
    * @param teamMembers The team member repository
    * @param unavailabilities The unavailabilities repository
    */
   constructor(
-    teamMembers: TeamMemberRepository,
-    unavailabilities: UnavailabilityRepository,
+    teamMembers: ITeamMemberRepository,
+    unavailabilities: IUnavailabilityRepository,
   ) {
     super();
     this._teamMembers = teamMembers;

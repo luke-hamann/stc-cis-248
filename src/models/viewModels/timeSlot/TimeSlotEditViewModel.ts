@@ -1,11 +1,11 @@
 import Color from "../../entities/Color.ts";
-import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
 import FormViewModel from "../_shared/_FormViewModel.ts";
 import ShiftContext from "../../entities/ShiftContext.ts";
 import TeamMember from "../../entities/TeamMember.ts";
 import TimeSlot from "../../entities/TimeSlot.ts";
 import BetterDate from "../../../_dates/BetterDate.ts";
 import AssigneeRecommendations from "../../entities/AssigneeRecommendation.ts";
+import MapWrapper from "../../../_framework/MapWrapper.ts";
 
 /** A view model for the time slot add/edit form */
 export default class TimeSlotEditViewModel extends FormViewModel {
@@ -67,7 +67,7 @@ export default class TimeSlotEditViewModel extends FormViewModel {
    * @returns The view model
    */
   public static async fromRequest(request: Request) {
-    const formData = new FormDataWrapper(await request.formData());
+    const formData = MapWrapper.fromFormData(await request.formData());
 
     const timeSlotId = formData.getInt("timeSlotId") ?? 0;
     const shiftContextId = formData.getInt("shiftContextId") ?? 0;

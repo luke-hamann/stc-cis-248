@@ -4,7 +4,7 @@ import Controller from "../_framework/Controller.ts";
 import DateLib from "../_dates/DateLib.ts";
 import ExcelJS from "npm:exceljs";
 import { ScheduleCell } from "../models/entities/Schedule.ts";
-import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
+import { IScheduleRepository } from "../models/repositories/ScheduleRepository.ts";
 import ScheduleWeekViewModel from "../models/viewModels/schedule/ScheduleWeekViewModel.ts";
 import CalendarViewPartial from "../models/viewModels/_shared/CalendarViewPartial.ts";
 import ScheduleExportFormViewModel from "../models/viewModels/schedule/ScheduleExportViewModel.ts";
@@ -13,13 +13,13 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Handles the schedule year, week, and export pages */
 export default class ScheduleController extends Controller {
   /** The schedule repository */
-  private schedules: ScheduleRepository;
+  private schedules: IScheduleRepository;
 
   /** Constructs the controller using the schedule repository
    * @param schedules The schedule repository
    */
   constructor(
-    schedules: ScheduleRepository,
+    schedules: IScheduleRepository,
   ) {
     super();
     this.schedules = schedules;

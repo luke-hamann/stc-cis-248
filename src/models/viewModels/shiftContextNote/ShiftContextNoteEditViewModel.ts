@@ -1,7 +1,7 @@
 import Color from "../../entities/Color.ts";
-import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
 import FormViewModel from "../_shared/_FormViewModel.ts";
 import ShiftContextNote from "../../entities/ShiftContextNote.ts";
+import MapWrapper from "../../../_framework/MapWrapper.ts";
 
 /** A view model for the shift context note add/edit form */
 export default class ShiftContextNoteEditViewModel extends FormViewModel {
@@ -33,7 +33,7 @@ export default class ShiftContextNoteEditViewModel extends FormViewModel {
   public static async fromRequest(
     request: Request,
   ): Promise<ShiftContextNoteEditViewModel> {
-    const formData = new FormDataWrapper(await request.formData());
+    const formData = MapWrapper.fromFormData(await request.formData());
 
     const note = formData.getString("note");
     const colorId = formData.getInt("colorId");

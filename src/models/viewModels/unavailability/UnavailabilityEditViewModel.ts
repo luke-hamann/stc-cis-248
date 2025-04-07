@@ -1,5 +1,5 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
-import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import MapWrapper from "../../../_framework/MapWrapper.ts";
 import TeamMember from "../../entities/TeamMember.ts";
 import Unavailability from "../../entities/Unavailability.ts";
 import FormViewModel from "../_shared/_FormViewModel.ts";
@@ -39,7 +39,7 @@ export default class UnavailabilityEditViewModel extends FormViewModel {
   public static async fromRequest(
     request: Request,
   ): Promise<UnavailabilityEditViewModel> {
-    const formData = new FormDataWrapper(await request.formData());
+    const formData = MapWrapper.fromFormData(await request.formData());
 
     const date = formData.getDate("date");
     const startTime = formData.getTime("startTime");

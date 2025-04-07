@@ -1,6 +1,6 @@
 import Context from "../_framework/Context.ts";
 import ShiftContext from "../models/entities/ShiftContext.ts";
-import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
+import { IShiftContextRepository } from "../models/repositories/ShiftContextRepository.ts";
 import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import ShiftContextEditViewModel from "../models/viewModels/shiftContext/ShiftContextEditViewModel.ts";
 import ShiftContextsViewModel from "../models/viewModels/shiftContext/ShiftContextsViewModel.ts";
@@ -10,12 +10,12 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Controls the shift context pages */
 export default class ShiftContextController extends Controller {
   /** The shift context repository */
-  private shiftContextRepository: ShiftContextRepository;
+  private shiftContextRepository: IShiftContextRepository;
 
   /** Constructs the shift context controller using a shift context repository
    * @param shiftContextRepository The shift context repository
    */
-  constructor(shiftContextRepository: ShiftContextRepository) {
+  constructor(shiftContextRepository: IShiftContextRepository) {
     super();
     this.shiftContextRepository = shiftContextRepository;
     this.routes = [

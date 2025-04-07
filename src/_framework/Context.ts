@@ -1,6 +1,5 @@
-import { FormDataWrapper } from "../mod.ts";
+import MapWrapper from "./MapWrapper.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
-import RouteData from "./RouteDataWrapper.ts";
 
 /** A class for representing an application state context */
 export default class Context {
@@ -16,10 +15,11 @@ export default class Context {
   /** The regex match results for the incoming request URL */
   public match: string[] = [];
 
-  public routeData: RouteData | null = null;
+  /** The url path route data */
+  public routeData: MapWrapper = MapWrapper.empty();
 
   /** A wrapper for the request form data */
-  public formData: FormDataWrapper | null = null;
+  public formData: MapWrapper = MapWrapper.empty();
 
   /** The anti-cross-site-request-forgery token from the session */
   public csrf_token: string = "";
@@ -57,6 +57,9 @@ export default class Context {
    * Constructors cannot be asyncronous.
    */
   public async initializeFormData(): Promise<void> {
-    this.formData = new FormDataWrapper(await this.request.clone().formData());
+    if (this.request.method == "POST") {
+      const formData = await this.request.clone().formData();
+      this.formData = MapWrapper.fromFormData(formData);
+    }
   }
 }

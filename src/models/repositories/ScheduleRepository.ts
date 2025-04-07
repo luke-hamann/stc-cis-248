@@ -18,7 +18,7 @@ import ShiftContextPreferenceRepository from "./ShiftContextPreferenceRepository
 import TeamMember from "../entities/TeamMember.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import Database from "./_Database.ts";
-import TimeSlotPossibility from "../entities/TimeSlotPossiblity.ts";
+import TimeSlotPossibility from "../entities/TimeSlotPossibility.ts";
 import ScheduleWarnings from "../entities/ScheduleWarnings.ts";
 
 /** Represents a repository for compiling schedule information */

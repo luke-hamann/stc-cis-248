@@ -2,29 +2,29 @@ services:
   mysql:
     environment:
       - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=schedulerapp
-      - MYSQL_USER=schedulerapp
-      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_USER=${DATABASE_USERNAME}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
     build:
       context: .
       dockerfile: ./docker/mysql/Dockerfile
     restart: always
-  
+
   phpmyadmin:
     environment:
       - PMA_HOST=mysql
     depends_on:
       - mysql
     image: phpmyadmin/phpmyadmin
-    ports: 
+    ports:
       - 8001:80
-  
+
   app:
     environment:
       - DATABASE_HOSTNAME=mysql
-      - DATABASE_USERNAME=root
-      - DATABASE_NAME=schedulerapp
-      - DATABASE_PASSWORD=password
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
     depends_on:
       - mysql
     build:

@@ -4,13 +4,13 @@ import Controller from "../_framework/Controller.ts";
 import Color from "../models/entities/Color.ts";
 import ShiftContextNote from "../models/entities/ShiftContextNote.ts";
 import TimeSlot from "../models/entities/TimeSlot.ts";
-import ColorRepository from "../models/repositories/ColorRepository.ts";
-import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
-import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
-import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
-import SubstituteRepository from "../models/repositories/SubstituteRepository.ts";
-import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
-import TimeSlotRepository from "../models/repositories/TimeSlotRepository.ts";
+import { IColorRepository } from "../models/repositories/ColorRepository.ts";
+import { IScheduleRepository } from "../models/repositories/ScheduleRepository.ts";
+import { IShiftContextNoteRepository } from "../models/repositories/ShiftContextNoteRepository.ts";
+import { IShiftContextRepository } from "../models/repositories/ShiftContextRepository.ts";
+import { ISubstituteRepository } from "../models/repositories/SubstituteRepository.ts";
+import { ITeamMemberRepository } from "../models/repositories/TeamMemberRepository.ts";
+import { ITimeSlotRepository } from "../models/repositories/TimeSlotRepository.ts";
 import AssigneeRecommendationsViewModel from "../models/viewModels/timeSlot/AssigneeRecommendationsViewModel.ts";
 import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import ScheduleClearViewModel from "../models/viewModels/schedule/ScheduleClearViewModel.ts";
@@ -21,25 +21,25 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Controls the time slot pages */
 export default class TimeSlotController extends Controller {
   /** The shift context repository */
-  private _shiftContexts: ShiftContextRepository;
+  private _shiftContexts: IShiftContextRepository;
 
   /** The team members repository */
-  private _teamMembers: TeamMemberRepository;
+  private _teamMembers: ITeamMemberRepository;
 
   /** The colors repository */
-  private _colors: ColorRepository;
+  private _colors: IColorRepository;
 
   /** The schedule repository */
-  private _schedule: ScheduleRepository;
+  private _schedule: IScheduleRepository;
 
   /** The shift context notes repository */
-  private _shiftContextNotes: ShiftContextNoteRepository;
+  private _shiftContextNotes: IShiftContextNoteRepository;
 
   /** The substitutes repository */
-  private _substitutes: SubstituteRepository;
+  private _substitutes: ISubstituteRepository;
 
   /** The time slots repository */
-  private _timeSlots: TimeSlotRepository;
+  private _timeSlots: ITimeSlotRepository;
 
   /** Constucts the controller using the necessary repositories
    * @param shiftContexts The shift context repository
@@ -51,13 +51,13 @@ export default class TimeSlotController extends Controller {
    * @param timeSlots The time slots repository
    */
   constructor(
-    shiftContexts: ShiftContextRepository,
-    teamMembers: TeamMemberRepository,
-    colors: ColorRepository,
-    schedule: ScheduleRepository,
-    shiftContextNotes: ShiftContextNoteRepository,
-    substitutes: SubstituteRepository,
-    timeSlots: TimeSlotRepository,
+    shiftContexts: IShiftContextRepository,
+    teamMembers: ITeamMemberRepository,
+    colors: IColorRepository,
+    schedule: IScheduleRepository,
+    shiftContextNotes: IShiftContextNoteRepository,
+    substitutes: ISubstituteRepository,
+    timeSlots: ITimeSlotRepository,
   ) {
     super();
     this._shiftContexts = shiftContexts;

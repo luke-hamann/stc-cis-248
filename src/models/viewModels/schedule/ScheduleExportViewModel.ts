@@ -1,5 +1,5 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
-import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import MapWrapper from "../../../_framework/MapWrapper.ts";
 import ViewModel from "../_shared/_ViewModel.ts";
 
 const spreadsheetFormats = ["csv", "excel"] as const;
@@ -61,7 +61,7 @@ export default class ScheduleExportFormViewModel extends ViewModel {
   public static async fromRequest(
     request: Request,
   ): Promise<ScheduleExportFormViewModel> {
-    const formData = new FormDataWrapper(await request.formData());
+    const formData = MapWrapper.fromFormData(await request.formData());
 
     const title = formData.getString("title");
     const start = formData.getDate("startDate");

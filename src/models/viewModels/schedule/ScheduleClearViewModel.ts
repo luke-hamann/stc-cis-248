@@ -1,6 +1,6 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
 import DateLib from "../../../_dates/DateLib.ts";
-import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
+import MapWrapper from "../../../_framework/MapWrapper.ts";
 import ViewModel from "../_shared/_ViewModel.ts";
 
 /** A view model for the schedule clear form */
@@ -74,7 +74,7 @@ export default class ScheduleClearViewModel extends ViewModel {
   public static async fromRequest(
     request: Request,
   ): Promise<ScheduleClearViewModel> {
-    const formData = new FormDataWrapper(await request.formData());
+    const formData = MapWrapper.fromFormData(await request.formData());
 
     const startDate = formData.getDate("startDate");
     const endDate = formData.getDate("endDate");
