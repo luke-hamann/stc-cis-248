@@ -15,6 +15,11 @@ jobs:
       - name: Clone Repository
         id: clone
         uses: actions/checkout@v4
+        with:
+          lfs: true
+      
+      - name: Checkout LFS objects
+        run: git lfs checkout
 
       - name: Install Deno
         id: install
