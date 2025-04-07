@@ -7,8 +7,7 @@ export default class StaticFilesMiddleware extends Controller {
   /** The directory to serve files from */
   private readonly STATIC_DIR = "./static";
 
-  /**
-   * Constructs the middleware
+  /** Constructs the middleware
    *
    * This middleware processes all GET requests.
    */
@@ -19,8 +18,7 @@ export default class StaticFilesMiddleware extends Controller {
     ];
   }
 
-  /**
-   * Attempts to get a static file from a directory based on the application context URL
+  /** Attempts to get a static file from a directory based on the application context URL
    *
    * Returns void if the context URL does not coorespond to a file
    *

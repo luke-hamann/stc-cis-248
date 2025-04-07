@@ -11,8 +11,7 @@ export default class Substitute {
   /** The date of the substitute assignment */
   public date: Date | null = null;
 
-  /**
-   * Constructs the substitute assignment
+  /** Constructs the substitute assignment
    * @param teamMemberId
    * @param teamMember
    * @param date

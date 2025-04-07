@@ -41,8 +41,7 @@ export default class TeamMember {
   /** Whether the team member is an admin user */
   public isAdmin: boolean = false;
 
-  /**
-   * Constructs the team member
+  /** Constructs the team member
    * @param id
    * @param firstName
    * @param middleName

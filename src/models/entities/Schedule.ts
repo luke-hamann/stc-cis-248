@@ -3,7 +3,7 @@ import ShiftContextNote from "./ShiftContextNote.ts";
 import SubstituteList from "./SubstituteList.ts";
 import TimeSlot from "./TimeSlot.ts";
 import TimeSlotGroup from "./TimeSlotGroup.ts";
-import TimeSlotPossibility from "./TimeSlotPossiblity.ts";
+import TimeSlotPossibility from "./TimeSlotPossibility.ts";
 
 /** Represents a cell within a schedule table */
 export type ScheduleCell =
@@ -38,8 +38,7 @@ export default class Schedule {
   /** The schedule table of the schedule */
   public table: ScheduleTable;
 
-  /**
-   * Constructs the schedule
+  /** Constructs the schedule
    * @param title The title
    * @param start The start date
    * @param end The end date

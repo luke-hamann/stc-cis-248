@@ -1,6 +1,6 @@
 import Context from "../_framework/Context.ts";
 import ShiftContext from "../models/entities/ShiftContext.ts";
-import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
+import { IShiftContextRepository } from "../models/repositories/ShiftContextRepository.ts";
 import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import ShiftContextEditViewModel from "../models/viewModels/shiftContext/ShiftContextEditViewModel.ts";
 import ShiftContextsViewModel from "../models/viewModels/shiftContext/ShiftContextsViewModel.ts";
@@ -10,13 +10,12 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Controls the shift context pages */
 export default class ShiftContextController extends Controller {
   /** The shift context repository */
-  private shiftContextRepository: ShiftContextRepository;
+  private shiftContextRepository: IShiftContextRepository;
 
-  /**
-   * Constructs the shift context controller using a shift context repository
+  /** Constructs the shift context controller using a shift context repository
    * @param shiftContextRepository The shift context repository
    */
-  constructor(shiftContextRepository: ShiftContextRepository) {
+  constructor(shiftContextRepository: IShiftContextRepository) {
     super();
     this.shiftContextRepository = shiftContextRepository;
     this.routes = [
@@ -38,8 +37,7 @@ export default class ShiftContextController extends Controller {
     ];
   }
 
-  /**
-   * Gets the shift context list page
+  /** Gets the shift context list page
    * @param context The application context
    * @returns The response
    */
@@ -49,8 +47,7 @@ export default class ShiftContextController extends Controller {
     return this.HTMLResponse(context, "./views/shiftContext/list.html", model);
   }
 
-  /**
-   * Gets the shift context add form
+  /** Gets the shift context add form
    * @param context The application context
    * @returns The response
    */
@@ -63,8 +60,7 @@ export default class ShiftContextController extends Controller {
     return this.HTMLResponse(context, "./views/shiftContext/edit.html", model);
   }
 
-  /**
-   * Accepts requests to add a shift context
+  /** Accepts requests to add a shift context
    * @param context The application context
    * @returns The response
    */
@@ -86,8 +82,7 @@ export default class ShiftContextController extends Controller {
     return this.RedirectResponse(context, "/contexts/");
   }
 
-  /**
-   * Gets the shift context edit form
+  /** Gets the shift context edit form
    * @param context The application context
    * @returns The response
    */
@@ -106,8 +101,7 @@ export default class ShiftContextController extends Controller {
     return this.HTMLResponse(context, "./views/shiftContext/edit.html", model);
   }
 
-  /**
-   * Accepts requests to edit a shift context
+  /** Accepts requests to edit a shift context
    * @param context The application context
    * @returns The response
    */
@@ -130,8 +124,7 @@ export default class ShiftContextController extends Controller {
     return this.RedirectResponse(context, "/contexts/");
   }
 
-  /**
-   * Gets the shift context delete confirmation form
+  /** Gets the shift context delete confirmation form
    * @param context The application context
    * @returns The response
    */
@@ -153,8 +146,7 @@ export default class ShiftContextController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /**
-   * Accepts requests to delete a shift context
+  /** Accepts requests to delete a shift context
    * @param context The application context
    * @returns The response
    */

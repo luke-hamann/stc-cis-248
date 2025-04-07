@@ -21,8 +21,7 @@ export default class Unavailability {
   /** Whether the unavailability slot is preferable */
   public isPreference: boolean;
 
-  /**
-   * Constructs the unavailability slot
+  /** Constructs the unavailability slot
    * @param id
    * @param teamMemberId
    * @param teamMember
@@ -46,8 +45,7 @@ export default class Unavailability {
     this.isPreference = isPreference;
   }
 
-  /**
-   * Constructs an unavailability slot with default values
+  /** Constructs an unavailability slot with default values
    * @returns The unavailability
    * @constructor
    */

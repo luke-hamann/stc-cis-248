@@ -1,2 +1,2 @@
-DROP DATABASE IF EXISTS schedulerApp;
-DROP USER IF EXISTS 'schedulerApp'@'localhost';
+DROP DATABASE IF EXISTS schedulerapp;
+DROP USER IF EXISTS 'schedulerapp'@'localhost';

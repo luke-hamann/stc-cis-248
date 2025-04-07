@@ -18,95 +18,249 @@ import ShiftContextPreferenceRepository from "./ShiftContextPreferenceRepository
 import TeamMember from "../entities/TeamMember.ts";
 import ShiftContext from "../entities/ShiftContext.ts";
 import Database from "./_Database.ts";
-import TimeSlotPossibility from "../entities/TimeSlotPossiblity.ts";
+import TimeSlotPossibility from "../entities/TimeSlotPossibility.ts";
 import ScheduleWarnings from "../entities/ScheduleWarnings.ts";
 
+/** Represents a repository for compiling schedule information */
+export interface IScheduleRepository {
+  /** Compiles all necessary data and computes a schedule for a given date range
+   * @param start The start date
+   * @param end The end date
+   * @returns The schedule
+   */
+  getSchedule(start: Date, end: Date): Promise<Schedule>;
+
+  /** Gets assignee recommendations for a given time slot
+   * @param timeSlot The time slot
+   * @returns A list of recommendations
+   */
+  getRecommendations(timeSlot: TimeSlot): Promise<AssigneeRecommendations[]>;
+
+  /** Gets schedule warnings for the specified date range
+   * @param start The start date
+   * @param end The end range
+   * @returns The schedule warnings
+   */
+  getWarnings(start: Date, end: Date): Promise<ScheduleWarnings>;
+}
+
+/** Represents a time slot database row */
 export interface ITimeSlotRowComponent {
+  /** The time slot id */
   timeSlotId: number;
+
+  /** The id of the related shift context */
   timeSlotShiftContextId: number;
+
+  /** The start date and time of the time slot */
   timeSlotStartDateTime: Date;
+
+  /** The end date and time of the time slot */
   timeSlotEndDateTime: Date;
+
+  /** Whether the time slot requires an adult
+   *
+   * 0 is false, 1 is true.
+   */
   timeSlotRequiresAdult: number;
+
+  /** The id of the related team member */
   timeSlotTeamMemberId: number;
+
+  /** The note on the time slot */
   timeSlotNote: string;
+
+  /** The id of the related color for the note */
   timeSlotColorId: number;
 }
 
+/** Represents a team member database row */
 export interface ITeamMemberRowComponent {
+  /** The team member id */
   teamMemberId: number;
+
+  /** The team member's first name */
   teamMemberFirstName: string;
+
+  /** The team member's middle name */
   teamMemberMiddleName: string;
+
+  /** The team member's last name */
   teamMemberLastName: string;
+
+  /** The team member's birth date */
   teamMemberBirthDate: Date;
+
+  /** The team member's email address */
   teamMemberEmail: string;
+
+  /** The team member's phone number */
   teamMemberPhone: string;
+
+  /** Whether the team member is an external resource
+   *
+   * 0 is false, 1 is true.
+   */
   teamMemberIsExternal: number;
+
+  /** The maximum number of hours per week the team member can work */
   teamMemberMaxWeeklyHours: number;
+
+  /** The maximum number of days per week the team member can work */
   teamMemberMaxWeeklyDays: number;
+
+  /** The team member's user name */
   teamMemberUsername: string;
+
+  /** The team member's password */
   teamMemberPassword: string;
+
+  /** Whether the team member is an admin user
+   *
+   * 0 is false, 1 is true.
+   */
   teamMemberIsAdmin: number;
 }
 
+/** Represents a shift context database row */
 export interface IShiftContextRowComponent {
+  /** The id of the shift context */
   shiftContextId: number;
+
+  /** The name of the shift context */
   shiftContextName: string;
+
+  /** The age group of the shift context */
   shiftContextAgeGroup: string;
+
+  /** The location of the shift context */
   shiftContextLocation: string;
+
+  /** The description of the shift context */
   shiftContextDescription: string;
 }
 
+/** Represents a database row containing a time slot and a team member */
 export interface ITimeSlotTeamMemberRow
   extends ITimeSlotRowComponent, ITeamMemberRowComponent {}
 
-export interface ITimeSlotTeamMemberRow
-  extends ITimeSlotRowComponent, ITeamMemberRowComponent {}
-
+/** Represents a database row containing a time slot, a team member, and a shift context */
 export interface ITimeSlotTeamMemberShiftContextRow
   extends
     ITimeSlotRowComponent,
     ITeamMemberRowComponent,
     IShiftContextRowComponent {}
 
+/** Represents a database row containing 2 time slots */
 export interface ITeamMemberTimeSlotTimeSlotRow
   extends ITeamMemberRowComponent {
+  /** The id of the first time slot */
   timeSlot1Id: number;
+
+  /** The id of the shift context associated with the first time slot */
   timeSlot1ShiftContextId: number;
+
+  /** The start date and time of the first time slot */
   timeSlot1StartDateTime: Date;
+
+  /** The end date and time of the first time slot */
   timeSlot1EndDateTime: Date | null;
+
+  /** Whether the first time slot requires an adult
+   *
+   * 0 is false, 1 is true.
+   */
   timeSlot1RequiresAdult: number;
+
+  /** The id of the team member associated with the first time slot */
   timeSlot1TeamMemberId: number | null;
+
+  /** The note on the first time slot */
   timeSlot1Note: string;
+
+  /** The id of the color associated with the note on the first time slot */
   timeSlot1ColorId: number | null;
+
+  /** The id of the second time slot */
   timeSlot2Id: number;
+
+  /** The id of the shift context associated with the second time slot */
   timeSlot2ShiftContextId: number;
+
+  /** The start date and time of the second time slot */
   timeSlot2StartDateTime: Date;
+
+  /** The end date and time of the second time slot */
   timeSlot2EndDateTime: Date | null;
+
+  /** Whether the second time slot requires an adult
+   *
+   * 0 is false, 1 is true.
+   */
   timeSlot2RequiresAdult: number;
+
+  /** The id of the team member associated with the second time slot */
   timeSlot2TeamMemberId: number | null;
+
+  /** The note on the second time slot */
   timeSlot2Note: string;
+
+  /** The id of the color associated with the note on the second time slot */
   timeSlot2ColorId: number | null;
 }
 
+/** Represents a database row for a max weekly work days violation on a team member */
 export interface IMaxWeeklyDaysViolationRow extends ITeamMemberRowComponent {
+  /** How many days during the week the team member is scheduled to work */
   workDays: number;
 }
 
+/** Represents a database row for a max weekly work hours violation on a team member */
 export interface IMaxWeeklyHoursViolationRow extends ITeamMemberRowComponent {
+  /** How many hours during the week the team member is scheduled to work */
   totalHours: number;
 }
 
-export default class ScheduleRepository {
-  private database: Database;
-  private shiftContexts: ShiftContextRepository;
-  private shiftContextNotes: ShiftContextNoteRepository;
-  private shiftContextPreferences: ShiftContextPreferenceRepository;
-  private substitutes: SubstituteRepository;
-  private teamMembers: TeamMemberRepository;
-  private timeSlots: TimeSlotRepository;
-  private typicalAvailability: TypicalAvailabilityRepository;
-  private unavailability: UnavailabilityRepository;
+/** Represents a data source of aggregating schedule information */
+export default class ScheduleRepository implements IScheduleRepository {
+  /** The database connection */
+  private _database: Database;
 
+  /** The shift context repository */
+  private _shiftContexts: ShiftContextRepository;
+
+  /** The shift context notes repository */
+  private _shiftContextNotes: ShiftContextNoteRepository;
+
+  /** The shift context preferences repository */
+  private _shiftContextPreferences: ShiftContextPreferenceRepository;
+
+  /** The substitutes repository */
+  private _substitutes: SubstituteRepository;
+
+  /** The team members repository */
+  private _teamMembers: TeamMemberRepository;
+
+  /** The time slots repository */
+  private _timeSlots: TimeSlotRepository;
+
+  /** The typical availability repository */
+  private _typicalAvailability: TypicalAvailabilityRepository;
+
+  /** The unavailability repository */
+  private _unavailability: UnavailabilityRepository;
+
+  /** Constructs the schedule repository given a database connection and the necessary entity repositories
+   * @param database
+   * @param shiftContexts
+   * @param shiftContextNotes
+   * @param shiftContextPreferences
+   * @param substitutes
+   * @param teamMembers
+   * @param timeSlots
+   * @param typicalAvailability
+   * @param unavailability
+   */
   constructor(
     database: Database,
     shiftContexts: ShiftContextRepository,
@@ -118,17 +272,18 @@ export default class ScheduleRepository {
     typicalAvailability: TypicalAvailabilityRepository,
     unavailability: UnavailabilityRepository,
   ) {
-    this.database = database;
-    this.shiftContexts = shiftContexts;
-    this.shiftContextNotes = shiftContextNotes;
-    this.shiftContextPreferences = shiftContextPreferences;
-    this.substitutes = substitutes;
-    this.teamMembers = teamMembers;
-    this.timeSlots = timeSlots;
-    this.typicalAvailability = typicalAvailability;
-    this.unavailability = unavailability;
+    this._database = database;
+    this._shiftContexts = shiftContexts;
+    this._shiftContextNotes = shiftContextNotes;
+    this._shiftContextPreferences = shiftContextPreferences;
+    this._substitutes = substitutes;
+    this._teamMembers = teamMembers;
+    this._timeSlots = timeSlots;
+    this._typicalAvailability = typicalAvailability;
+    this._unavailability = unavailability;
   }
 
+  /** A generic SQL fragment for fetching time slot columns */
   private readonly timeSlotColumnsSql = `
     TimeSlots.id              timeSlotId,
     TimeSlots.shiftContextId  timeSlotShiftContextId,
@@ -140,7 +295,11 @@ export default class ScheduleRepository {
     TimeSlots.colorId         timeSlotColorId
   `;
 
-  public mapTimeSlotColumns(row: ITimeSlotRowComponent) {
+  /** Converts a database row to a time slot
+   * @param row The database row
+   * @returns The time slot
+   */
+  private mapTimeSlotColumns(row: ITimeSlotRowComponent): TimeSlot {
     return new TimeSlot(
       row.timeSlotId,
       row.timeSlotShiftContextId,
@@ -156,6 +315,7 @@ export default class ScheduleRepository {
     );
   }
 
+  /** A generic SQL fragment for fetching team member columns */
   private readonly teamMemberColumnsSql = `
     TeamMembers.id              teamMemberId,
     TeamMembers.firstName       teamMemberFirstName,
@@ -172,7 +332,11 @@ export default class ScheduleRepository {
     TeamMembers.isAdmin         teamMemberIsAdmin
   `;
 
-  public mapTeamMemberColumns(row: ITeamMemberRowComponent) {
+  /** Converts a database row to a team member
+   * @param row The database row
+   * @returns The team member
+   */
+  private mapTeamMemberColumns(row: ITeamMemberRowComponent) {
     return new TeamMember(
       row.teamMemberId,
       row.teamMemberFirstName,
@@ -190,6 +354,7 @@ export default class ScheduleRepository {
     );
   }
 
+  /** A generic SQL query for fetching shift context columns */
   private readonly shiftContextColumnsSql = `
     ShiftContexts.id           shiftContextId,
     ShiftContexts.name         shiftContextName,
@@ -197,7 +362,11 @@ export default class ScheduleRepository {
     ShiftContexts.description  shiftContextDescription
   `;
 
-  public mapShiftContextColumns(row: IShiftContextRowComponent) {
+  /** Converts a database row to a shift context
+   * @param row The database row
+   * @returns The shift context
+   */
+  private mapShiftContextColumns(row: IShiftContextRowComponent) {
     return new ShiftContext(
       row.shiftContextId,
       row.shiftContextName,
@@ -207,6 +376,7 @@ export default class ScheduleRepository {
     );
   }
 
+  /** A SQL query for joining the time slot and team member tables */
   private readonly timeSlotTeamMemberQuery = `
     SELECT
     ${this.timeSlotColumnsSql},
@@ -216,6 +386,11 @@ export default class ScheduleRepository {
         ON TimeSlots.teamMemberId = TeamMembers.id
   `;
 
+  /** Compiles all necessary data and computes a schedule for a given date range
+   * @param start The start date
+   * @param end The end date
+   * @returns The schedule
+   */
   public async getSchedule(start: Date, end: Date): Promise<Schedule> {
     const scheduleTable: ScheduleTable = [];
     const dateList = DateLib.getDatesInRange(start, end);
@@ -228,7 +403,7 @@ export default class ScheduleRepository {
       ) => ({ type: "dateHeader", content: date } as ScheduleCell)),
     ]);
 
-    const shiftContexts = await this.shiftContexts.list();
+    const shiftContexts = await this._shiftContexts.list();
     for (const shiftContext of shiftContexts) {
       // Shift context header cell
       const row: ScheduleRow = [{
@@ -238,7 +413,7 @@ export default class ScheduleRepository {
 
       // Shift context note cells
       for (const date of dateList) {
-        let shiftContextNote = await this.shiftContextNotes.get(
+        let shiftContextNote = await this._shiftContextNotes.get(
           shiftContext.id,
           date,
         );
@@ -265,7 +440,7 @@ export default class ScheduleRepository {
       scheduleTable.push(row);
 
       // Time slot groups under shift context
-      const groups = await this.timeSlots.getByGroups(
+      const groups = await this._timeSlots.getByGroups(
         shiftContext.id,
         start,
         end,
@@ -357,7 +532,7 @@ export default class ScheduleRepository {
       content: "Substitutes",
     }];
     for (const date of dateList) {
-      const substituteList = await this.substitutes.getSubstituteList(date);
+      const substituteList = await this._substitutes.getSubstituteList(date);
       const cell: ScheduleCell = {
         type: "SubstituteList",
         content: substituteList,
@@ -369,10 +544,14 @@ export default class ScheduleRepository {
     return new Schedule("", start, end, scheduleTable);
   }
 
+  /** Gets assignee recommendations for a given time slot
+   * @param timeSlot The time slot
+   * @returns A list of recommendations
+   */
   public async getRecommendations(
     timeSlot: TimeSlot,
   ): Promise<AssigneeRecommendations[]> {
-    const teamMembers = await this.teamMembers.list();
+    const teamMembers = await this._teamMembers.list();
 
     const recommendations: AssigneeRecommendations[] = [];
     for (const teamMember of teamMembers) {
@@ -403,7 +582,7 @@ export default class ScheduleRepository {
 
       // Typical availability
 
-      recommendation.isTypicallyAvailable = await this.typicalAvailability
+      recommendation.isTypicallyAvailable = await this._typicalAvailability
         .isAvailable(
           teamMember,
           timeSlot,
@@ -411,14 +590,14 @@ export default class ScheduleRepository {
 
       // Unavailability
 
-      recommendation.isNotUnavailable = await this.unavailability.isAvailable(
+      recommendation.isNotUnavailable = await this._unavailability.isAvailable(
         teamMember,
         timeSlot,
       );
 
       // Shift context preference
 
-      const preference = await this.shiftContextPreferences.getPreference(
+      const preference = await this._shiftContextPreferences.getPreference(
         teamMember.id,
         timeSlot.shiftContextId,
       );
@@ -426,7 +605,7 @@ export default class ScheduleRepository {
 
       // Scheduling conflicts
 
-      const hasConflict = await this.timeSlots.hasNoConflicts(
+      const hasConflict = await this._timeSlots.hasNoConflicts(
         teamMember.id,
         timeSlot,
       );
@@ -439,7 +618,16 @@ export default class ScheduleRepository {
     return recommendations;
   }
 
-  public mapTimeSlotTeamMemberRows(rows: ITimeSlotTeamMemberRow[]): TimeSlot[] {
+  /** Converts database rows containing a time slot and team member into a list of time slots
+   *
+   * The resulting time slots contain their cooresponding team member.
+   *
+   * @param rows The database rows
+   * @returns The time slots
+   */
+  private mapTimeSlotTeamMemberRows(
+    rows: ITimeSlotTeamMemberRow[],
+  ): TimeSlot[] {
     return rows.map((row) => {
       const timeSlot = this.mapTimeSlotColumns(row);
       const teamMember = this.mapTeamMemberColumns(row);
@@ -448,8 +636,7 @@ export default class ScheduleRepository {
     });
   }
 
-  /**
-   * Gets schedule warnings for the specified date range
+  /** Gets schedule warnings for the specified date range
    * @param start The start date
    * @param end The end range
    * @returns The schedule warnings
@@ -459,7 +646,7 @@ export default class ScheduleRepository {
 
     // Externality warnings
 
-    let result = await this.database.execute(
+    let result = await this._database.execute(
       `
         ${this.timeSlotTeamMemberQuery}
         WHERE TeamMembers.isExternal
@@ -475,7 +662,7 @@ export default class ScheduleRepository {
     // Bilocation warnings
 
     // Using "less than" (not "equals") to compare the ids prevents a bilocation from being listed twice
-    result = await this.database.execute(
+    result = await this._database.execute(
       `
         SELECT
           ${this.teamMemberColumnsSql},
@@ -559,7 +746,7 @@ export default class ScheduleRepository {
 
     // Adult only violations
 
-    result = await this.database.execute(
+    result = await this._database.execute(
       `
         ${this.timeSlotTeamMemberQuery}
         WHERE TimeSlots.requiresAdult
@@ -575,7 +762,7 @@ export default class ScheduleRepository {
 
     // Shift context preference violations
 
-    result = await this.database.execute(
+    result = await this._database.execute(
       `
         SELECT
           ${this.timeSlotColumnsSql},
@@ -608,7 +795,7 @@ export default class ScheduleRepository {
 
     // Availability violations
 
-    result = await this.database.execute(
+    result = await this._database.execute(
       `
         -- Time slots not covered by typical availability
         SELECT
@@ -625,7 +812,7 @@ export default class ScheduleRepository {
               AND TimeSlots.teamMemberId = TeamMemberTypicalAvailability.teamMemberId
               AND DAYOFWEEK(TimeSlots.startDateTime) - 1 = TeamMemberTypicalAvailability.dayOfWeek
 
-              -- Timeslot start date time and end date time falls within typical availability entry
+              -- Time slot start date time and end date time falls within typical availability entry
               AND TIME(TimeSlots.startDateTime)
                 BETWEEN TeamMemberTypicalAvailability.startTime AND TeamMemberTypicalAvailability.endTime
               AND TIME(TimeSlots.endDateTime)
@@ -672,7 +859,7 @@ export default class ScheduleRepository {
     }
 
     // Max weekly days warnings
-    result = await this.database.execute(
+    result = await this._database.execute(
       `
         SELECT
           ${this.teamMemberColumnsSql},
@@ -701,7 +888,7 @@ export default class ScheduleRepository {
     }
 
     // Max weekly hours warnings
-    result = await this.database.execute(
+    result = await this._database.execute(
       `
         SELECT
           ${this.teamMemberColumnsSql},
@@ -726,7 +913,7 @@ export default class ScheduleRepository {
 
     // Unassigned time slot warnings
 
-    warnings.unassignedTimeSlots = await this.timeSlots.getUnassigned(
+    warnings.unassignedTimeSlots = await this._timeSlots.getUnassigned(
       start,
       end,
     );

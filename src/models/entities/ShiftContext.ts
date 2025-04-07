@@ -15,8 +15,7 @@ export default class ShiftContext {
   /** The shift context description */
   public description: string = "";
 
-  /**
-   * Constructs the shift context
+  /** Constructs the shift context
    * @param id
    * @param name
    * @param ageGroup
@@ -37,8 +36,7 @@ export default class ShiftContext {
     this.description = description;
   }
 
-  /**
-   * Constructs an empty shift context
+  /** Constructs an empty shift context
    * @returns The shift context
    * @constructor
    */

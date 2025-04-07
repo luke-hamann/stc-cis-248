@@ -3,8 +3,7 @@ import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 
-/**
- * Routes requests through a given list of controllers
+/** Routes requests through a given list of controllers
  *
  * Note:
  *
@@ -16,18 +15,17 @@ export default class Router extends Controller {
   /** The controllers to route through */
   private _controllers: Controller[];
 
-  /**
-   * Construct the router given controllers
-   *
-   * @constructor
+  /** Construct the router given controllers
+   * @param controllers
    */
-  constructor(controllers: Controller[]) {
+  constructor(
+    controllers: Controller[],
+  ) {
     super();
     this._controllers = controllers;
   }
 
-  /**
-   * Route a given request through the controllers to deliver a response
+  /** Route a given request through the controllers to deliver a response
    *
    * Returns a 500 Internal Server Error response if a controller throws an exception
    *
@@ -39,10 +37,7 @@ export default class Router extends Controller {
   public async route(request: Request): Promise<Response> {
     let response: ResponseWrapper | void;
     const context = new Context(request, new ResponseWrapper());
-
-    if (request.method == "POST") {
-      context.initializeFormData();
-    }
+    context.initializeFormData();
 
     // Controllers
     for (const controller of this._controllers) {

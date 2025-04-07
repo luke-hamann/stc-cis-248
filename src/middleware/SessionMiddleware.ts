@@ -15,8 +15,7 @@ export default class SessionMiddleware extends Controller {
     ];
   }
 
-  /**
-   * Starts the application session, creating it if it does not exist
+  /** Starts the application session, creating it if it does not exist
    * @param context The application context
    */
   public async startSession(context: Context) {

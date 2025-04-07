@@ -3,16 +3,15 @@ import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 import nunjucks from "npm:nunjucks";
 import ViewModel from "../models/viewModels/_shared/_ViewModel.ts";
-import RouteData from "./RouteDataWrapper.ts";
 import Route from "./Route.ts";
+import MapWrapper from "./MapWrapper.ts";
 
 /** Controls routing to action methods based on HTTP method and url patterns */
 export default class Controller {
   /** Maps HTTP methods and URL patterns to action methods */
   protected routes: Route[] = [];
 
-  /**
-   * Executes the controller
+  /** Executes the controller
    *
    * Interates over each route and calls matching action methods.
    * If an action method returns a response wrapper, that response wrapper is returned.
@@ -34,15 +33,17 @@ export default class Controller {
       context.match = match;
 
       if (route.mappings) {
-        context.routeData = new RouteData(context.match, route.mappings);
+        context.routeData = MapWrapper.fromRouteData(
+          context.match,
+          route.mappings,
+        );
       }
 
       return await route.action.call(this, context);
     }
   }
 
-  /**
-   * Returns an HTML response wrapper
+  /** Returns an HTML response wrapper
    * @param context The current application context
    * @param view The path to the view file to render
    * @param model The view model
@@ -60,8 +61,7 @@ export default class Controller {
     return context.response;
   }
 
-  /**
-   * Returns a response wrapper for a redirect
+  /** Returns a response wrapper for a redirect
    * @param context The current application context
    * @param url The URL to redirect to
    * @returns The response wrapper object
@@ -73,8 +73,7 @@ export default class Controller {
     return context.response;
   }
 
-  /**
-   * Returns an response wrapper for a generic error
+  /** Returns an response wrapper for a generic error
    * @param context The application context
    * @param status The status code
    * @param view The view to render
@@ -94,8 +93,7 @@ export default class Controller {
     return context.response;
   }
 
-  /**
-   * Returns a response wrapper for a 404 not found page
+  /** Returns a response wrapper for a 404 not found page
    * @param context The current application context
    * @returns The response wrapper object
    */
@@ -112,8 +110,7 @@ export default class Controller {
     );
   }
 
-  /**
-   * Returns a response wrapper for an attachment download
+  /** Returns a response wrapper for an attachment download
    * @param context The current application context
    * @param contentType The MIME type of the download
    * @param fileName The file name of the download

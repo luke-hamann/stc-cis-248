@@ -4,13 +4,13 @@ import Controller from "../_framework/Controller.ts";
 import Color from "../models/entities/Color.ts";
 import ShiftContextNote from "../models/entities/ShiftContextNote.ts";
 import TimeSlot from "../models/entities/TimeSlot.ts";
-import ColorRepository from "../models/repositories/ColorRepository.ts";
-import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
-import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
-import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
-import SubstituteRepository from "../models/repositories/SubstituteRepository.ts";
-import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
-import TimeSlotRepository from "../models/repositories/TimeSlotRepository.ts";
+import { IColorRepository } from "../models/repositories/ColorRepository.ts";
+import { IScheduleRepository } from "../models/repositories/ScheduleRepository.ts";
+import { IShiftContextNoteRepository } from "../models/repositories/ShiftContextNoteRepository.ts";
+import { IShiftContextRepository } from "../models/repositories/ShiftContextRepository.ts";
+import { ISubstituteRepository } from "../models/repositories/SubstituteRepository.ts";
+import { ITeamMemberRepository } from "../models/repositories/TeamMemberRepository.ts";
+import { ITimeSlotRepository } from "../models/repositories/TimeSlotRepository.ts";
 import AssigneeRecommendationsViewModel from "../models/viewModels/timeSlot/AssigneeRecommendationsViewModel.ts";
 import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import ScheduleClearViewModel from "../models/viewModels/schedule/ScheduleClearViewModel.ts";
@@ -21,28 +21,27 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Controls the time slot pages */
 export default class TimeSlotController extends Controller {
   /** The shift context repository */
-  private _shiftContexts: ShiftContextRepository;
+  private _shiftContexts: IShiftContextRepository;
 
   /** The team members repository */
-  private _teamMembers: TeamMemberRepository;
+  private _teamMembers: ITeamMemberRepository;
 
   /** The colors repository */
-  private _colors: ColorRepository;
+  private _colors: IColorRepository;
 
   /** The schedule repository */
-  private _schedule: ScheduleRepository;
+  private _schedule: IScheduleRepository;
 
   /** The shift context notes repository */
-  private _shiftContextNotes: ShiftContextNoteRepository;
+  private _shiftContextNotes: IShiftContextNoteRepository;
 
   /** The substitutes repository */
-  private _substitutes: SubstituteRepository;
+  private _substitutes: ISubstituteRepository;
 
   /** The time slots repository */
-  private _timeSlots: TimeSlotRepository;
+  private _timeSlots: ITimeSlotRepository;
 
-  /**
-   * Constucts the controller using the necessary repositories
+  /** Constucts the controller using the necessary repositories
    * @param shiftContexts The shift context repository
    * @param teamMembers The team members repository
    * @param colors The colors repository
@@ -52,13 +51,13 @@ export default class TimeSlotController extends Controller {
    * @param timeSlots The time slots repository
    */
   constructor(
-    shiftContexts: ShiftContextRepository,
-    teamMembers: TeamMemberRepository,
-    colors: ColorRepository,
-    schedule: ScheduleRepository,
-    shiftContextNotes: ShiftContextNoteRepository,
-    substitutes: SubstituteRepository,
-    timeSlots: TimeSlotRepository,
+    shiftContexts: IShiftContextRepository,
+    teamMembers: ITeamMemberRepository,
+    colors: IColorRepository,
+    schedule: IScheduleRepository,
+    shiftContextNotes: IShiftContextNoteRepository,
+    substitutes: ISubstituteRepository,
+    timeSlots: ITimeSlotRepository,
   ) {
     super();
     this._shiftContexts = shiftContexts;
@@ -151,8 +150,7 @@ export default class TimeSlotController extends Controller {
     ];
   }
 
-  /**
-   * Calculates a schedule cancel link url based on a date
+  /** Calculates a schedule cancel link url based on a date
    *
    * Floors the date to the most recent past Sunday to generate the url path
    *
@@ -168,8 +166,7 @@ export default class TimeSlotController extends Controller {
     return `/schedule/${newDate}/`;
   }
 
-  /**
-   * Gets a time slot based on the application context, null if not found
+  /** Gets a time slot based on the application context, null if not found
    * @param context The application context
    * @returns A time slot or null
    */
@@ -182,8 +179,7 @@ export default class TimeSlotController extends Controller {
     return await this._timeSlots.get(id);
   }
 
-  /**
-   * Gets the time slot add form
+  /** Gets the time slot add form
    * @param context The application context
    * @returns The response
    */
@@ -240,8 +236,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
   }
 
-  /**
-   * Accepts requests to add a time slot
+  /** Accepts requests to add a time slot
    * @param context The application context
    * @returns The response
    */
@@ -277,8 +272,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the time slot edit form
+  /** Gets the time slot edit form
    * @param context The application context
    * @returns The response
    */
@@ -303,8 +297,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
   }
 
-  /**
-   * Accepts requests to edit a time slot
+  /** Accepts requests to edit a time slot
    * @param context The application context
    * @returns The response
    */
@@ -346,8 +339,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the time slot delete confirmation form
+  /** Gets the time slot delete confirmation form
    * @param context The application context
    * @returns The response
    */
@@ -373,8 +365,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /**
-   * Accepts requests to delete a time slot
+  /** Accepts requests to delete a time slot
    * @param context The application context
    * @returns The response
    */
@@ -390,8 +381,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the time slot copy form
+  /** Gets the time slot copy form
    * @param context The application context
    * @returns The response
    */
@@ -419,8 +409,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/copy.html", model);
   }
 
-  /**
-   * Accepts requests to copy time slots
+  /** Accepts requests to copy time slots
    *
    * The action operates in two modes: preview and confirm.
    * In preview mode, a form will display to confirm the copy.
@@ -472,7 +461,7 @@ export default class TimeSlotController extends Controller {
     }
 
     // Confirm mode
-    await this._timeSlots.deleteInDateRange(
+    await this._timeSlots.deleteRange(
       model.toStartDate!,
       model.toEndDate!,
     );
@@ -481,7 +470,7 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.includeShiftContextNotes) {
-      await this._shiftContextNotes.deleteInDateRange(
+      await this._shiftContextNotes.deleteWhere(
         model.toStartDate!,
         model.toEndDate!,
       );
@@ -494,8 +483,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Gets the time slot copy form
+  /** Gets the time slot copy form
    * @param context The application context
    * @returns The response
    */
@@ -515,8 +503,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/clear.html", model);
   }
 
-  /**
-   * Accepts requests to clear a section of the schedule of time slots
+  /** Accepts requests to clear a section of the schedule of time slots
    * @param context The application context
    * @returns The response
    */
@@ -529,15 +516,15 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.deleteTimeSlots) {
-      this._timeSlots.deleteInDateRange(model.startDate!, model.endDate!);
+      this._timeSlots.deleteRange(model.startDate!, model.endDate!);
     }
 
     if (model.deleteSubstitutes) {
-      this._substitutes.deleteDateRange(model.startDate!, model.endDate!);
+      this._substitutes.deleteWhere(model.startDate!, model.endDate!);
     }
 
     if (model.deleteShiftContextNotes) {
-      this._shiftContextNotes.deleteInDateRange(
+      this._shiftContextNotes.deleteWhere(
         model.startDate!,
         model.endDate!,
       );
@@ -547,8 +534,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Accepts requests to render a time slot assignees recommendation HTML fragment
+  /** Accepts requests to render a time slot assignees recommendation HTML fragment
    * @param context The application context
    * @returns The resonse
    */

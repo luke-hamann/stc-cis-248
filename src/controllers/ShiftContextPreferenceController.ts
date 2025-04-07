@@ -1,7 +1,7 @@
 import Context from "../_framework/Context.ts";
-import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
-import ShiftContextPreferenceRepository from "../models/repositories/ShiftContextPreferenceRepository.ts";
-import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
+import { IShiftContextRepository } from "../models/repositories/ShiftContextRepository.ts";
+import { IShiftContextPreferenceRepository } from "../models/repositories/ShiftContextPreferenceRepository.ts";
+import { ITeamMemberRepository } from "../models/repositories/TeamMemberRepository.ts";
 import ShiftContextPreferencesEditViewModel from "../models/viewModels/shiftContextPreference/ShiftContextPreferencesEditViewModel.ts";
 import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
@@ -9,24 +9,23 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Controls the shift context preference pages */
 export default class ShiftContextPreferenceController extends Controller {
   /** The shift context preference repository */
-  private _shiftContextPreferenceRepository: ShiftContextPreferenceRepository;
+  private _shiftContextPreferenceRepository: IShiftContextPreferenceRepository;
 
   /** The team member repository */
-  private _teamMemberRepository: TeamMemberRepository;
+  private _teamMemberRepository: ITeamMemberRepository;
 
   /** The shift context repository */
-  private _shiftContextRepository: ShiftContextRepository;
+  private _shiftContextRepository: IShiftContextRepository;
 
-  /**
-   * Constructs the shift context preference controller using the necessary repositories
+  /** Constructs the shift context preference controller using the necessary repositories
    * @param shiftContextPreferenceRepository The shift context preference repository
    * @param teamMemberRepository The team member repository
    * @param shiftContextRepository The shift context repository
    */
   constructor(
-    shiftContextPreferenceRepository: ShiftContextPreferenceRepository,
-    teamMemberRepository: TeamMemberRepository,
-    shiftContextRepository: ShiftContextRepository,
+    shiftContextPreferenceRepository: IShiftContextPreferenceRepository,
+    teamMemberRepository: ITeamMemberRepository,
+    shiftContextRepository: IShiftContextRepository,
   ) {
     super();
     this._shiftContextPreferenceRepository = shiftContextPreferenceRepository;
@@ -46,8 +45,7 @@ export default class ShiftContextPreferenceController extends Controller {
     ];
   }
 
-  /**
-   * Gets the shift context preference list page for a team member
+  /** Gets the shift context preference list page for a team member
    * @param context The application context
    * @returns The response
    */
@@ -79,8 +77,7 @@ export default class ShiftContextPreferenceController extends Controller {
     );
   }
 
-  /**
-   * Accepts requests to update a team member's shift context preferences
+  /** Accepts requests to update a team member's shift context preferences
    * @param context The application context
    * @returns The response
    */

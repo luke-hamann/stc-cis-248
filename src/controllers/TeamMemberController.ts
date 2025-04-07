@@ -1,5 +1,5 @@
 import Context from "../_framework/Context.ts";
-import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
+import { ITeamMemberRepository } from "../models/repositories/TeamMemberRepository.ts";
 import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import TeamMemberEditViewModel from "../models/viewModels/teamMember/TeamMemberEditViewModel.ts";
 import TeamMembersViewModel from "../models/viewModels/teamMember/TeamMembersViewModel.ts";
@@ -9,13 +9,12 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Controls the team member page */
 export default class TeamMemberController extends Controller {
   /** The team members repository */
-  private _teamMembers: TeamMemberRepository;
+  private _teamMembers: ITeamMemberRepository;
 
-  /**
-   * Constructs the controller using a team member repository
+  /** Constructs the controller using a team member repository
    * @param teamMemberRepository The team members repository
    */
-  constructor(teamMemberRepository: TeamMemberRepository) {
+  constructor(teamMemberRepository: ITeamMemberRepository) {
     super();
     this._teamMembers = teamMemberRepository;
     this.routes = [
@@ -46,8 +45,7 @@ export default class TeamMemberController extends Controller {
     ];
   }
 
-  /**
-   * Gets the team member list page
+  /** Gets the team member list page
    * @param context The application context
    * @returns The response
    */
@@ -57,8 +55,7 @@ export default class TeamMemberController extends Controller {
     return this.HTMLResponse(context, "./views/teamMember/list.html", model);
   }
 
-  /**
-   * Gets the team member profile page
+  /** Gets the team member profile page
    * @param context The application context
    * @returns The response
    */
@@ -77,8 +74,7 @@ export default class TeamMemberController extends Controller {
     return this.HTMLResponse(context, "./views/teamMember/profile.html", model);
   }
 
-  /**
-   * Gets the team member add form
+  /** Gets the team member add form
    * @param context The application context
    * @returns The response
    */
@@ -87,8 +83,7 @@ export default class TeamMemberController extends Controller {
     return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
   }
 
-  /**
-   * Accepts requests to add a team member
+  /** Accepts requests to add a team member
    * @param context The application context
    * @returns The response
    */
@@ -106,8 +101,7 @@ export default class TeamMemberController extends Controller {
     return this.RedirectResponse(context, `/team-member/${id}/`);
   }
 
-  /**
-   * Gets the team member edit form
+  /** Gets the team member edit form
    * @param context The application context
    * @returns The response
    */
@@ -130,8 +124,7 @@ export default class TeamMemberController extends Controller {
     return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
   }
 
-  /**
-   * Accepts requests to edit a team member
+  /** Accepts requests to edit a team member
    * @param context The application context
    * @returns The response
    */
@@ -156,8 +149,7 @@ export default class TeamMemberController extends Controller {
     return this.RedirectResponse(context, `/team-member/${id}/`);
   }
 
-  /**
-   * Gets the team member delete confirmation form
+  /** Gets the team member delete confirmation form
    * @param context The application context
    * @returns The response
    */
@@ -184,8 +176,7 @@ export default class TeamMemberController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /**
-   * Accepts requests to delete a team member
+  /** Accepts requests to delete a team member
    * @param context The application context
    * @returns The response
    */

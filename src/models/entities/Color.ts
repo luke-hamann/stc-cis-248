@@ -9,8 +9,7 @@ export default class Color {
   /** The color RGB hex code */
   public hex: string = "";
 
-  /**
-   * Constructs a color
+  /** Constructs a color
    * @param id Color id
    * @param name Color name
    * @param hex Color hex code
@@ -21,8 +20,7 @@ export default class Color {
     this.hex = hex;
   }
 
-  /**
-   * Creates a color object with default values
+  /** Creates a color object with default values
    * @returns The new color
    * @constructor
    */
@@ -30,8 +28,7 @@ export default class Color {
     return new Color(0, "", "");
   }
 
-  /**
-   * Gets a hexadecimal color appropriate to be used as a foreground color on top of the color
+  /** Gets a hexadecimal color appropriate to be used as a foreground color on top of the color
    * @returns The color hex code
    */
   public get hexForeground(): "000000" | "FFFFFF" {

@@ -1,5 +1,4 @@
-/**
- * Represents a group of time slots on the schedule
+/** Represents a group of time slots on the schedule
  *
  * A group is characterized by a unique combination of shift context, start time, end time, and age requirement.
  */
@@ -22,8 +21,7 @@ export default class TimeSlotGroup {
   /** Whether the grouping requires an adult assignee */
   public requiresAdult: boolean;
 
-  /**
-   * Constructs the time slot group
+  /** Constructs the time slot group
    * @param shiftContextId
    * @param windowStart
    * @param windowEnd

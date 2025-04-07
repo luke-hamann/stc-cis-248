@@ -2,10 +2,18 @@ import FormViewModel from "../_shared/_FormViewModel.ts";
 import TeamMember from "../../entities/TeamMember.ts";
 import SubstituteList from "../../entities/SubstituteList.ts";
 
+/** A view model for viewing and editing daily substitute lists */
 export default class SubstitutesEditViewModel extends FormViewModel {
+  /** The substitute list for the day */
   public substituteList: SubstituteList;
+
+  /** The list of team members that may serve as substitutes */
   public teamMembers: TeamMember[];
 
+  /** Constructs the view model
+   * @param substituteList
+   * @param teamMembers
+   */
   constructor(
     substituteList: SubstituteList,
     teamMembers: TeamMember[],
@@ -15,10 +23,9 @@ export default class SubstitutesEditViewModel extends FormViewModel {
     this.teamMembers = teamMembers;
   }
 
-  /**
-   * Maps an HTTP request to a substitutes edit view model
-   * @param request Fetch HTTP request
-   * @returns New model
+  /** Constructs the view model based on incoming form data
+   * @param request The incoming HTTP request
+   * @returns The view model
    */
   public static async fromRequest(
     request: Request,

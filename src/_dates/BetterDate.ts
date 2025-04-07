@@ -1,20 +1,17 @@
-/**
- * A wrapper class for Date objects that makes common date operations available
+/** A wrapper class for Date objects that makes common date operations available
  */
 export default class BetterDate {
   /** The date object being wrapped */
   private _date: Date;
 
-  /**
-   * Constructs the BetterDate
+  /** Constructs the BetterDate
    * @param timestamp The Unix time
    */
   public constructor(timestamp: number = new Date().getTime()) {
     this._date = new Date(timestamp);
   }
 
-  /**
-   * Creates a BetterDate object based on a Date object
+  /** Creates a BetterDate object based on a Date object
    * @param date A Date object
    * @returns A BetterDate object
    */
@@ -22,16 +19,14 @@ export default class BetterDate {
     return new BetterDate(date.getTime());
   }
 
-  /**
-   * Converts the BetterDate object to a Date object
+  /** Converts the BetterDate object to a Date object
    * @returns The Date object
    */
   public toDate(): Date {
     return new Date(this._date.getTime());
   }
 
-  /**
-   * Formats the date in "YYYY MM DD" format using the given separator
+  /** Formats the date in "YYYY MM DD" format using the given separator
    * @param sep Date component separator
    * @returns The date string
    */
@@ -42,8 +37,7 @@ export default class BetterDate {
     return `${year}${sep}${month}${sep}${day}`;
   }
 
-  /**
-   * Formats the date as a time string in HH:MM format
+  /** Formats the date as a time string in HH:MM format
    * @returns The time string
    */
   public toTimeString(): string {
@@ -52,8 +46,7 @@ export default class BetterDate {
     return `${hours}:${minutes}`;
   }
 
-  /**
-   * Converts the date and time to a string representation
+  /** Converts the date and time to a string representation
    *
    * Formatted as "yyyy-mm-ddThh:ii"
    * @returns
@@ -62,8 +55,7 @@ export default class BetterDate {
     return `${this.toDateString()}T${this.toTimeString()}`;
   }
 
-  /**
-   * Returns a new date with the number of days added to it
+  /** Returns a new date with the number of days added to it
    * @param days The number of days to add
    * @returns The new date
    */
@@ -73,8 +65,7 @@ export default class BetterDate {
     return new BetterDate(newDate.getTime());
   }
 
-  /**
-   * Returns a new date floored to the most recent past Sunday
+  /** Returns a new date floored to the most recent past Sunday
    * @returns The new date
    */
   public floorToSunday(): BetterDate {

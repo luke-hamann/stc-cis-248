@@ -20,8 +20,7 @@ export default class AssigneeRecommendations {
   /** Whether the team member is scheduled at the same time elsewhere */
   public isConflicting: "positive" | "negative" | "unknown";
 
-  /**
-   * Constructs the recommendation
+  /** Constructs the recommendation
    * @param teamMember The team member
    * @param isAdult The age check
    * @param isTypicallyAvailable The typical availability check
