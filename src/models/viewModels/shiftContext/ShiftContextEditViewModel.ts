@@ -1,9 +1,16 @@
 import ShiftContext from "../../entities/ShiftContext.ts";
 import FormViewModel from "../_shared/_FormViewModel.ts";
 
+/** A view model for the shift context add/edit form */
 export default class ShiftContextEditViewModel extends FormViewModel {
+  /** The shift context being added/edited */
   shiftContext: ShiftContext;
 
+  /** Constructs the view model
+   * @param isEdit
+   * @param errors
+   * @param shiftContext
+   */
   public constructor(
     isEdit: boolean,
     errors: string[],
@@ -13,11 +20,20 @@ export default class ShiftContextEditViewModel extends FormViewModel {
     this.shiftContext = shiftContext;
   }
 
-  public static empty() {
+  /** Constructs the view model with empty values
+   * @returns The view model
+   */
+  public static empty(): ShiftContextEditViewModel {
     return new ShiftContextEditViewModel(false, [], ShiftContext.empty());
   }
 
-  public static async fromRequest(request: Request) {
+  /** Constructs the view model using incoming form data
+   * @param request The incoming HTTP request
+   * @returns The view model
+   */
+  public static async fromRequest(
+    request: Request,
+  ): Promise<ShiftContextEditViewModel> {
     const formData = await request.formData();
 
     const id = parseInt(formData.get("id") as string ?? "0");

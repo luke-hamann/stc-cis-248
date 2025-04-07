@@ -3,23 +3,33 @@ import FormDataWrapper from "../../../_framework/FormDataWrapper.ts";
 import FormViewModel from "../_shared/_FormViewModel.ts";
 import ShiftContextNote from "../../entities/ShiftContextNote.ts";
 
+/** A view model for the shift context note add/edit form */
 export default class ShiftContextNoteEditViewModel extends FormViewModel {
+  /** The shift context note being added/edited */
   shiftContextNote: ShiftContextNote;
-  colors: Color[];
-  weekStart: Date;
 
+  /** An array of possible colors for the note */
+  colors: Color[];
+
+  /** Constructs the view model
+   * @param errors
+   * @param shiftContextNote
+   * @param colors
+   */
   public constructor(
     errors: string[],
     shiftContextNote: ShiftContextNote,
     colors: Color[],
-    weekStart: Date,
   ) {
     super(true, errors);
     this.shiftContextNote = shiftContextNote;
     this.colors = colors;
-    this.weekStart = weekStart;
   }
 
+  /** Constructs the view model using incoming form data
+   * @param request The incoming HTTP request
+   * @returns The view model
+   */
   public static async fromRequest(
     request: Request,
   ): Promise<ShiftContextNoteEditViewModel> {
@@ -41,7 +51,6 @@ export default class ShiftContextNoteEditViewModel extends FormViewModel {
       [],
       shiftContextNote,
       [],
-      new Date(),
     );
   }
 }

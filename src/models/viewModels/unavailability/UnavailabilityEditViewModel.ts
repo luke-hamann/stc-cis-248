@@ -4,11 +4,23 @@ import TeamMember from "../../entities/TeamMember.ts";
 import Unavailability from "../../entities/Unavailability.ts";
 import FormViewModel from "../_shared/_FormViewModel.ts";
 
+/** A view model for the unavailability add/edit form */
 export default class UnavailabilityEditViewModel extends FormViewModel {
+  /** The team member the unavailability is for */
   public teamMember: TeamMember | null;
+
+  /** The unavailability being added/edited */
   public unavailability: Unavailability;
+
+  /** The start date of the unavailability from the form */
   public startDate: Date | null = null;
 
+  /** Constructs the view model
+   * @param teamMember
+   * @param unavailability
+   * @param isEdit
+   * @param errors
+   */
   public constructor(
     teamMember: TeamMember | null,
     unavailability: Unavailability,
@@ -20,6 +32,10 @@ export default class UnavailabilityEditViewModel extends FormViewModel {
     this.unavailability = unavailability;
   }
 
+  /** Constructs a view model using incoming form data
+   * @param request The HTTP request
+   * @returns The view model
+   */
   public static async fromRequest(
     request: Request,
   ): Promise<UnavailabilityEditViewModel> {
@@ -54,11 +70,13 @@ export default class UnavailabilityEditViewModel extends FormViewModel {
     return new UnavailabilityEditViewModel(null, unavailability, false, []);
   }
 
+  /** Gets the start date as a string in yyyy-mm-dd format */
   public get startDateString(): string {
     if (!this.startDate) return "";
     return BetterDate.fromDate(this.startDate).toDateString();
   }
 
+  /** Gets the cancel link for the form */
   public get cancelLink(): string {
     const date = this.unavailability.startDateTime ?? this.startDate ??
       new Date();
