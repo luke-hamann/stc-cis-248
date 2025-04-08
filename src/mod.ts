@@ -13,6 +13,7 @@
  * * [Building documentation](#building-documentation)
  *   * [Systems documentation](#systems-documentation)
  *   * [User guides](#user-guides)
+ * * [Database](#database)
  * * [Framework modules](#framework-modules)
  *   * [Date module](#date-module)
  *   * [Web framework module](#web-framework-module)
@@ -146,6 +147,81 @@
  * * {@link MapWrapper}
  * * {@link ResponseWrapper}
  * * {@link Route}
+ *
+ * ## Database
+ * 
+ * The database consists of 9 tables:
+ * 
+ * * TeamMembers
+ * * ShiftContexts
+ * * Colors
+ * * ShiftContextNotes
+ * * TeamMemberAvailability
+ * * TeamMemberTypicalAvailability
+ * * TeamMemberShiftContextPreferences
+ * * TimeSlots
+ * * Substitutes
+ * 
+ * ### Columns
+ * 
+ * * TeamMembers
+ *     * id (int) - Id
+ *     * firstName (varchar) - First name
+ *     * middleName (varchar) - Middle name
+ *     * lastName (varchar) - Last name
+ *     * birthDate (date) - Birth date
+ *     * email (varchar) - Email address
+ *     * phone (varchar) - Phone number
+ *     * isExternal (bool) - Whether the team member is an external resource
+ *     * maxWeeklyHours (int) - The maximum number of hours per week the team member can work
+ *     * maxWeeklyDays (int) - The maximum number of days per week the team member can work
+ *     * username (varchar) - The team member's user name
+ *     * password (varchar) - The team member's password
+ *     * isAdmin (bool) - Whether the 
+ * * ShiftContexts
+ *     * id
+ *     * name
+ *     * ageGroup
+ *     * location
+ *     * description
+ * * Colors
+ *     * id
+ *     * name
+ *     * hex
+ * * ShiftContextNotes
+ *     * shiftContextId
+ *     * date
+ *     * note
+ *     * colorId
+ * * TeamMememberAvailability
+ *     * id
+ *     * teamMemberId
+ *     * startDateTime
+ *     * endDateTime
+ *     * isPreference
+ * * TeamMemberTypicalAvailability
+ *     * id
+ *     * teamMemberId
+ *     * dayOfWeek
+ *     * startTime
+ *     * endTime
+ *     * isPreference
+ * * TeamMemberShiftContextPreferences
+ *     * teamMemberId
+ *     * shiftContextId
+ *     * isPreference
+ * * TimeSlots
+ *     * id
+ *     * shiftContextId
+ *     * startDateTime
+ *     * endDateTime
+ *     * requiresAdult
+ *     * teamMemberId
+ *     * note
+ *     * colorId
+ * * Substitutes
+ *     * teamMemberId
+ *     * date
  *
  * ## Models
  *
