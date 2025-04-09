@@ -10,3 +10,6 @@
 - [Shift Contexts](./4_shift_contexts.md)
 - [Colors](./5_colors.md)
 - [Schedule](./6_schedule.md)
+  - [Time Slots](./6.1_time_slots.md)
+  - [Shift Context Notes](./6.2_shift_context_notes.md)
+  - [Substitutes](./6.3_substitutes.md)
