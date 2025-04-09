@@ -282,7 +282,7 @@ export default class UnavailabilityRepository extends Repository {
   public async delete(id: number): Promise<void> {
     await this._database.execute(
       `
-        DELETE FROM TeamMemberTypicalAvailability
+        DELETE FROM TeamMemberAvailability
         WHERE id = ?
       `,
       [id],
