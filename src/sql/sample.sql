@@ -208,11 +208,6 @@ INSERT INTO TeamMemberTypicalAvailability
 	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
 	VALUES
 	(1, 6, "2025-03-09 08:00:00", "2025-03-09 23:59:59", true);
-INSERT INTO TeamMemberTypicalAvailability
-	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
-	VALUES
-	(1, 7, "2025-03-010 08:00:00", "2025-03-010 23:59:59", true);
-
 
 
 
