@@ -19,6 +19,6 @@ export default class CalendarMonthPage {
   ) {
     this.monthName = monthName;
     this.daysInMonth = daysInMonth;
-    this.initialDayOfWeek - initialDayOfWeek;
+    this.initialDayOfWeek = initialDayOfWeek;
   }
 }
