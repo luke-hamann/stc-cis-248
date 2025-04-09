@@ -19,7 +19,16 @@
   ["context/1/", 500, 550, "shift_context_edit"],
   ["context/1/delete/", 500, 500, "shift_context_delete"],
 
-  ["team-member/4/preferences/", 525, 525, "preferences"],
+  ["team-member/1/preferences/", 525, 525, "preferences"],
 
-  ["team-member/4/availability", 500, 700, "availability_list"]
+  ["team-member/1/availability/", 575, 750, "availability_list"],
+  ["team-member/1/availability/add/", 500, 425, "availability_add"],
+  ["team-member/1/availability/1/", 500, 425, "availability_edit"],
+  ["team-member/1/availability/1/delete/", 500, 325, "availability_delete"],
+
+  ["team-member/1/unavailability/2025/", 1080, 720, "unavailability_year"],
+  ["team-member/1/unavailability/2025/03/02/", 500, 700, "unavailability_week"],
+  ["team-member/1/unavailability/add/2025/03/02/", 500, 700, "unavailability_add"],
+  ["team-member/1/unavailability/1/edit/", 500, 700, "unavailability_edit"],
+  ["team-member/1/unavailability/1/delete/", 500, 300, "unavailability_delete"]
 ]
