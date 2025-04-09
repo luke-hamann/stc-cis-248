@@ -1,5 +1,5 @@
 {
   "fmt": {
-    "exclude": ["src/views/", "docs/"]
+    "exclude": ["src/views/", "docs/", "user-guides/"]
   }
 }
