@@ -26,9 +26,10 @@
   ["team-member/1/availability/1/", 500, 425, "availability_edit"],
   ["team-member/1/availability/1/delete/", 500, 325, "availability_delete"],
 
-  ["team-member/1/unavailability/2025/", 1080, 720, "unavailability_year"],
-  ["team-member/1/unavailability/2025/03/02/", 500, 700, "unavailability_week"],
-  ["team-member/1/unavailability/add/2025/03/02/", 500, 700, "unavailability_add"],
-  ["team-member/1/unavailability/1/edit/", 500, 700, "unavailability_edit"],
-  ["team-member/1/unavailability/1/delete/", 500, 300, "unavailability_delete"]
+  ["team-member/1/unavailability/2025/", 1090, 700, "unavailability_year"],
+  ["team-member/1/unavailability/2025/03/02/", 700, 700, "unavailability_week"],
+  ["team-member/1/unavailability/add/2025/03/02/", 500, 600, "unavailability_add"],
+  ["team-member/1/unavailability/1/edit/", 500, 600, "unavailability_edit"],
+  ["team-member/1/unavailability/1/delete/", 500, 350, "unavailability_delete"],
+  ["team-member/1/unavailability/2025/03/02/clear/", 500, 350, "unavailability_clear"]
 ]
