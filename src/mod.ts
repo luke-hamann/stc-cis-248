@@ -121,11 +121,10 @@
  *
  * To build the user guides:
  *
- * 1. Install [deno](https://docs.deno.com/runtime/getting_started/installation/).
- * 2. Install [mdBook](https://rust-lang.github.io/mdBook/).
- *    It is availabile for download on [GitHub](https://github.com/rust-lang/mdBook/releases).
- * 3. Ensure you are running a Windows machine with Google Chrome installed.
- * 4. Navigate to the root directory of the repository.
+ * 1. Ensure you are running a Windows machine with Google Chrome installed.
+ * 2. Set up the development environment (using the sample data) as described above.
+ * 3. Install [mdBook](https://github.com/rust-lang/mdBook/releases).
+ * 4. Ensure the application is running and functional.
  * 5. Build the user guide screenshots:
  *    ```
  *    deno run -A ./user-guides/screenshots.ts
