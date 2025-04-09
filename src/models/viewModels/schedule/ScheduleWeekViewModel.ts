@@ -50,7 +50,7 @@ export default class ScheduleWeekViewModel extends ViewModel {
   public get copyLink(): string {
     const start = this.formatDatePath(this.currentWeek);
     const end = this.formatDatePath(DateLib.addDays(this.currentWeek, 6));
-    return `/schedule/copy/${start}/through/${end}/`;
+    return `/schedule/copy/from/${start}/through/${end}/`;
   }
 
   /** Generates url to the form for exporting the current schedule week */

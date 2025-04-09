@@ -48,7 +48,7 @@
       {% endif %}
       <div class="flex justify-center gap-4">
         <input type="submit" value="Confirm" class="block p-2 bg-blue-300 rounded" />
-        <a href="/schedule/copy/{{ formatDate(model.fromStartDate, '/') }}/through/{{ formatDate(model.fromEndDate, '/') }}/" class="block p-2 bg-yellow-200 rounded">
+        <a href="/schedule/copy/from/{{ formatDate(model.fromStartDate, '/') }}/through/{{ formatDate(model.fromEndDate, '/') }}/to/{{ formatDate(model.toStartDate, '/') }}/through/{{ formatDate(model.toEndDate, '/') }}/{{ 'no-repeat/' if not model.repeatCopy }}{{ 'include-assignees/' if model.includeAssignees }}{{ 'include-shift-context-notes/' if model.includeShiftContextNotes }}{{ 'include-time-slot-notes/' if model.includeTimeSlotNotes }}" class="block p-2 bg-yellow-200 rounded">
           Edit
         </a>
         <a href="/schedule/{{ formatDate(model.fromStartDate, '/') }}/" class="block p-2 bg-gray-300 rounded">
@@ -81,8 +81,8 @@
         </div>
       </div>
     {% endfor %}
-    {% if model.includeShiftContextNotes %}
-      <p>The following shift context notes will be created:</p>
+    {% if model.includeShiftContextNotes.length > 0 %}
+      <p class="mt-8">The following shift context notes will be created:</p>
       {% for shiftContextNote in model.newShiftContextNotes %}
         <div class="border">
           <div>{{ shiftContextNote.date }}</div>
