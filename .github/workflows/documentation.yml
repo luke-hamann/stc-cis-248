@@ -29,7 +29,7 @@ jobs:
 
       - name: Install mdBook
         id: install-mdbook
-        run: "curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.48/mdbook-v0.4.48-x86_64-unknown-linux-gnu.tar.gz | tar -xz"
+        run: curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.48/mdbook-v0.4.48-x86_64-unknown-linux-gnu.tar.gz | tar -xz
 
       - name: Build systems documentation
         id: build
@@ -40,11 +40,15 @@ jobs:
 
       - name: Build user guides
         id: build-guides
-        run: "./mdbook build user-guides"
+        run: ./mdbook build user-guides
 
       - name: Construct upload directory
         id: combine
-        run: "mkdir site/ ; mv docs site/ ; mv user-guides/book site/guides/ ; cp user-guides/index.html site/index.html"
+        run: |
+          mkdir site/
+          mv docs site/
+          mv user-guides/book site/guides/
+          cp user-guides/index.html site/index.html
 
       - name: Upload static files
         id: deployment
