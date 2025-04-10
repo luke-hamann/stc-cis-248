@@ -33,14 +33,31 @@ let path = `${screenshotPath}schedule_copy_preview.png`;
 await page.screenshot({ path });
 console.log(path);
 
-// Schedule week view
+// Schedule week editor table
 
 await page.setViewport({ width: 1400, height: 1230 });
 await page.goto(baseUrl + "schedule/2025/03/02/");
 await page.$$eval("summary", handlers => handlers.forEach(element => element.click()));
-path =  `${screenshotPath}schedule_week_table.png`;
+path = `${screenshotPath}schedule_week_table.png`;
 await page.screenshot({ path });
 console.log(path);
+
+// Schedule week editor table tooltip
+
+await page.goto((await page.url()) + "#time_slot_11");
+await page.hover("tr:nth-of-type(3) .flex-1 ~ div");
+const tableElement = await page.waitForSelector("tr:nth-of-type(3)");
+path = `${screenshotPath}schedule_week_table_tooltips.png`;
+await tableElement!.screenshot({ path });
+console.log(path);
+
+// Schedule week editor warnings
+
+await page.setViewport({ width: 800, height: 1000 })
+const warningsElement = await page.waitForSelector(".p-8.w-full");
+path = `${screenshotPath}schedule_week_warnings.png`;
+await warningsElement!.screenshot({ path });
+console.log(path)
 
 // Close browser
 

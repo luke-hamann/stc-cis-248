@@ -26,7 +26,13 @@ The bottom portion displays warnings about time slot assignments.
 
 ![The schedule week editor table](./images/schedule_week_table.png)
 
+#### Editor Table Tooltips
+
+![The schedule week editor table tooltips](./images/schedule_week_table_tooltips.png)
+
 ### Schedule Warnings
+
+![The schedule week editor warnings](./images/schedule_week_warnings.png)
 
 ## Copy Time Slots
 
