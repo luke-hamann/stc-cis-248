@@ -198,6 +198,12 @@
       {{ warningBadge(model.warnings.length) if model.warnings.length > 0}}
     </h2>
 
+    {% if model.warnings.length == 0 %}
+      <p class="mt-4">
+        (none)
+      </p>
+    {% endif %}
+
     {# Externality warnings #}
 
     {% if model.warnings.externality.length > 0 %}

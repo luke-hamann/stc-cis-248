@@ -13,3 +13,4 @@
   - [Time Slots](./6.1_time_slots.md)
   - [Shift Context Notes](./6.2_shift_context_notes.md)
   - [Substitutes](./6.3_substitutes.md)
+- [Conclusion](./7_conclusion.md)

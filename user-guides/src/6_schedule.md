@@ -29,6 +29,8 @@ The bottom portion displays warnings about time slot assignments.
 The schedule editor table allows you to work with time slots, their assignees, daily shift context notes, and daily substitute lists.
 By pulling together time slot assignments, preferences, availability, and other information, it also provides rich warnings and insights so your schedule is less likely to contain errors.
 
+#### Schedule Header
+
 The center header at the top of the page states what week the schedule is for.
 Clicking this header will send you to the [schedule calendar](#schedule-year-calendar) for the year the schedule week is within.
 
@@ -38,15 +40,106 @@ Clicking the right angle bracket (\>) to the right of the header will navigate t
 The three buttons below the header have the following functions:
 
 * Copy - Opens the [copy time slots form](#copy-time-slots) and autofills it to copy from the current schedule week.
-* Clear - Opens the []
+* Clear - Opens the [clear schedule form](#clear-schedule) and autofills it to clear the current schedule week.
+* Export - Opens the [export schedule form](#schedule-export) and autofills it to export the current schedule week.
 
-#### Editor Table Tooltips
+#### Column Headers
+
+The first row of the table always includes the following elements:
+
+* The first cell contains a button for adding a new time slot.
+  Clicking "+ Add time slot" will open the [add time slot form](./6.1_time_slots.md#time-slot-add).
+* The rest of the cells are column headers with the date of all the time slots within the column.
+
+Within the date header columns, the clicking the buttons perform the following functions:
+
+* Copy - Opens the [copy time slot form](#copy-time-slots) and autofills it to copy from the date of the column
+* Clear - Opens the [clear schedule form](#clear-schedule) and autofills it to clear the contents of the date of the column
+
+#### Shift Contexts and Time Slots
+
+The set of rows in the center section of the table (other than the first and last row) is the primary place you will work to manipulate time slots and notes.
+
+The rows are ordered by shift context alphabetically, then by time slot group.
+
+The cell at the intersection of a shift context row and a date column represents a note for that shift context on the given date.
+Clicking the "Edit" button will open the [shift context note edit form](./6.2_shift_context_notes.md) and allow you to edit or delete this note.
+
+A time slot group row represents an artifical grouping by time slots.
+It belongs to the nearest shift context that appears *above* the row in the table.
+Each time slot group represents a unique combination of four time slot characteristics:
+
+* Shift context
+* Start time
+* End time
+* Age requirement (whether an adult is required)
+
+The same time slot group may take up multiple rows in the schedule editor table if a date within the week has multiple time slots with these same characteristics.
+
+The intersection of a time slot group row and a date column represents either a time slot or a time slot possibility with the given shift context, date, start time, end time, and age requirement.
+
+If this cell contains a "+ New" button, there is no time slot with these exact characteristics in the slot.
+Clicking this button will open the [add time slot form](./6.1_time_slots.md#time-slot-add) and autofill it with the shift context, date, start time, end time, and age requirement of the group.
+
+If you wish to create a time slot, but a group with the appropriate characteristics does not exist in the table, clicking the "Add time slot" button in the top left of the table will open the [time slot add form](./6.1_time_slots.md#time-slot-add) and allow you to create a time slot using arbitrary parameters.
+
+Otherwise, if the cell is not a "New" button, the cell represents a time slot.
+It includes:
+
+* **Assignee** - The assignee names the team member that is assigned to the time slot.
+  This will be marked as "unassigned" if the time slot has not been assigned.
+* **Warnings** - A warning icon (⚠️) will appear next to the time slot assignee if the time slot has warnings.
+  Hovering over this icon will display a tooltip with warnings relevant to the time slot.
+  The warnings include all warning types that are summarized in the [schedule warnings section](#schedule-warnings), except max weekly days and max weekly hours violations.
+  (These warning types are not specific to individual time slots.)
+  Otherwise, team member links and time slot links within the tooltip work identically to those in the [schedule warnings](#schedule-warnings) section.
+  Team member links will navigate to that team member's profile.
+  Time slot links will bolden and jump to the time slot in the editor.
+* **Time slot note** - If the time slot has a note, it will be displayed.
+* **Edit button** - Clicking this will open the [time slot edit form](./6.1_time_slots.md#time-slot-edit) and allow you to edit the time slot.
+* **Delete button** - Clicking this will open the [time slot delete form](./6.1_time_slots.md#time-slot-delete) to confirm the deletion of the time slot.
+  
+This is an example of a time slot cell after clicking a link to it and hovering over its warning icon:
 
 ![The schedule week editor table tooltips](./images/schedule_week_table_tooltips.png)
+
+#### Substitute Lists
+
+The last row of the table contains the substitute information for each day of the week.
+The left-most cell ("Substitutes") is a static header cell.
+The rest of the cells in the row (within the date columns) list the substitutes on each date.
+Clicking "Edit" in any of these cells will open the [subsitutes edit form](./6.3_substitutes.md) and allow you to change the substitutes on that date.
 
 ### Schedule Warnings
 
 ![The schedule week editor warnings](./images/schedule_week_warnings.png)
+
+The schedule warnings summarizes all schedule warnings regarding time slots and assignments during the current schedule week.
+It appears below the schedule week editor table.
+
+If there are no warnings, this section will read "(none)" under the header.
+Otherwise, the total number of warnings will be tallied next to the Warnings header, and the warnings will be listed by category.
+
+Each warnings category will be marked with a header and the number of warnings in the category.
+Clicking this header will allow you to toggle between expanding and collapsing the warning list within that category.
+
+The application currently supports 8 warning categories:
+
+* **Externality** - A team member marked as an external resource has been assigned to a time slot.
+* **Bilocation** - A team member has been assigned to two or more concurrent time slots (e.g. two places at the same time).
+* **Adult Only Violations** - A minor has been assigned to a time slot that is marked as adult-only.
+* **Shift Context Preference Violations** - A team member has been assigned to a time slot within a shift context they have expressed a dispreference for. 
+* **Availability Violations** - A team member has been scheduled at a time they are either not typically avaiable OR explicitly marked as unavailable.
+* **Max Weekly Days Violations** - The team member has been scheduled for more days during the week than the maximum in their [profile](./3.1_profile.md) specifies.
+* **Max Weekly Hours Violations** - The team membmer has been scheduled for more hours during the week than the maximum in their [profile](./3.1_profile.md) specifies.
+* **Unassigned Time Slots** - A time slot does not have an assignee.
+
+If the schedule for the current week does not cause any warnings in a given category, the category will be omitted from the warnings section.
+
+Warning messages may also contain links:
+
+* Clicking on a team member link will navigate to that team member's profile.
+* Clicking on a time slot link (e.g. a link with a date and time) will scroll to and bolden the border of the time slot in the schedule week editor table.
 
 ## Copy Time Slots
 
