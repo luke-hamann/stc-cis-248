@@ -33,10 +33,10 @@ jobs:
 
       - name: Build systems documentation
         id: build
-        run: "deno doc --html --name=\"Scheduler App Systems Documentation\" ./src/mod.ts"
+        run: deno doc --html --name="Scheduler App Systems Documentation" ./src/mod.ts
 
       - name: Fix systems documentation source links
-        run: "chmod +x ./fixDocs.sh ; ./fixDocs.sh"
+        run: find docs -type f -name '*.html' -exec sed -i -e 's/href="file:&#x2F;&#x2F;&#x2F;home&#x2F;runner&#x2F;work&#x2F;stc-cis-248&#x2F;stc-cis-248&#x2F;/href="https:\/\/github\.com\/luke-hamann\/stc-cis-248\/blob\/master\//g' {} \;
 
       - name: Build user guides
         id: build-guides
