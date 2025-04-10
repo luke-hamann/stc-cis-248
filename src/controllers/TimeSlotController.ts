@@ -120,14 +120,62 @@ export default class TimeSlotController extends Controller {
       },
       {
         method: "GET",
-        pattern:
-          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
+        pattern: [
+          "/schedule/copy/from/",
+          "(\\d{4})", // source start year
+          "/",
+          "(\\d{2})", // source start month
+          "/",
+          "(\\d{2})", // source start date
+          "/through/",
+          "(\\d{4})", // source end year
+          "/",
+          "(\\d{2})", // source end month
+          "/",
+          "(\\d{2})", // source end date
+          "/",
+          "(to/",
+          "(\\d{4})", // destination start year
+          "/",
+          "(\\d{2})", // destination start month
+          "/",
+          "(\\d{2})", // destination start date
+          "/through/",
+          "(\\d{4})", // destination end year
+          "/",
+          "(\\d{2})", // destination end month
+          "/",
+          "(\\d{2})", // destination end date
+          "/",
+          "(no-repeat/)?", // whether the copy should repeat
+          "(include-assignees/)?", // whether the copy should include time slot assignees
+          "(include-shift-context-notes/)?", // whether the copy should include shift context notes
+          "(include-time-slot-notes/)?", // whether the copy should include time slot slots
+          ")?",
+        ].join(""),
+        mappings: [
+          [1, "fromStartYear"],
+          [2, "fromStartMonth"],
+          [3, "fromStartDate"],
+          [4, "fromEndYear"],
+          [5, "fromEndMonth"],
+          [6, "fromEndDate"],
+          [8, "toStartYear"],
+          [9, "toStartMonth"],
+          [10, "toStartDate"],
+          [11, "toEndYear"],
+          [12, "toEndMonth"],
+          [13, "toEndDate"],
+          [14, "noRepeat"],
+          [15, "includeAssignees"],
+          [16, "includeShiftContextNotes"],
+          [17, "includeTimeSlotNotes"],
+        ],
         action: this.copyGet,
       },
       {
         method: "POST",
-        pattern:
-          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
+        pattern: "/schedule/copy/.*",
         action: this.copyPost,
       },
       {
@@ -386,23 +434,50 @@ export default class TimeSlotController extends Controller {
    * @returns The response
    */
   public copyGet(context: Context): ResponseWrapper {
-    const [_, y1, m1, d1, y2, m2, d2] = context.match;
-    const start = new Date(parseInt(y1), parseInt(m1) - 1, parseInt(d1));
-    const end = new Date(parseInt(y2), parseInt(m2) - 1, parseInt(d2));
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    const fromStartDate = context.routeData.getDateMulti(
+      "fromStartYear",
+      "fromStartMonth",
+      "fromStartDate",
+    );
+    const fromEndDate = context.routeData.getDateMulti(
+      "fromEndYear",
+      "fromEndMonth",
+      "fromEndDate",
+    );
+    const toStartDate = context.routeData.getDateMulti(
+      "toStartYear",
+      "toStartMonth",
+      "toStartDate",
+    );
+    const toEndDate = context.routeData.getDateMulti(
+      "toEndYear",
+      "toEndMonth",
+      "toEndDate",
+    );
+
+    const repeatCopy = !context.routeData.getBool("noRepeat");
+    const includeAssignees = context.routeData.getBool("includeAssignees");
+    const includeShiftContextNotes = context.routeData.getBool(
+      "includeShiftContextNotes",
+    );
+    const includeTimeSlotNotes = context.routeData.getBool(
+      "includeShiftContextNotes",
+    );
+
+    if (fromStartDate == null || fromEndDate == null) {
       return this.NotFoundResponse(context);
     }
 
     const model = new ScheduleCopyViewModel(
       false,
-      start,
-      end,
-      null,
-      null,
-      true,
-      false,
-      false,
-      false,
+      fromStartDate,
+      fromEndDate,
+      toStartDate,
+      toEndDate,
+      repeatCopy,
+      includeAssignees,
+      includeShiftContextNotes,
+      includeTimeSlotNotes,
       [],
     );
 

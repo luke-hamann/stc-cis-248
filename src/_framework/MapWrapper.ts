@@ -54,7 +54,7 @@ export default class MapWrapper {
    * @returns The boolean
    */
   public getBool(key: string): boolean {
-    return this._map.has(key);
+    return this._map.get(key) != undefined;
   }
 
   /** Gets a string value for a key
@@ -148,7 +148,7 @@ export default class MapWrapper {
 
     if (year == null || month == null || date == null) return null;
 
-    const out = new Date(year, month, date);
+    const out = new Date(year, month - 1, date);
     if (isNaN(out.getTime())) return null;
 
     return out;
