@@ -6,7 +6,10 @@ const targets = screenshots as [string, number, number, string][];
 const baseUrl = "http://localhost:8000/";
 const screenshotPath = "./user-guides/src/images/";
 
-const options = { headless: true, executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" };
+const options = {
+  headless: true,
+  executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+};
 
 const browser = await puppeteer.launch(options);
 const page = await browser.newPage();
@@ -37,7 +40,10 @@ console.log(path);
 
 await page.setViewport({ width: 1400, height: 1230 });
 await page.goto(baseUrl + "schedule/2025/03/02/");
-await page.$$eval("summary", handlers => handlers.forEach(element => element.click()));
+await page.$$eval(
+  "summary",
+  (handlers) => handlers.forEach((element) => element.click()),
+);
 path = `${screenshotPath}schedule_week_table.png`;
 await page.screenshot({ path });
 console.log(path);
@@ -53,11 +59,11 @@ console.log(path);
 
 // Schedule week editor warnings
 
-await page.setViewport({ width: 800, height: 1000 })
+await page.setViewport({ width: 800, height: 1000 });
 const warningsElement = await page.waitForSelector(".p-8.w-full");
 path = `${screenshotPath}schedule_week_warnings.png`;
 await warningsElement!.screenshot({ path });
-console.log(path)
+console.log(path);
 
 // Close browser
 

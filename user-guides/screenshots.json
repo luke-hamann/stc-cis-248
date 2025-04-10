@@ -28,10 +28,20 @@
 
   ["team-member/1/unavailability/2025/", 1090, 700, "unavailability_year"],
   ["team-member/1/unavailability/2025/03/02/", 700, 700, "unavailability_week"],
-  ["team-member/1/unavailability/add/2025/03/02/", 500, 600, "unavailability_add"],
+  [
+    "team-member/1/unavailability/add/2025/03/02/",
+    500,
+    600,
+    "unavailability_add"
+  ],
   ["team-member/1/unavailability/1/edit/", 500, 600, "unavailability_edit"],
   ["team-member/1/unavailability/1/delete/", 500, 350, "unavailability_delete"],
-  ["team-member/1/unavailability/2025/03/02/clear/", 500, 350, "unavailability_clear"],
+  [
+    "team-member/1/unavailability/2025/03/02/clear/",
+    500,
+    350,
+    "unavailability_clear"
+  ],
 
   ["schedule/time-slot/add/", 880, 1200, "time_slot_add"],
   ["schedule/time-slot/11/", 880, 1200, "time_slot_edit"],
@@ -43,7 +53,12 @@
 
   ["schedule/2025/", 1090, 700, "schedule_year"],
 
-  ["schedule/copy/from/2025/03/02/through/2025/03/08/", 550, 825, "schedule_copy"],
+  [
+    "schedule/copy/from/2025/03/02/through/2025/03/08/",
+    550,
+    825,
+    "schedule_copy"
+  ],
   ["schedule/clear/2025/03/02/through/2025/03/08/", 600, 600, "schedule_clear"],
   ["schedule/export/2025/03/02/to/2025/03/08/", 600, 450, "schedule_export"]
 ]
