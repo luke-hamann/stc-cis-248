@@ -1,58 +1,70 @@
 import Context from "../_framework/Context.ts";
-import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
-import ShiftContextPreferenceRepository from "../models/repositories/ShiftContextPreferenceRepository.ts";
-import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
+import { IShiftContextRepository } from "../models/repositories/ShiftContextRepository.ts";
+import { IShiftContextPreferenceRepository } from "../models/repositories/ShiftContextPreferenceRepository.ts";
+import { ITeamMemberRepository } from "../models/repositories/TeamMemberRepository.ts";
 import ShiftContextPreferencesEditViewModel from "../models/viewModels/shiftContextPreference/ShiftContextPreferencesEditViewModel.ts";
 import Controller from "../_framework/Controller.ts";
+import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
+/** Controls the shift context preference pages */
 export default class ShiftContextPreferenceController extends Controller {
-  private shiftContextPreferenceRepository: ShiftContextPreferenceRepository;
-  private teamMemberRepository: TeamMemberRepository;
-  private shiftContextRepository: ShiftContextRepository;
+  /** The shift context preference repository */
+  private _shiftContextPreferenceRepository: IShiftContextPreferenceRepository;
 
+  /** The team member repository */
+  private _teamMemberRepository: ITeamMemberRepository;
+
+  /** The shift context repository */
+  private _shiftContextRepository: IShiftContextRepository;
+
+  /** Constructs the shift context preference controller using the necessary repositories
+   * @param shiftContextPreferenceRepository The shift context preference repository
+   * @param teamMemberRepository The team member repository
+   * @param shiftContextRepository The shift context repository
+   */
   constructor(
-    shiftContextPreferenceRepository: ShiftContextPreferenceRepository,
-    teamMemberRepository: TeamMemberRepository,
-    shiftContextRepository: ShiftContextRepository,
+    shiftContextPreferenceRepository: IShiftContextPreferenceRepository,
+    teamMemberRepository: ITeamMemberRepository,
+    shiftContextRepository: IShiftContextRepository,
   ) {
     super();
-    this.shiftContextPreferenceRepository = shiftContextPreferenceRepository;
-    this.teamMemberRepository = teamMemberRepository;
-    this.shiftContextRepository = shiftContextRepository;
+    this._shiftContextPreferenceRepository = shiftContextPreferenceRepository;
+    this._teamMemberRepository = teamMemberRepository;
+    this._shiftContextRepository = shiftContextRepository;
     this.routes = [
       {
         method: "GET",
         pattern: "/team-member/(\\d+)/preferences/",
-        action: this.preferencesGet,
+        action: this.listGet,
       },
       {
         method: "POST",
         pattern: "/team-member/(\\d+)/preferences/",
-        action: this.preferencesPost,
+        action: this.listPost,
       },
     ];
   }
 
-  /**
-   * Shift context preferences GET
+  /** Gets the shift context preference list page for a team member
+   * @param context The application context
+   * @returns The response
    */
-  public async preferencesGet(context: Context) {
+  public async listGet(context: Context): Promise<ResponseWrapper> {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return this.NotFoundResponse(context);
     }
 
-    const teamMember = await this.teamMemberRepository.get(id);
+    const teamMember = await this._teamMemberRepository.get(id);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
     }
 
-    const shiftContexts = await this.shiftContextRepository.list();
-    const shiftContextPreferences = await this.shiftContextPreferenceRepository
+    const shiftContexts = await this._shiftContextRepository.list();
+    const shiftContextPreferences = await this._shiftContextPreferenceRepository
       .get(id);
 
     const model = new ShiftContextPreferencesEditViewModel(
-      context.csrf_token,
       teamMember,
       shiftContexts,
       shiftContextPreferences,
@@ -65,16 +77,17 @@ export default class ShiftContextPreferenceController extends Controller {
     );
   }
 
-  /**
-   * Shift context preferences POST
+  /** Accepts requests to update a team member's shift context preferences
+   * @param context The application context
+   * @returns The response
    */
-  public async preferencesPost(context: Context) {
+  public async listPost(context: Context): Promise<ResponseWrapper> {
     const id = parseInt(context.match[1]);
     if (isNaN(id)) {
       return this.NotFoundResponse(context);
     }
 
-    const teamMember = await this.teamMemberRepository.get(id);
+    const teamMember = await this._teamMemberRepository.get(id);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
     }
@@ -83,12 +96,11 @@ export default class ShiftContextPreferenceController extends Controller {
       context.request,
     );
 
-    model.errors = await this.shiftContextPreferenceRepository.validate(
+    model.errors = await this._shiftContextPreferenceRepository.validate(
       model.shiftContextPreferences,
     );
 
     if (!model.isValid()) {
-      model.csrf_token = context.csrf_token;
       return this.HTMLResponse(
         context,
         "./views/shiftContextPreference/edit.html",
@@ -96,7 +108,7 @@ export default class ShiftContextPreferenceController extends Controller {
       );
     }
 
-    await this.shiftContextPreferenceRepository.update(
+    await this._shiftContextPreferenceRepository.update(
       id,
       model.shiftContextPreferences,
     );

@@ -1,28 +1,17 @@
 import Context from "./Context.ts";
 import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
-import { HTTPMethod } from "./HTTPMethod.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 import nunjucks from "npm:nunjucks";
-import IViewModel from "../models/viewModels/_shared/IViewModel.ts";
+import ViewModel from "../models/viewModels/_shared/_ViewModel.ts";
+import Route from "./Route.ts";
+import MapWrapper from "./MapWrapper.ts";
 
 /** Controls routing to action methods based on HTTP method and url patterns */
 export default class Controller {
-  /**
-   * Maps HTTP methods and URL patterns to action methods
-   */
-  protected routes: {
-    /** The HTTP method that should be matched */
-    method: HTTPMethod;
-    /** The partial regex expression that should match the url */
-    pattern: string;
-    /** The action method that should be executed if the method and pattern match */
-    action: (
-      context: Context,
-    ) => void | ResponseWrapper | Promise<void | ResponseWrapper>;
-  }[] = [];
+  /** Maps HTTP methods and URL patterns to action methods */
+  protected routes: Route[] = [];
 
-  /**
-   * Executes the controller
+  /** Executes the controller
    *
    * Interates over each route and calls matching action methods.
    * If an action method returns a response wrapper, that response wrapper is returned.
@@ -42,12 +31,19 @@ export default class Controller {
       if (!match) continue;
 
       context.match = match;
+
+      if (route.mappings) {
+        context.routeData = MapWrapper.fromRouteData(
+          context.match,
+          route.mappings,
+        );
+      }
+
       return await route.action.call(this, context);
     }
   }
 
-  /**
-   * Returns an HTML response wrapper
+  /** Returns an HTML response wrapper
    * @param context The current application context
    * @param view The path to the view file to render
    * @param model The view model
@@ -56,7 +52,7 @@ export default class Controller {
   protected HTMLResponse(
     context: Context,
     view: string,
-    model: IViewModel,
+    model: ViewModel,
   ): ResponseWrapper {
     model.csrf_token = context.csrf_token;
 
@@ -65,8 +61,7 @@ export default class Controller {
     return context.response;
   }
 
-  /**
-   * Returns a response wrapper for a redirect
+  /** Returns a response wrapper for a redirect
    * @param context The current application context
    * @param url The URL to redirect to
    * @returns The response wrapper object
@@ -78,8 +73,7 @@ export default class Controller {
     return context.response;
   }
 
-  /**
-   * Returns an response wrapper for a generic error
+  /** Returns an response wrapper for a generic error
    * @param context The application context
    * @param status The status code
    * @param view The view to render
@@ -90,7 +84,7 @@ export default class Controller {
     context: Context,
     status: number,
     view: string,
-    model: IViewModel,
+    model: ViewModel,
   ) {
     model.csrf_token = context.csrf_token;
 
@@ -99,8 +93,7 @@ export default class Controller {
     return context.response;
   }
 
-  /**
-   * Returns a response wrapper for a 404 not found page
+  /** Returns a response wrapper for a 404 not found page
    * @param context The current application context
    * @returns The response wrapper object
    */
@@ -113,13 +106,11 @@ export default class Controller {
         "404 Not Found",
         "The requested page could not be found.",
         false,
-        context.csrf_token,
       ),
     );
   }
 
-  /**
-   * Returns a response wrapper for an attachment download
+  /** Returns a response wrapper for an attachment download
    * @param context The current application context
    * @param contentType The MIME type of the download
    * @param fileName The file name of the download

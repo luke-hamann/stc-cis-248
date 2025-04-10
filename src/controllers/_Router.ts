@@ -3,20 +3,44 @@ import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 
+/** Routes requests through a given list of controllers
+ *
+ * Note:
+ *
+ * All controllers are executed in order as provided.
+ * If a controller does not produce a response, the pipeline continues through the next controller.
+ * As such, the controllers also function as middleware.
+ */
 export default class Router extends Controller {
-  private controllers: Controller[];
+  /** The controllers to route through */
+  private _controllers: Controller[];
 
-  constructor(controllers: Controller[]) {
+  /** Construct the router given controllers
+   * @param controllers
+   */
+  constructor(
+    controllers: Controller[],
+  ) {
     super();
-    this.controllers = controllers;
+    this._controllers = controllers;
   }
 
+  /** Route a given request through the controllers to deliver a response
+   *
+   * Returns a 500 Internal Server Error response if a controller throws an exception
+   *
+   * Returns a 404 Not Found response if no controller returns a response
+   *
+   * @param request The HTTP request
+   * @returns Promise of an HTTP response
+   */
   public async route(request: Request): Promise<Response> {
     let response: ResponseWrapper | void;
     const context = new Context(request, new ResponseWrapper());
+    context.initializeFormData();
 
     // Controllers
-    for (const controller of this.controllers) {
+    for (const controller of this._controllers) {
       try {
         response = await controller.execute(context);
       } catch (error: unknown) {
@@ -27,7 +51,6 @@ export default class Router extends Controller {
           "500 Internal Server Error",
           message,
           true,
-          context.csrf_token,
         );
 
         response = this.ErrorResponse(

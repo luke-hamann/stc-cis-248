@@ -2,35 +2,119 @@ import Database from "../repositories/_Database.ts";
 import TeamMember from "../entities/TeamMember.ts";
 import TeamMemberRepository from "../repositories/TeamMemberRepository.ts";
 import TimeSlot from "../entities/TimeSlot.ts";
-import TypicalAvailability from "../entities/TypicalAvailability.ts";
+import TypicalAvailability, {
+  DayOfWeek,
+} from "../entities/TypicalAvailability.ts";
 import Repository from "./_Repository.ts";
 
-interface ITypicalAvailabilityRow {
+/** An interface for manipulating typical availability */
+export interface ITypicalAvailabilityRepository {
+  /** Validates a typical availability
+   * @param typicalAvailability The typical availability
+   * @returns An array of error messages
+   */
+  validate(typicalAvailability: TypicalAvailability): Promise<string[]>;
+
+  /** Lists a team member's typical availabilities
+   *
+   * Typical availabilities are grouped by week, ordered by start time, and then ordered by end time
+   *
+   * @param teamMemberId The team member id
+   * @returns 2D array of typical availabilities
+   */
+  list(teamMemberId: number): Promise<TypicalAvailability[][]>;
+
+  /** Gets a typical availability
+   *
+   * Returns null if the typical availability does not exist
+   *
+   * @param id The typical availability id
+   * @returns The typical availability or null
+   */
+  get(id: number): Promise<TypicalAvailability | null>;
+
+  /** Adds a typical availability
+   * @param typicalAvailability The typical availability
+   * @returns The id of the newly added typical availability
+   */
+  add(typicalAvailability: TypicalAvailability): Promise<number>;
+
+  /** Updates a typical availability
+   *
+   * Refers to the id to update the correct typical availability
+   *
+   * @param typicalAvailability The typical availability
+   */
+  update(typicalAvailability: TypicalAvailability): Promise<void>;
+
+  /** Deletes a typical availability
+   * @param id A typical availability id
+   */
+  delete(id: number): Promise<void>;
+
+  /** Determines if a team member is typically available for a time slot
+   *
+   * If the time slot start date time or end date time are unknown, the availability is unknown
+   *
+   * @param teamMember
+   * @param timeSlot
+   * @returns Whether the team member is available
+   */
+  isAvailable(
+    teamMember: TeamMember,
+    timeSlot: TimeSlot,
+  ): Promise<"positive" | "negative" | "unknown">;
+}
+
+/** Represents a typical availability database row */
+export interface ITypicalAvailabilityRow {
+  /** The id */
   id: number;
+
+  /** The id of the associated team member */
   teamMemberId: number;
-  dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+  /** The day of the week of the typical availability
+   */
+  dayOfWeek: DayOfWeek;
+
+  /** The start time */
   startTime: Date;
+
+  /** The end time */
   endTime: Date;
+
+  /** Whether the typical availability is preferable
+   *
+   * 0 is false, 1 is true.
+   */
   isPreference: 0 | 1;
 }
 
-export default class TypicalAvailabilityRepository extends Repository {
-  private teamMembers: TeamMemberRepository;
+/** A repository class for manipulating typical availability */
+export default class TypicalAvailabilityRepository extends Repository
+  implements ITypicalAvailabilityRepository {
+  /** The team member repository */
+  private _teamMembers: TeamMemberRepository;
 
+  /** Constructs the repository using a database connection and team member repository
+   * @param database The database connection
+   * @param teamMembers The team member repository
+   */
   public constructor(database: Database, teamMembers: TeamMemberRepository) {
     super(database);
-    this.teamMembers = teamMembers;
+    this._teamMembers = teamMembers;
   }
 
+  /** A generic SQL query for selecting typical availability */
   private readonly baseQuery = `
     SELECT id, teamMemberId, dayOfWeek, startTime, endTime, isPreference
     FROM TeamMemberTypicalAvailability
   `;
 
-  /**
-   * Maps a database row to a typical availability object
-   * @param row
-   * @returns
+  /** Converts a database row to a typical availability
+   * @param row The database row
+   * @returns The typical availability
    */
   private mapRow(
     row: ITypicalAvailabilityRow,
@@ -46,43 +130,47 @@ export default class TypicalAvailabilityRepository extends Repository {
     );
   }
 
-  /**
-   * Maps database rows to a typical availability array
-   * @param rows
-   * @returns
+  /** Converts an array of database rows to an array of typical availability
+   * @param rows An array of database rows
+   * @returns An array of typical availability
    */
   private mapRows(rows: ITypicalAvailabilityRow[]): TypicalAvailability[] {
     return rows.map((row) => this.mapRow(row));
   }
 
-  /**
-   * Validates a typical availability
-   * @param t The typical availability
+  /** Validates a typical availability
+   * @param typicalAvailability The typical availability
    * @returns An array of error messages
    */
-  public async validate(t: TypicalAvailability): Promise<string[]> {
+  public async validate(
+    typicalAvailability: TypicalAvailability,
+  ): Promise<string[]> {
     const errors: string[] = [];
 
-    const teamMember = await this.teamMembers.get(t.teamMemberId);
+    const teamMember = await this._teamMembers.get(
+      typicalAvailability.teamMemberId,
+    );
     if (teamMember == null) {
       errors.push("The selected team member does not exist.");
     }
 
-    if (t.dayOfWeek == null) {
+    if (typicalAvailability.dayOfWeek == null) {
       errors.push("Please select a day of the week.");
     }
 
-    if (t.startTime == null) {
+    if (typicalAvailability.startTime == null) {
       errors.push("Please enter a start time.");
     }
 
-    if (t.endTime == null) {
+    if (typicalAvailability.endTime == null) {
       errors.push("Please enter an end time.");
     }
 
     if (
-      t.startTime != null && t.endTime != null &&
-      t.startTime.getTime() >= t.endTime.getTime()
+      typicalAvailability.startTime != null &&
+      typicalAvailability.endTime != null &&
+      typicalAvailability.startTime.getTime() >=
+        typicalAvailability.endTime.getTime()
     ) {
       errors.push("Start time must be before end time.");
     }
@@ -90,15 +178,17 @@ export default class TypicalAvailabilityRepository extends Repository {
     return errors;
   }
 
-  /**
-   * Lists typical availabilities of a team member grouped by day of week, then ordered by start time, then ordered by end time
-   * @param teamMemberId
+  /** Lists a team member's typical availabilities
+   *
+   * Typical availabilities are grouped by week, ordered by start time, and then ordered by end time
+   *
+   * @param teamMemberId The team member id
    * @returns 2D array of typical availabilities
    */
   public async list(teamMemberId: number): Promise<TypicalAvailability[][]> {
     const table: TypicalAvailability[][] = [[], [], [], [], [], [], []];
 
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         ${this.baseQuery}
         WHERE teamMemberId = ?
@@ -117,12 +207,15 @@ export default class TypicalAvailabilityRepository extends Repository {
     return table;
   }
 
-  /**
-   * Gets a typical availability by id
-   * @param id
+  /** Gets a typical availability
+   *
+   * Returns null if the typical availability does not exist
+   *
+   * @param id The typical availability id
+   * @returns The typical availability or null
    */
   public async get(id: number): Promise<TypicalAvailability | null> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         ${this.baseQuery}
         WHERE id = ?
@@ -135,13 +228,12 @@ export default class TypicalAvailabilityRepository extends Repository {
     return this.mapRow(result.rows[0]);
   }
 
-  /**
-   * Adds a typical availability
-   * @param t A typical availability
-   * @returns A promise of the new typical availability's id
+  /** Adds a typical availability
+   * @param typicalAvailability The typical availability
+   * @returns The id of the newly added typical availability
    */
-  public async add(t: TypicalAvailability): Promise<number> {
-    const result = await this.database.execute(
+  public async add(typicalAvailability: TypicalAvailability): Promise<number> {
+    const result = await this._database.execute(
       `
         INSERT INTO TeamMemberTypicalAvailability
           (teamMemberId, dayOfWeek, startTime, endTime, isPreference)
@@ -149,23 +241,25 @@ export default class TypicalAvailabilityRepository extends Repository {
           (?, ?, ?, ?, ?)
       `,
       [
-        t.teamMemberId,
-        t.dayOfWeek,
-        t.startTime,
-        t.endTime,
-        t.isPreference ? 1 : 0,
+        typicalAvailability.teamMemberId,
+        typicalAvailability.dayOfWeek,
+        typicalAvailability.startTime,
+        typicalAvailability.endTime,
+        typicalAvailability.isPreference ? 1 : 0,
       ],
     );
 
     return result.lastInsertId ?? 0;
   }
 
-  /**
-   * Updates a typical availability
-   * @param t A typical availability
+  /** Updates a typical availability
+   *
+   * Refers to the id to update the correct typical availability
+   *
+   * @param typicalAvailability The typical availability
    */
-  public async update(t: TypicalAvailability): Promise<void> {
-    await this.database.execute(
+  public async update(typicalAvailability: TypicalAvailability): Promise<void> {
+    await this._database.execute(
       `
         UPDATE TeamMemberTypicalAvailability
         SET teamMemberId = ?, 
@@ -176,22 +270,21 @@ export default class TypicalAvailabilityRepository extends Repository {
         WHERE id = ?
       `,
       [
-        t.teamMemberId,
-        t.dayOfWeek,
-        t.startTime,
-        t.endTime,
-        t.isPreference,
-        t.id,
+        typicalAvailability.teamMemberId,
+        typicalAvailability.dayOfWeek,
+        typicalAvailability.startTime,
+        typicalAvailability.endTime,
+        typicalAvailability.isPreference,
+        typicalAvailability.id,
       ],
     );
   }
 
-  /**
-   * Deletes a typical availability
+  /** Deletes a typical availability
    * @param id A typical availability id
    */
   public async delete(id: number): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         DELETE FROM TeamMemberTypicalAvailability
         WHERE id = ?
@@ -200,11 +293,13 @@ export default class TypicalAvailabilityRepository extends Repository {
     );
   }
 
-  /**
-   * Determines if a team member is typically available for a time slot
+  /** Determines if a team member is typically available for a time slot
+   *
+   * If the time slot start date time or end date time are unknown, the availability is unknown
+   *
    * @param teamMember
    * @param timeSlot
-   * @returns
+   * @returns Whether the team member is available
    */
   public async isAvailable(
     teamMember: TeamMember,
@@ -214,7 +309,7 @@ export default class TypicalAvailabilityRepository extends Repository {
       return "unknown";
     }
 
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         SELECT 1
         FROM TeamMemberTypicalAvailability

@@ -1,9 +1,12 @@
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 
+/** Middleware for handling an HTTP session with a cookie */
 export default class SessionMiddleware extends Controller {
-  private readonly sessionCookieName = "session";
+  /** The key name of the session cookie */
+  private readonly _sessionCookieName = "session";
 
+  /** Constructs the middleware */
   constructor() {
     super();
     this.routes = [
@@ -12,8 +15,7 @@ export default class SessionMiddleware extends Controller {
     ];
   }
 
-  /**
-   * Starts the application session, creating it if it does not exist
+  /** Starts the application session, creating it if it does not exist
    * @param context The application context
    */
   public async startSession(context: Context) {
@@ -21,7 +23,7 @@ export default class SessionMiddleware extends Controller {
 
     // Attempt to get the session if it exists
     let hasSession = false;
-    let sessionKey = context.requestCookies.get(this.sessionCookieName);
+    let sessionKey = context.requestCookies.get(this._sessionCookieName);
     if (sessionKey) {
       const sessionValue = (await kv.get([sessionKey])).value as string | null;
       if (sessionValue) {
@@ -38,7 +40,7 @@ export default class SessionMiddleware extends Controller {
       context.csrf_token = csrf_token;
       context.response.headers.set(
         "Set-Cookie",
-        `${this.sessionCookieName}=${sessionKey}`,
+        `${this._sessionCookieName}=${sessionKey}`,
       );
     }
   }

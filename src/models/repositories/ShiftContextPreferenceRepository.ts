@@ -2,9 +2,62 @@ import Database from "./_Database.ts";
 import ShiftContextRepository from "./ShiftContextRepository.ts";
 import Repository from "./_Repository.ts";
 
-export default class ShiftContextPreferenceRepository extends Repository {
+/** Represents the shift context preferences of a team member */
+export type ShiftContextPreferencesList = {
+  /** The ids of the shift contexts the team member prefers */
+  preferable: number[];
+
+  /** The ids of the shift contexts the team member does not prefer */
+  unpreferable: number[];
+};
+
+/** A generic interface for manipulating shift context preferences */
+export interface IShiftContextPreferenceRepository {
+  /** Verifies the existance of shift context ids within a preferences list
+   * @param preferences The preferable and unpreferable shift contexts (as ids)
+   * @returns An array of error messages
+   */
+  validate(preferences: ShiftContextPreferencesList): Promise<string[]>;
+
+  /** Gets the ids of preferable and unpreferable shift contexts given a team member
+   * @param teamMemberId The team member's id
+   * @returns The preferences
+   */
+  get(teamMemberId: number): Promise<ShiftContextPreferencesList>;
+
+  /** Updates the shift context preferences of a team member
+   * @param teamMemberId The team member's id
+   * @param preferences The preferences
+   */
+  update(
+    teamMemberId: number,
+    preferences: ShiftContextPreferencesList,
+  ): Promise<void>;
+
+  /** Determines a team member's preference for a shift context
+   *
+   * If a shift context id is not given, the preference is unknown.
+   *
+   * @param teamMemberId
+   * @param shiftContextId
+   * @returns The team member's sentiment on the shift context
+   */
+  getPreference(
+    teamMemberId: number,
+    shiftContextId: number | null,
+  ): Promise<"positive" | "negative" | "neutral" | "unknown">;
+}
+
+/** Represents a repository for manipulating team member shift context preferences */
+export default class ShiftContextPreferenceRepository extends Repository
+  implements IShiftContextPreferenceRepository {
+  /** The shift context repository */
   private shiftContexts: ShiftContextRepository;
 
+  /** Constructs the repository given a database connection and shift context repository
+   * @param database
+   * @param shiftContexts
+   */
   public constructor(
     database: Database,
     shiftContexts: ShiftContextRepository,
@@ -13,8 +66,12 @@ export default class ShiftContextPreferenceRepository extends Repository {
     this.shiftContexts = shiftContexts;
   }
 
+  /** Verifies the existance of shift context ids within a preferences list
+   * @param preferences The preferable and unpreferable shift contexts (as ids)
+   * @returns An array of error messages
+   */
   public async validate(
-    preferences: { preferable: number[]; unpreferable: number[] },
+    preferences: ShiftContextPreferencesList,
   ): Promise<string[]> {
     const errors: string[] = [];
 
@@ -39,15 +96,14 @@ export default class ShiftContextPreferenceRepository extends Repository {
     return errors;
   }
 
-  /**
-   * Gets the ids of preferable and unpreferable shift contexts given a team member
-   * @param teamMemberId
-   * @returns
+  /** Gets the ids of preferable and unpreferable shift contexts given a team member
+   * @param teamMemberId The team member's id
+   * @returns The preferences
    */
   public async get(
     teamMemberId: number,
-  ): Promise<{ preferable: number[]; unpreferable: number[] }> {
-    const result = await this.database.execute(
+  ): Promise<ShiftContextPreferencesList> {
+    const result = await this._database.execute(
       `
       SELECT teamMemberId, shiftContextId, isPreference
       FROM TeamMemberShiftContextPreferences
@@ -69,16 +125,15 @@ export default class ShiftContextPreferenceRepository extends Repository {
     return { preferable, unpreferable };
   }
 
-  /**
-   * Updates the ids of preferable and unpreferable shift contexts given a team member
-   * @param teamMemberId
-   * @param shiftContextPreferences
+  /** Updates the shift context preferences of a team member
+   * @param teamMemberId The team member's id
+   * @param preferences The preferences
    */
   public async update(
     teamMemberId: number,
-    shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
+    preferences: ShiftContextPreferencesList,
   ): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
       DELETE FROM TeamMemberShiftContextPreferences
       WHERE teamMemberId = ?
@@ -86,8 +141,8 @@ export default class ShiftContextPreferenceRepository extends Repository {
       [teamMemberId],
     );
 
-    for (const shiftContextId of shiftContextPreferences.preferable) {
-      await this.database.execute(
+    for (const shiftContextId of preferences.preferable) {
+      await this._database.execute(
         `
         INSERT INTO TeamMemberShiftContextPreferences (teamMemberId, shiftContextId, isPreference)
         VALUES (?, ?, 1)
@@ -96,8 +151,8 @@ export default class ShiftContextPreferenceRepository extends Repository {
       );
     }
 
-    for (const shiftContextId of shiftContextPreferences.unpreferable) {
-      await this.database.execute(
+    for (const shiftContextId of preferences.unpreferable) {
+      await this._database.execute(
         `
         INSERT INTO TeamMemberShiftContextPreferences (teamMemberId, shiftContextId, isPreference)
         VALUES (?, ?, 0)
@@ -107,13 +162,21 @@ export default class ShiftContextPreferenceRepository extends Repository {
     }
   }
 
+  /** Determines a team member's preference for a shift context
+   *
+   * If a shift context id is not given, the preference is unknown.
+   *
+   * @param teamMemberId
+   * @param shiftContextId
+   * @returns The team member's sentiment on the shift context
+   */
   public async getPreference(
     teamMemberId: number,
     shiftContextId: number | null,
   ): Promise<"positive" | "negative" | "neutral" | "unknown"> {
     if (shiftContextId == null) return "unknown";
 
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         SELECT isPreference
         FROM TeamMemberShiftContextPreferences

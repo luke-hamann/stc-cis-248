@@ -1,6 +1,4 @@
-/**
- * Represents a color
- */
+/** Represents a color */
 export default class Color {
   /** The color id */
   public id: number = 0;
@@ -11,11 +9,10 @@ export default class Color {
   /** The color RGB hex code */
   public hex: string = "";
 
-  /**
-   * Constructs a color
-   * @param id
-   * @param name
-   * @param hex
+  /** Constructs a color
+   * @param id Color id
+   * @param name Color name
+   * @param hex Color hex code
    */
   public constructor(id: number, name: string, hex: string) {
     this.id = id;
@@ -23,15 +20,16 @@ export default class Color {
     this.hex = hex;
   }
 
-  /**
-   * Creates a color object with default values
+  /** Creates a color object with default values
+   * @returns The new color
+   * @constructor
    */
-  public static empty() {
+  public static empty(): Color {
     return new Color(0, "", "");
   }
 
-  /**
-   * A hex color appropriate for text on top of the color hex
+  /** Gets a hexadecimal color appropriate to be used as a foreground color on top of the color
+   * @returns The color hex code
    */
   public get hexForeground(): "000000" | "FFFFFF" {
     const [R, G, B] = (this.hex.match(/.{2}/g) ?? ["FF", "FF", "FF"]).map((c) =>

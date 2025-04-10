@@ -108,8 +108,7 @@ const controllers: Controller[] = [
 
 const router = new Router(controllers);
 
-/**
- * The entry point of the application
+/** The entry point of the application
  *
  * Passes requests to the router and returns the router's response
  *

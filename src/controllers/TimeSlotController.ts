@@ -1,49 +1,72 @@
 import BetterDate from "../_dates/BetterDate.ts";
-import DateLib from "../_dates/DateLib.ts";
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import Color from "../models/entities/Color.ts";
 import ShiftContextNote from "../models/entities/ShiftContextNote.ts";
 import TimeSlot from "../models/entities/TimeSlot.ts";
-import ColorRepository from "../models/repositories/ColorRepository.ts";
-import ScheduleRepository from "../models/repositories/ScheduleRepository.ts";
-import ShiftContextNoteRepository from "../models/repositories/ShiftContextNoteRepository.ts";
-import ShiftContextRepository from "../models/repositories/ShiftContextRepository.ts";
-import SubstituteRepository from "../models/repositories/SubstituteRepository.ts";
-import TeamMemberRepository from "../models/repositories/TeamMemberRepository.ts";
-import TimeSlotRepository from "../models/repositories/TimeSlotRepository.ts";
+import { IColorRepository } from "../models/repositories/ColorRepository.ts";
+import { IScheduleRepository } from "../models/repositories/ScheduleRepository.ts";
+import { IShiftContextNoteRepository } from "../models/repositories/ShiftContextNoteRepository.ts";
+import { IShiftContextRepository } from "../models/repositories/ShiftContextRepository.ts";
+import { ISubstituteRepository } from "../models/repositories/SubstituteRepository.ts";
+import { ITeamMemberRepository } from "../models/repositories/TeamMemberRepository.ts";
+import { ITimeSlotRepository } from "../models/repositories/TimeSlotRepository.ts";
 import AssigneeRecommendationsViewModel from "../models/viewModels/timeSlot/AssigneeRecommendationsViewModel.ts";
 import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import ScheduleClearViewModel from "../models/viewModels/schedule/ScheduleClearViewModel.ts";
 import ScheduleCopyViewModel from "../models/viewModels/schedule/ScheduleCopyViewModel.ts";
 import TimeSlotEditViewModel from "../models/viewModels/timeSlot/TimeSlotEditViewModel.ts";
+import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
+/** Controls the time slot pages */
 export default class TimeSlotController extends Controller {
-  private shiftContexts: ShiftContextRepository;
-  private teamMembers: TeamMemberRepository;
-  private colors: ColorRepository;
-  private schedules: ScheduleRepository;
-  private shiftContextNotes: ShiftContextNoteRepository;
-  private substitutes: SubstituteRepository;
-  private timeSlots: TimeSlotRepository;
+  /** The shift context repository */
+  private _shiftContexts: IShiftContextRepository;
 
+  /** The team members repository */
+  private _teamMembers: ITeamMemberRepository;
+
+  /** The colors repository */
+  private _colors: IColorRepository;
+
+  /** The schedule repository */
+  private _schedule: IScheduleRepository;
+
+  /** The shift context notes repository */
+  private _shiftContextNotes: IShiftContextNoteRepository;
+
+  /** The substitutes repository */
+  private _substitutes: ISubstituteRepository;
+
+  /** The time slots repository */
+  private _timeSlots: ITimeSlotRepository;
+
+  /** Constucts the controller using the necessary repositories
+   * @param shiftContexts The shift context repository
+   * @param teamMembers The team members repository
+   * @param colors The colors repository
+   * @param schedule The schedule repository
+   * @param shiftContextNotes The shift context notes repository
+   * @param substitutes The substitutes repository
+   * @param timeSlots The time slots repository
+   */
   constructor(
-    shiftContexts: ShiftContextRepository,
-    teamMembers: TeamMemberRepository,
-    colors: ColorRepository,
-    schedules: ScheduleRepository,
-    shiftContextNotes: ShiftContextNoteRepository,
-    substitutes: SubstituteRepository,
-    timeSlots: TimeSlotRepository,
+    shiftContexts: IShiftContextRepository,
+    teamMembers: ITeamMemberRepository,
+    colors: IColorRepository,
+    schedule: IScheduleRepository,
+    shiftContextNotes: IShiftContextNoteRepository,
+    substitutes: ISubstituteRepository,
+    timeSlots: ITimeSlotRepository,
   ) {
     super();
-    this.shiftContexts = shiftContexts;
-    this.teamMembers = teamMembers;
-    this.colors = colors;
-    this.schedules = schedules;
-    this.shiftContextNotes = shiftContextNotes;
-    this.substitutes = substitutes;
-    this.timeSlots = timeSlots;
+    this._shiftContexts = shiftContexts;
+    this._teamMembers = teamMembers;
+    this._colors = colors;
+    this._schedule = schedule;
+    this._shiftContextNotes = shiftContextNotes;
+    this._substitutes = substitutes;
+    this._timeSlots = timeSlots;
     this.routes = [
       {
         method: "GET",
@@ -127,23 +150,24 @@ export default class TimeSlotController extends Controller {
     ];
   }
 
-  /**
-   * @param date
-   * @returns
+  /** Calculates a schedule cancel link url based on a date
+   *
+   * Floors the date to the most recent past Sunday to generate the url path
+   *
+   * @param date The original date
+   * @returns The URL path
    */
   private getCancelLink(date?: Date): string {
     if (!date) {
       date = new Date();
     }
 
-    const newDate = BetterDate.fromDate(DateLib.floorToSunday(date))
-      .toDateString("/");
+    const newDate = BetterDate.fromDate(date).floorToSunday().toDateString("/");
     return `/schedule/${newDate}/`;
   }
 
-  /**
-   * Gets a time slot based on the application context, null if not found
-   * @param context App context
+  /** Gets a time slot based on the application context, null if not found
+   * @param context The application context
    * @returns A time slot or null
    */
   private async getTimeSlot(context: Context): Promise<TimeSlot | null> {
@@ -152,19 +176,20 @@ export default class TimeSlotController extends Controller {
       return null;
     }
 
-    return await this.timeSlots.get(id);
+    return await this._timeSlots.get(id);
   }
 
-  /**
-   * Schedule time slot add GET
+  /** Gets the time slot add form
+   * @param context The application context
+   * @returns The response
    */
-  public async addGet(context: Context) {
+  public async addGet(context: Context): Promise<ResponseWrapper> {
     const timeSlot = TimeSlot.empty();
 
     // If we are attempting to prepopulate the form using route data
     if (context.match[1]) {
       const shiftContextId = Number(context.match[2]);
-      if (this.shiftContexts.get(shiftContextId) == null) {
+      if (this._shiftContexts.get(shiftContextId) == null) {
         return this.NotFoundResponse(context);
       }
 
@@ -197,37 +222,37 @@ export default class TimeSlotController extends Controller {
     }
 
     const model = new TimeSlotEditViewModel(
-      await this.shiftContexts.list(),
-      await this.teamMembers.list(),
-      await this.schedules.getRecommendations(timeSlot),
-      await this.colors.list(),
+      await this._shiftContexts.list(),
+      await this._teamMembers.list(),
+      await this._schedule.getRecommendations(timeSlot),
+      await this._colors.list(),
       timeSlot,
       Color.empty(),
       false,
       [],
-      context.csrf_token,
       this.getCancelLink(),
     );
 
     return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
   }
 
-  /**
-   * Schedule time slot add POST
+  /** Accepts requests to add a time slot
+   * @param context The application context
+   * @returns The response
    */
-  public async addPost(context: Context) {
+  public async addPost(context: Context): Promise<ResponseWrapper> {
     const model = await TimeSlotEditViewModel.fromRequest(context.request);
 
-    model.errors = await this.timeSlots.validate(model.timeSlot);
+    model.errors = await this._timeSlots.validate(model.timeSlot);
     if (model.newColor) {
-      model.errors.concat(await this.colors.validate(model.newColor));
+      model.errors.concat(await this._colors.validate(model.newColor));
     }
 
     if (!model.isValid()) {
-      model.shiftContexts = await this.shiftContexts.list();
-      model.teamMembers = await this.teamMembers.list();
-      model.colors = await this.colors.list();
-      model.recommendations = await this.schedules.getRecommendations(
+      model.shiftContexts = await this._shiftContexts.list();
+      model.teamMembers = await this._teamMembers.list();
+      model.colors = await this._colors.list();
+      model.recommendations = await this._schedule.getRecommendations(
         model.timeSlot,
       );
       model.isEdit = false;
@@ -237,18 +262,19 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.newColor) {
-      const newColorId = await this.colors.add(model.newColor);
+      const newColorId = await this._colors.add(model.newColor);
       model.timeSlot.colorId = newColorId;
     }
 
-    await this.timeSlots.add(model.timeSlot);
+    await this._timeSlots.add(model.timeSlot);
 
     const url = this.getCancelLink(model.timeSlot.startDateTime!);
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Schedule time slot edit GET
+  /** Gets the time slot edit form
+   * @param context The application context
+   * @returns The response
    */
   public async editGet(context: Context) {
     const timeSlot = await this.getTimeSlot(context);
@@ -257,25 +283,25 @@ export default class TimeSlotController extends Controller {
     }
 
     const model = new TimeSlotEditViewModel(
-      await this.shiftContexts.list(),
-      await this.teamMembers.list(),
-      await this.schedules.getRecommendations(timeSlot),
-      await this.colors.list(),
+      await this._shiftContexts.list(),
+      await this._teamMembers.list(),
+      await this._schedule.getRecommendations(timeSlot),
+      await this._colors.list(),
       timeSlot,
       null,
       true,
       [],
-      context.csrf_token,
       this.getCancelLink(timeSlot.startDateTime!),
     );
 
     return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
   }
 
-  /**
-   * Schedule time slot edit POST
+  /** Accepts requests to edit a time slot
+   * @param context The application context
+   * @returns The response
    */
-  public async editPost(context: Context) {
+  public async editPost(context: Context): Promise<ResponseWrapper> {
     if (await this.getTimeSlot(context) == null) {
       return this.NotFoundResponse(context);
     }
@@ -283,20 +309,19 @@ export default class TimeSlotController extends Controller {
     const model = await TimeSlotEditViewModel.fromRequest(context.request);
     model.timeSlot.id = parseInt(context.match[1]);
 
-    model.errors = await this.timeSlots.validate(model.timeSlot);
+    model.errors = await this._timeSlots.validate(model.timeSlot);
     if (model.newColor) {
-      model.errors.concat(await this.colors.validate(model.newColor));
+      model.errors.concat(await this._colors.validate(model.newColor));
     }
 
     if (!model.isValid()) {
-      model.shiftContexts = await this.shiftContexts.list();
-      model.teamMembers = await this.teamMembers.list();
-      model.recommendations = await this.schedules.getRecommendations(
+      model.shiftContexts = await this._shiftContexts.list();
+      model.teamMembers = await this._teamMembers.list();
+      model.recommendations = await this._schedule.getRecommendations(
         model.timeSlot,
       );
-      model.colors = await this.colors.list();
+      model.colors = await this._colors.list();
       model.isEdit = true;
-      model.csrf_token = context.csrf_token;
       model.cancel = this.getCancelLink(
         model.timeSlot.startDateTime ?? new Date(),
       );
@@ -304,20 +329,21 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.newColor) {
-      const colorId = await this.colors.add(model.newColor);
+      const colorId = await this._colors.add(model.newColor);
       model.timeSlot.colorId = colorId;
     }
 
-    await this.timeSlots.update(model.timeSlot);
+    await this._timeSlots.update(model.timeSlot);
 
     const url = this.getCancelLink(model.timeSlot.startDateTime!);
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Schedule time slot delete GET
+  /** Gets the time slot delete confirmation form
+   * @param context The application context
+   * @returns The response
    */
-  public async deleteGet(context: Context) {
+  public async deleteGet(context: Context): Promise<ResponseWrapper> {
     const timeSlot = await this.getTimeSlot(context);
     if (timeSlot == null) {
       return this.NotFoundResponse(context);
@@ -339,25 +365,27 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /**
-   * Schedule time slot delete POST
+  /** Accepts requests to delete a time slot
+   * @param context The application context
+   * @returns The response
    */
-  public async deletePost(context: Context) {
+  public async deletePost(context: Context): Promise<ResponseWrapper> {
     const timeSlot = await this.getTimeSlot(context);
     if (timeSlot == null) {
       return this.NotFoundResponse(context);
     }
 
-    await this.timeSlots.delete(timeSlot.id);
+    await this._timeSlots.delete(timeSlot.id);
 
     const url = this.getCancelLink(timeSlot.startDateTime!);
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Schedule time slot copy GET
+  /** Gets the time slot copy form
+   * @param context The application context
+   * @returns The response
    */
-  public copyGet(context: Context) {
+  public copyGet(context: Context): ResponseWrapper {
     const [_, y1, m1, d1, y2, m2, d2] = context.match;
     const start = new Date(parseInt(y1), parseInt(m1) - 1, parseInt(d1));
     const end = new Date(parseInt(y2), parseInt(m2) - 1, parseInt(d2));
@@ -375,15 +403,20 @@ export default class TimeSlotController extends Controller {
       false,
       false,
       false,
-      context.csrf_token,
       [],
     );
 
     return this.HTMLResponse(context, "./views/timeSlot/copy.html", model);
   }
 
-  /**
-   * Schedule time slot copy POST
+  /** Accepts requests to copy time slots
+   *
+   * The action operates in two modes: preview and confirm.
+   * In preview mode, a form will display to confirm the copy.
+   * In confirm mode, the time slots will actually be copied.
+   *
+   * @param context The application context
+   * @returns The response
    */
   public async copyPost(context: Context) {
     const model = await ScheduleCopyViewModel.fromRequest(context.request);
@@ -394,7 +427,7 @@ export default class TimeSlotController extends Controller {
       return this.HTMLResponse(context, "./views/timeSlot/copy.html", model);
     }
 
-    const newTimeSlots = await this.timeSlots.calculateCopy(
+    const newTimeSlots = await this._timeSlots.calculateCopy(
       model.fromStartDate!,
       model.fromEndDate!,
       model.toStartDate!,
@@ -406,7 +439,7 @@ export default class TimeSlotController extends Controller {
 
     let newShiftContextNotes: ShiftContextNote[] = [];
     if (model.includeShiftContextNotes) {
-      newShiftContextNotes = await this.shiftContextNotes.calculateCopy(
+      newShiftContextNotes = await this._shiftContextNotes.calculateCopy(
         model.fromStartDate!,
         model.fromEndDate!,
         model.toStartDate!,
@@ -428,21 +461,21 @@ export default class TimeSlotController extends Controller {
     }
 
     // Confirm mode
-    await this.timeSlots.deleteInDateRange(
+    await this._timeSlots.deleteRange(
       model.toStartDate!,
       model.toEndDate!,
     );
     for (const timeSlot of newTimeSlots) {
-      await this.timeSlots.add(timeSlot);
+      await this._timeSlots.add(timeSlot);
     }
 
     if (model.includeShiftContextNotes) {
-      await this.shiftContextNotes.deleteInDateRange(
+      await this._shiftContextNotes.deleteWhere(
         model.toStartDate!,
         model.toEndDate!,
       );
       for (const shiftContextNote of newShiftContextNotes) {
-        await this.shiftContextNotes.update(shiftContextNote);
+        await this._shiftContextNotes.update(shiftContextNote);
       }
     }
 
@@ -450,10 +483,11 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Schedule date range clear GET
+  /** Gets the time slot copy form
+   * @param context The application context
+   * @returns The response
    */
-  public clearGet(context: Context) {
+  public clearGet(context: Context): ResponseWrapper {
     const [_, y1, m1, d1, y2, m2, d2] = context.match;
     const start = new Date(parseInt(y1), parseInt(m1) - 1, parseInt(d1));
     const end = new Date(parseInt(y2), parseInt(m2) - 1, parseInt(d2));
@@ -464,16 +498,16 @@ export default class TimeSlotController extends Controller {
     const model = ScheduleClearViewModel.default(
       start,
       end,
-      context.csrf_token,
     );
 
     return this.HTMLResponse(context, "./views/timeSlot/clear.html", model);
   }
 
-  /**
-   * Schedule date range clear POST
+  /** Accepts requests to clear a section of the schedule of time slots
+   * @param context The application context
+   * @returns The response
    */
-  public async clearPost(context: Context) {
+  public async clearPost(context: Context): Promise<ResponseWrapper> {
     const model = await ScheduleClearViewModel.fromRequest(context.request);
 
     model.validate();
@@ -482,15 +516,15 @@ export default class TimeSlotController extends Controller {
     }
 
     if (model.deleteTimeSlots) {
-      this.timeSlots.deleteInDateRange(model.startDate!, model.endDate!);
+      this._timeSlots.deleteRange(model.startDate!, model.endDate!);
     }
 
     if (model.deleteSubstitutes) {
-      this.substitutes.deleteDateRange(model.startDate!, model.endDate!);
+      this._substitutes.deleteWhere(model.startDate!, model.endDate!);
     }
 
     if (model.deleteShiftContextNotes) {
-      this.shiftContextNotes.deleteInDateRange(
+      this._shiftContextNotes.deleteWhere(
         model.startDate!,
         model.endDate!,
       );
@@ -500,13 +534,16 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /**
-   * Provide an HTML fragment with time slot recommendations
+  /** Accepts requests to render a time slot assignees recommendation HTML fragment
+   * @param context The application context
+   * @returns The resonse
    */
-  public async previewRecommendations(context: Context) {
+  public async previewRecommendations(
+    context: Context,
+  ): Promise<ResponseWrapper> {
     const timeSlot =
       (await TimeSlotEditViewModel.fromRequest(context.request)).timeSlot;
-    const recommendations = await this.schedules.getRecommendations(timeSlot);
+    const recommendations = await this._schedule.getRecommendations(timeSlot);
     const model = new AssigneeRecommendationsViewModel(
       timeSlot,
       recommendations,

@@ -5,34 +5,122 @@ import TimeSlot from "../entities/TimeSlot.ts";
 import Unavailability from "../entities/Unavailability.ts";
 import Repository from "./_Repository.ts";
 
-interface IUnavailabilityRow {
+/** An interface describing actions for manipulating team member unavailability */
+export interface IUnavailabilityRepository {
+  /** Validates an unavailability
+   * @param unavailability The unavailability
+   * @returns An array of error messages
+   */
+  validate(unavailability: Unavailability): Promise<string[]>;
+
+  /** Gets an unavailability
+   *
+   * Returns null if the unavailability does not exist
+   *
+   * @param id The unavailability id
+   * @returns The unavailability or null
+   */
+  get(id: number): Promise<Unavailability | null>;
+
+  /** Lists unavailability for a team member within a date range, by date
+   * @param teamMemberId
+   * @param start
+   * @param end
+   * @returns An array of dates with their cooresponding unavailabilities
+   */
+  list(
+    teamMemberId: number,
+    start: Date,
+    end: Date,
+  ): Promise<{ date: Date; unavailabilities: Unavailability[] }[]>;
+
+  /** Adds an unavailability
+   * @param unavailability
+   * @returns The id of the new unavailability
+   */
+  add(unavailability: Unavailability): Promise<number>;
+
+  /** Updates an unavailability
+   *
+   * Refers to the id to update the correct unavailability
+   *
+   * @param unavailability
+   */
+  update(unavailability: Unavailability): Promise<void>;
+
+  /** Deletes an unavailability
+   * @param id The id of the unavailability
+   */
+  delete(id: number): Promise<void>;
+
+  /** Deletes unavailability for a team member within a date range
+   * @param teamMemberId
+   * @param start
+   * @param end
+   */
+  deleteRange(teamMemberId: number, start: Date, end: Date): Promise<void>;
+
+  /** Determines if a team member has not been marked unavailable for a time slot
+   *
+   * If the time slot start date time or end date time are unknown, the unavailability is unknown.
+   *
+   * @param teamMember
+   * @param timeSlot
+   * @returns Whether the team member is available based on unavailability
+   */
+  isAvailable(
+    teamMember: TeamMember,
+    timeSlot: TimeSlot,
+  ): Promise<"positive" | "negative" | "unknown">;
+}
+
+/** Represents an unavailability database row */
+export interface IUnavailabilityRow {
+  /** The id */
   id: number;
+
+  /** The id of the associated team member */
   teamMemberId: number;
+
+  /** The start date and time */
   startDateTime: Date;
+
+  /** The end date and time */
   endDateTime: Date;
+
+  /** Whether the unavailability is preferable
+   *
+   * 0 is false, 1 is true.
+   */
   isPreference: 0 | 1;
 }
 
+/** A repository class for manipulating team member unavailability */
 export default class UnavailabilityRepository extends Repository {
-  private teamMembers: TeamMemberRepository;
+  /** The team member repository */
+  private _teamMembers: TeamMemberRepository;
 
+  /**
+   * Constructs the repository given a database connection and team member repository
+   * @param database
+   * @param teamMembers
+   */
   public constructor(database: Database, teamMembers: TeamMemberRepository) {
     super(database);
-    this.teamMembers = teamMembers;
+    this._teamMembers = teamMembers;
   }
 
-  /** A query for selecting all unavailability */
+  /** A generic SQL query for selecting all unavailability */
   private readonly baseQuery = `
     SELECT id, teamMemberId, startDateTime, endDateTime, isPreference
     FROM TeamMemberAvailability
   `;
 
-  /**
-   * Converts an unavailability database row to an unavailability object
-   * @param row Unavailability row
-   * @returns Unavailability object
+  /** Converts an unavailability database row to an unavailability
+   * @param row The database row
+   * @returns The unavailability
    */
-  public mapRow(row: IUnavailabilityRow): Unavailability {
+  private mapRow(row: IUnavailabilityRow): Unavailability {
     return new Unavailability(
       row.id,
       row.teamMemberId,
@@ -43,30 +131,39 @@ export default class UnavailabilityRepository extends Repository {
     );
   }
 
-  /**
-   * Validates an unavailability
-   * @param u Unavailability
-   * @returns Promise of array of error messages
+  /** Converts an array of unavailability database rows to an array of unavailability
+   * @param rows An array of database rows
+   * @returns An array of unavailability
    */
-  public async validate(u: Unavailability): Promise<string[]> {
+  private mapRows(rows: IUnavailabilityRow[]): Unavailability[] {
+    return rows.map((row) => this.mapRow(row));
+  }
+
+  /** Validates an unavailability
+   * @param unavailability The unavailability
+   * @returns An array of error messages
+   */
+  public async validate(unavailability: Unavailability): Promise<string[]> {
     const errors: string[] = [];
 
-    const teamMember = await this.teamMembers.get(u.teamMemberId);
+    const teamMember = await this._teamMembers.get(unavailability.teamMemberId);
     if (teamMember == null) {
       errors.push("Please select a team member.");
     }
 
-    if (u.startDateTime == null) {
+    if (unavailability.startDateTime == null) {
       errors.push("Please enter a start date and time.");
     }
 
-    if (u.endDateTime == null) {
+    if (unavailability.endDateTime == null) {
       errors.push("Please enter an end date and time.");
     }
 
     if (
-      u.startDateTime != null && u.endDateTime != null &&
-      u.startDateTime.getTime() >= u.endDateTime.getTime()
+      unavailability.startDateTime != null &&
+      unavailability.endDateTime != null &&
+      unavailability.startDateTime.getTime() >=
+        unavailability.endDateTime.getTime()
     ) {
       errors.push("Start date and time must be before end date and time.");
     }
@@ -74,22 +171,15 @@ export default class UnavailabilityRepository extends Repository {
     return errors;
   }
 
-  /**
-   * Converts an array of unavailability database rows to an array of unavailability objects
-   * @param rows Unavailability rows array
-   * @returns Unavailability objects array
-   */
-  public mapRows(rows: IUnavailabilityRow[]): Unavailability[] {
-    return rows.map((row) => this.mapRow(row));
-  }
-
-  /**
-   * Gets an unavailability by id, null if not found
+  /** Gets an unavailability
+   *
+   * Returns null if the unavailability does not exist
+   *
    * @param id The unavailability id
    * @returns The unavailability or null
    */
   public async get(id: number): Promise<Unavailability | null> {
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `${this.baseQuery} WHERE id = ?`,
       [id],
     );
@@ -99,6 +189,12 @@ export default class UnavailabilityRepository extends Repository {
     return this.mapRow(result.rows[0]);
   }
 
+  /** Lists unavailability for a team member within a date range, by date
+   * @param teamMemberId
+   * @param start
+   * @param end
+   * @returns An array of dates with their cooresponding unavailabilities
+   */
   public async list(
     teamMemberId: number,
     start: Date,
@@ -112,7 +208,7 @@ export default class UnavailabilityRepository extends Repository {
         unavailabilities: [],
       };
 
-      const result = await this.database.execute(
+      const result = await this._database.execute(
         `
           ${this.baseQuery}
           WHERE teamMemberId = ?
@@ -131,13 +227,12 @@ export default class UnavailabilityRepository extends Repository {
     return table;
   }
 
-  /**
-   * Adds an unavailability
-   * @param u The unavailability
-   * @returns The promise for the id of the new unavailability
+  /** Adds an unavailability
+   * @param unavailability
+   * @returns The id of the new unavailability
    */
-  public async add(u: Unavailability): Promise<number> {
-    const result = await this.database.execute(
+  public async add(unavailability: Unavailability): Promise<number> {
+    const result = await this._database.execute(
       `
         INSERT INTO TeamMemberAvailability
           (teamMemberId, startDateTime, endDateTime, isPreference)
@@ -145,22 +240,24 @@ export default class UnavailabilityRepository extends Repository {
           (?, ?, ?, ?)
       `,
       [
-        u.teamMemberId,
-        u.startDateTime,
-        u.endDateTime,
-        u.isPreference,
+        unavailability.teamMemberId,
+        unavailability.startDateTime,
+        unavailability.endDateTime,
+        unavailability.isPreference,
       ],
     );
 
     return result.lastInsertId ?? 0;
   }
 
-  /**
-   * Updates an unavailability
-   * @param u The unavailability
+  /** Updates an unavailability
+   *
+   * Refers to the id to update the correct unavailability
+   *
+   * @param unavailability
    */
-  public async update(u: Unavailability): Promise<void> {
-    await this.database.execute(
+  public async update(unavailability: Unavailability): Promise<void> {
+    await this._database.execute(
       `
         UPDATE TeamMemberAvailability
         SET teamMemberId = ?,
@@ -170,21 +267,20 @@ export default class UnavailabilityRepository extends Repository {
         WHERE id = ?
       `,
       [
-        u.teamMemberId,
-        u.startDateTime,
-        u.endDateTime,
-        u.isPreference,
-        u.id,
+        unavailability.teamMemberId,
+        unavailability.startDateTime,
+        unavailability.endDateTime,
+        unavailability.isPreference,
+        unavailability.id,
       ],
     );
   }
 
-  /**
-   * Deletes an unavailability
-   * @param id Unavailability id
+  /** Deletes an unavailability
+   * @param id The id of the unavailability
    */
   public async delete(id: number): Promise<void> {
-    await this.database.execute(
+    await this._database.execute(
       `
         DELETE FROM TeamMemberTypicalAvailability
         WHERE id = ?
@@ -193,14 +289,17 @@ export default class UnavailabilityRepository extends Repository {
     );
   }
 
-  /**
-   * Deletes unavailability for a team member within a date range
+  /** Deletes unavailability for a team member within a date range
    * @param teamMemberId
-   * @param start Date
-   * @param end Date
+   * @param start
+   * @param end
    */
-  public async deleteRange(teamMemberId: number, start: Date, end: Date) {
-    await this.database.execute(
+  public async deleteRange(
+    teamMemberId: number,
+    start: Date,
+    end: Date,
+  ): Promise<void> {
+    await this._database.execute(
       `
         DELETE FROM TeamMemberAvailability
         WHERE teamMemberId = ?
@@ -210,11 +309,13 @@ export default class UnavailabilityRepository extends Repository {
     );
   }
 
-  /**
-   * Determines if a team member has been marked as unavailable for a time slot
+  /** Determines if a team member has not been marked unavailable for a time slot
+   *
+   * If the time slot start date time or end date time are unknown, the unavailability is unknown.
+   *
    * @param teamMember
    * @param timeSlot
-   * @returns
+   * @returns Whether the team member is available based on unavailability
    */
   public async isAvailable(
     teamMember: TeamMember,
@@ -224,7 +325,7 @@ export default class UnavailabilityRepository extends Repository {
       return "unknown";
     }
 
-    const result = await this.database.execute(
+    const result = await this._database.execute(
       `
         SELECT 1
         FROM TeamMemberAvailability
