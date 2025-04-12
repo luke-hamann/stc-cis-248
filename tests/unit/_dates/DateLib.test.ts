@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.104.0/testing/asserts.ts";
-import DateLib from "../src/_dates/DateLib.ts";
+import DateLib from "../../../src/_dates/DateLib.ts";
 
 Deno.test("date lib add days positive", () => {
   const date = new Date(1999, 11, 31);
