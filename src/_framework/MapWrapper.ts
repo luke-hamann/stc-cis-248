@@ -137,6 +137,12 @@ export default class MapWrapper {
     return date;
   }
 
+  /** Gets a date based on keys refering to date components: the year, month, and date
+   * @param yearKey The key to look up the year value
+   * @param monthKey The key to look up the month value
+   * @param dateKey The key to look up the date value
+   * @returns The date, or null if a valid date cannot be retrieved
+   */
   public getDateMulti(
     yearKey: string,
     monthKey: string,
