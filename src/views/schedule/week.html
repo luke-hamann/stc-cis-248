@@ -1,15 +1,15 @@
 {% extends "../_shared/_layout.html" %}
 
 {% macro teamMemberLink(teamMember) %}
-  <a href="/team-member/{{ teamMember.id }}/" class="underline">{{
-    teamMember.fullName
-  }}</a>
+  <a href="/team-member/{{ teamMember.id }}/" class="underline">
+    {{- teamMember.fullName -}}
+  </a>
 {% endmacro %}
 
 {% macro timeSlotLink(timeSlot) %}
-  <a href="#time_slot_{{ timeSlot.id }}" class="underline">{{
-    timeSlot.startDateTime.toLocaleString()
-  }}</a>
+  <a href="#time_slot_{{ timeSlot.id }}" class="underline">
+    {{- timeSlot.startDateTime.toLocaleString() -}}
+  </a>
 {% endmacro %}
 
 {% block title %}{{ model.title }}{% endblock %}
@@ -331,8 +331,7 @@
         <ul class="ps-8 list-disc">
           {% for timeSlot in model.warnings.unassignedTimeSlots %}
             <li>
-              {{ timeSlot.shiftContext.name }}: {{ timeSlot.startDateTime.toLocaleDateString () }},
-              {{ timeSlotLink(timeSlot) }}
+              {{ timeSlot.shiftContext.name }}: {{ timeSlotLink(timeSlot) }}
             </li>
           {% endfor %}
         </ul>

@@ -38,7 +38,7 @@
         <div class="mt-4">
           <div><b>Description</b></div>
           {% if shiftContext.description %}
-            <div>{{ shiftContext.description }}</div>
+            <div>{{ shiftContext.description | striptags(true) | escape | nl2br }}</div>
           {% else %}
             <div>(none)</div>
           {% endif %}
