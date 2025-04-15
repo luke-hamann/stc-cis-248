@@ -16,21 +16,22 @@
 <body class="bg-amber-50">
   <div class="flex flex-col min-h-screen">
     <header>
-      <nav>
-        <ul class="md:flex hover:*:not-first:block">
-          <li class="md:hidden p-4 select-none">
-            &equiv;
-          </li>
-          <li class="hidden md:block">
+      <nav class="md:flex">
+        <input type="checkbox" id="nav-checkbox" class="hidden peer" />
+        <label for="nav-checkbox" class="block p-4 md:hidden">
+          &equiv;
+        </label>
+        <ul class="hidden peer-checked:block md:flex">
+          <li>
             <a class="block p-4" href="/">Schedule</a>
           </li>
-          <li class="hidden md:block">
+          <li>
             <a class="block p-4" href="/team-members/">Team Members</a>
           </li>
-          <li class="hidden md:block">
+          <li>
             <a class="block p-4" href="/contexts/">Shift Contexts</a>
           </li>
-          <li class="hidden md:block">
+          <li>
             <a class="block p-4" href="/colors/">Colors</a>
           </li>
         </ul>
