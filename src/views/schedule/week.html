@@ -56,7 +56,8 @@
 
               {% if type == "dateHeader" %}
                 <h2 class="font-bold">
-                  {{ formatDate(data) }}
+                  <div>{{ data.toLocaleString(undefined, { weekday: "long" }) }}</div>
+                  <div>{{ data.toLocaleDateString(undefined) }}</div>
                 </h2>
                 <div class="mt-4 flex justify-start gap-4">
                   <a href="/schedule/copy/from/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block p-1 border rounded">
