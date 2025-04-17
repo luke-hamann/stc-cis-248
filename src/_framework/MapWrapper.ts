@@ -137,7 +137,7 @@ export default class MapWrapper {
     return date;
   }
 
-  /** Gets a date based on keys refering to date components: the year, month, and date
+  /** Gets a date based on keys refering to date components: year, month, and date
    * @param yearKey The key to look up the year value
    * @param monthKey The key to look up the month value
    * @param dateKey The key to look up the date value
@@ -160,6 +160,37 @@ export default class MapWrapper {
     return out;
   }
 
+  /** Gets a date with a time based on keys refering to date components: year, month, date, hour, and minute
+   * @param yearKey The key of the year value
+   * @param monthKey The key of the month value
+   * @param dateKey The key of the date value
+   * @param hourKey The key of the hour value
+   * @param minuteKey The key of the minute value
+   * @returns The date, or null if a valid date cannot be retrieved
+   */
+  public getDateTimeMulti(
+    yearKey: string,
+    monthKey: string,
+    dateKey: string,
+    hourKey: string,
+    minuteKey: string,
+  ): Date | null {
+    const date = this.getDateMulti(yearKey, monthKey, dateKey);
+    if (date == null) return null;
+
+    const hours = this.getInt(hourKey);
+    const minutes = this.getInt(minuteKey);
+
+    const isValidHours = hours != null && hours >= 0 && hours <= 23;
+    const isValidMinutes = minutes != null && minutes >= 0 && minutes <= 59;
+
+    if (!isValidHours || !isValidMinutes) return null;
+
+    date.setHours(hours, minutes);
+
+    return date;
+  }
+
   /** Gets a time string for a key, or an empty string if the key does not exist or the time is invalid
    *
    * The time string is expected to be in 24-hour "HH:MM" or "HH:MM:SS" format.
@@ -171,5 +202,18 @@ export default class MapWrapper {
     const value = this.getString(key);
     const isValid = /^(([01]\d)|(2[0-3]))(:[0-5]\d){1,2}$/g.test(value);
     return isValid ? value : "";
+  }
+
+  /** Gets a path that is local to the web application
+   *
+   * Prevents [open redirection attacks]
+   *
+   * [open redirection attacks]: https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html
+   *
+   * @param key The key of the url
+   * @returns The path
+   */
+  public getLocalPath(key: string): string {
+    return new URL(this.getString(key), "http://localhost").pathname;
   }
 }

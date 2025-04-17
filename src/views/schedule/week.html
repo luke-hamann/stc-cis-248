@@ -45,7 +45,7 @@
             {% set data = col.content %}
             <td class="p-1 w-[10rem] border has-target:border-4">
               {% if type == "origin" %}
-                <a href="/schedule/time-slot/add/" class="block w-fit p-1 pe-4 border rounded bg-blue-400 text-white">
+                <a href="/schedule/time-slot/add/week-of/{{ formatDate(model.currentWeek, '/') }}/" class="block w-fit p-1 pe-4 border rounded bg-blue-400 text-white">
                   &plus; Add time slot
                 </a>
               {% endif %}

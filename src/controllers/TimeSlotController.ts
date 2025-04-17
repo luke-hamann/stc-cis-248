@@ -88,9 +88,26 @@ export default class TimeSlotController extends Controller {
           ":",
           "([0-5]\\d)", // end minute
           "/",
-          "((adult-only)/)?", // age requirement
+          "(adult-only/)?", // age requirement
           ")?",
+          "(week-of/(\\d{4})/(\\d{2})/(\\d{2})/)?", // cancel link date
         ].join(""),
+        mappings: [
+          [1, "hasRouteData"],
+          [2, "shiftContextId"],
+          [3, "startYear"],
+          [4, "startMonth"],
+          [5, "startDate"],
+          [6, "startHour"],
+          [9, "startMinute"],
+          [10, "endHour"],
+          [13, "endMinute"],
+          [14, "requiresAdult"],
+          [15, "hasReturnDate"],
+          [16, "returnYear"],
+          [17, "returnMonth"],
+          [18, "returnDate"],
+        ],
         action: this.addGet,
       },
       {
@@ -101,21 +118,25 @@ export default class TimeSlotController extends Controller {
       {
         method: "GET",
         pattern: "/schedule/time-slot/(\\d+)/",
+        mappings: [[1, "timeSlotId"]],
         action: this.editGet,
       },
       {
         method: "POST",
         pattern: "/schedule/time-slot/(\\d+)/",
+        mappings: [[1, "timeSlotId"]],
         action: this.editPost,
       },
       {
         method: "GET",
         pattern: "/schedule/time-slot/(\\d+)/delete/",
+        mappings: [[1, "timeSlotId"]],
         action: this.deleteGet,
       },
       {
         method: "POST",
         pattern: "/schedule/time-slot/(\\d+)/delete/",
+        mappings: [[1, "timeSlotId"]],
         action: this.deletePost,
       },
       {
@@ -205,7 +226,7 @@ export default class TimeSlotController extends Controller {
    * @param date The original date
    * @returns The URL path
    */
-  private getCancelLink(date?: Date): string {
+  private getCancelLink(date?: Date | null): string {
     if (!date) {
       date = new Date();
     }
@@ -219,12 +240,9 @@ export default class TimeSlotController extends Controller {
    * @returns A time slot or null
    */
   private async getTimeSlot(context: Context): Promise<TimeSlot | null> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
-      return null;
-    }
-
-    return await this._timeSlots.get(id);
+    const timeSlotId = context.routeData.getInt("timeSlotId");
+    if (timeSlotId == null) return null;
+    return await this._timeSlots.get(timeSlotId);
   }
 
   /** Gets the time slot add form
@@ -235,39 +253,48 @@ export default class TimeSlotController extends Controller {
     const timeSlot = TimeSlot.empty();
 
     // If we are attempting to prepopulate the form using route data
-    if (context.match[1]) {
-      const shiftContextId = Number(context.match[2]);
-      if (this._shiftContexts.get(shiftContextId) == null) {
+    if (context.routeData.getBool("hasRouteData")) {
+      const shiftContextId = context.routeData.getInt("shiftContextId");
+      if (
+        shiftContextId == null ||
+        this._shiftContexts.get(shiftContextId) == null
+      ) {
         return this.NotFoundResponse(context);
       }
 
-      const year = Number(context.match[3]);
-      const month = Number(context.match[4]);
-      const day = Number(context.match[5]);
-      const startHour = Number(context.match[6]);
-      const startMinute = Number(context.match[9]);
-      const endHour = Number(context.match[10]);
-      const endMinute = Number(context.match[13]);
-      const requiresAdult = context.match[15] != undefined;
-
-      const startDateTime = new Date(
-        year,
-        month - 1,
-        day,
-        startHour,
-        startMinute,
+      const startDateTime = context.routeData.getDateTimeMulti(
+        "startYear",
+        "startMonth",
+        "startDay",
+        "startHour",
+        "startMinute",
       );
-      if (isNaN(startDateTime.getTime())) {
-        return this.NotFoundResponse(context);
-      }
 
-      const endDateTime = new Date(year, month - 1, day, endHour, endMinute);
+      if (startDateTime == null) return this.NotFoundResponse(context);
+
+      const endDateTime = context.routeData.getDateTimeMulti(
+        "startYear",
+        "startMonth",
+        "startDay",
+        "endHour",
+        "endMinute",
+      );
+
+      const requiresAdult = context.routeData.getBool("requiresAdult");
 
       timeSlot.shiftContextId = shiftContextId;
       timeSlot.startDateTime = startDateTime;
       timeSlot.endDateTime = endDateTime;
       timeSlot.requiresAdult = requiresAdult;
     }
+
+    const cancelLink = this.getCancelLink(
+      context.routeData.getDateMulti(
+        "returnYear",
+        "returnMonth",
+        "returnDate",
+      ),
+    );
 
     const model = new TimeSlotEditViewModel(
       await this._shiftContexts.list(),
@@ -278,7 +305,7 @@ export default class TimeSlotController extends Controller {
       Color.empty(),
       false,
       [],
-      this.getCancelLink(),
+      cancelLink,
     );
 
     return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
@@ -304,8 +331,11 @@ export default class TimeSlotController extends Controller {
         model.timeSlot,
       );
       model.isEdit = false;
-      model.csrf_token = context.csrf_token;
-      model.cancel = this.getCancelLink(new Date());
+
+      if (model.cancel == "/") {
+        model.cancel = this.getCancelLink(new Date());
+      }
+
       return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
     }
 
