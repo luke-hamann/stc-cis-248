@@ -265,7 +265,7 @@ export default class TimeSlotController extends Controller {
       const startDateTime = context.routeData.getDateTimeMulti(
         "startYear",
         "startMonth",
-        "startDay",
+        "startDate",
         "startHour",
         "startMinute",
       );
@@ -344,9 +344,10 @@ export default class TimeSlotController extends Controller {
       model.timeSlot.colorId = newColorId;
     }
 
-    await this._timeSlots.add(model.timeSlot);
+    const id = await this._timeSlots.add(model.timeSlot);
+    const url = this.getCancelLink(model.timeSlot.startDateTime!) +
+      "#time_slot_" + id;
 
-    const url = this.getCancelLink(model.timeSlot.startDateTime!);
     return this.RedirectResponse(context, url);
   }
 
