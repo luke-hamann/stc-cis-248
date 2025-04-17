@@ -6,7 +6,6 @@ import TimeSlot from "../../entities/TimeSlot.ts";
 import BetterDate from "../../../_dates/BetterDate.ts";
 import AssigneeRecommendations from "../../entities/AssigneeRecommendation.ts";
 import MapWrapper from "../../../_framework/MapWrapper.ts";
-import { Context } from "../../../mod.ts";
 
 /** A view model for the time slot add/edit form */
 export default class TimeSlotEditViewModel extends FormViewModel {
