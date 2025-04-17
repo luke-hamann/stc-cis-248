@@ -275,7 +275,7 @@ export default class TimeSlotController extends Controller {
       const endDateTime = context.routeData.getDateTimeMulti(
         "startYear",
         "startMonth",
-        "startDay",
+        "startDate",
         "endHour",
         "endMinute",
       );
