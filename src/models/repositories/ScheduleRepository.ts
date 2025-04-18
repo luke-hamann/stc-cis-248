@@ -138,6 +138,9 @@ export interface IShiftContextRowComponent {
 
   /** The description of the shift context */
   shiftContextDescription: string;
+
+  /** The sort priority index of the shift context */
+  shiftContextSortPriority: number;
 }
 
 /** Represents a database row containing a time slot and a team member */
@@ -359,7 +362,8 @@ export default class ScheduleRepository implements IScheduleRepository {
     ShiftContexts.id           shiftContextId,
     ShiftContexts.name         shiftContextName,
     ShiftContexts.location     shiftContextLocation,
-    ShiftContexts.description  shiftContextDescription
+    ShiftContexts.description  shiftContextDescription,
+    ShiftContexts.sortPriority  shiftContextSortPriority
   `;
 
   /** Converts a database row to a shift context
@@ -373,6 +377,7 @@ export default class ScheduleRepository implements IScheduleRepository {
       row.shiftContextAgeGroup,
       row.shiftContextLocation,
       row.shiftContextDescription,
+      row.shiftContextSortPriority,
     );
   }
 

@@ -15,12 +15,16 @@ export default class ShiftContext {
   /** The shift context description */
   public description: string = "";
 
+  /** The sort priority index */
+  public sortPriority: number = 0;
+
   /** Constructs the shift context
    * @param id
    * @param name
    * @param ageGroup
    * @param location
    * @param description
+   * @param sortPriority
    */
   public constructor(
     id: number,
@@ -28,12 +32,14 @@ export default class ShiftContext {
     ageGroup: string,
     location: string,
     description: string,
+    sortPriority: number,
   ) {
     this.id = id;
     this.name = name;
     this.ageGroup = ageGroup;
     this.location = location;
     this.description = description;
+    this.sortPriority = sortPriority;
   }
 
   /** Constructs an empty shift context
@@ -41,6 +47,6 @@ export default class ShiftContext {
    * @constructor
    */
   public static empty() {
-    return new ShiftContext(0, "", "", "", "");
+    return new ShiftContext(0, "", "", "", "", 0);
   }
 }

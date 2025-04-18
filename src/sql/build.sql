@@ -23,7 +23,8 @@ CREATE TABLE ShiftContexts (
     name VARCHAR(100) NOT NULL UNIQUE,
     ageGroup VARCHAR(500),
     location VARCHAR(500),
-    description VARCHAR(1000)
+    description VARCHAR(1000),
+    sortPriority INT NOT NULL UNIQUE
 );
 
 CREATE TABLE Colors (

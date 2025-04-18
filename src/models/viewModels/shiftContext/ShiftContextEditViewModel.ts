@@ -48,6 +48,7 @@ export default class ShiftContextEditViewModel extends FormViewModel {
       ageGroup,
       location,
       description,
+      0,
     );
     return new ShiftContextEditViewModel(false, [], shiftContext);
   }

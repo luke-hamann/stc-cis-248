@@ -2,46 +2,89 @@
 
 {% block title %}Shift Contexts{% endblock %}
 
+{% block scripts %}
+  <script type="module">
+    document.body.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.target;
+      const options = {
+        method: form.method,
+        body: new FormData(form),
+        redirect: "follow"
+      };
+      const response = await fetch(form.action, options);
+      const text = await response.text();
+      const dom = new DOMParser().parseFromString(text, "text/html");
+      const innerHTML = dom.querySelector("#shift-context-list").innerHTML;
+      document.querySelector("#shift-context-list").innerHTML = innerHTML;
+    });
+  </script>
+{% endblock %}
+
 {% block content %}
   <h1 class="text-4xl mt-8 font-bold">Shift Contexts</h1>
 
   <a href="/context/add/" class="block p-4 mt-8 rounded bg-blue-300 text-white w-fit">&plus; Add</a>
 
-  <div class="max-w-xl">
+  <div class="max-w-2xl" id="shift-context-list">
     {% for shiftContext in model.shiftContexts %}
-      <div class="border rounded p-4 mt-8">
-        <div class="flex justify-between gap-4">
-          <div class="text-3xl">{{ shiftContext.name }}</div>
-          <div class="flex gap-4">
-            <a href="/context/{{ shiftContext.id }}/" class="block size-12 rounded bg-amber-200 text-center align-middle leading-10">✏️</a>
-            <a href="/context/{{ shiftContext.id }}/delete/" class="block size-12 rounded bg-red-500 text-white text-center align-middle leading-10 text-3xl">&times;</a>
-          </div>
+      <div class="border rounded p-4 mt-8 flex gap-4">
+        {#
+        <div class="block size-12 bg-gray-300 rounded text-4xl text-center">
+          &#x283F;
         </div>
-        <div class="flex mt-4">
-          <div class="flex-1">
-            <div><b>Age group</b></div>
-            {% if shiftContext.ageGroup %}
-              <div>{{ shiftContext.ageGroup }}</div>
-            {% else %}
-              <div>(none)</div>
-            {% endif %}
+        #}
+        <div class="flex-1">
+          <div class="flex justify-between gap-4">
+            <div class="text-3xl">{{ shiftContext.name }}</div>
+            <div class="flex gap-4">
+              <form method="post">
+                {{ csrf(model) }}
+                <input type="hidden" name="shiftContextId" value="{{ shiftContext.id }}" />
+                <input type="hidden" name="direction" value="-1" />
+                <input type="submit" value="&uparrow;" class="block size-12 {% if loop.first %}bg-gray-300{% else %}bg-blue-300{% endif %} rounded" {{ 'disabled' if loop.first }} />
+              </form>
+              <form method="post">
+                {{ csrf(model) }}
+                <input type="hidden" name="shiftContextId" value="{{ shiftContext.id }}" />
+                <input type="hidden" name="direction" value="1" />
+                <input type="submit" value="&downarrow;" class="block size-12 {% if loop.last %}bg-gray-300{% else %}bg-blue-300{% endif %} rounded" {{ 'disabled' if loop.last }} />
+              </form>
+              <a href="/context/{{ shiftContext.id }}/" class="block size-12 rounded bg-amber-200 text-center align-middle leading-10">✏️</a>
+              <a href="/context/{{ shiftContext.id }}/delete/" class="block size-12 rounded bg-red-500 text-white text-center align-middle leading-10 text-3xl">&times;</a>
+            </div>
           </div>
-          <div class="flex-1">
-            <div><b>Location</b></div>
-            {% if shiftContext.location %}
-              <div>{{ shiftContext.location }}</div>
-            {% else %}
-              <div>(none)</div>
-            {% endif %}
-          </div>
-        </div>
-        <div class="mt-4">
-          <div><b>Description</b></div>
-          {% if shiftContext.description %}
-            <div>{{ shiftContext.description | striptags(true) | escape | nl2br }}</div>
-          {% else %}
-            <div>(none)</div>
-          {% endif %}
+          {#
+          <details>
+            <summary>(More)</summary>
+            <div class="flex mt-4">
+              <div class="flex-1">
+                <div><b>Age group</b></div>
+                {% if shiftContext.ageGroup %}
+                  <div>{{ shiftContext.ageGroup }}</div>
+                {% else %}
+                  <div>(none)</div>
+                {% endif %}
+              </div>
+              <div class="flex-1">
+                <div><b>Location</b></div>
+                {% if shiftContext.location %}
+                  <div>{{ shiftContext.location }}</div>
+                {% else %}
+                  <div>(none)</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="mt-4">
+              <div><b>Description</b></div>
+              {% if shiftContext.description %}
+                <div>{{ shiftContext.description | striptags(true) | escape | nl2br }}</div>
+              {% else %}
+                <div>(none)</div>
+              {% endif %}
+            </div>
+          </details>
+          #}
         </div>
       </div>
     {% endfor %}

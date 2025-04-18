@@ -38,14 +38,14 @@ INSERT INTO TeamMembers
 
 -- SHIFT CONTEXTS 
 INSERT INTO ShiftContexts
-	(name, agegroup, location, description)
+	(name, agegroup, location, description, sortPriority)
 	VALUES
-	("Jacobson Center, Toddlers room", "2-3", "123 N philips st", "test description")
+	("Jacobson Center, Toddlers room", "2-3", "123 N philips st", "test description", 2)
 	;
 INSERT INTO ShiftContexts
-	(name, agegroup, location, description)
+	(name, agegroup, location, description, sortPriority)
 	VALUES
-	("Jacobson Center", "2-3", "123 N philips st", "test description")
+	("Jacobson Center", "2-3", "123 N philips st", "test description", 1)
 	;
 
 
