@@ -24,7 +24,7 @@
  * * [Controllers](#controllers)
  * * [Data layer](#data-layer)
  *   * [Repositories](#repositories)
- *   * [Interfaces](#interfaces)
+ *   * [Repository interfaces](#repository-interfaces)
  * * [Views](#views)
  *
  * ## Installation
@@ -192,6 +192,7 @@
  *    * ageGroup (varchar) - Age group
  *    * location (varchar) - Location
  *    * description (varchar) - Description
+ *    * sortPriority (int) - Sort priority
  * * Colors
  *    * id (int) - Id
  *    * name (varchar) - Name
@@ -253,6 +254,46 @@
  * * {@link SubstituteList Substitute List}
  * * {@link TimeSlotGroup Time Slot Group}
  *
+ * ### View models
+ *
+ * * Shared
+ *    * {@link FormViewModel}
+ *    * {@link ViewModel}
+ *    * {@link CalendarViewPartial}
+ *    * {@link DeleteViewModel}
+ *    * {@link ErrorViewModel}
+ * * Color
+ *    * {@link ColorEditViewModel}
+ *    * {@link ColorsViewModel}
+ * * Schedule
+ *    * {@link ScheduleClearViewModel}
+ *    * {@link ScheduleCopyViewModel}
+ *    * {@link ScheduleExportViewModel}
+ *    * {@link ScheduleWeekViewModel}
+ * * Shift context
+ *    * {@link ShiftContextEditViewModel}
+ *    * {@link ShiftContextReorderViewModel}
+ *    * {@link ShiftContextsViewModel}
+ * * Shift context note
+ *    * {@link ShiftContextNoteEditViewModel}
+ * * Shift context preference
+ *    * {@link ShiftContextPreferencesEditViewModel}
+ * * Substitute
+ *    * {@link SubstitutesEditViewModel}
+ * * Team member
+ *    * {@link TeamMemberEditViewModel}
+ *    * {@link TeamMembersViewModel}
+ * * Time slot
+ *    * {@link AssigneeRecommendationsViewModel}
+ *    * {@link TimeSlotEditViewModel}
+ * * Typical availability
+ *    * {@link TypicalAvailabilityEditViewModel}
+ *    * {@link TypicalAvailabilityListViewModel}
+ * * Unavailability
+ *    * {@link UnavailabilityEditViewModel}
+ *    * {@link UnavailabilityWeekViewModel}
+ *    * {@link UnavailabilityYearViewModel}
+ *
  * ## Controllers
  *
  * * {@link ColorController Color}
@@ -284,7 +325,7 @@
  * * {@link TypicalAvailabilityRepository Typical Availability Repository}
  * * {@link UnavailabilityRepository Unavailability Repository}
  *
- * ### Interfaces
+ * ### Repository interfaces
  *
  * * {@link IColorRepository}
  * * {@link IScheduleRepository}
@@ -479,6 +520,7 @@ export { default as ScheduleCopyViewModel } from "./models/viewModels/schedule/S
 export { default as ScheduleExportViewModel } from "./models/viewModels/schedule/ScheduleExportViewModel.ts";
 export { default as ScheduleWeekViewModel } from "./models/viewModels/schedule/ScheduleWeekViewModel.ts";
 export { default as ShiftContextEditViewModel } from "./models/viewModels/shiftContext/ShiftContextEditViewModel.ts";
+export { default as ShiftContextReorderModel } from "./models/viewModels/shiftContext/ShiftContextReorderViewModel.ts";
 export { default as ShiftContextsViewModel } from "./models/viewModels/shiftContext/ShiftContextsViewModel.ts";
 export { default as ShiftContextNoteEditViewModel } from "./models/viewModels/shiftContextNote/ShiftContextNoteEditViewModel.ts";
 export { default as ShiftContextPreferencesEditViewModel } from "./models/viewModels/shiftContextPreference/ShiftContextPreferencesEditViewModel.ts";
