@@ -260,6 +260,9 @@ export default class ShiftContextRepository extends Repository
     if (targetPriority < 1) targetPriority = 1;
     else if (targetPriority > maxSortPriority) targetPriority = maxSortPriority;
 
+    const rangeMin = Math.min(initialPriority, targetPriority);
+    const rangeMax = Math.max(initialPriority, targetPriority);
+
     const otherDelta = delta > 0 ? -1 : 1;
 
     await this._database.execute(
@@ -274,14 +277,12 @@ export default class ShiftContextRepository extends Repository
       `
         UPDATE ShiftContexts
         SET sortPriority = sortPriority + ?
-        WHERE sortPriority BETWEEN LEAST(?, ?) AND GREATEST(?, ?);
+        WHERE sortPriority BETWEEN ? AND ?
       `,
       [
         otherDelta,
-        initialPriority,
-        targetPriority,
-        initialPriority,
-        targetPriority,
+        rangeMin,
+        rangeMax,
       ],
     );
 
