@@ -4,19 +4,81 @@
 
 {% block scripts %}
   <script type="module">
-    document.body.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const form = event.target;
+    const csrf_token = "{{ model.csrf_token }}";
+
+    async function updateShiftContexts(formData) {
+      const method = "post";
+      const shiftContextListSelector = "#shift-context-list";
+
       const options = {
-        method: form.method,
-        body: new FormData(form),
+        method,
+        body: formData,
         redirect: "follow"
       };
-      const response = await fetch(form.action, options);
+
+      const response = await fetch(".", options);
       const text = await response.text();
       const dom = new DOMParser().parseFromString(text, "text/html");
-      const innerHTML = dom.querySelector("#shift-context-list").innerHTML;
-      document.querySelector("#shift-context-list").innerHTML = innerHTML;
+      const innerHTML = dom.querySelector(shiftContextListSelector).innerHTML;
+      document.querySelector(shiftContextListSelector).innerHTML = innerHTML;
+    }
+
+    document.body.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      await updateShiftContexts(new FormData(event.target));
+    });
+
+    document.body.addEventListener("dragstart", (event) => {
+      const shiftContextId = event.target.dataset.shiftContextId;
+      const sortPriority = event.target.dataset.sortPriority;
+      if (!shiftContextId) return;
+      event.dataTransfer.setData("application/json", JSON.stringify({
+        shiftContextId, sortPriority
+      }));
+      event.dataTransfer.effectAllowed = "move";
+    });
+
+    document.body.addEventListener("dragover", (event) => {
+      if (!event.target.dataset.newSortPriority) return;
+      event.preventDefault();
+    })
+
+    document.body.addEventListener("dragenter", (event) => {
+      if (!event.target.dataset.newSortPriority) return;
+      event.preventDefault();
+      event.target.style.backgroundColor = "gray";
+    });
+
+    document.body.addEventListener("dragleave", (event) => {
+      if (!event.target.dataset.newSortPriority) return;
+      event.preventDefault();
+      event.target.style.backgroundColor = "inherit";
+    });
+
+    document.body.addEventListener("drop", async (event) => {
+      if (!event.target.dataset.newSortPriority) return;
+      event.preventDefault();
+      event.target.style.backgroundColor = "inherit";
+
+      const json = JSON.parse(event.dataTransfer.getData("application/json"));
+      const sortPriority = json.sortPriority;
+      const newSortPriority = Number(event.target.dataset.newSortPriority)
+
+      if (sortPriority == newSortPriority) return;
+
+      const direction = newSortPriority - sortPriority;
+
+      const formData = new FormData();
+      formData.append("shiftContextId", json.shiftContextId);
+      formData.append("direction", direction);
+      formData.append("csrf_token", csrf_token);
+
+      const selector = `[data-shift-context-id="${json.shiftContextId}"]`;
+      const shiftContextElement = document.querySelector(selector);
+      shiftContextElement.style.marginBottom = "1rem";
+      event.target.insertAdjacentElement("afterend", document.querySelector(selector));
+
+      await updateShiftContexts(formData);
     });
   </script>
 {% endblock %}
@@ -28,14 +90,17 @@
 
   <div class="max-w-2xl" id="shift-context-list">
     {% for shiftContext in model.shiftContexts %}
-      <div class="border rounded p-4 mt-8 flex gap-4">
+      {% if model.shiftContexts.length > 1 %}
+        <div class="min-h-4 w-full" data-new-sort-priority="{{ loop.index }}"></div>
+      {% endif %}
+      <div class="border rounded p-4 flex gap-4" draggable="true" data-shift-context-id="{{ shiftContext.id }}" data-sort-priority="{{ shiftContext.sortPriority }}">
         {#
         <div class="block size-12 bg-gray-300 rounded text-4xl text-center">
           &#x283F;
         </div>
         #}
         <div class="flex-1">
-          <div class="flex justify-between gap-4">
+          <div class="flex flex-col md:flex-row justify-between gap-4">
             <div class="text-3xl">{{ shiftContext.name }}</div>
             <div class="flex gap-4">
               <form method="post">
@@ -88,5 +153,8 @@
         </div>
       </div>
     {% endfor %}
+    {% if model.shiftContexts.length > 1 %}
+      <div class="h-4 w-full" data-new-sort-priority="{{ model.shiftContexts.length }}"></div>
+    {% endif %}
   </div>
 {% endblock %}
