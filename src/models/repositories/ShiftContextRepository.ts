@@ -249,7 +249,7 @@ export default class ShiftContextRepository extends Repository
       `
       SELECT COALESCE(MAX(sortPriority), 0) maxSortPriority
       FROM ShiftContexts
-      `
+      `,
     );
     const maxSortPriority =
       (result.rows![0] as { maxSortPriority: number }).maxSortPriority;
@@ -270,8 +270,9 @@ export default class ShiftContextRepository extends Repository
         UPDATE ShiftContexts
         SET sortPriority = 0
         WHERE id = ?
-      `, [shiftContextId]
-    )
+      `,
+      [shiftContextId],
+    );
 
     await this._database.execute(
       `
@@ -291,7 +292,8 @@ export default class ShiftContextRepository extends Repository
         UPDATE ShiftContexts
         SET sortPriority = ?
         WHERE id = ?
-      `, [targetPriority, shiftContextId]
+      `,
+      [targetPriority, shiftContextId],
     );
   }
 }
