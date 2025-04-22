@@ -246,7 +246,10 @@ export default class ShiftContextRepository extends Repository
     if (shiftContext == null) return;
 
     const result = await this._database.execute(
-      "SELECT COALESCE(MAX(sortPriority), 0) maxSortPriority FROM ShiftContexts",
+      `
+      SELECT COALESCE(MAX(sortPriority), 0) maxSortPriority
+      FROM ShiftContexts
+      `
     );
     const maxSortPriority =
       (result.rows![0] as { maxSortPriority: number }).maxSortPriority;
@@ -262,18 +265,32 @@ export default class ShiftContextRepository extends Repository
     await this._database.execute(
       `
         UPDATE ShiftContexts
-        SET sortPriority = IF(id = ?, ?, sortPriority + ?)
+        SET sortPriority = 0
+        WHERE id = ?
+      `, [shiftContextId]
+    )
+
+    await this._database.execute(
+      `
+        UPDATE ShiftContexts
+        SET sortPriority = sortPriority + ?
         WHERE sortPriority BETWEEN LEAST(?, ?) AND GREATEST(?, ?);
       `,
       [
-        shiftContextId,
-        targetPriority,
         otherDelta,
         initialPriority,
         targetPriority,
         initialPriority,
         targetPriority,
       ],
+    );
+
+    await this._database.execute(
+      `
+        UPDATE ShiftContexts
+        SET sortPriority = ?
+        WHERE id = ?
+      `, [targetPriority, shiftContextId]
     );
   }
 }
