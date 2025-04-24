@@ -17,7 +17,7 @@
 {% block content %}
   {# Navigation Header #}
   <div class="w-full sm:w-xl mx-auto flex justify-between gap-8 px-4 py-8">
-    <a href="/schedule/{{ model.previousWeekString }}/" class="self-center select-none">
+    <a href="/schedule/{{ model.previousWeekString }}/" class="self-center select-none hover:underline">
       &lt;
     </a>
     <h1 class="text-center font-bold text-3xl select-none">
@@ -25,44 +25,44 @@
         {{ model.title }}
       </a>
     </h1>
-    <a href="/schedule/{{ model.nextWeekString }}/" class="self-center select-none">
+    <a href="/schedule/{{ model.nextWeekString }}/" class="self-center select-none hover:underline">
       &gt;
     </a>
   </div>
 
   <div class="w-full flex justify-center gap-4">
-    <a class="block p-1 border rounded" href="{{ model.copyLink }}">Copy</a>
-    <a class="block p-1 border rounded" href="{{ model.clearLink }}">Clear</a>
-    <a class="block p-1 border rounded" href="{{ model.exportLink }}">Export</a>
+    <a class="block p-1 border rounded bg-sky-500 text-white hover:bg-sky-800" href="{{ model.copyLink }}">Copy</a>
+    <a class="block p-1 border rounded bg-sky-500 text-white hover:bg-sky-800" href="{{ model.clearLink }}">Clear</a>
+    <a class="block p-1 border rounded bg-sky-500 text-white hover:bg-sky-800" href="{{ model.exportLink }}">Export</a>
   </div>
 
-  <div class="mt-8 overflow-auto">
+  <div class="mt-8 overflow-auto bg-white drop-shadow-xl">
     <table class="mx-auto">
       {% for row in model.schedule.table %}
         <tr>
           {% for col in row %}
             {% set type = col.type %}
             {% set data = col.content %}
-            <td class="p-1 w-[10rem] border has-target:border-4">
+            <td class=" w-[10rem] border has-target:border-4">
               {% if type == "origin" %}
-                <a href="/schedule/time-slot/add/" class="block w-fit p-1 pe-4 border rounded bg-blue-400 text-white">
+                <a href="/schedule/time-slot/add/" class="block p-4 pe-1 w-max h-max border rounded bg-blue-400 text-white hover:bg-sky-800">
                   &plus; Add time slot
                 </a>
               {% endif %}
 
               {% if type == "header" %}
-                <h2 class="font-bold">{{ data }}</h2>
+                <h2 class="font-bold text-center">{{ data }}</h2>
               {% endif %}
 
               {% if type == "dateHeader" %}
-                <h2 class="font-bold">
+                <h2 class="font-bold  text:center">
                   {{ formatDate(data) }}
                 </h2>
                 <div class="mt-4 flex justify-start gap-4">
-                  <a href="/schedule/copy/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block p-1 border rounded">
+                  <a href="/schedule/copy/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block p-1 border rounded bg-blue-400 text-white hover:bg-sky-800">
                     Copy
-                  </a>
-                  <a href="/schedule/clear/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block p-1 border rounded">
+                  </a> <!--Maybe Let the buttons fill out their placements more. Current whitespace is akward-->
+                  <a href="/schedule/clear/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block p-1 border rounded bg-red-500 text-white hover:bg-red-800">
                     Clear
                   </a>
                 </div>

@@ -1,17 +1,17 @@
 {% macro calendar(model) %}
   <div class="flex justify-center gap-8 py-8">
-    <a href="{{ model.baseUrl }}{{ model.year - 1 }}/" class="self-center">
+    <a href="{{ model.baseUrl }}{{ model.year - 1 }}/" class="self-center hover:underline">
       {{ model.year - 1}}
     </a>
     <h1 class="font-bold text-5xl">{{ model.year }}</h1>
-    <a href="{{ model.baseUrl }}{{ model.year + 1}}/" class="self-center">
+    <a href="{{ model.baseUrl }}{{ model.year + 1}}/" class="self-center hover:underline">
       {{ model.year + 1}}
     </a>
   </div>
   <div class="flex flex-wrap justify-center gap-8">
     {% for calendarPage in model.calendar %}
       {% set month = ("0" + loop.index).slice(-2) %}
-      <div class="max-w-xs">
+      <div class="max-w-xs drop-shadow-lg bg-white">
         <h2 class="text-center font-bold">{{ calendarPage.monthName }}</h2>
         <ul class="list-none flex">
           <li class="w-1/7 text-center">Sun</li>
@@ -32,7 +32,7 @@
             {% set datePath = [model.year, "/", month, "/", day] | join %}
 
             <li class="w-1/7 text-center">
-              <a href="{{ model.baseUrl }}{{ datePath }}/" class="block"
+              <a href="{{ model.baseUrl }}{{ datePath }}/" class="block hover:bg-sky-800 hover:text-white"
                 {{ 'style="color: white; background-color: skyblue;"' | safe if datePath == model.todayPath }} >
                 {{ i }}
               </a>
