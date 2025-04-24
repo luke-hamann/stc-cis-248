@@ -16,7 +16,7 @@ export const isSpreadsheetFormat = (x: any): x is SpreadsheetFormat =>
   spreadsheetFormats.includes(x);
 
 /** A view model for the schedule export form */
-export default class ScheduleExportFormViewModel extends ViewModel {
+export default class ScheduleExportViewModel extends ViewModel {
   /** The title and file name of the exported schedule */
   public title: string;
 
@@ -60,7 +60,7 @@ export default class ScheduleExportFormViewModel extends ViewModel {
    */
   public static async fromRequest(
     request: Request,
-  ): Promise<ScheduleExportFormViewModel> {
+  ): Promise<ScheduleExportViewModel> {
     const formData = MapWrapper.fromFormData(await request.formData());
 
     const title = formData.getString("title");
@@ -73,7 +73,7 @@ export default class ScheduleExportFormViewModel extends ViewModel {
       spreadsheetFormat = format;
     }
 
-    return new ScheduleExportFormViewModel(
+    return new ScheduleExportViewModel(
       title,
       start ? BetterDate.fromDate(start) : null,
       end ? BetterDate.fromDate(end) : null,

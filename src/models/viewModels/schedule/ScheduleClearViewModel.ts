@@ -60,9 +60,9 @@ export default class ScheduleClearViewModel extends ViewModel {
     return new ScheduleClearViewModel(
       startDate,
       endDate,
-      true,
-      true,
-      true,
+      false,
+      false,
+      false,
       [],
     );
   }

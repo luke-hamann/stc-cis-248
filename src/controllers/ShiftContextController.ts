@@ -6,6 +6,7 @@ import ShiftContextEditViewModel from "../models/viewModels/shiftContext/ShiftCo
 import ShiftContextsViewModel from "../models/viewModels/shiftContext/ShiftContextsViewModel.ts";
 import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
+import ShiftContextReorderViewModel from "../models/viewModels/shiftContext/ShiftContextReorderViewModel.ts";
 
 /** Controls the shift context pages */
 export default class ShiftContextController extends Controller {
@@ -20,6 +21,11 @@ export default class ShiftContextController extends Controller {
     this.shiftContextRepository = shiftContextRepository;
     this.routes = [
       { method: "GET", pattern: "/contexts/", action: this.list },
+      {
+        method: "POST",
+        pattern: "/contexts/",
+        action: this.changeSortPriority,
+      },
       { method: "GET", pattern: "/context/add/", action: this.addGet },
       { method: "POST", pattern: "/context/add/", action: this.addPost },
       { method: "GET", pattern: "/context/(\\d+)/", action: this.editGet },
@@ -45,6 +51,23 @@ export default class ShiftContextController extends Controller {
     const shiftContexts = await this.shiftContextRepository.list();
     const model = new ShiftContextsViewModel(shiftContexts);
     return this.HTMLResponse(context, "./views/shiftContext/list.html", model);
+  }
+
+  /** Changes the sort priority of a given shift context
+   * @param context The application context
+   * @returns The response
+   */
+  public async changeSortPriority(context: Context): Promise<ResponseWrapper> {
+    const model = ShiftContextReorderViewModel.fromFormData(context.formData);
+
+    if (model.isValid()) {
+      await this.shiftContextRepository.changeSortPriority(
+        model.shiftContextId,
+        model.delta,
+      );
+    }
+
+    return this.RedirectResponse(context, "/contexts/");
   }
 
   /** Gets the shift context add form

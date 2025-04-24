@@ -14,6 +14,15 @@ export interface IShiftContextRepository {
    */
   list(): Promise<ShiftContext[]>;
 
+  /** Changes the sort priority of a shift context by a delta value
+   *
+   * Deltas that would cause an out-of-bounds sort priority (below 1 or above the number of shift contexts) are clamped
+   *
+   * @param shiftContextId The shift context id
+   * @param delta The amount to change the sort priority by
+   */
+  changeSortPriority(shiftContextId: number, delta: number): Promise<void>;
+
   /** Gets a shift context
    *
    * Returns null if the shift context does not exist
@@ -59,6 +68,9 @@ export interface IShiftContextRow {
 
   /** The shift context description */
   description: string;
+
+  /** The sort priority index */
+  sortPriority: number;
 }
 
 export default class ShiftContextRepository extends Repository
@@ -74,6 +86,7 @@ export default class ShiftContextRepository extends Repository
       row.ageGroup,
       row.location,
       row.description,
+      row.sortPriority,
     );
   }
 
@@ -117,9 +130,9 @@ export default class ShiftContextRepository extends Repository
    */
   public async list(): Promise<ShiftContext[]> {
     const result = await this._database.execute(`
-      SELECT id, name, ageGroup, location, description
+      SELECT id, name, ageGroup, location, description, sortPriority
       FROM ShiftContexts
-      ORDER BY LOWER(name)
+      ORDER BY sortPriority
     `);
 
     return result.rows ? this.mapRowsToShiftContexts(result.rows) : [];
@@ -137,7 +150,7 @@ export default class ShiftContextRepository extends Repository
   ): Promise<ShiftContext | null> {
     const result = await this._database.execute(
       `
-      SELECT id, name, ageGroup, location, description
+      SELECT id, name, ageGroup, location, description, sortPriority
       FROM ShiftContexts
       WHERE id = ?
     `,
@@ -158,8 +171,14 @@ export default class ShiftContextRepository extends Repository
   public async add(s: ShiftContext): Promise<number> {
     const result = await this._database.execute(
       `
-        INSERT INTO ShiftContexts (name, ageGroup, location, description)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO ShiftContexts (name, ageGroup, location, description, sortPriority)
+        VALUES (
+          ?,
+          ?,
+          ?,
+          ?,
+          (SELECT COALESCE(MAX(sortPriority), 0) + 1 FROM (SELECT * FROM ShiftContexts) temp)
+        )
       `,
       [s.name, s.ageGroup, s.location, s.description],
     );
@@ -176,9 +195,9 @@ export default class ShiftContextRepository extends Repository
   public async update(s: ShiftContext): Promise<void> {
     await this._database.execute(
       `
-      UPDATE ShiftContexts
-      SET name = ?, ageGroup = ?, location = ?, description = ?
-      WHERE id = ?
+        UPDATE ShiftContexts
+        SET name = ?, ageGroup = ?, location = ?, description = ?
+        WHERE id = ?
       `,
       [s.name, s.ageGroup, s.location, s.description, s.id],
     );
@@ -188,12 +207,93 @@ export default class ShiftContextRepository extends Repository
    * @param id The id of the shift context
    */
   public async delete(id: number): Promise<void> {
+    const shiftContext = await this.get(id);
+
+    if (shiftContext == null) return;
+
     await this._database.execute(
       `
-      DELETE FROM ShiftContexts
-      WHERE id = ?
+        DELETE FROM ShiftContexts
+        WHERE id = ?
       `,
       [id],
+    );
+
+    await this._database.execute(
+      `
+        UPDATE ShiftContexts
+        SET sortPriority = sortPriority - 1
+        WHERE sortPriority > ?
+      `,
+      [shiftContext.sortPriority],
+    );
+  }
+
+  /** Changes the sort priority of a shift context by a delta value
+   *
+   * Deltas that would cause an out-of-bounds sort priority (below 1 or above the number of shift contexts) are clamped
+   *
+   * @param shiftContextId The shift context id
+   * @param delta The amount to change the sort priority by
+   */
+  public async changeSortPriority(
+    shiftContextId: number,
+    delta: number,
+  ): Promise<void> {
+    if (delta == 0) return;
+
+    const shiftContext = await this.get(shiftContextId);
+    if (shiftContext == null) return;
+
+    const result = await this._database.execute(
+      `
+      SELECT COALESCE(MAX(sortPriority), 0) maxSortPriority
+      FROM ShiftContexts
+      `,
+    );
+    const maxSortPriority =
+      (result.rows![0] as { maxSortPriority: number }).maxSortPriority;
+
+    const initialPriority = shiftContext.sortPriority;
+    let targetPriority = shiftContext.sortPriority + delta;
+
+    if (targetPriority < 1) targetPriority = 1;
+    else if (targetPriority > maxSortPriority) targetPriority = maxSortPriority;
+
+    const rangeMin = Math.min(initialPriority, targetPriority);
+    const rangeMax = Math.max(initialPriority, targetPriority);
+
+    const otherDelta = delta > 0 ? -1 : 1;
+
+    await this._database.execute(
+      `
+        UPDATE ShiftContexts
+        SET sortPriority = 0
+        WHERE id = ?
+      `,
+      [shiftContextId],
+    );
+
+    await this._database.execute(
+      `
+        UPDATE ShiftContexts
+        SET sortPriority = sortPriority + ?
+        WHERE sortPriority BETWEEN ? AND ?
+      `,
+      [
+        otherDelta,
+        rangeMin,
+        rangeMax,
+      ],
+    );
+
+    await this._database.execute(
+      `
+        UPDATE ShiftContexts
+        SET sortPriority = ?
+        WHERE id = ?
+      `,
+      [targetPriority, shiftContextId],
     );
   }
 }

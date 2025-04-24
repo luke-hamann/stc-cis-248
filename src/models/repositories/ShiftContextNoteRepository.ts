@@ -127,10 +127,6 @@ export default class ShiftContextNoteRepository extends Repository
       errors.push("Please enter a date.");
     }
 
-    if (shiftContextNote.note.trim() == "") {
-      errors.push("Please enter a note.");
-    }
-
     if (shiftContextNote.colorId) {
       const color = await this.colors.get(shiftContextNote.colorId);
       if (color == null) {

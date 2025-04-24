@@ -88,9 +88,26 @@ export default class TimeSlotController extends Controller {
           ":",
           "([0-5]\\d)", // end minute
           "/",
-          "((adult-only)/)?", // age requirement
+          "(adult-only/)?", // age requirement
           ")?",
+          "(week-of/(\\d{4})/(\\d{2})/(\\d{2})/)?", // cancel link date
         ].join(""),
+        mappings: [
+          [1, "hasRouteData"],
+          [2, "shiftContextId"],
+          [3, "startYear"],
+          [4, "startMonth"],
+          [5, "startDate"],
+          [6, "startHour"],
+          [9, "startMinute"],
+          [10, "endHour"],
+          [13, "endMinute"],
+          [14, "requiresAdult"],
+          [15, "hasReturnDate"],
+          [16, "returnYear"],
+          [17, "returnMonth"],
+          [18, "returnDate"],
+        ],
         action: this.addGet,
       },
       {
@@ -101,33 +118,85 @@ export default class TimeSlotController extends Controller {
       {
         method: "GET",
         pattern: "/schedule/time-slot/(\\d+)/",
+        mappings: [[1, "timeSlotId"]],
         action: this.editGet,
       },
       {
         method: "POST",
         pattern: "/schedule/time-slot/(\\d+)/",
+        mappings: [[1, "timeSlotId"]],
         action: this.editPost,
       },
       {
         method: "GET",
         pattern: "/schedule/time-slot/(\\d+)/delete/",
+        mappings: [[1, "timeSlotId"]],
         action: this.deleteGet,
       },
       {
         method: "POST",
         pattern: "/schedule/time-slot/(\\d+)/delete/",
+        mappings: [[1, "timeSlotId"]],
         action: this.deletePost,
       },
       {
         method: "GET",
-        pattern:
-          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
+        pattern: [
+          "/schedule/copy/from/",
+          "(\\d{4})", // source start year
+          "/",
+          "(\\d{2})", // source start month
+          "/",
+          "(\\d{2})", // source start date
+          "/through/",
+          "(\\d{4})", // source end year
+          "/",
+          "(\\d{2})", // source end month
+          "/",
+          "(\\d{2})", // source end date
+          "/",
+          "(to/",
+          "(\\d{4})", // destination start year
+          "/",
+          "(\\d{2})", // destination start month
+          "/",
+          "(\\d{2})", // destination start date
+          "/through/",
+          "(\\d{4})", // destination end year
+          "/",
+          "(\\d{2})", // destination end month
+          "/",
+          "(\\d{2})", // destination end date
+          "/",
+          "(no-repeat/)?", // whether the copy should repeat
+          "(include-assignees/)?", // whether the copy should include time slot assignees
+          "(include-shift-context-notes/)?", // whether the copy should include shift context notes
+          "(include-time-slot-notes/)?", // whether the copy should include time slot slots
+          ")?",
+        ].join(""),
+        mappings: [
+          [1, "fromStartYear"],
+          [2, "fromStartMonth"],
+          [3, "fromStartDate"],
+          [4, "fromEndYear"],
+          [5, "fromEndMonth"],
+          [6, "fromEndDate"],
+          [8, "toStartYear"],
+          [9, "toStartMonth"],
+          [10, "toStartDate"],
+          [11, "toEndYear"],
+          [12, "toEndMonth"],
+          [13, "toEndDate"],
+          [14, "noRepeat"],
+          [15, "includeAssignees"],
+          [16, "includeShiftContextNotes"],
+          [17, "includeTimeSlotNotes"],
+        ],
         action: this.copyGet,
       },
       {
         method: "POST",
-        pattern:
-          "/schedule/copy/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
+        pattern: "/schedule/copy/.*",
         action: this.copyPost,
       },
       {
@@ -157,7 +226,7 @@ export default class TimeSlotController extends Controller {
    * @param date The original date
    * @returns The URL path
    */
-  private getCancelLink(date?: Date): string {
+  private getCancelLink(date?: Date | null): string {
     if (!date) {
       date = new Date();
     }
@@ -171,12 +240,9 @@ export default class TimeSlotController extends Controller {
    * @returns A time slot or null
    */
   private async getTimeSlot(context: Context): Promise<TimeSlot | null> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
-      return null;
-    }
-
-    return await this._timeSlots.get(id);
+    const timeSlotId = context.routeData.getInt("timeSlotId");
+    if (timeSlotId == null) return null;
+    return await this._timeSlots.get(timeSlotId);
   }
 
   /** Gets the time slot add form
@@ -187,39 +253,48 @@ export default class TimeSlotController extends Controller {
     const timeSlot = TimeSlot.empty();
 
     // If we are attempting to prepopulate the form using route data
-    if (context.match[1]) {
-      const shiftContextId = Number(context.match[2]);
-      if (this._shiftContexts.get(shiftContextId) == null) {
+    if (context.routeData.getBool("hasRouteData")) {
+      const shiftContextId = context.routeData.getInt("shiftContextId");
+      if (
+        shiftContextId == null ||
+        this._shiftContexts.get(shiftContextId) == null
+      ) {
         return this.NotFoundResponse(context);
       }
 
-      const year = Number(context.match[3]);
-      const month = Number(context.match[4]);
-      const day = Number(context.match[5]);
-      const startHour = Number(context.match[6]);
-      const startMinute = Number(context.match[9]);
-      const endHour = Number(context.match[10]);
-      const endMinute = Number(context.match[13]);
-      const requiresAdult = context.match[15] != undefined;
-
-      const startDateTime = new Date(
-        year,
-        month - 1,
-        day,
-        startHour,
-        startMinute,
+      const startDateTime = context.routeData.getDateTimeMulti(
+        "startYear",
+        "startMonth",
+        "startDate",
+        "startHour",
+        "startMinute",
       );
-      if (isNaN(startDateTime.getTime())) {
-        return this.NotFoundResponse(context);
-      }
 
-      const endDateTime = new Date(year, month - 1, day, endHour, endMinute);
+      if (startDateTime == null) return this.NotFoundResponse(context);
+
+      const endDateTime = context.routeData.getDateTimeMulti(
+        "startYear",
+        "startMonth",
+        "startDate",
+        "endHour",
+        "endMinute",
+      );
+
+      const requiresAdult = context.routeData.getBool("requiresAdult");
 
       timeSlot.shiftContextId = shiftContextId;
       timeSlot.startDateTime = startDateTime;
       timeSlot.endDateTime = endDateTime;
       timeSlot.requiresAdult = requiresAdult;
     }
+
+    const cancelLink = this.getCancelLink(
+      context.routeData.getDateMulti(
+        "returnYear",
+        "returnMonth",
+        "returnDate",
+      ),
+    );
 
     const model = new TimeSlotEditViewModel(
       await this._shiftContexts.list(),
@@ -230,7 +305,7 @@ export default class TimeSlotController extends Controller {
       Color.empty(),
       false,
       [],
-      this.getCancelLink(),
+      cancelLink,
     );
 
     return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
@@ -256,8 +331,11 @@ export default class TimeSlotController extends Controller {
         model.timeSlot,
       );
       model.isEdit = false;
-      model.csrf_token = context.csrf_token;
-      model.cancel = this.getCancelLink(new Date());
+
+      if (model.cancel == "/") {
+        model.cancel = this.getCancelLink(new Date());
+      }
+
       return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
     }
 
@@ -266,9 +344,10 @@ export default class TimeSlotController extends Controller {
       model.timeSlot.colorId = newColorId;
     }
 
-    await this._timeSlots.add(model.timeSlot);
+    const id = await this._timeSlots.add(model.timeSlot);
+    const url = this.getCancelLink(model.timeSlot.startDateTime!) +
+      "#time_slot_" + id;
 
-    const url = this.getCancelLink(model.timeSlot.startDateTime!);
     return this.RedirectResponse(context, url);
   }
 
@@ -386,23 +465,50 @@ export default class TimeSlotController extends Controller {
    * @returns The response
    */
   public copyGet(context: Context): ResponseWrapper {
-    const [_, y1, m1, d1, y2, m2, d2] = context.match;
-    const start = new Date(parseInt(y1), parseInt(m1) - 1, parseInt(d1));
-    const end = new Date(parseInt(y2), parseInt(m2) - 1, parseInt(d2));
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    const fromStartDate = context.routeData.getDateMulti(
+      "fromStartYear",
+      "fromStartMonth",
+      "fromStartDate",
+    );
+    const fromEndDate = context.routeData.getDateMulti(
+      "fromEndYear",
+      "fromEndMonth",
+      "fromEndDate",
+    );
+    const toStartDate = context.routeData.getDateMulti(
+      "toStartYear",
+      "toStartMonth",
+      "toStartDate",
+    );
+    const toEndDate = context.routeData.getDateMulti(
+      "toEndYear",
+      "toEndMonth",
+      "toEndDate",
+    );
+
+    const repeatCopy = !context.routeData.getBool("noRepeat");
+    const includeAssignees = context.routeData.getBool("includeAssignees");
+    const includeShiftContextNotes = context.routeData.getBool(
+      "includeShiftContextNotes",
+    );
+    const includeTimeSlotNotes = context.routeData.getBool(
+      "includeShiftContextNotes",
+    );
+
+    if (fromStartDate == null || fromEndDate == null) {
       return this.NotFoundResponse(context);
     }
 
     const model = new ScheduleCopyViewModel(
       false,
-      start,
-      end,
-      null,
-      null,
-      true,
-      false,
-      false,
-      false,
+      fromStartDate,
+      fromEndDate,
+      toStartDate,
+      toEndDate,
+      repeatCopy,
+      includeAssignees,
+      includeShiftContextNotes,
+      includeTimeSlotNotes,
       [],
     );
 

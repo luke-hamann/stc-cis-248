@@ -112,6 +112,8 @@ export default class TimeSlotEditViewModel extends FormViewModel {
       newColor = new Color(0, newColorName, newColorHex);
     }
 
+    const cancelLink = formData.getLocalPath("cancelLink");
+
     return new TimeSlotEditViewModel(
       [],
       [],
@@ -121,7 +123,7 @@ export default class TimeSlotEditViewModel extends FormViewModel {
       newColor,
       true,
       [],
-      "",
+      cancelLink,
     );
   }
 }

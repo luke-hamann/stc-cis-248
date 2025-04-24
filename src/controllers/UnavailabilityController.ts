@@ -370,8 +370,12 @@ export default class UnavailabilityController extends Controller {
       return this.NotFoundResponse(context);
     }
 
+    const startDate = unavailability.startDateTime?.toLocaleDateString();
+    const startTime = unavailability.startDateTime?.toLocaleTimeString();
+    const endTime = unavailability.endDateTime?.toLocaleTimeString();
+
     const description =
-      `unavailability ${unavailability.startDateTime} - ${unavailability.endDateTime}`;
+      `unavailability for ${teamMember.fullName} on ${startDate} from ${startTime} to ${endTime}`;
     const action =
       `/team-member/${teamMember.id}/unavailability/${unavailability.id}/delete/`;
 

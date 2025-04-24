@@ -7,7 +7,7 @@ import { ScheduleCell } from "../models/entities/Schedule.ts";
 import { IScheduleRepository } from "../models/repositories/ScheduleRepository.ts";
 import ScheduleWeekViewModel from "../models/viewModels/schedule/ScheduleWeekViewModel.ts";
 import CalendarViewPartial from "../models/viewModels/_shared/CalendarViewPartial.ts";
-import ScheduleExportFormViewModel from "../models/viewModels/schedule/ScheduleExportViewModel.ts";
+import ScheduleExportViewModel from "../models/viewModels/schedule/ScheduleExportViewModel.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
 /** Handles the schedule year, week, and export pages */
@@ -123,7 +123,7 @@ export default class ScheduleController extends Controller {
     const endBetterDate = BetterDate.fromDate(end);
     const title =
       `Schedule ${startBetterDate.toDateString()} through ${endBetterDate.toDateString()}`;
-    const model = new ScheduleExportFormViewModel(
+    const model = new ScheduleExportViewModel(
       title,
       startBetterDate,
       endBetterDate,
@@ -183,7 +183,7 @@ export default class ScheduleController extends Controller {
    * @returns The response
    */
   public async exportPost(context: Context): Promise<ResponseWrapper> {
-    const model = await ScheduleExportFormViewModel.fromRequest(
+    const model = await ScheduleExportViewModel.fromRequest(
       context.request,
     );
 

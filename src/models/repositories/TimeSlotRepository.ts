@@ -531,11 +531,22 @@ export default class TimeSlotRepository extends Repository {
       }
     }
 
-    destinationTimeSlots.sort((a, b) =>
-      a.startDateTime!.getTime() - b.startDateTime!.getTime()
-    );
-
     destinationTimeSlots = await this.populateAll(destinationTimeSlots);
+
+    // Sort time slots by shift context sort priority, then age requirement, then start date time
+    destinationTimeSlots.sort((a, b) => {
+      const sortPriorityA = a.shiftContext?.sortPriority ?? 0;
+      const sortPriorityB = b.shiftContext?.sortPriority ?? 0;
+
+      if (sortPriorityA > sortPriorityB) return 1;
+      else if (sortPriorityA < sortPriorityB) return -1;
+
+      if (a.requiresAdult && !b.requiresAdult) return 1;
+      else if (!a.requiresAdult && b.requiresAdult) return -1;
+
+      return (a.startDateTime?.getTime() ?? 0) -
+        (b.startDateTime?.getTime() ?? 0);
+    });
 
     return destinationTimeSlots;
   }

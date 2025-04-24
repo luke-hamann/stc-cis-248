@@ -1,4 +1,5 @@
 {% extends "../_shared/_layout.html" %}
+{% from "../_shared/formErrors.html" import formErrors %}
 {% from "../_shared/field.html" import field %}
 
 {% set title = 'Clear schedule' %}
@@ -7,6 +8,7 @@
 
 {% block content %}
   <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
+  {{ formErrors(model.errors) }}
   <form method="post" class="mt-8 max-w-lg">
     {{ field("startDate", model.startDateString, "date", "Start date") }}
     {{ field("endDate", model.endDateString, "date", "End date") }}

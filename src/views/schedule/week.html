@@ -1,15 +1,15 @@
 {% extends "../_shared/_layout.html" %}
 
 {% macro teamMemberLink(teamMember) %}
-  <a href="/team-member/{{ teamMember.id }}/" class="underline">{{
-    teamMember.fullName
-  }}</a>
+  <a href="/team-member/{{ teamMember.id }}/" class="underline">
+    {{- teamMember.fullName -}}
+  </a>
 {% endmacro %}
 
 {% macro timeSlotLink(timeSlot) %}
-  <a href="#time_slot_{{ timeSlot.id }}" class="underline">{{
-    timeSlot.startDateTime.toLocaleString()
-  }}</a>
+  <a href="#time_slot_{{ timeSlot.id }}" class="underline">
+    {{- timeSlot.startDateTime.toLocaleString() -}}
+  </a>
 {% endmacro %}
 
 {% block title %}{{ model.title }}{% endblock %}
@@ -45,7 +45,7 @@
             {% set data = col.content %}
             <td class=" w-[10rem] border has-target:border-4">
               {% if type == "origin" %}
-                <a href="/schedule/time-slot/add/" class="block p-4 pe-1 w-max h-max border rounded bg-blue-400 text-white hover:bg-sky-800">
+                <a href="/schedule/time-slot/add/week-of/{{ formatDate(model.currentWeek, '/') }}/" class="block p-4 pe-1 w-max h-max border rounded bg-blue-400 text-white hover:bg-sky-800">
                   &plus; Add time slot
                 </a>
               {% endif %}
@@ -56,7 +56,8 @@
 
               {% if type == "dateHeader" %}
                 <h2 class="font-bold  text:center">
-                  {{ formatDate(data) }}
+                  <div>{{ data.toLocaleString(undefined, { weekday: "long" }) }}</div>
+                  <div>{{ data.toLocaleDateString(undefined) }}</div>
                 </h2>
                 <div class="mt-4 flex justify-start gap-4">
                   <a href="/schedule/copy/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block p-1 border rounded bg-blue-400 text-white hover:bg-sky-800">
@@ -198,6 +199,12 @@
       {{ warningBadge(model.warnings.length) if model.warnings.length > 0}}
     </h2>
 
+    {% if model.warnings.length == 0 %}
+      <p class="mt-4">
+        (none)
+      </p>
+    {% endif %}
+
     {# Externality warnings #}
 
     {% if model.warnings.externality.length > 0 %}
@@ -325,8 +332,7 @@
         <ul class="ps-8 list-disc">
           {% for timeSlot in model.warnings.unassignedTimeSlots %}
             <li>
-              {{ timeSlot.shiftContext.name }}: {{ timeSlot.startDateTime.toLocaleDateString () }},
-              {{ timeSlotLink(timeSlot) }}
+              {{ timeSlot.shiftContext.name }}: {{ timeSlotLink(timeSlot) }}
             </li>
           {% endfor %}
         </ul>

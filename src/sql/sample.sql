@@ -38,14 +38,14 @@ INSERT INTO TeamMembers
 
 -- SHIFT CONTEXTS 
 INSERT INTO ShiftContexts
-	(name, agegroup, location, description)
+	(name, agegroup, location, description, sortPriority)
 	VALUES
-	("Jacobson Center, Toddlers room", "2-3", "123 N philips st", "test description")
+	("Jacobson Center, Toddlers room", "2-3", "123 N philips st", "test description", 2)
 	;
 INSERT INTO ShiftContexts
-	(name, agegroup, location, description)
+	(name, agegroup, location, description, sortPriority)
 	VALUES
-	("Jacobson Center", "2-3", "123 N philips st", "test description")
+	("Jacobson Center", "2-3", "123 N philips st", "test description", 1)
 	;
 
 
@@ -208,11 +208,6 @@ INSERT INTO TeamMemberTypicalAvailability
 	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
 	VALUES
 	(1, 6, "2025-03-09 08:00:00", "2025-03-09 23:59:59", true);
-INSERT INTO TeamMemberTypicalAvailability
-	( teamMemberId , dayOfWeek, startTime, endTime, isPreference)
-	VALUES
-	(1, 7, "2025-03-010 08:00:00", "2025-03-010 23:59:59", true);
-
 
 
 

@@ -13,17 +13,18 @@
  * * [Building documentation](#building-documentation)
  *   * [Systems documentation](#systems-documentation)
  *   * [User guides](#user-guides)
- * * [Database](#database)
  * * [Framework modules](#framework-modules)
  *   * [Date module](#date-module)
  *   * [Web framework module](#web-framework-module)
+ * * [Database](#database)
+ *   * [Columns](#columns)
  * * [Models](#models)
  *   * [Entities](#entities)
  *   * [Helper entities](#helper-entities)
  * * [Controllers](#controllers)
  * * [Data layer](#data-layer)
  *   * [Repositories](#repositories)
- *   * [Interfaces](#interfaces)
+ *   * [Repository interfaces](#repository-interfaces)
  * * [Views](#views)
  *
  * ## Installation
@@ -118,18 +119,22 @@
  *
  * ### User guides
  *
- * Building the user guides requires [mdBook], which is available for download on [GitHub].
+ * To build the user guides:
  *
- * After opening the repository, the user guides can be built using:
- *
- * ```
- * mdbook build user-guides
- * ```
+ * 1. Ensure you are running a Windows machine with Google Chrome installed.
+ * 2. Set up the development environment (using the sample data) as described above.
+ * 3. Install [mdBook](https://github.com/rust-lang/mdBook/releases).
+ * 4. Ensure the application is running and functional.
+ * 5. Build the user guide screenshots:
+ *    ```
+ *    deno run -A ./user-guides/screenshots.ts
+ *    ```
+ * 6. Build the user guides:
+ *    ```
+ *    mdbook build user-guides
+ *    ```
  *
  * The user guides website will be saved in the `user-guides/book` directory.
- *
- * [mdBook]: https://rust-lang.github.io/mdBook/
- * [GitHub]: https://github.com/rust-lang/mdBook/releases
  *
  * ## Framework modules
  *
@@ -149,9 +154,9 @@
  * * {@link Route}
  *
  * ## Database
- * 
+ *
  * The database consists of 9 tables:
- * 
+ *
  * * TeamMembers
  * * ShiftContexts
  * * Colors
@@ -161,67 +166,72 @@
  * * TeamMemberShiftContextPreferences
  * * TimeSlots
  * * Substitutes
- * 
+ *
+ * Note: The TeamMemberAvailability table lists special times the team member is *unavailabile*.
+ * The TeamMemberTypicalAvailability table lists days of the week and times the team member is typically available.
+ *
  * ### Columns
- * 
+ *
  * * TeamMembers
- *     * id (int) - Id
- *     * firstName (varchar) - First name
- *     * middleName (varchar) - Middle name
- *     * lastName (varchar) - Last name
- *     * birthDate (date) - Birth date
- *     * email (varchar) - Email address
- *     * phone (varchar) - Phone number
- *     * isExternal (bool) - Whether the team member is an external resource
- *     * maxWeeklyHours (int) - The maximum number of hours per week the team member can work
- *     * maxWeeklyDays (int) - The maximum number of days per week the team member can work
- *     * username (varchar) - The team member's user name
- *     * password (varchar) - The team member's password
- *     * isAdmin (bool) - Whether the 
+ *    * id (int) - Id
+ *    * firstName (varchar) - First name
+ *    * middleName (varchar) - Middle name
+ *    * lastName (varchar) - Last name
+ *    * birthDate (date) - Birth date
+ *    * email (varchar) - Email address
+ *    * phone (varchar) - Phone number
+ *    * isExternal (bool) - Whether the team member is an external resource
+ *    * maxWeeklyHours (int) - Maximum number of hours per week the team member can work
+ *    * maxWeeklyDays (int) - Maximum number of days per week the team member can work
+ *    * username (varchar) - Username
+ *    * password (varchar) - Password
+ *    * isAdmin (bool) - Whether the team member is an admin user
  * * ShiftContexts
- *     * id
- *     * name
- *     * ageGroup
- *     * location
- *     * description
+ *    * id (int) - Id
+ *    * name (varchar) - Name
+ *    * ageGroup (varchar) - Age group
+ *    * location (varchar) - Location
+ *    * description (varchar) - Description
+ *    * sortPriority (int) - Sort priority
  * * Colors
- *     * id
- *     * name
- *     * hex
+ *    * id (int) - Id
+ *    * name (varchar) - Name
+ *    * hex (varchar) - The RGB color hex code
  * * ShiftContextNotes
- *     * shiftContextId
- *     * date
- *     * note
- *     * colorId
+ *    * shiftContextId (int) - Shift context id
+ *    * date (date) - Date
+ *    * note (varchar) - Note content
+ *    * colorId (int) - Note color id
  * * TeamMememberAvailability
- *     * id
- *     * teamMemberId
- *     * startDateTime
- *     * endDateTime
- *     * isPreference
+ *    * id (int) - Id
+ *    * teamMemberId (int) - Team member id
+ *    * startDateTime (datetime) - Start date time
+ *    * endDateTime (datetime) - End date time
+ *    * isPreference (bool) - Whether the team member finds the availability slot preferable
  * * TeamMemberTypicalAvailability
- *     * id
- *     * teamMemberId
- *     * dayOfWeek
- *     * startTime
- *     * endTime
- *     * isPreference
+ *    * id (int) - Id
+ *    * teamMemberId (int) - Team member id
+ *    * dayOfWeek (int) - Day of the week (0 for Sunday through 6 for Saturday)
+ *    * startTime (time) - Start time
+ *    * endTime (time) - End time
+ *    * isPreference (bool) - Whether the team member finds the typical availability slot preferable
  * * TeamMemberShiftContextPreferences
- *     * teamMemberId
- *     * shiftContextId
- *     * isPreference
+ *    * teamMemberId (int) - Team member id
+ *    * shiftContextId (int) - Shift context id
+ *    * isPreference (bool) - Whether the team member prefers the shift context
+ *      (Note: The absense of an entry for a given combination of a team member and shift context indicates no preference.)
  * * TimeSlots
- *     * id
- *     * shiftContextId
- *     * startDateTime
- *     * endDateTime
- *     * requiresAdult
- *     * teamMemberId
- *     * note
- *     * colorId
+ *    * id (int) - Id
+ *    * shiftContextId (int) - Shift context id
+ *    * startDateTime (datetime) - The start date and time
+ *    * endDateTime (datetime) - The end date and time
+ *    * requiresAdult (bool) - Whether the time slot requires an adult
+ *    * teamMemberId (int) - Team member (assignee) id
+ *    * note (varchar) - Note content
+ *    * colorId (int) - Color id of the note content
  * * Substitutes
- *     * teamMemberId
- *     * date
+ *    * teamMemberId (id) - Team member id
+ *    * date (date) - Date
  *
  * ## Models
  *
@@ -243,6 +253,46 @@
  * * {@link Substitute Substitute}
  * * {@link SubstituteList Substitute List}
  * * {@link TimeSlotGroup Time Slot Group}
+ *
+ * ### View models
+ *
+ * * Shared
+ *    * {@link FormViewModel}
+ *    * {@link ViewModel}
+ *    * {@link CalendarViewPartial}
+ *    * {@link DeleteViewModel}
+ *    * {@link ErrorViewModel}
+ * * Color
+ *    * {@link ColorEditViewModel}
+ *    * {@link ColorsViewModel}
+ * * Schedule
+ *    * {@link ScheduleClearViewModel}
+ *    * {@link ScheduleCopyViewModel}
+ *    * {@link ScheduleExportViewModel}
+ *    * {@link ScheduleWeekViewModel}
+ * * Shift context
+ *    * {@link ShiftContextEditViewModel}
+ *    * {@link ShiftContextReorderViewModel}
+ *    * {@link ShiftContextsViewModel}
+ * * Shift context note
+ *    * {@link ShiftContextNoteEditViewModel}
+ * * Shift context preference
+ *    * {@link ShiftContextPreferencesEditViewModel}
+ * * Substitute
+ *    * {@link SubstitutesEditViewModel}
+ * * Team member
+ *    * {@link TeamMemberEditViewModel}
+ *    * {@link TeamMembersViewModel}
+ * * Time slot
+ *    * {@link AssigneeRecommendationsViewModel}
+ *    * {@link TimeSlotEditViewModel}
+ * * Typical availability
+ *    * {@link TypicalAvailabilityEditViewModel}
+ *    * {@link TypicalAvailabilityListViewModel}
+ * * Unavailability
+ *    * {@link UnavailabilityEditViewModel}
+ *    * {@link UnavailabilityWeekViewModel}
+ *    * {@link UnavailabilityYearViewModel}
  *
  * ## Controllers
  *
@@ -275,7 +325,7 @@
  * * {@link TypicalAvailabilityRepository Typical Availability Repository}
  * * {@link UnavailabilityRepository Unavailability Repository}
  *
- * ### Interfaces
+ * ### Repository interfaces
  *
  * * {@link IColorRepository}
  * * {@link IScheduleRepository}
@@ -470,6 +520,7 @@ export { default as ScheduleCopyViewModel } from "./models/viewModels/schedule/S
 export { default as ScheduleExportViewModel } from "./models/viewModels/schedule/ScheduleExportViewModel.ts";
 export { default as ScheduleWeekViewModel } from "./models/viewModels/schedule/ScheduleWeekViewModel.ts";
 export { default as ShiftContextEditViewModel } from "./models/viewModels/shiftContext/ShiftContextEditViewModel.ts";
+export { default as ShiftContextReorderModel } from "./models/viewModels/shiftContext/ShiftContextReorderViewModel.ts";
 export { default as ShiftContextsViewModel } from "./models/viewModels/shiftContext/ShiftContextsViewModel.ts";
 export { default as ShiftContextNoteEditViewModel } from "./models/viewModels/shiftContextNote/ShiftContextNoteEditViewModel.ts";
 export { default as ShiftContextPreferencesEditViewModel } from "./models/viewModels/shiftContextPreference/ShiftContextPreferencesEditViewModel.ts";
