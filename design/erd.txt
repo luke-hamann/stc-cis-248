@@ -48,6 +48,7 @@ Table ShiftContexts {
   ageGroup string
   location string
   description string
+  sortPriority int [ not null, unique ]
 }
 
 Table TimeSlots {
