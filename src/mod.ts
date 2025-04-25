@@ -433,6 +433,11 @@ export { default as Unavailability } from "./models/entities/Unavailability.ts";
 // Models - repositories
 
 export { default as Database } from "./models/repositories/_Database.ts";
+export type {
+  default as KeyStore,
+  IKeyStore,
+  IKeyValue,
+} from "./models/repositories/_KeyStore.ts";
 export { default as Repository } from "./models/repositories/_Repository.ts";
 export type {
   default as ColorRepository,
