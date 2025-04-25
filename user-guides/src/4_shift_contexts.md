@@ -8,16 +8,18 @@ only be within one shift context.
 
 ![The shift context list page](images/shift_context_list.png)
 
-The shift context list pages shows all shift contexts you have created.
+The shift context list pages shows all shift contexts you have created. You can
+also change the order of the shift contexts.
 
 Clicking the "Add" button will allow you to create a new shift context.
 
-Each shift context card shows the following information about the shift context:
+Each shift context card shows the name of the shift context.
 
-- Name
-- Age group
-- Location
-- Description
+Clicking the up arrow will move the shift context up in the sort order. Clicking
+the down arrow will move the shift context down in the sort order. This will
+affect the order of the shift contexts in the
+[schedule week editor](./6_schedule.md#schedule-week-editor) and
+[schedule file exports](./6_schedule.md#schedule-export).
 
 Clicking the pencil icon on a shift context will allow you to edit the shift
 context. Clicking the "x" button on a shift context will ask you to confirm if
