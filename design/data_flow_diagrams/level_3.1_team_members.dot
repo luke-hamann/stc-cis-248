@@ -3,34 +3,34 @@ digraph data_flow_diagram {
     
     "..." [ shape = none ]
     
-    "..." -> "Team member controller" -> "..."
+    "..." -> "Team member\ncontroller" -> "..."
     
-    "Team member controller"
+    "Team member\ncontroller"
     
     subgraph actions {
         rank = same
         
-        "Team member list (GET)"
-        "Team member profile (GET)"
-        "Team member add (GET, POST)"
-        "Team member edit (GET, POST)"
-        "Team member delete (GET, POST)"
+        "Team member list\n(GET)"
+        "Team member profile\n(GET)"
+        "Team member add\n(GET, POST)"
+        "Team member edit\n(GET, POST)"
+        "Team member delete\n(GET, POST)"
     }
     
-    "Team member controller" -> {
-        "Team member list (GET)"
-        "Team member profile (GET)"
-        "Team member add (GET, POST)"
-        "Team member edit (GET, POST)"
-        "Team member delete (GET, POST)"
-    } -> "Team member controller"
+    "Team member\ncontroller" -> {
+        "Team member list\n(GET)"
+        "Team member profile\n(GET)"
+        "Team member add\n(GET, POST)"
+        "Team member edit\n(GET, POST)"
+        "Team member delete\n(GET, POST)"
+    } -> "Team member\ncontroller"
     
-    "Team member repository" -> {
-        "Team member list (GET)"
-        "Team member profile (GET)"
-        "Team member add (GET, POST)"
-        "Team member edit (GET, POST)"
-        "Team member delete (GET, POST)"
+    "Team member\nrepository" -> {
+        "Team member list\n(GET)"
+        "Team member profile\n(GET)"
+        "Team member add\n(GET, POST)"
+        "Team member edit\n(GET, POST)"
+        "Team member delete\n(GET, POST)"
         Database [ shape = folder ]
-    } -> "Team member repository"
+    } -> "Team member\nrepository"
 }

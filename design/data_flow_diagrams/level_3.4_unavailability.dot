@@ -3,55 +3,55 @@ digraph data_flow_diagram {
     
     "..." [ shape = none ]
     
-    "..." -> "Unavailability controller" -> "..."
+    "..." -> "Unavailability\ncontroller" -> "..."
 
     subgraph actions {
         rank = same
         
-        "Team member unavailability calendar (GET)"
-        "Team member unavailability week (GET, POST)"
-        "Team member unavailability week timeslot add (GET, POST)"
-        "Team member unavailability week timeslot edit (GET, POST)"
-        "Team member unavailability week timeslot delete (GET, POST)"
+        "Team member\nunavailability\ncalendar\n(GET)"
+        "Team member\nunavailability week\n(GET, POST)"
+        "Team member\nunavailability week\ntimeslot add\n(GET, POST)"
+        "Team member\nunavailability week\ntimeslot edit\n(GET, POST)"
+        "Team member\nunavailability week\ntimeslot delete\n(GET, POST)"
     }
     
-    "Unavailability controller" -> {
-        "Team member unavailability calendar (GET)"
-        "Team member unavailability week (GET, POST)"
-        "Team member unavailability week timeslot add (GET, POST)"
-        "Team member unavailability week timeslot edit (GET, POST)"
-        "Team member unavailability week timeslot delete (GET, POST)"
-    } -> "Unavailability controller"
+    "Unavailability\ncontroller" -> {
+        "Team member\nunavailability\ncalendar\n(GET)"
+        "Team member\nunavailability week\n(GET, POST)"
+        "Team member\nunavailability week\ntimeslot add\n(GET, POST)"
+        "Team member\nunavailability week\ntimeslot edit\n(GET, POST)"
+        "Team member\nunavailability week\ntimeslot delete\n(GET, POST)"
+    } -> "Unavailability\ncontroller"
     
     subgraph repositories {
         rank = same
         
-        "Team member repository"
-        "Unavailability repository"
+        "Team member\nrepository"
+        "Unavailability\nrepository"
     }
     
     {
-        "Team member repository"
-        "Unavailability repository"
+        "Team member\nrepository"
+        "Unavailability\nrepository"
     }
     ->
     {
-        "Team member unavailability calendar (GET)"
-        "Team member unavailability week (GET, POST)"
-        "Team member unavailability week timeslot add (GET, POST)"
-        "Team member unavailability week timeslot edit (GET, POST)"
-        "Team member unavailability week timeslot delete (GET, POST)"
+        "Team member\nunavailability\ncalendar\n(GET)"
+        "Team member\nunavailability week\n(GET, POST)"
+        "Team member\nunavailability week\ntimeslot add\n(GET, POST)"
+        "Team member\nunavailability week\ntimeslot edit\n(GET, POST)"
+        "Team member\nunavailability week\ntimeslot delete\n(GET, POST)"
     }
     ->
     {
-        "Team member repository"
-        "Unavailability repository"
+        "Team member\nrepository"
+        "Unavailability\nrepository"
     }
     
     Database [ shape = folder ]
     
     Database -> {
-        "Team member repository"
-        "Unavailability repository"
+        "Team member\nrepository"
+        "Unavailability\nrepository"
     } -> Database
 }
