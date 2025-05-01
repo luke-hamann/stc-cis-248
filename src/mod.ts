@@ -60,7 +60,7 @@
  * Once the Tailwind build process is spun up, running the app again should only require pressing `F5` once.
  *
  * [deno]: https://docs.deno.com/runtime/getting_started/installation/
- * [Deno language server client extension]: https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno
+ * [Deno language server client]: https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno
  * [Tailwind CSS IntelliSense]: https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss
  * [Jinja extension]: https://marketplace.visualstudio.com/items?itemName=wholroyd.jinja
  * [WampServer]: https://www.wampserver.com/en/
