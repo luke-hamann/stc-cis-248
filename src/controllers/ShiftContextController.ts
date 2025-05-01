@@ -55,7 +55,7 @@ export default class ShiftContextController extends Controller {
 
   /** Changes the sort priority of a given shift context
    * @param context The application context
-   * @returns The response
+   * @returns A shift context list partial view with the updated ordering
    */
   public async changeSortPriority(context: Context): Promise<ResponseWrapper> {
     const model = ShiftContextReorderViewModel.fromFormData(context.formData);
@@ -67,7 +67,11 @@ export default class ShiftContextController extends Controller {
       );
     }
 
-    return this.RedirectResponse(context, "/contexts/");
+    return this.HTMLResponse(
+      context,
+      "./views/shiftContext/listPartial.html",
+      new ShiftContextsViewModel(await this.shiftContextRepository.list()),
+    );
   }
 
   /** Gets the shift context add form
