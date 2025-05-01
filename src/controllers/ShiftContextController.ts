@@ -67,11 +67,15 @@ export default class ShiftContextController extends Controller {
       );
     }
 
-    return this.HTMLResponse(
-      context,
-      "./views/shiftContext/listPartial.html",
-      new ShiftContextsViewModel(await this.shiftContextRepository.list()),
-    );
+    if (context.request.headers.has("X-Refresh")) {
+      return this.HTMLResponse(
+        context,
+        "./views/shiftContext/listPartial.html",
+        new ShiftContextsViewModel(await this.shiftContextRepository.list()),
+      );
+    }
+
+    return this.RedirectResponse(context, "/contexts/");
   }
 
   /** Gets the shift context add form
