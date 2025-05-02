@@ -63,6 +63,10 @@ export default class Router extends Controller {
       }
 
       if (response) {
+        response.headers.set(
+          "Content-Security-Policy",
+          "frame-ancestors 'none';",
+        );
         return response.toResponse();
       }
     }
