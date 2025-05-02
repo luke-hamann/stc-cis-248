@@ -6,11 +6,11 @@
 - Typical availability repository
 - Unavailability repository
 - Shift context repository
-- Shift context preferences repository
-- Colors repository
-- Shift context notes repository
-- Timeslots repository
-- Substitutes repository
+- Shift context preference repository
+- Color repository
+- Shift context note repository
+- Timeslot repository
+- Substitute repository
 
 ## Actions
 
@@ -56,11 +56,11 @@
 - Typical availability
 - Unavailability
 - Shift context
-- Shift context preferences
-- Colors
-- Shift context notes
-- Timeslots
-- Substitutes
+- Shift context preference
+- Color
+- Shift context note
+- Timeslot
+- Substitute
 - Schedule
 
 ## DFDs Summary
