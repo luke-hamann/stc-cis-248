@@ -12,7 +12,13 @@ digraph data_flow_diagram {
     "Manipulate\ndata models" -> "Control\nprocessing"
     "Manipulate\ndata models" -> "Database"
     
-    "Database" [ shape = underline ]
+    Database [
+        label = <
+            <TABLE BORDER="1" SIDES="TB" CELLBORDER="0" CELLPADDING="6" CELLSPACING="0">
+                <TR><TD>Database</TD></TR>
+            </TABLE>
+        >,
+        shape = none ]
     
-    "Database" -> "Manipulate\ndata models"
+    Database -> "Manipulate\ndata models"
 }

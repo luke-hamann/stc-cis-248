@@ -28,7 +28,13 @@ digraph data_flow_diagram {
         "Color delete\n(GET, POST)"
     } -> "Color\nrepository"
     
-    Database [ shape = folder ]
+    Database [
+        label = <
+            <TABLE BORDER="1" SIDES="TB" CELLBORDER="0" CELLPADDING="6" CELLSPACING="0">
+                <TR><TD>Database</TD></TR>
+            </TABLE>
+        >,
+        shape = none ]
     
     "Color\nrepository" -> Database -> "Color\nrepository"
 }
