@@ -1,22 +1,25 @@
-import {
-  Client,
-  ExecuteResult,
-} from "https://deno.land/x/mysql@v2.12.1/mod.ts";
+// deno-lint-ignore-file no-explicit-any
+import mysql from "npm:mysql2/promise";
 
 /** Represents a database connection */
 export default class Database {
-  /** The database client connection */
-  private _client: Client | null = null;
-
-  /** Executes a SQL query against a MySQL database using given parameters
-   *
+  /** The database client connection pool 
+   * 
    * Connects to a MySQL database based on environment variables:
    *
    * * DATABASE_HOSTNAME
    * * DATABASE_USERNAME
    * * DATABASE_NAME
    * * DATABASE_PASSWORD
-   *
+  */
+  private _pool = mysql.createPool({
+    host: Deno.env.get("DATABASE_HOSTNAME"),
+    user: Deno.env.get("DATABASE_USERNAME"),
+    database: Deno.env.get("DATABASE_NAME"),
+    password: Deno.env.get("DATABASE_PASSWORD"),
+  });
+
+  /** Executes a SQL query against a MySQL database using given parameters
    * @param sql The SQL query
    * @param params An array of positional parameters for the query
    * @returns A promise of the query {@link ExecuteResult}
@@ -24,16 +27,8 @@ export default class Database {
   public async execute(
     sql: string,
     params?: (undefined | null | string | number | boolean | Date)[],
-  ): Promise<ExecuteResult> {
-    if (this._client == null) {
-      this._client = await new Client().connect({
-        hostname: Deno.env.get("DATABASE_HOSTNAME"),
-        username: Deno.env.get("DATABASE_USERNAME"),
-        db: Deno.env.get("DATABASE_NAME"),
-        password: Deno.env.get("DATABASE_PASSWORD"),
-      });
-    }
-
-    return await this._client.execute(sql, params);
+  ): Promise<{ rows?: any[] }> {
+    const rows = (await this._pool.query(sql, params))[0] as any[];
+    return { rows };
   }
 }
