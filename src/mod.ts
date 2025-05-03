@@ -349,6 +349,7 @@
  * * shiftContext/
  *   * edit.html - The shift context add/edit form
  *   * list.html - The shift context list page
+ *   * listPartial.html - The shift context list partial
  * * shiftContextNote/
  *   * edit.html - The shift context note add/edit form
  * * shiftContextPreference
