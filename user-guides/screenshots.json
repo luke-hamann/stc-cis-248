@@ -5,7 +5,7 @@
 
   ["colors/", 450, 490, "color_list"],
   ["colors/add/", 511, 340, "color_add"],
-  ["color/4/", 500, 500, "color_edit"],
+  ["color/4/", 500, 340, "color_edit"],
   ["color/4/delete/", 460, 350, "color_delete"],
 
   ["team-members/", 634, 540, "team_member_list"],
