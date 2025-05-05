@@ -59,6 +59,6 @@
     825,
     "schedule_copy"
   ],
-  ["schedule/clear/2025/03/02/through/2025/03/08/", 600, 600, "schedule_clear"],
+  ["schedule/clear/2025/03/02/through/2025/03/08/", 575, 470, "schedule_clear"],
   ["schedule/export/2025/03/02/to/2025/03/08/", 600, 450, "schedule_export"]
 ]
