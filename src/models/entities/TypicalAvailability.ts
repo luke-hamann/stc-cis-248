@@ -1,4 +1,3 @@
-import { BetterDate } from "../../mod.ts";
 import TeamMember from "./TeamMember.ts";
 
 const dayOfWeek = [0, 1, 2, 3, 4, 5, 6] as const;
@@ -34,10 +33,10 @@ export default class TypicalAvailability {
   public dayOfWeek: DayOfWeek | null = null;
 
   /** The start time of the availability on the day */
-  public startTime: Date | null = null;
+  public startTime: string | null = null;
 
   /** The end time of the availability on the day */
-  public endTime: Date | null = null;
+  public endTime: string | null = null;
 
   /** Whether the availability is preferable */
   public isPreference: boolean = false;
@@ -56,8 +55,8 @@ export default class TypicalAvailability {
     teamMemberId: number,
     teamMember: TeamMember | null,
     dayOfWeek: DayOfWeek | null,
-    startTime: Date | null,
-    endTime: Date | null,
+    startTime: string | null,
+    endTime: string | null,
     isPreference: boolean,
   ) {
     this.id = id;
@@ -67,17 +66,5 @@ export default class TypicalAvailability {
     this.startTime = startTime;
     this.endTime = endTime;
     this.isPreference = isPreference;
-  }
-
-  /** Gets the start time as a string in 24-hour, hh:mm format, or an empty string if there is no start time */
-  public get startTimeString(): string {
-    if (!this.startTime) return "";
-    return BetterDate.fromDate(this.startTime).toTimeString();
-  }
-
-  /** Gets the end time as a string in 24-hour, hh:mm format, or an empty string if there is no end time */
-  public get endTimeString(): string {
-    if (!this.endTime) return "";
-    return BetterDate.fromDate(this.endTime).toTimeString();
   }
 }

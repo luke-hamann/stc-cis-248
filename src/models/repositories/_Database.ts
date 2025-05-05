@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import mysql from "npm:mysql2/promise";
+import mysql from "npm:mysql2@3.14.1/promise";
 
 /** Represents a database connection */
 export default class Database {
@@ -27,8 +27,10 @@ export default class Database {
   public async execute(
     sql: string,
     params?: (undefined | null | string | number | boolean | Date)[],
-  ): Promise<{ rows?: any[] }> {
-    const rows = (await this._pool.execute(sql, params))[0] as any[];
-    return { rows };
+  ): Promise<{ rows?: any[]; lastInsertId?: number }> {
+    const [result, _] = await this._pool.execute(sql, params);
+    const rows = result as any[];
+    const lastInsertId = (result as any).insertId as number | undefined;
+    return { rows, lastInsertId };
   }
 }

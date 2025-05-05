@@ -37,13 +37,13 @@
         {% endfor %}
       </select>
     </div>
-    {{ field("startTime", model.typicalAvailability.startTimeString, "time", "Start time") }}
-    {{ field("endTime", model.typicalAvailability.endTimeString, "time", "End time") }}
+    {{ field("startTime", model.typicalAvailability.startTime, "time", "Start time") }}
+    {{ field("endTime", model.typicalAvailability.endTime, "time", "End time") }}
     {{ field("isPreference", "", "checkbox", "Preferable", model.typicalAvailability.isPreference) }}
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
       <input type="submit" value="Save" class="block p-2 bg-blue-300 rounded" />
-      <a href="/team-member/{{ model.teamMember.id }}/availability/" class="block p-2 bg-gray-300 rounded">Cancel</a>
+      <a href="/team-member/{{ model.typicalAvailability.teamMemberId }}/availability/" class="block p-2 bg-gray-300 rounded">Cancel</a>
     </div>
   </form>
 {% endblock %}

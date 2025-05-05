@@ -13,7 +13,7 @@ export type ShiftContextPreferencesList = {
 
 /** A generic interface for manipulating shift context preferences */
 export interface IShiftContextPreferenceRepository {
-  /** Verifies the existance of shift context ids within a preferences list
+  /** Verifies the existence of shift context ids within a preferences list
    * @param preferences The preferable and unpreferable shift contexts (as ids)
    * @returns An array of error messages
    */
@@ -66,7 +66,7 @@ export default class ShiftContextPreferenceRepository extends Repository
     this.shiftContexts = shiftContexts;
   }
 
-  /** Verifies the existance of shift context ids within a preferences list
+  /** Verifies the existence of shift context ids within a preferences list
    * @param preferences The preferable and unpreferable shift contexts (as ids)
    * @returns An array of error messages
    */

@@ -137,7 +137,7 @@ export default class ShiftContextNoteRepository extends Repository
     return errors;
   }
 
-  /** Populates a shift context note with its cooresponding shift context and color information
+  /** Populates a shift context note with its corresponding shift context and color information
    * @param shiftContextNote The shift context note
    * @returns The shift context note with related entities
    */
