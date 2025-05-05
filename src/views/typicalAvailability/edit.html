@@ -1,6 +1,7 @@
 {% extends "../_shared/_layout.html" %}
 {% from "../_shared/field.html" import field %}
 {% from "../_shared/formErrors.html" import formErrors %}
+{% from "../_shared/teamMemberTabs.html" import teamMemberTabs %}
 
 {% if model.isEdit %}
   {% set title = "Edit Availability" %}
@@ -23,6 +24,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+  {{ teamMemberTabs(model.teamMember, "availability") }}
   <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
   <form method="post" action="{{ action }}" class="max-w-lg">
     {{ formErrors(model.errors) }}
