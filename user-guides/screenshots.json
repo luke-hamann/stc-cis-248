@@ -12,22 +12,22 @@
   ["team-members/add/", 500, 700, "team_member_add"],
   ["team-member/1/", 500, 700, "team_member_profile"],
   ["team-member/4/edit/", 500, 700, "team_member_edit"],
-  ["team-member/4/delete/", 500, 500, "team_member_delete"],
+  ["team-member/4/delete/", 500, 440, "team_member_delete"],
 
-  ["contexts/", 630, 750, "shift_context_list"],
+  ["contexts/", 630, 500, "shift_context_list"],
   ["context/add/", 500, 550, "shift_context_add"],
   ["context/1/", 500, 550, "shift_context_edit"],
-  ["context/1/delete/", 500, 500, "shift_context_delete"],
+  ["context/1/delete/", 500, 380, "shift_context_delete"],
 
   ["team-member/1/preferences/", 525, 525, "preferences"],
 
-  ["team-member/1/availability/", 575, 750, "availability_list"],
-  ["team-member/1/availability/add/", 500, 425, "availability_add"],
-  ["team-member/1/availability/1/", 500, 425, "availability_edit"],
+  ["team-member/1/availability/", 600, 750, "availability_list"],
+  ["team-member/1/availability/add/", 500, 600, "availability_add"],
+  ["team-member/1/availability/1/", 500, 600, "availability_edit"],
   ["team-member/1/availability/1/delete/", 500, 325, "availability_delete"],
 
   ["team-member/1/unavailability/2025/", 1090, 700, "unavailability_year"],
-  ["team-member/1/unavailability/2025/03/02/", 700, 700, "unavailability_week"],
+  ["team-member/1/unavailability/2025/03/02/", 625, 700, "unavailability_week"],
   [
     "team-member/1/unavailability/add/2025/03/02/",
     500,
