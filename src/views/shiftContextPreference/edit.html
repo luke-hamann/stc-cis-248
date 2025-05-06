@@ -6,15 +6,16 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+  <div class="bg-white drop-shadow-lg mt-6 pb-4"
   {{ teamMemberTabs(model.teamMember, "preferences") }}
   <form method="post" class="ms-4 mt-6 max-w-md">
     <table>
       <thead>
         <tr>
           <th class="p-4 text-left">Shift Context</th>
-          <th class="p-4">☹️</th>
-          <th class="p-4">😐</th>
-          <th class="p-4">🙂</th>
+          <th class="p-4 text-3x1">☹️</th>
+          <th class="p-4 text-3x1">😐</th>
+          <th class="p-4 text-3x1">🙂</th>
         </tr>
       </thead>
       <tbody>
@@ -42,7 +43,7 @@
     </table>
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <button type="submit" class="block p-2 bg-green-300 rounded">Save</button>
+      <button type="submit" class="block p-2 bg-green-700 text-white hover:bg-green-300 rounded">Save</button>
     </div>
   </form>
 {% endblock content %}
