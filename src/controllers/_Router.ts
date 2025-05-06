@@ -15,6 +15,18 @@ export default class Router extends Controller {
   /** The controllers to route through */
   private _controllers: Controller[];
 
+  /** Sets the Content Security Policy header of a response
+   * @param response The original response
+   * @returns The new response
+   */
+  private _setContentSecurityPolicy(response: ResponseWrapper): ResponseWrapper {
+    response.headers.set(
+      "Content-Security-Policy",
+      "frame-ancestors 'none';",
+    );
+    return response;
+  }
+
   /** Construct the router given controllers
    * @param controllers
    */
@@ -63,14 +75,13 @@ export default class Router extends Controller {
       }
 
       if (response) {
-        response.headers.set(
-          "Content-Security-Policy",
-          "frame-ancestors 'none';",
-        );
+        this._setContentSecurityPolicy(response);
         return response.toResponse();
       }
     }
 
-    return this.NotFoundResponse(context).toResponse();
+    response = this.NotFoundResponse(context);
+    this._setContentSecurityPolicy(response);
+    return response.toResponse();
   }
 }
