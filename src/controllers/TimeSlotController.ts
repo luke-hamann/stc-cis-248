@@ -23,28 +23,28 @@ export default class TimeSlotController extends Controller {
   /** The shift context repository */
   private _shiftContexts: IShiftContextRepository;
 
-  /** The team members repository */
+  /** The team member repository */
   private _teamMembers: ITeamMemberRepository;
 
-  /** The colors repository */
+  /** The color repository */
   private _colors: IColorRepository;
 
   /** The schedule repository */
   private _schedule: IScheduleRepository;
 
-  /** The shift context notes repository */
+  /** The shift context note repository */
   private _shiftContextNotes: IShiftContextNoteRepository;
 
-  /** The substitutes repository */
+  /** The substitute repository */
   private _substitutes: ISubstituteRepository;
 
-  /** The time slots repository */
+  /** The time slot repository */
   private _timeSlots: ITimeSlotRepository;
 
   /** Constructs the controller using the necessary repositories
    * @param shiftContexts The shift context repository
-   * @param teamMembers The team members repository
-   * @param colors The colors repository
+   * @param teamMembers The team member repository
+   * @param colors The color repository
    * @param schedule The schedule repository
    * @param shiftContextNotes The shift context notes repository
    * @param substitutes The substitutes repository
@@ -203,12 +203,28 @@ export default class TimeSlotController extends Controller {
         method: "GET",
         pattern:
           "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
+        mappings: [
+          [1, "startYear"],
+          [2, "startMonth"],
+          [3, "startDate"],
+          [4, "endYear"],
+          [5, "endMonth"],
+          [6, "endDate"],
+        ],
         action: this.clearGet,
       },
       {
         method: "POST",
         pattern:
           "/schedule/clear/(\\d{4})/(\\d{2})/(\\d{2})/through/(\\d{4})/(\\d{2})/(\\d{2})/",
+        mappings: [
+          [1, "startYear"],
+          [2, "startMonth"],
+          [3, "startDate"],
+          [4, "endYear"],
+          [5, "endMonth"],
+          [6, "endDate"],
+        ],
         action: this.clearPost,
       },
       {
@@ -219,23 +235,24 @@ export default class TimeSlotController extends Controller {
     ];
   }
 
-  /** Calculates a schedule cancel link url based on a date
+  /** Generates a schedule cancel link URL based on a date
    *
-   * Floors the date to the most recent past Sunday to generate the url path
+   * Floors the date to the most recent past Sunday to generate the URL path
    *
-   * @param date The original date
+   * @param date The date
    * @returns The URL path
    */
   private getCancelLink(date?: Date | null): string {
-    if (!date) {
-      date = new Date();
-    }
+    if (!date) date = new Date();
 
     const newDate = BetterDate.fromDate(date).floorToSunday().toDateString("/");
     return `/schedule/${newDate}/`;
   }
 
   /** Gets a time slot based on the application context, null if not found
+   *
+   * This is a helper method.
+   *
    * @param context The application context
    * @returns A time slot or null
    */
@@ -311,7 +328,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
   }
 
-  /** Accepts requests to add a time slot
+  /** Accepts a request to add a time slot
    * @param context The application context
    * @returns The response
    */
@@ -355,7 +372,7 @@ export default class TimeSlotController extends Controller {
    * @param context The application context
    * @returns The response
    */
-  public async editGet(context: Context) {
+  public async editGet(context: Context): Promise<ResponseWrapper> {
     const timeSlot = await this.getTimeSlot(context);
     if (timeSlot == null) {
       return this.NotFoundResponse(context);
@@ -376,7 +393,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/edit.html", model);
   }
 
-  /** Accepts requests to edit a time slot
+  /** Accepts a request to edit a time slot
    * @param context The application context
    * @returns The response
    */
@@ -386,7 +403,7 @@ export default class TimeSlotController extends Controller {
     }
 
     const model = await TimeSlotEditViewModel.fromRequest(context.request);
-    model.timeSlot.id = parseInt(context.match[1]);
+    model.timeSlot.id = context.routeData.getInt("timeSlotId")!;
 
     model.errors = await this._timeSlots.validate(model.timeSlot);
     if (model.newColor) {
@@ -444,7 +461,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /** Accepts requests to delete a time slot
+  /** Accepts a request to delete a time slot
    * @param context The application context
    * @returns The response
    */
@@ -515,16 +532,17 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/copy.html", model);
   }
 
-  /** Accepts requests to copy time slots
+  /** Accepts a request to copy time slots
    *
-   * The action operates in two modes: preview and confirm.
-   * In preview mode, a form will display to confirm the copy.
-   * In confirm mode, the time slots will actually be copied.
+   * The action operates in two modes:
+   *
+   * 1. Preview - A form will display to confirm the copy
+   * 2. Confirm - The time slots will be copied
    *
    * @param context The application context
    * @returns The response
    */
-  public async copyPost(context: Context) {
+  public async copyPost(context: Context): Promise<ResponseWrapper> {
     const model = await ScheduleCopyViewModel.fromRequest(context.request);
 
     model.validate();
@@ -594,10 +612,17 @@ export default class TimeSlotController extends Controller {
    * @returns The response
    */
   public clearGet(context: Context): ResponseWrapper {
-    const [_, y1, m1, d1, y2, m2, d2] = context.match;
-    const start = new Date(parseInt(y1), parseInt(m1) - 1, parseInt(d1));
-    const end = new Date(parseInt(y2), parseInt(m2) - 1, parseInt(d2));
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    const start = context.routeData.getDateMulti(
+      "startYear",
+      "startMonth",
+      "startDate",
+    );
+    const end = context.routeData.getDateMulti(
+      "endYear",
+      "endMonth",
+      "endDate",
+    );
+    if (start == null || end == null) {
       return this.NotFoundResponse(context);
     }
 
@@ -609,7 +634,7 @@ export default class TimeSlotController extends Controller {
     return this.HTMLResponse(context, "./views/timeSlot/clear.html", model);
   }
 
-  /** Accepts requests to clear a section of the schedule of time slots
+  /** Accepts a request to clear a section of the schedule
    * @param context The application context
    * @returns The response
    */
@@ -640,7 +665,7 @@ export default class TimeSlotController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /** Accepts requests to render a time slot assignees recommendation HTML fragment
+  /** Accepts a request to render a time slot assignees recommendation HTML fragment
    * @param context The application context
    * @returns The response
    */
