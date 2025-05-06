@@ -6,40 +6,49 @@ import TeamMembersViewModel from "../models/viewModels/teamMember/TeamMembersVie
 import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
-/** Controls the team member page */
+/** Controls the team member pages */
 export default class TeamMemberController extends Controller {
-  /** The team members repository */
+  /** The team member repository */
   private _teamMembers: ITeamMemberRepository;
 
   /** Constructs the controller using a team member repository
-   * @param teamMemberRepository The team members repository
+   * @param teamMembers The team members repository
    */
-  constructor(teamMemberRepository: ITeamMemberRepository) {
+  constructor(teamMembers: ITeamMemberRepository) {
     super();
-    this._teamMembers = teamMemberRepository;
+    this._teamMembers = teamMembers;
     this.routes = [
       { method: "GET", pattern: "/team-members/", action: this.list },
-      { method: "GET", pattern: "/team-member/(\\d+)/", action: this.profile },
+      {
+        method: "GET",
+        pattern: "/team-member/(\\d+)/",
+        mappings: [[1, "id"]],
+        action: this.profile,
+      },
       { method: "GET", pattern: "/team-members/add/", action: this.addGet },
       { method: "POST", pattern: "/team-members/add/", action: this.addPost },
       {
         method: "GET",
         pattern: "/team-member/(\\d+)/edit/",
+        mappings: [[1, "id"]],
         action: this.editGet,
       },
       {
         method: "POST",
         pattern: "/team-member/(\\d+)/edit/",
+        mappings: [[1, "id"]],
         action: this.editPost,
       },
       {
         method: "GET",
         pattern: "/team-member/(\\d+)/delete/",
+        mappings: [[1, "id"]],
         action: this.deleteGet,
       },
       {
         method: "POST",
         pattern: "/team-member/(\\d+)/delete/",
+        mappings: [[1, "id"]],
         action: this.deletePost,
       },
     ];
@@ -60,8 +69,8 @@ export default class TeamMemberController extends Controller {
    * @returns The response
    */
   public async profile(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) return this.NotFoundResponse(context);
+    const id = context.routeData.getInt("id");
+    if (id == null) return this.NotFoundResponse(context);
 
     const teamMember = await this._teamMembers.get(id);
     if (teamMember == null) return this.NotFoundResponse(context);
@@ -79,11 +88,14 @@ export default class TeamMemberController extends Controller {
    * @returns The response
    */
   public addGet(context: Context): ResponseWrapper {
-    const model = TeamMemberEditViewModel.empty();
-    return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
+    return this.HTMLResponse(
+      context,
+      "./views/teamMember/edit.html",
+      TeamMemberEditViewModel.empty(),
+    );
   }
 
-  /** Accepts requests to add a team member
+  /** Accepts a request to add a team member
    * @param context The application context
    * @returns The response
    */
@@ -106,8 +118,8 @@ export default class TeamMemberController extends Controller {
    * @returns The response
    */
   public async editGet(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
+    const id = context.routeData.getInt("id");
+    if (id == null) {
       return this.NotFoundResponse(context);
     }
 
@@ -124,13 +136,13 @@ export default class TeamMemberController extends Controller {
     return this.HTMLResponse(context, "./views/teamMember/edit.html", model);
   }
 
-  /** Accepts requests to edit a team member
+  /** Accepts a request to edit a team member
    * @param context The application context
    * @returns The response
    */
   public async editPost(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
+    const id = context.routeData.getInt("id");
+    if (id == null) {
       return this.NotFoundResponse(context);
     }
 
@@ -154,8 +166,8 @@ export default class TeamMemberController extends Controller {
    * @returns The response
    */
   public async deleteGet(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
+    const id = context.routeData.getInt("id");
+    if (id == null) {
       return this.NotFoundResponse(context);
     }
 
@@ -176,13 +188,13 @@ export default class TeamMemberController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /** Accepts requests to delete a team member
+  /** Accepts a request to delete a team member
    * @param context The application context
    * @returns The response
    */
   public async deletePost(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
+    const id = context.routeData.getInt("id");
+    if (id == null) {
       return this.NotFoundResponse(context);
     }
 
