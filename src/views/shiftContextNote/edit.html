@@ -13,6 +13,10 @@
   {{ formErrors(model.errors) }}
   <form method="post" class="max-w-lg">
     <div class="flex mt-4">
+      <div class="flex-1">Shift context</div>
+      <div class="flex-1">{{ model.shiftContextNote.shiftContext.name }}</div>
+    </div>
+    <div class="flex mt-4">
       <div class="flex-1">Date</div>
       <div class="flex-1">{{ formatDate(model.shiftContextNote.date) }}</div>
     </div>
