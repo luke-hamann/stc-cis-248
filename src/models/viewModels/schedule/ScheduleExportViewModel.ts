@@ -1,5 +1,6 @@
 import BetterDate from "../../../_dates/BetterDate.ts";
 import MapWrapper from "../../../_framework/MapWrapper.ts";
+import DateLib from "../../../_dates/DateLib.ts";
 import ViewModel from "../_shared/_ViewModel.ts";
 
 const spreadsheetFormats = ["csv", "excel"] as const;
@@ -110,10 +111,18 @@ export default class ScheduleExportViewModel extends ViewModel {
 
     if (
       this.startDate != null &&
-      this.endDate != null &&
-      this.startDate.toDate().getTime() > this.endDate.toDate().getTime()
+      this.endDate != null
     ) {
-      this.errors.push("End date must be after start date.");
+      if (this.startDate.toDate() > this.endDate.toDate()) {
+        this.errors.push("End date must be after start date.");
+      } else if (
+        DateLib.differenceInDays(
+          this.startDate.toDate(),
+          this.endDate.toDate(),
+        ) > 90
+      ) {
+        this.errors.push("The maximum range to export is 90 days.");
+      }
     }
 
     if (!isSpreadsheetFormat(this.format)) {

@@ -117,12 +117,17 @@ export default class ScheduleCopyViewModel extends ViewModel {
 
     if (
       this.fromStartDate != null &&
-      this.fromEndDate != null &&
-      this.fromEndDate.getTime() < this.fromStartDate.getTime()
+      this.fromEndDate != null
     ) {
-      this.errors.push(
-        "End date to copy from must be after start date to copy from.",
-      );
+      if (this.fromStartDate > this.fromEndDate) {
+        this.errors.push(
+          "End date to copy from must be after start date to copy from.",
+        );
+      } else if (
+        DateLib.differenceInDays(this.fromStartDate, this.fromEndDate) > 90
+      ) {
+        this.errors.push("The maximum range to copy from is 90 days.");
+      }
     }
 
     if (this.toStartDate == null) {
@@ -135,12 +140,17 @@ export default class ScheduleCopyViewModel extends ViewModel {
 
     if (
       this.toStartDate != null &&
-      this.toEndDate != null &&
-      this.toEndDate.getTime() < this.toStartDate.getTime()
+      this.toEndDate != null
     ) {
-      this.errors.push(
-        "End date to copy to must be after start date to copy to.",
-      );
+      if (this.toStartDate > this.toEndDate) {
+        this.errors.push(
+          "End date to copy to must be after start date to copy to.",
+        );
+      } else if (
+        DateLib.differenceInDays(this.toStartDate, this.toEndDate) > 90
+      ) {
+        this.errors.push("The maximum range to copy to is 90 days.");
+      }
     }
   }
 

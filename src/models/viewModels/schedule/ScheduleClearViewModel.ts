@@ -125,10 +125,13 @@ export default class ScheduleClearViewModel extends ViewModel {
 
     if (
       this.startDate != null &&
-      this.endDate != null &&
-      this.endDate.getTime() < this.startDate.getTime()
+      this.endDate != null
     ) {
-      this.errors.push("End date must be after start date.");
+      if (this.startDate > this.endDate) {
+        this.errors.push("End date must be after start date.");
+      } else if (DateLib.differenceInDays(this.startDate, this.endDate) > 90) {
+        this.errors.push("The maximum range to clear is 90 days.");
+      }
     }
 
     if (
