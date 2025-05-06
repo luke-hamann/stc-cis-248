@@ -137,7 +137,7 @@ export default class MapWrapper {
     return date;
   }
 
-  /** Gets a date based on keys refering to date components: year, month, and date
+  /** Gets a date based on keys referring to date components: year, month, and date
    * @param yearKey The key to look up the year value
    * @param monthKey The key to look up the month value
    * @param dateKey The key to look up the date value
@@ -160,7 +160,7 @@ export default class MapWrapper {
     return out;
   }
 
-  /** Gets a date with a time based on keys refering to date components: year, month, date, hour, and minute
+  /** Gets a date with a time based on keys referring to date components: year, month, date, hour, and minute
    * @param yearKey The key of the year value
    * @param monthKey The key of the month value
    * @param dateKey The key of the date value
