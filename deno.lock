@@ -2,14 +2,11 @@
   "version": "5",
   "specifiers": {
     "npm:@types/node@*": "22.12.0",
+    "npm:@types/nunjucks@^3.2.6": "3.2.6",
     "npm:exceljs@*": "4.4.0",
-    "npm:mysql2@*": "3.14.1",
-    "npm:mysql2@3": "3.1.2",
-    "npm:mysql2@3.1": "3.1.2",
-    "npm:mysql2@3.14": "3.14.1",
     "npm:mysql2@3.14.1": "3.14.1",
-    "npm:nunjucks@*": "3.2.4",
-    "npm:puppeteer@*": "24.8.0_devtools-protocol@0.0.1439962"
+    "npm:nunjucks@^3.2.4": "3.2.4",
+    "npm:puppeteer@*": "24.8.1_devtools-protocol@0.0.1439962"
   },
   "npm": {
     "@babel/code-frame@7.27.1": {
@@ -70,6 +67,9 @@
       "dependencies": [
         "undici-types"
       ]
+    },
+    "@types/nunjucks@3.2.6": {
+      "integrity": "sha512-pHiGtf83na1nCzliuAdq8GowYiXvH5l931xZ0YEHaLMNFgynpEqx+IPStlu7UaDkehfvl01e4x/9Tpwhy7Ue3w=="
     },
     "@types/yauzl@2.10.3": {
       "integrity": "sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==",
@@ -253,8 +253,8 @@
         "traverse"
       ]
     },
-    "chromium-bidi@4.1.1_devtools-protocol@0.0.1439962": {
-      "integrity": "sha512-biR7t4vF3YluE6RlMSk9IWk+b9U+WWyzHp+N2pL9vRTk+UXHYRTVp7jTK58ZNzMLBgoLMHY4QyJMbeuw3eKxqg==",
+    "chromium-bidi@5.1.0_devtools-protocol@0.0.1439962": {
+      "integrity": "sha512-9MSRhWRVoRPDG0TgzkHrshFSJJNZzfY5UFqUMuksg7zL1yoZIZ3jLB0YAgHclbiAxPI86pBnwDX1tbzoiV8aFw==",
       "dependencies": [
         "devtools-protocol",
         "mitt",
@@ -670,19 +670,6 @@
     "ms@2.1.3": {
       "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="
     },
-    "mysql2@3.1.2": {
-      "integrity": "sha512-NXz6sUvHSEOKz1jv3koSga7eb2dHrwD/mnPmqbbZzMRvjQcSpb0Eh0ectWyYt1U60CLlEbjoA3XYjjbbReRF5Q==",
-      "dependencies": [
-        "denque",
-        "generate-function",
-        "iconv-lite",
-        "long",
-        "lru-cache",
-        "named-placeholders",
-        "seq-queue",
-        "sqlstring"
-      ]
-    },
     "mysql2@3.14.1": {
       "integrity": "sha512-7ytuPQJjQB8TNAYX/H2yhL+iQOnIBjAMam361R7UAL0lOVXWjtdrmoL9HYKqKoLp/8UUTRcvo1QPvK9KL7wA8w==",
       "dependencies": [
@@ -800,8 +787,8 @@
         "once"
       ]
     },
-    "puppeteer-core@24.8.0_devtools-protocol@0.0.1439962": {
-      "integrity": "sha512-tDf2YKIo5kM5r0vOzT52+PTgN0bBZOA4OFgQaqYyfarrcXLLJ92wi/lSMe44hd+F+gk0gw9QsAzyRW8v6ra93w==",
+    "puppeteer-core@24.8.1_devtools-protocol@0.0.1439962": {
+      "integrity": "sha512-UP/VIxVk/Akrgql3a55ZAIuAIx7+yQevz6qEXFUtSTIynEcgsCJ6tlRdi7uKAAlovmNQG4iNMzq9f8WxZLnGGg==",
       "dependencies": [
         "@puppeteer/browsers",
         "chromium-bidi",
@@ -811,8 +798,8 @@
         "ws"
       ]
     },
-    "puppeteer@24.8.0_devtools-protocol@0.0.1439962": {
-      "integrity": "sha512-8GPlUKXvZK8ANxab75UerMar14ZnJTJpPok3XN9Nx6f7SKyabyFK39pQruMni6zfrwVBrPXp3Mo6ztwKEmXaDQ==",
+    "puppeteer@24.8.1_devtools-protocol@0.0.1439962": {
+      "integrity": "sha512-5OvJCe6tQ09EWf35qqyoH/cr9YGMbLj0ZpoT2pEImF9Ox35JXyAn8kIqj8eBgpDfyzuEwXYIMUwIAIkdgO/gDA==",
       "dependencies": [
         "@puppeteer/browsers",
         "chromium-bidi",
@@ -1035,8 +1022,8 @@
     "wrappy@1.0.2": {
       "integrity": "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ=="
     },
-    "ws@8.18.1": {
-      "integrity": "sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w=="
+    "ws@8.18.2": {
+      "integrity": "sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ=="
     },
     "xmlchars@2.2.0": {
       "integrity": "sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw=="
@@ -1074,13 +1061,18 @@
         "readable-stream@3.6.2"
       ]
     },
-    "zod@3.24.3": {
-      "integrity": "sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg=="
+    "zod@3.24.4": {
+      "integrity": "sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg=="
     }
   },
   "remote": {
     "https://deno.land/std@0.104.0/fmt/colors.ts": "d2f8355f00a74404668fc5a1e4a92983ce1a9b0a6ac1d40efbd681cb8f519586",
     "https://deno.land/std@0.104.0/testing/_diff.ts": "5d3693155f561d1a5443ac751ac70aab9f5d67b4819a621d4b96b8a1a1c89620",
     "https://deno.land/std@0.104.0/testing/asserts.ts": "e4311d45d956459d4423bc267208fe154b5294989da2ed93257b6a85cae0427e"
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:@types/nunjucks@^3.2.6"
+    ]
   }
 }
