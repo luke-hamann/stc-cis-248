@@ -220,14 +220,17 @@ export default class ShiftContextNoteRepository extends Repository
   public async getWhere(
     start: Date,
     end: Date,
-    shiftContextId?: number,
+    shiftContextId: number | null = null,
   ): Promise<ShiftContextNote[]> {
     let query = `${this.baseQuery} WHERE DATE(date) BETWEEN ? AND ?`;
     if (shiftContextId) query += " AND shiftContextId = ?";
 
+    const parameters: (Date | number | null)[] = [start, end];
+    if (shiftContextId) parameters.push(shiftContextId);
+
     const result = await this._database.execute(
       query,
-      [start, end, shiftContextId ?? null],
+      parameters,
     );
 
     if (!result.rows) return [];

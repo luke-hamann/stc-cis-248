@@ -1,4 +1,5 @@
 {% extends "../_shared/_layout.html" %}
+{% from "../_shared/formatDate.html" import formatDate %}
 
 {% set title = "Copy Preview" %}
 
@@ -81,11 +82,19 @@
         </div>
       </div>
     {% endfor %}
-    {% if model.includeShiftContextNotes.length > 0 %}
-      <p class="mt-8">The following shift context notes will be created:</p>
+    {% if model.newShiftContextNotes.length == 0 %}
+      <p class="mt-8">
+        No shift context notes will be created.
+      </p>
+    {% else %}
+      <p class="mt-8">
+        {{ model.newShiftContextNotes.length }}
+        shift context note{{ 's' if model.newShiftContextNotes.length != 1 }}
+        will be created:
+      </p>
       {% for shiftContextNote in model.newShiftContextNotes %}
-        <div class="border">
-          <div>{{ shiftContextNote.date }}</div>
+        <div class="mt-4 p-2 border rounded">
+          <div>{{ shiftContextNote.date.toLocaleDateString() }}</div>
           <div>{{ shiftContextNote.note }}</div>
         </div>
       {% endfor %}
