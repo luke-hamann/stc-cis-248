@@ -8,15 +8,15 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
 /** Controls the substitute pages */
 export default class SubstituteController extends Controller {
-  /** The substitutes repository */
+  /** The substitute repository */
   private _substitutes: ISubstituteRepository;
 
-  /** The team members repository */
+  /** The team member repository */
   private _teamMembers: ITeamMemberRepository;
 
   /** Constructs the substitutes controller using the necessary repositories
-   * @param substitutes The substitutes repository
-   * @param teamMembers The team members repository
+   * @param substitutes The substitute repository
+   * @param teamMembers The team member repository
    */
   constructor(
     substitutes: ISubstituteRepository,
@@ -29,25 +29,16 @@ export default class SubstituteController extends Controller {
       {
         method: "GET",
         pattern: "/substitutes/(\\d{4})/(\\d{2})/(\\d{2})/",
+        mappings: [[1, "year"], [2, "month"], [3, "date"]],
         action: this.editGet,
       },
       {
         method: "POST",
         pattern: "/substitutes/(\\d{4})/(\\d{2})/(\\d{2})/",
+        mappings: [[1, "year"], [2, "month"], [3, "date"]],
         action: this.editPost,
       },
     ];
-  }
-
-  /** Gets a date from the application context url, or null if the date is invalid
-   * @param context The application context
-   * @returns The date
-   */
-  private getDateFromContext(context: Context): Date | null {
-    const [_, y, m, d] = context.match;
-    const date = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-    if (isNaN(date.getTime())) return null;
-    return date;
   }
 
   /** Gets the substitute list edit form for a given date
@@ -55,7 +46,7 @@ export default class SubstituteController extends Controller {
    * @returns The response
    */
   public async editGet(context: Context): Promise<ResponseWrapper> {
-    const date = this.getDateFromContext(context);
+    const date = context.routeData.getDateMulti("year", "month", "date");
     if (date == null) return this.NotFoundResponse(context);
 
     const model = new SubstitutesEditViewModel(
@@ -66,12 +57,12 @@ export default class SubstituteController extends Controller {
     return this.HTMLResponse(context, "./views/substitute/edit.html", model);
   }
 
-  /** Accepts requests to update the substitute list for a given date
+  /** Accepts a request to update the substitute list for a given date
    * @param context The application context
    * @returns The response
    */
   public async editPost(context: Context): Promise<ResponseWrapper> {
-    const date = this.getDateFromContext(context);
+    const date = context.routeData.getDateMulti("year", "month", "date");
     if (date == null) return this.NotFoundResponse(context);
 
     const model = await SubstitutesEditViewModel.fromRequest(context.request);
