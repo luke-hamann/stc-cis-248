@@ -20,19 +20,19 @@ export default class ShiftContextNoteController extends Controller {
   private _colors: IColorRepository;
 
   /** Constructs the shift context note controller based on the necessary repositories
-   * @param shiftContextNoteRepository The shift context note repository
-   * @param shiftContextRepository The shift context repository
-   * @param colorRepository The color repository
+   * @param shiftContextNotes The shift context note repository
+   * @param shiftContexts The shift context repository
+   * @param colors The color repository
    */
   constructor(
-    shiftContextNoteRepository: IShiftContextNoteRepository,
-    shiftContextRepository: IShiftContextRepository,
-    colorRepository: IColorRepository,
+    shiftContextNotes: IShiftContextNoteRepository,
+    shiftContexts: IShiftContextRepository,
+    colors: IColorRepository,
   ) {
     super();
-    this._shiftContextNotes = shiftContextNoteRepository;
-    this._shiftContexts = shiftContextRepository;
-    this._colors = colorRepository;
+    this._shiftContextNotes = shiftContextNotes;
+    this._shiftContexts = shiftContexts;
+    this._colors = colors;
     this.routes = [
       {
         method: "GET",
