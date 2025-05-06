@@ -9,37 +9,39 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Controls the shift context preference pages */
 export default class ShiftContextPreferenceController extends Controller {
   /** The shift context preference repository */
-  private _shiftContextPreferenceRepository: IShiftContextPreferenceRepository;
+  private _shiftContextPreferences: IShiftContextPreferenceRepository;
 
   /** The team member repository */
-  private _teamMemberRepository: ITeamMemberRepository;
+  private _teamMembers: ITeamMemberRepository;
 
   /** The shift context repository */
-  private _shiftContextRepository: IShiftContextRepository;
+  private _shiftContexts: IShiftContextRepository;
 
   /** Constructs the shift context preference controller using the necessary repositories
-   * @param shiftContextPreferenceRepository The shift context preference repository
-   * @param teamMemberRepository The team member repository
-   * @param shiftContextRepository The shift context repository
+   * @param shiftContextPreferences The shift context preference repository
+   * @param teamMembers The team member repository
+   * @param shiftContexts The shift context repository
    */
   constructor(
-    shiftContextPreferenceRepository: IShiftContextPreferenceRepository,
-    teamMemberRepository: ITeamMemberRepository,
-    shiftContextRepository: IShiftContextRepository,
+    shiftContextPreferences: IShiftContextPreferenceRepository,
+    teamMembers: ITeamMemberRepository,
+    shiftContexts: IShiftContextRepository,
   ) {
     super();
-    this._shiftContextPreferenceRepository = shiftContextPreferenceRepository;
-    this._teamMemberRepository = teamMemberRepository;
-    this._shiftContextRepository = shiftContextRepository;
+    this._shiftContextPreferences = shiftContextPreferences;
+    this._teamMembers = teamMembers;
+    this._shiftContexts = shiftContexts;
     this.routes = [
       {
         method: "GET",
         pattern: "/team-member/(\\d+)/preferences/",
+        mappings: [[1, "teamMemberId"]],
         action: this.listGet,
       },
       {
         method: "POST",
         pattern: "/team-member/(\\d+)/preferences/",
+        mappings: [[1, "teamMemberId"]],
         action: this.listPost,
       },
     ];
@@ -50,19 +52,19 @@ export default class ShiftContextPreferenceController extends Controller {
    * @returns The response
    */
   public async listGet(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
+    const teamMemberId = context.routeData.getInt("teamMemberId");
+    if (teamMemberId == null) {
       return this.NotFoundResponse(context);
     }
 
-    const teamMember = await this._teamMemberRepository.get(id);
+    const teamMember = await this._teamMembers.get(teamMemberId);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
     }
 
-    const shiftContexts = await this._shiftContextRepository.list();
-    const shiftContextPreferences = await this._shiftContextPreferenceRepository
-      .get(id);
+    const shiftContexts = await this._shiftContexts.list();
+    const shiftContextPreferences = await this._shiftContextPreferences
+      .get(teamMemberId);
 
     const model = new ShiftContextPreferencesEditViewModel(
       teamMember,
@@ -77,17 +79,17 @@ export default class ShiftContextPreferenceController extends Controller {
     );
   }
 
-  /** Accepts requests to update a team member's shift context preferences
+  /** Accepts a request to update a team member's shift context preferences
    * @param context The application context
    * @returns The response
    */
   public async listPost(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
+    const teamMemberId = context.routeData.getInt("teamMemberId");
+    if (teamMemberId == null) {
       return this.NotFoundResponse(context);
     }
 
-    const teamMember = await this._teamMemberRepository.get(id);
+    const teamMember = await this._teamMembers.get(teamMemberId);
     if (teamMember == null) {
       return this.NotFoundResponse(context);
     }
@@ -96,7 +98,7 @@ export default class ShiftContextPreferenceController extends Controller {
       context.request,
     );
 
-    model.errors = await this._shiftContextPreferenceRepository.validate(
+    model.errors = await this._shiftContextPreferences.validate(
       model.shiftContextPreferences,
     );
 
@@ -108,10 +110,10 @@ export default class ShiftContextPreferenceController extends Controller {
       );
     }
 
-    await this._shiftContextPreferenceRepository.update(
-      id,
+    await this._shiftContextPreferences.update(
+      teamMemberId,
       model.shiftContextPreferences,
     );
-    return this.RedirectResponse(context, `/team-member/${id}/`);
+    return this.RedirectResponse(context, `/team-member/${teamMemberId}/`);
   }
 }
