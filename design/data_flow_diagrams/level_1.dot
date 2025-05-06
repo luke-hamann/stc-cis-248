@@ -4,15 +4,15 @@ digraph data_flow_diagram {
     
     Admin [ shape = box ]
     
-    Admin -> "Route request" [ label = "Request" ]
-    "Route request" -> Admin [ label = "Response" ]
-    "Route request" -> "Control processing"
-    "Control processing" -> "Route request"
-    "Control processing" -> "Manipulate data models"
-    "Manipulate data models" -> "Control processing"
-    "Manipulate data models" -> "Database"
+    Admin -> "Route\nrequest" [ label = "Request" ]
+    "Route\nrequest" -> Admin [ label = "Response" ]
+    "Route\nrequest" -> "Control\nprocessing"
+    "Control\nprocessing" -> "Route\nrequest"
+    "Control\nprocessing" -> "Manipulate\ndata models"
+    "Manipulate\ndata models" -> "Control\nprocessing"
+    "Manipulate\ndata models" -> "Database"
     
     "Database" [ shape = underline ]
     
-    "Database" -> "Manipulate data models"
+    "Database" -> "Manipulate\ndata models"
 }

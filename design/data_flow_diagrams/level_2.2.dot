@@ -8,38 +8,38 @@ digraph data_flow_diagram {
     subgraph controllers {
         rank = same
         
-        "Color controller"
-        "Shift context notes controller"
+        "Color\ncontroller"
+        "Shift context\nnotes controller"
     }
     
     Router -> {
-        "Color controller"
-        "Shift context notes controller"
+        "Color\ncontroller"
+        "Shift context\nnotes controller"
     } -> Router
     
     subgraph repositories {
         rank = same
         
-        "Color repository"
-        "Shift context repository"
-        "Shift context notes repository"
+        "Color\nrepository"
+        "Shift context\nrepository"
+        "Shift context\nnotes repository"
     }
     
-    "Color controller" -> {
-        "Color repository"
-    } -> "Color controller"
+    "Color\ncontroller" -> {
+        "Color\nrepository"
+    } -> "Color\ncontroller"
     
-    "Shift context notes controller" -> {
-        "Color repository"
-        "Shift context repository"
-        "Shift context notes repository"
-    } -> "Shift context notes controller"
+    "Shift context\nnotes controller" -> {
+        "Color\nrepository"
+        "Shift context\nrepository"
+        "Shift context\nnotes repository"
+    } -> "Shift context\nnotes controller"
     
     Database [ shape = folder ]
     
     Database -> {
-        "Color repository"
-        "Shift context repository"
-        "Shift context notes repository"
+        "Color\nrepository"
+        "Shift context\nrepository"
+        "Shift context\nnotes repository"
     } -> Database
 }

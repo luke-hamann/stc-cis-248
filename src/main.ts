@@ -24,10 +24,15 @@ import TeamMemberRepository from "./models/repositories/TeamMemberRepository.ts"
 import TimeSlotRepository from "./models/repositories/TimeSlotRepository.ts";
 import TypicalAvailabilityRepository from "./models/repositories/TypicalAvailabilityRepository.ts";
 import UnavailabilityRepository from "./models/repositories/UnavailabilityRepository.ts";
+import KeyStore from "./models/repositories/_KeyStore.ts";
 
 /** Database */
 
 const database = new Database();
+
+/** Key-value store */
+
+const keyStore = new KeyStore(await Deno.openKv());
 
 /** Repositories */
 
@@ -77,7 +82,7 @@ const scheduleRepository = new ScheduleRepository(
 
 const controllers: Controller[] = [
   new StaticFilesMiddleware(),
-  new SessionMiddleware(),
+  new SessionMiddleware(keyStore),
   new CsrfMiddleware(),
   new TeamMemberController(teamMemberRepository),
   new TypicalAvailabilityController(

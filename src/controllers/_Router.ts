@@ -47,10 +47,11 @@ export default class Router extends Controller {
         const message = (error as Error).message + "\n\n" +
           (error as Error).stack;
 
+        const isProduction = Deno.env.get("ENVIRONMENT") == "production";
         const model = new ErrorViewModel(
           "500 Internal Server Error",
-          message,
-          true,
+          isProduction ? "Something went wrong on our end." : message,
+          !isProduction,
         );
 
         response = this.ErrorResponse(

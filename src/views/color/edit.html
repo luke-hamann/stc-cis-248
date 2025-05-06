@@ -1,9 +1,17 @@
 {% extends "../_shared/_layout.html" %}
 {% from "../_shared/formErrors.html" import formErrors %}
 
+{% if model.isEdit %}
+  {% set title = "Edit Color" %}
+{% else %}
+  {% set title = "Add Color" %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
+
 {% block content %}
   <h1 class="text-4xl mt-8 font-bold">
-    {% if model.isEdit %}Edit{% else %}Add{% endif %} Color
+    {{ title }}
   </h1>
   {{ formErrors(model.errors) }}
   <form method="post" action="{% if model.isEdit %}/color/{{ model.color.id }}/{% else %}/colors/add/{% endif %}" class="mt-8 max-w-md">

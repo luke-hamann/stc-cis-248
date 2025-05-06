@@ -1,6 +1,7 @@
 import Context from "../_framework/Context.ts";
 import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
+import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 
 /** Middleware for enforcing anti request forgery */
 export default class CsrfMiddleware extends Controller {
@@ -23,10 +24,18 @@ export default class CsrfMiddleware extends Controller {
     const submitted_csrf_token = formData.get("csrf_token") as string ?? "";
 
     if (submitted_csrf_token != context.csrf_token) {
-      context.response.status = 403;
-      context.response.body = "403 Forbidden";
-      context.response.headers.set("Content-Type", "text/plain");
-      return context.response;
+      const model = new ErrorViewModel(
+        "403 Forbidden",
+        "Your session expired. Please refresh the page.",
+        false,
+      );
+
+      return this.ErrorResponse(
+        context,
+        403,
+        "./views/_shared/error.html",
+        model,
+      );
     }
   }
 }

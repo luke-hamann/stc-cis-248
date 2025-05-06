@@ -38,8 +38,8 @@
         {% endfor %}
       </select>
     </div>
-    {{ field("startTime", model.typicalAvailability.startTime, "time", "Start time") }}
-    {{ field("endTime", model.typicalAvailability.endTime, "time", "End time") }}
+    {{ field("startTime", model.typicalAvailability.startTimeString, "time", "Start time") }}
+    {{ field("endTime", model.typicalAvailability.endTimeString, "time", "End time") }}
     {{ field("isPreference", "", "checkbox", "Preferable", model.typicalAvailability.isPreference) }}
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}

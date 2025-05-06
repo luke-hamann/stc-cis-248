@@ -3,32 +3,32 @@ digraph data_flow_diagram {
     
     "..." [ shape = none ]
     
-    "..." -> "Color controller" -> "..."
+    "..." -> "Color\ncontroller" -> "..."
 
     subgraph actions {
         rank = same
         
-        "Color list (GET)"
-        "Color add (GET, POST)"
-        "Color edit (GET, POST)"
-        "Color delete (GET, POST)"
+        "Color list\n(GET)"
+        "Color add\n(GET, POST)"
+        "Color edit\n(GET, POST)"
+        "Color delete\n(GET, POST)"
     }
     
-    "Color controller" -> {
-        "Color list (GET)"
-        "Color add (GET, POST)"
-        "Color edit (GET, POST)"
-        "Color delete (GET, POST)"
-    } -> "Color controller"
+    "Color\ncontroller" -> {
+        "Color list\n(GET)"
+        "Color add\n(GET, POST)"
+        "Color edit\n(GET, POST)"
+        "Color delete\n(GET, POST)"
+    } -> "Color\ncontroller"
     
-    "Color repository" -> {
-        "Color list (GET)"
-        "Color add (GET, POST)"
-        "Color edit (GET, POST)"
-        "Color delete (GET, POST)"
-    } -> "Color repository"
+    "Color\nrepository" -> {
+        "Color list\n(GET)"
+        "Color add\n(GET, POST)"
+        "Color edit\n(GET, POST)"
+        "Color delete\n(GET, POST)"
+    } -> "Color\nrepository"
     
     Database [ shape = folder ]
     
-    "Color repository" -> Database -> "Color repository"
+    "Color\nrepository" -> Database -> "Color\nrepository"
 }

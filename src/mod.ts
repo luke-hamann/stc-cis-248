@@ -4,29 +4,6 @@
  *
  * It follows an MVC architecture and a repository pattern for the data layer.
  *
- * ## Table of contents
- *
- * * [Installation](#installation)
- *   * [Prerequisites](#prerequisites)
- *   * [Development](#development)
- *   * [Docker](#docker)
- * * [Building documentation](#building-documentation)
- *   * [Systems documentation](#systems-documentation)
- *   * [User guides](#user-guides)
- * * [Framework modules](#framework-modules)
- *   * [Date module](#date-module)
- *   * [Web framework module](#web-framework-module)
- * * [Database](#database)
- *   * [Columns](#columns)
- * * [Models](#models)
- *   * [Entities](#entities)
- *   * [Helper entities](#helper-entities)
- * * [Controllers](#controllers)
- * * [Data layer](#data-layer)
- *   * [Repositories](#repositories)
- *   * [Repository interfaces](#repository-interfaces)
- * * [Views](#views)
- *
  * ## Installation
  *
  * A warning about database connections:
@@ -47,11 +24,13 @@
  *      ```
  * 2. Create a `.env` file in the root directory of the repository with this content:
  *    ```
+ *    ENVIRONMENT=development
  *    DATABASE_HOSTNAME=localhost
  *    DATABASE_USERNAME=<username>
  *    DATABASE_NAME=<name>
  *    DATABASE_PASSWORD=<password>
  *    ```
+ * 3. If you want to run the app in production mode, set the ENVIRONMENT in the .env file to "production".
  *
  * ### Development
  *
@@ -309,8 +288,16 @@
  *
  * ## Data layer
  *
+ * ### Relational database
+ *
  * * {@link Database Database}
  * * {@link Repository Repository}
+ *
+ * ### Key-value store
+ *
+ * * {@link KeyStore}
+ * * {@link IKeyStore}
+ * * {@link IKeyValue}
  *
  * ### Repositories
  *
@@ -446,6 +433,11 @@ export { default as Unavailability } from "./models/entities/Unavailability.ts";
 // Models - repositories
 
 export { default as Database } from "./models/repositories/_Database.ts";
+export type {
+  default as KeyStore,
+  IKeyStore,
+  IKeyValue,
+} from "./models/repositories/_KeyStore.ts";
 export { default as Repository } from "./models/repositories/_Repository.ts";
 export type {
   default as ColorRepository,
