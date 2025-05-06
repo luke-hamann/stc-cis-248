@@ -16,7 +16,7 @@ digraph data_flow_diagram {
         Team member preferences <br />
         Shift context info <br />
         Daily shift context notes <br />
-        Timeslot info <br />
+        Time slot info <br />
         Daily substitute list <br />
         Note colors
     > ]

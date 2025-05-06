@@ -9,16 +9,16 @@ digraph data_flow_diagram {
         rank = same
         
         "Team member\ntypical availability\n(GET)"
-        "Team member\ntypical availability\ntimeslot add\n(GET, POST)"
-        "Team member\ntypical availability\ntimeslot edit\n(GET, POST)"
-        "Team member\ntypical availability\ntimeslot delete\n(GET, POST)"
+        "Team member\ntypical availability\ntime slot add\n(GET, POST)"
+        "Team member\ntypical availability\ntime slot edit\n(GET, POST)"
+        "Team member\ntypical availability\ntime slot delete\n(GET, POST)"
     }
     
     "Typical\navailability\ncontroller" -> {
         "Team member\ntypical availability\n(GET)"
-        "Team member\ntypical availability\ntimeslot add\n(GET, POST)"
-        "Team member\ntypical availability\ntimeslot edit\n(GET, POST)"
-        "Team member\ntypical availability\ntimeslot delete\n(GET, POST)"
+        "Team member\ntypical availability\ntime slot add\n(GET, POST)"
+        "Team member\ntypical availability\ntime slot edit\n(GET, POST)"
+        "Team member\ntypical availability\ntime slot delete\n(GET, POST)"
     } -> "Typical\navailability\ncontroller"
     
     subgraph repositories {
@@ -35,9 +35,9 @@ digraph data_flow_diagram {
     ->
     {
         "Team member\ntypical availability\n(GET)"
-        "Team member\ntypical availability\ntimeslot add\n(GET, POST)"
-        "Team member\ntypical availability\ntimeslot edit\n(GET, POST)"
-        "Team member\ntypical availability\ntimeslot delete\n(GET, POST)"
+        "Team member\ntypical availability\ntime slot add\n(GET, POST)"
+        "Team member\ntypical availability\ntime slot edit\n(GET, POST)"
+        "Team member\ntypical availability\ntime slot delete\n(GET, POST)"
     }
     ->
     {
