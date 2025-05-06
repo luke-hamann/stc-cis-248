@@ -8,7 +8,7 @@
 
 {% block content %}
   <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
-  <form method="post" class="mt-4 max-w-lg">
+  <form method="post" class="mt-4 max-w-lg bg-white drop-shadow-lg px-3 py-1">
     {{ formErrors(model.errors) }}
     {{ field("title", model.title, "text", "Title") }}
     {{ field("startDate", model.startDate.toDateString(), "date", "Start date") }}
@@ -22,8 +22,8 @@
     </div>
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <button type="submit" class="block p-2 bg-blue-300 rounded">Export</button>
-      <a href="{{ model.cancelLink }}" class="block p-2 bg-gray-300 rounded">Cancel</a>
+      <button type="submit" class="block py-3 px-10 bg-blue-400 text-white hover:bg-sky-800">Export</button>
+      <a href="{{ model.cancelLink }}" class="block py-3 px-10 bg-red-500 text-white hover:bg-red-800">Cancel</a>
     </div>
   </form>
 {% endblock %}

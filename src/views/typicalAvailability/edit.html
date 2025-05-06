@@ -23,6 +23,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-1 py-1 mt-6 ">
   <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
   <form method="post" action="{{ action }}" class="max-w-lg">
     {{ formErrors(model.errors) }}
@@ -42,8 +43,9 @@
     {{ field("isPreference", "", "checkbox", "Preferable", model.typicalAvailability.isPreference) }}
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <input type="submit" value="Save" class="block p-2 bg-blue-300 rounded" />
-      <a href="/team-member/{{ model.teamMember.id }}/availability/" class="block p-2 bg-gray-300 rounded">Cancel</a>
+      <input type="submit" value="Save" class="block p-2 bg-sky-800 hover:bg-sky-300 py-3 px-10 text-white" />
+      <a href="/team-member/{{ model.teamMember.id }}/availability/" class="block p-2 bg-red-500 text-white hover:bg-red-800 rounded">Cancel</a>
     </div>
   </form>
+</div>
 {% endblock %}

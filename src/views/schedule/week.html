@@ -36,8 +36,8 @@
     <a class="block p-1 border rounded bg-sky-500 text-white hover:bg-sky-800" href="{{ model.exportLink }}">Export</a>
   </div>
 
-  <div class="mt-8 overflow-auto bg-white drop-shadow-xl">
-    <table class="mx-auto">
+  <div class="mt-8 overflow-auto">
+    <table class="mx-auto  bg-white drop-shadow-xl">
       {% for row in model.schedule.table %}
         <tr>
           {% for col in row %}
@@ -45,7 +45,7 @@
             {% set data = col.content %}
             <td class=" w-[10rem] border has-target:border-4">
               {% if type == "origin" %}
-                <a href="/schedule/time-slot/add/week-of/{{ formatDate(model.currentWeek, '/') }}/" class="block p-4 pe-1 w-max h-max border rounded bg-blue-400 text-white hover:bg-sky-800">
+                <a href="/schedule/time-slot/add/week-of/{{ formatDate(model.currentWeek, '/') }}/" class="block p-1 py-9 text-center pe-1 w-max h-max border rounded bg-blue-400 text-white hover:bg-sky-800">
                   &plus; Add time slot
                 </a>
               {% endif %}
@@ -55,22 +55,22 @@
               {% endif %}
 
               {% if type == "dateHeader" %}
-                <h2 class="font-bold  text:center">
-                  <div>{{ data.toLocaleString(undefined, { weekday: "long" }) }}</div>
-                  <div>{{ data.toLocaleDateString(undefined) }}</div>
+                <h2 class="font-bold text-center">
+                  <div class="text-center">{{ data.toLocaleString(undefined, { weekday: "long" }) }}</div>
+                  <div class="text-center">{{ data.toLocaleDateString(undefined) }}</div>
                 </h2>
                 <div class="mt-4 flex justify-start gap-4">
-                  <a href="/schedule/copy/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block p-1 border rounded bg-blue-400 text-white hover:bg-sky-800">
+                  <a href="/schedule/copy/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block px-3 py-1 border rounded bg-blue-400 text-white hover:bg-sky-800">
                     Copy
                   </a> <!--Maybe Let the buttons fill out their placements more. Current whitespace is akward-->
-                  <a href="/schedule/clear/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block p-1 border rounded bg-red-500 text-white hover:bg-red-800">
+                  <a href="/schedule/clear/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block px-3 py-1 border rounded bg-red-500 text-white hover:bg-red-800">
                     Clear
                   </a>
                 </div>
               {% endif %}
 
               {% if type == "ShiftContext" %}
-                <h2 class="font-bold">{{ data.name }}</h2>
+                <h2 class="font-bold text-center">{{ data.name }}</h2>
               {% endif %}
 
               {% if type == "ShiftContextNote" %}
@@ -86,7 +86,7 @@
                   {% endif %}
                 {% endif %}
                 <p class="flex justify-center">
-                  <a href="/shift-context/{{ data.shiftContextId }}/note/{{ formatDate(data.date, '/') }}/" class="block p-1 w-fit border rounded">
+                  <a href="/shift-context/{{ data.shiftContextId }}/note/{{ formatDate(data.date, '/') }}/" class="block p-1 w-fit border rounded  bg-blue-400 text-white hover:bg-sky-800">
                     Edit
                   </a>
                 </p>
@@ -99,7 +99,7 @@
 
               {% if type == "TimeSlotPossibility" %}
                 <p class="flex justify-center">
-                  <a href="/schedule/time-slot/add/shift-context/{{ data.shiftContextId }}/on/{{ formatDate(data.startDateTime, '/') }}/from/{{ formatTime(data.startDateTime) }}/to/{{ formatTime(data.endDateTime) }}/{{ 'adult-only/' if data.requiresAdult }}" class="block p-1 w-fit border rounded">&plus; New</a>
+                  <a href="/schedule/time-slot/add/shift-context/{{ data.shiftContextId }}/on/{{ formatDate(data.startDateTime, '/') }}/from/{{ formatTime(data.startDateTime) }}/to/{{ formatTime(data.endDateTime) }}/{{ 'adult-only/' if data.requiresAdult }}" class="block p-1 w-fit border rounded  bg-blue-400 text-white hover:bg-sky-800">&plus; New</a>
                 </p>
               {% endif %}
 
@@ -154,8 +154,8 @@
                 {% endif %}
 
                 <div class="flex justify-center gap-4 mt-4">
-                  <a href="/schedule/time-slot/{{ data.id }}/" class="block p-1 border rounded">Edit</a>
-                  <a href="/schedule/time-slot/{{ data.id }}/delete/" class="block p-1 border rounded">Delete</a>
+                  <a href="/schedule/time-slot/{{ data.id }}/" class="block p-1 border rounded  bg-blue-400 text-white hover:bg-sky-800">Edit</a>
+                  <a href="/schedule/time-slot/{{ data.id }}/delete/" class="block p-1 border rounded  bg-red-500 text-white hover:bg-red-800">Delete</a>
                 </div>
               {% endif %}
 
@@ -168,7 +168,7 @@
                   </ul>
                 {% endif %}
                 <p class="flex justify-center">
-                  <a href="/substitutes/{{ formatDate(data.date, '/') }}/" class="block p-1 w-fit border rounded">
+                  <a href="/substitutes/{{ formatDate(data.date, '/') }}/" class="block p-1 w-fit border rounded  bg-blue-400 text-white hover:bg-sky-800">
                     Edit
                   </a>
                 </p>

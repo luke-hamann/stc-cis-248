@@ -10,6 +10,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg mt-6 pb-4">
   {{ teamMemberTabs(model.teamMember, "availability") }}
   <div class="max-w-lg ms-4">
     {% for row in model.typicalAvailabilityTable %}
@@ -42,5 +43,6 @@
         <div>(none)</div>
       {% endfor %}
     {% endfor %}
+  </div>
   </div>
 {% endblock %}

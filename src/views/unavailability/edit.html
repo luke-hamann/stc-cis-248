@@ -20,6 +20,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+  <div class="bg-white box-shadow-lg mt-3 p-2">
   {{ teamMemberTabs(model.teamMember, "unavailability") }}
   <h1 class="text-3xl font-bold mt-8">
     {{ "Edit" if model.isEdit else "Add" }} unavailability
@@ -32,8 +33,9 @@
     {{ field("isPreference", "", "checkbox", "Preferable", model.unavailability.isPreference) }}
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <input type="submit" value="Save" class="block p-2 bg-green-300 rounded" />
-      <a href="{{ model.cancelLink }}" class="block p-2 bg-gray-300 rounded">Cancel</a>
+      <input type="submit" value="Save" class="block p-2 bg-sky-800 hover:bg-sky-400 text-white rounded" />
+      <a href="{{ model.cancelLink }}" class="block p-2 bg-red-400 text-white hover:border-y-red-800 rounded">Cancel</a>
     </div>
   </form>
+</div>
 {% endblock %}

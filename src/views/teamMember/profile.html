@@ -17,6 +17,7 @@
 {% block title %}{{ model.teamMember.fullName }}{% endblock %}
 
 {% block content %}
+  <div class="bg-white drop-shadow-lg mt-6">
   {{ teamMemberTabs(model.teamMember, "profile") }}
   <div class="max-w-lg ms-4">
     {{ profileItem("First name", model.teamMember.firstName) }}
@@ -29,12 +30,13 @@
     {{ profileItem("Max weekly hours", model.teamMember.maxWeeklyHours) }}
     {{ profileItem("Max weekly days", model.teamMember.maxWeeklyDays) }}
     <div class="mt-8 flex justify-center gap-4">
-      <a href="/team-member/{{ model.teamMember.id }}/edit/" class="block p-2 bg-yellow-300 rounded">
+      <a href="/team-member/{{ model.teamMember.id }}/edit/" class="block py-3 px-10 rounded bg-blue-400 text-white hover:bg-sky-800">
         Edit
       </a>
-      <a href="/team-member/{{ model.teamMember.id }}/delete/" class="block p-2 bg-red-400 rounded">
+      <a href="/team-member/{{ model.teamMember.id }}/delete/" class="block py-3 px-10 rounded bg-red-500 text-white hover:bg-red-800">
         Delete
       </a>
     </div>
   </div>
+</div>
 {% endblock %}

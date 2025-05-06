@@ -4,8 +4,9 @@
 
 {% block content %}
   <h1 class="mt-8 text-3xl font-bold">Team Members</h1>
+  <div clas="box-shadow-lg bg-white pl-2 pt-0.5">
   <p class="mt-4">
-    <a href="/team-members/add/" class="block w-fit p-2 bg-blue-300 rounded">&plus; Add</a>
+    <a href="/team-members/add/" class="block w-fit p-2 bg-blue-400 text-white hover:bg-sky-800 rounded-lg">&plus; Add</a>
   </p>
   {% set isExternalFlag = false %}
   {% for teamMember in model.teamMembers %}
@@ -18,11 +19,12 @@
         {{ teamMember.fullName }}
       </div>
       <div class="flex gap-4">
-        <a href="/team-member/{{ teamMember.id }}/" class="block p-2 border rounded">Profile</a>
-        <a href="/team-member/{{ teamMember.id }}/preferences/" class="block p-2 border rounded">Preferences</a>
-        <a href="/team-member/{{ teamMember.id }}/availability/" class="block p-2 border rounded">Availability</a>
-        <a href="/team-member/{{ teamMember.id }}/unavailability/" class="block p-2 border rounded  ">Unavailability</a>
+        <a href="/team-member/{{ teamMember.id }}/" class="block p-2 border rounded  bg-blue-400 text-white hover:bg-sky-800">Profile</a>
+        <a href="/team-member/{{ teamMember.id }}/preferences/" class="block p-2 border  bg-blue-400 text-white hover:bg-sky-800 rounded">Preferences</a>
+        <a href="/team-member/{{ teamMember.id }}/availability/" class="block p-2 border  bg-blue-400 text-white hover:bg-sky-800 rounded">Availability</a>
+        <a href="/team-member/{{ teamMember.id }}/unavailability/" class="block p-2 border  bg-blue-400 text-white hover:bg-sky-800 rounded  ">Unavailability</a>
       </div>
     </div>
   {% endfor %}
 {% endblock %}
+</div>
