@@ -3,27 +3,27 @@ digraph data_flow_diagram {
     
     "..." [ shape = none ]
     
-    "..." -> "Timeslot\ncontroller" -> "..."
+    "..." -> "Time slot\ncontroller" -> "..."
 
     subgraph actions {
         rank = same
         
-        "Schedule\ntimeslot add\n(GET, POST)"
-        "Schedule\ntimeslot edit\n(GET, POST)"
-        "Schedule\ntimeslot delete\n(GET, POST)"
-        "Schedule\ntimeslot copy\n(GET, POST)"
-        "Schedule\ntimeslot copy confirm\n(GET, POST)"
+        "Schedule\ntime slot add\n(GET, POST)"
+        "Schedule\ntime slot edit\n(GET, POST)"
+        "Schedule\ntime slot delete\n(GET, POST)"
+        "Schedule\ntime slot copy\n(GET, POST)"
+        "Schedule\ntime slot copy confirm\n(GET, POST)"
         "Schedule\ndate range clear\n(GET, POST)"
     }
     
-    "Timeslot\ncontroller" -> {
-        "Schedule\ntimeslot add\n(GET, POST)"
-        "Schedule\ntimeslot edit\n(GET, POST)"
-        "Schedule\ntimeslot delete\n(GET, POST)"
-        "Schedule\ntimeslot copy\n(GET, POST)"
-        "Schedule\ntimeslot copy confirm\n(GET, POST)"
+    "Time slot\ncontroller" -> {
+        "Schedule\ntime slot add\n(GET, POST)"
+        "Schedule\ntime slot edit\n(GET, POST)"
+        "Schedule\ntime slot delete\n(GET, POST)"
+        "Schedule\ntime slot copy\n(GET, POST)"
+        "Schedule\ntime slot copy confirm\n(GET, POST)"
         "Schedule\ndate range clear\n(GET, POST)"
-    } -> "Timeslot\ncontroller"
+    } -> "Time slot\ncontroller"
     
     subgraph repositories {
         rank = same
@@ -40,8 +40,8 @@ digraph data_flow_diagram {
     }
     
     {
-        "Schedule\ntimeslot add\n(GET, POST)"
-        "Schedule\ntimeslot edit\n(GET, POST)"
+        "Schedule\ntime slot add\n(GET, POST)"
+        "Schedule\ntime slot edit\n(GET, POST)"
     }
     ->
     {
@@ -57,13 +57,13 @@ digraph data_flow_diagram {
     }
     ->
     {
-        "Schedule\ntimeslot add\n(GET, POST)"
-        "Schedule\ntimeslot edit\n(GET, POST)"
+        "Schedule\ntime slot add\n(GET, POST)"
+        "Schedule\ntime slot edit\n(GET, POST)"
     }
     
     {
-        "Schedule\ntimeslot copy\n(GET, POST)"
-        "Schedule\ntimeslot copy confirm\n(GET, POST)"
+        "Schedule\ntime slot copy\n(GET, POST)"
+        "Schedule\ntime slot copy confirm\n(GET, POST)"
     }
     ->
     {
@@ -74,12 +74,12 @@ digraph data_flow_diagram {
     }
     ->
     {
-        "Schedule\ntimeslot copy\n(GET, POST)"
-        "Schedule\ntimeslot copy confirm\n(GET, POST)"
+        "Schedule\ntime slot copy\n(GET, POST)"
+        "Schedule\ntime slot copy confirm\n(GET, POST)"
     }
     
     {
-        "Schedule\ntimeslot delete\n(GET, POST)"
+        "Schedule\ntime slot delete\n(GET, POST)"
         "Schedule\ndate range clear\n(GET, POST)"
     }
     ->
@@ -88,11 +88,17 @@ digraph data_flow_diagram {
     }
     ->
     {
-        "Schedule\ntimeslot delete\n(GET, POST)"
+        "Schedule\ntime slot delete\n(GET, POST)"
         "Schedule\ndate range clear\n(GET, POST)"
     }
     
-    Database [ shape = folder ]
+    Database [
+        label = <
+            <TABLE BORDER="1" SIDES="TB" CELLBORDER="0" CELLPADDING="6" CELLSPACING="0">
+                <TR><TD>Database</TD></TR>
+            </TABLE>
+        >,
+        shape = none ]
     
     Database -> {
         "Team member\nrepository"

@@ -8,10 +8,14 @@ export default class CalendarMonthPage {
   /** The number of days in the month */
   public daysInMonth: number = 0;
 
-  /** The initial day of the week of the month
-   */
+  /** The initial day of the week of the month */
   public initialDayOfWeek: DayOfWeek = 0;
 
+  /** Constructs the calendar month page
+   * @param monthName The name of the month
+   * @param daysInMonth The number of days in the month
+   * @param initialDayOfWeek The day of the week of the first day of the month
+   */
   public constructor(
     monthName: string,
     daysInMonth: number,

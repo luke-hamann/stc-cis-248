@@ -20,7 +20,7 @@ export default class StaticFilesMiddleware extends Controller {
 
   /** Attempts to get a static file from a directory based on the application context URL
    *
-   * Returns void if the context URL does not coorespond to a file
+   * Returns void if the context URL does not correspond to a file
    *
    * @param context The application context
    * @returns A response with the file, or void

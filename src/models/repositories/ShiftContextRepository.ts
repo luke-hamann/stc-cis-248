@@ -117,7 +117,7 @@ export default class ShiftContextRepository extends Repository
         [shiftContext.id, shiftContext.name],
       );
 
-      if (result?.affectedRows ?? 0 > 0) {
+      if (result.rows && result.rows.length > 0) {
         errors.push("Name must be unique.");
       }
     }

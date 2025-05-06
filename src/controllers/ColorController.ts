@@ -6,19 +6,17 @@ import DeleteViewModel from "../models/viewModels/_shared/DeleteViewModel.ts";
 import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 
-/** Controls the color pages of the application
- */
+/** Controls the color pages of the application */
 export default class ColorController extends Controller {
-  /** The data store for color CRUD */
-  private _colorRepository: IColorRepository;
+  /** The color repository */
+  private _colors: IColorRepository;
 
-  /** Constructs the color controller given the color repository
-   *
-   * @constructor
+  /** Constructs the color controller given a color repository
+   * @param colors The color repository
    */
-  constructor(colorRepository: IColorRepository) {
+  constructor(colors: IColorRepository) {
     super();
-    this._colorRepository = colorRepository;
+    this._colors = colors;
     this.routes = [
       { method: "GET", pattern: "/colors/", action: this.list },
       { method: "GET", pattern: "/colors/add/", action: this.addGet },
@@ -55,7 +53,7 @@ export default class ColorController extends Controller {
    * @returns The response
    */
   public async list(context: Context): Promise<ResponseWrapper> {
-    const colors = await this._colorRepository.list();
+    const colors = await this._colors.list();
     const model = new ColorsViewModel(colors);
     return this.HTMLResponse(context, "./views/color/list.html", model);
   }
@@ -72,19 +70,19 @@ export default class ColorController extends Controller {
     );
   }
 
-  /** Accepts requests to add a color
+  /** Accepts a request to add a color
    * @param context The application context
    * @returns The response
    */
   public async addPost(context: Context): Promise<ResponseWrapper> {
     const model = await ColorEditViewModel.fromRequest(context.request);
 
-    model.errors = await this._colorRepository.validate(model.color);
+    model.errors = await this._colors.validate(model.color);
     if (!model.isValid()) {
       return this.HTMLResponse(context, "./views/color/edit.html", model);
     }
 
-    await this._colorRepository.add(model.color);
+    await this._colors.add(model.color);
     return this.RedirectResponse(context, "/colors/");
   }
 
@@ -93,12 +91,12 @@ export default class ColorController extends Controller {
    * @returns The response
    */
   public async editGet(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
+    const id = context.routeData.getInt("id");
+    if (id == null) {
       return this.NotFoundResponse(context);
     }
 
-    const color = await this._colorRepository.get(id);
+    const color = await this._colors.get(id);
     if (color == null) {
       return this.NotFoundResponse(context);
     }
@@ -112,32 +110,36 @@ export default class ColorController extends Controller {
    * @returns The response
    */
   public async editPost(context: Context): Promise<ResponseWrapper> {
-    const model = await ColorEditViewModel.fromRequest(context.request);
-    model.color.id = parseInt(context.match[1]);
+    const id = context.routeData.getInt("id");
+    if (id == null) {
+      return this.NotFoundResponse(context);
+    }
 
-    model.errors = await this._colorRepository.validate(model.color);
+    const model = await ColorEditViewModel.fromRequest(context.request);
+    model.color.id = id;
+
+    model.errors = await this._colors.validate(model.color);
     if (!model.isValid()) {
       model.isEdit = true;
       model.csrf_token = context.csrf_token;
       return this.HTMLResponse(context, "./views/color/edit.html", model);
     }
 
-    await this._colorRepository.update(model.color);
+    await this._colors.update(model.color);
     return this.RedirectResponse(context, "/colors/");
   }
 
   /** Gets the delete color confirmation form
-   *
    * @param context The application context
    * @returns The response
    */
   public async deleteGet(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
+    const id = context.routeData.getInt("id");
+    if (id == null) {
       return this.NotFoundResponse(context);
     }
 
-    const color = await this._colorRepository.get(id);
+    const color = await this._colors.get(id);
     if (color == null) {
       return this.NotFoundResponse(context);
     }
@@ -159,17 +161,17 @@ export default class ColorController extends Controller {
    * @returns The response
    */
   public async deletePost(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
+    const id = context.routeData.getInt("id");
+    if (id == null) {
       return this.NotFoundResponse(context);
     }
 
-    const color = await this._colorRepository.get(id);
+    const color = await this._colors.get(id);
     if (color == null) {
       return this.NotFoundResponse(context);
     }
 
-    await this._colorRepository.delete(id);
+    await this._colors.delete(id);
     return this.RedirectResponse(context, "/colors/");
   }
 }

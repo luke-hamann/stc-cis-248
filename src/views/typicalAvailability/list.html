@@ -14,12 +14,12 @@
   {{ teamMemberTabs(model.teamMember, "availability") }}
   <div class="max-w-lg ms-4">
     {% for row in model.typicalAvailabilityTable %}
-      <h2 class="mt-4 flex gap-4">
-        <span class="text-2xl font-bold">
+      <h2 class="mt-4 text-2xl font-bold">
+        <span>
           {{ dayNames[loop.index0] }}
         </span>
-        <a href="/team-member/{{ model.teamMember.id }}/availability/add/{{ loop.index0 }}/" class="block w-fit p-2 bg-blue-300 rounded">
-          ➕
+        <a href="/team-member/{{ model.teamMember.id }}/availability/add/{{ loop.index0 }}/">
+          &plus;
         </a>
       </h2>
       {% for typicalAvailability in row %}

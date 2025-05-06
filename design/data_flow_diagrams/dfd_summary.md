@@ -6,11 +6,11 @@
 - Typical availability repository
 - Unavailability repository
 - Shift context repository
-- Shift context preferences repository
-- Colors repository
-- Shift context notes repository
-- Timeslots repository
-- Substitutes repository
+- Shift context preference repository
+- Color repository
+- Shift context note repository
+- Time slot repository
+- Substitute repository
 
 ## Actions
 
@@ -21,14 +21,14 @@
 - Team member profile (GET)
 - Team member preferences (GET, POST)
 - Team member typical availability (GET)
-- Team member typical availability timeslot add (GET, POST)
-- Team member typical availability timeslot edit (GET, POST)
-- Team member typical availability timeslot delete (GET, POST)
+- Team member typical availability time slot add (GET, POST)
+- Team member typical availability time slot edit (GET, POST)
+- Team member typical availability time slot delete (GET, POST)
 - Team member unavailability calendar (GET)
 - Team member unavailability week (GET, POST)
-- Team member unavailability week timeslot add (GET, POST)
-- Team member unavailability week timeslot edit (GET, POST)
-- Team member unavailability week timeslot delete (GET, POST)
+- Team member unavailability week time slot add (GET, POST)
+- Team member unavailability week time slot edit (GET, POST)
+- Team member unavailability week time slot delete (GET, POST)
 - Shift context list (GET)
 - Shift context add (GET, POST)
 - Shift context edit (GET, POST)
@@ -40,11 +40,11 @@
 - Color delete (GET, POST)
 - Schedule calendar (GET)
 - Schedule week (GET)
-- Schedule timeslot add (GET, POST)
-- Schedule timeslot edit (GET, POST)
-- Schedule timeslot delete (GET, POST)
-- Schedule timeslot copy (GET, POST)
-- Schedule timeslot copy confirm (GET, POST)
+- Schedule time slot add (GET, POST)
+- Schedule time slot edit (GET, POST)
+- Schedule time slot delete (GET, POST)
+- Schedule time slot copy (GET, POST)
+- Schedule time slot copy confirm (GET, POST)
 - Schedule date range clear (GET, POST)
 - Substitute add (GET, POST)
 - Substitute delete (GET, POST)
@@ -56,11 +56,11 @@
 - Typical availability
 - Unavailability
 - Shift context
-- Shift context preferences
-- Colors
-- Shift context notes
-- Timeslots
-- Substitutes
+- Shift context preference
+- Color
+- Shift context note
+- Time slot
+- Substitute
 - Schedule
 
 ## DFDs Summary

@@ -1,5 +1,8 @@
 {
   "fmt": {
     "exclude": ["src/views/", "docs/"]
+  },
+  "imports": {
+    "@types/nunjucks": "npm:@types/nunjucks@^3.2.6"
   }
 }

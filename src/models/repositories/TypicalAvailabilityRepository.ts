@@ -79,10 +79,10 @@ export interface ITypicalAvailabilityRow {
   dayOfWeek: DayOfWeek;
 
   /** The start time */
-  startTime: Date;
+  startTime: string;
 
   /** The end time */
-  endTime: Date;
+  endTime: string;
 
   /** Whether the typical availability is preferable
    *
@@ -158,19 +158,19 @@ export default class TypicalAvailabilityRepository extends Repository
       errors.push("Please select a day of the week.");
     }
 
-    if (typicalAvailability.startTime == null) {
+    if (typicalAvailability.startTime == "") {
       errors.push("Please enter a start time.");
     }
 
-    if (typicalAvailability.endTime == null) {
+    if (typicalAvailability.endTime == "") {
       errors.push("Please enter an end time.");
     }
 
     if (
       typicalAvailability.startTime != null &&
       typicalAvailability.endTime != null &&
-      typicalAvailability.startTime.getTime() >=
-        typicalAvailability.endTime.getTime()
+      new Date(`1970-01-01T${typicalAvailability.startTime}Z`).getTime() >=
+        new Date(`1970-01-01T${typicalAvailability.endTime}Z`).getTime()
     ) {
       errors.push("Start time must be before end time.");
     }

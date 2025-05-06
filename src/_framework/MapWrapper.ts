@@ -1,10 +1,10 @@
 /** A wrapper class for form data and route data */
 export default class MapWrapper {
-  /** The map of string keys with string values */
+  /** The map relating string keys to string values */
   private _map: Map<string, string>;
 
   /** Constructs the wrapper given a map
-   * @param map
+   * @param map The map
    */
   public constructor(map: Map<string, string>) {
     this._map = map;
@@ -18,7 +18,12 @@ export default class MapWrapper {
   }
 
   /** Constructs the wrapper given form data
-   * @param formData
+   *
+   * Form data entries can potentially have more than one value for a key.
+   * The wrapper assumes each key has a single value.
+   * The last value for a given key within the form data entries takes precedence.
+   *
+   * @param formData The form data
    * @returns The wrapper
    */
   public static fromFormData(formData: FormData): MapWrapper {
@@ -31,11 +36,11 @@ export default class MapWrapper {
 
   /** Constructs the wrapper given route data
    *
-   * The mappings consist of an array where the number refers to an index in the array from the regex match,
-   * and the string refers to what that regex match component in the array should be named.
+   * The mappings consist of an array where the number refers to a regex group match,
+   * and the string refers to what that regex group match should be named.
    *
-   * @param matches An array of strings resulting from a Regex match result
-   * @param mappings An array of mappings
+   * @param matches An array of strings resulting from a regex match result
+   * @param mappings An array mapping regex group match indexes to string names
    * @returns The wrapper
    */
   public static fromRouteData(
@@ -57,18 +62,15 @@ export default class MapWrapper {
     return this._map.get(key) != undefined;
   }
 
-  /** Gets a string value for a key
-   *
-   * Returns an empty string if the key does not have a value
-   *
+  /** Gets a string value for a key, or an empty string if the key does not exist or has no value
    * @param key The key
    * @returns The string
    */
   public getString(key: string): string {
-    return (this._map.get(key) as string ?? "").trim();
+    return (this._map.get(key) ?? "").trim();
   }
 
-  /** Gets a numerical value for a key, or null if the key does not exist
+  /** Gets a numerical value for a key, or null if the key does not exist or has no value
    * @param key The key
    * @returns The number or null
    */
@@ -82,7 +84,7 @@ export default class MapWrapper {
     return value;
   }
 
-  /** Gets an integer value for a key, or null if the key does not exist
+  /** Gets an integer value for a key, or null if the key does not exist or has no value
    * @param key The key
    * @returns The integer or null
    */
@@ -102,7 +104,7 @@ export default class MapWrapper {
 
   /** Gets a hexadecimal color string for a key, or an empty string if the value is invalid
    *
-   * The string is in format of hash symbol, followed by 6 hex digit characters.
+   * The string is in the format of a hash symbol, followed by 6 hex digit characters.
    *
    * @param key The key
    * @returns The color string or an empty string
@@ -113,7 +115,7 @@ export default class MapWrapper {
     return isValid ? value.substring(1) : "";
   }
 
-  /** Gets a date object for a key, or null if the key does not exist or the date is invalid
+  /** Gets a date for a key, or null if the key does not exist, or the date is invalid
    *
    * The incoming value is expected to be in "yyyy-mm-dd" format.
    *
@@ -137,11 +139,14 @@ export default class MapWrapper {
     return date;
   }
 
-  /** Gets a date based on keys refering to date components: year, month, and date
+  /** Gets a date based on keys referring to date components: year, month, and date
+   *
+   * Returns null if a valid date cannot be retrieved
+   *
    * @param yearKey The key to look up the year value
    * @param monthKey The key to look up the month value
    * @param dateKey The key to look up the date value
-   * @returns The date, or null if a valid date cannot be retrieved
+   * @returns The date or null
    */
   public getDateMulti(
     yearKey: string,
@@ -160,13 +165,16 @@ export default class MapWrapper {
     return out;
   }
 
-  /** Gets a date with a time based on keys refering to date components: year, month, date, hour, and minute
+  /** Gets a date and a time based on keys referring to date components: year, month, date, hour, and minute
+   *
+   * Returns null if a valid date cannot be retrieved
+   *
    * @param yearKey The key of the year value
    * @param monthKey The key of the month value
    * @param dateKey The key of the date value
    * @param hourKey The key of the hour value
    * @param minuteKey The key of the minute value
-   * @returns The date, or null if a valid date cannot be retrieved
+   * @returns The date or null
    */
   public getDateTimeMulti(
     yearKey: string,
@@ -191,7 +199,7 @@ export default class MapWrapper {
     return date;
   }
 
-  /** Gets a time string for a key, or an empty string if the key does not exist or the time is invalid
+  /** Gets a time string for a key, or an empty string if the key does not exist, or the time is invalid
    *
    * The time string is expected to be in 24-hour "HH:MM" or "HH:MM:SS" format.
    *
@@ -204,11 +212,9 @@ export default class MapWrapper {
     return isValid ? value : "";
   }
 
-  /** Gets a path that is local to the web application
+  /** Gets a URL path that is local to the web application
    *
-   * Prevents [open redirection attacks]
-   *
-   * [open redirection attacks]: https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html
+   * Prevents [open redirection attacks](https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html).
    *
    * @param key The key of the url
    * @returns The path

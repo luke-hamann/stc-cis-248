@@ -10,17 +10,17 @@ digraph data_flow_diagram {
         
         "Team member\nunavailability\ncalendar\n(GET)"
         "Team member\nunavailability week\n(GET, POST)"
-        "Team member\nunavailability week\ntimeslot add\n(GET, POST)"
-        "Team member\nunavailability week\ntimeslot edit\n(GET, POST)"
-        "Team member\nunavailability week\ntimeslot delete\n(GET, POST)"
+        "Team member\nunavailability week\ntime slot add\n(GET, POST)"
+        "Team member\nunavailability week\ntime slot edit\n(GET, POST)"
+        "Team member\nunavailability week\ntime slot delete\n(GET, POST)"
     }
     
     "Unavailability\ncontroller" -> {
         "Team member\nunavailability\ncalendar\n(GET)"
         "Team member\nunavailability week\n(GET, POST)"
-        "Team member\nunavailability week\ntimeslot add\n(GET, POST)"
-        "Team member\nunavailability week\ntimeslot edit\n(GET, POST)"
-        "Team member\nunavailability week\ntimeslot delete\n(GET, POST)"
+        "Team member\nunavailability week\ntime slot add\n(GET, POST)"
+        "Team member\nunavailability week\ntime slot edit\n(GET, POST)"
+        "Team member\nunavailability week\ntime slot delete\n(GET, POST)"
     } -> "Unavailability\ncontroller"
     
     subgraph repositories {
@@ -38,9 +38,9 @@ digraph data_flow_diagram {
     {
         "Team member\nunavailability\ncalendar\n(GET)"
         "Team member\nunavailability week\n(GET, POST)"
-        "Team member\nunavailability week\ntimeslot add\n(GET, POST)"
-        "Team member\nunavailability week\ntimeslot edit\n(GET, POST)"
-        "Team member\nunavailability week\ntimeslot delete\n(GET, POST)"
+        "Team member\nunavailability week\ntime slot add\n(GET, POST)"
+        "Team member\nunavailability week\ntime slot edit\n(GET, POST)"
+        "Team member\nunavailability week\ntime slot delete\n(GET, POST)"
     }
     ->
     {
@@ -48,7 +48,13 @@ digraph data_flow_diagram {
         "Unavailability\nrepository"
     }
     
-    Database [ shape = folder ]
+    Database [
+        label = <
+            <TABLE BORDER="1" SIDES="TB" CELLBORDER="0" CELLPADDING="6" CELLSPACING="0">
+                <TR><TD>Database</TD></TR>
+            </TABLE>
+        >,
+        shape = none ]
     
     Database -> {
         "Team member\nrepository"

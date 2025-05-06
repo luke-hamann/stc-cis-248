@@ -1,67 +1,84 @@
 # Shift Contexts
 
-A shift context is a general grouping that time slots can exist in. It might be
-a classroom, a location, or any other type of general grouping. A time slot can
-only be within one shift context.
+A shift context is a grouping that time slots can exist in. It might be a
+classroom, a location, or any category. A [time slot](6.1_time_slots.md) must
+exist within exactly one shift context.
 
-## Shift context list
+## Shift Context List
 
 ![The shift context list page](images/shift_context_list.png)
 
-The shift context list pages shows all shift contexts you have created. You can
-also change the order of the shift contexts.
+The shift context list page shows all shift contexts you have created. It also
+allows you to change the order of the shift contexts.
 
-Clicking the "Add" button will allow you to create a new shift context.
+Clicking "Add" will open a form to
+[create a new shift context](#shift-context-add).
 
-Each shift context card shows the name of the shift context.
+Each shift context card includes the following information and buttons:
 
-Clicking the up arrow will move the shift context up in the sort order. Clicking
-the down arrow will move the shift context down in the sort order. This will
-affect the order of the shift contexts in the
+- Shift context name
+- Up arrow button (&uparrow;) - Moves the shift context up in the sort order
+- Down arrow button (&downarrow;) - Moves the shift context down in the sort
+  order
+- Edit button (✏️) - Opens a form to edit the shift context
+- Delete button ("x") - Asks to confirm the deletion of the shift context
+
+The up arrow button (&uparrow;) will be grayed and disabled if the shift context
+is already at the top of the list. The down arrow button (&downarrow;) will be
+grayed and disabled if the shift context is already at the bottom of the list.
+
+Note: The order of the shift contexts on this page dictates their order on the
+schedule. This includes the
 [schedule week editor](./6_schedule.md#schedule-week-editor) and
-[schedule file exports](./6_schedule.md#schedule-export).
+[file exports](./6_schedule.md#schedule-export).
 
-Clicking the pencil icon on a shift context will allow you to edit the shift
-context. Clicking the "x" button on a shift context will ask you to confirm if
-you want to delete the shift context.
-
-## Shift context add
+## Shift Context Add
 
 ![The shift context add page](images/shift_context_add.png)
 
-The add shift context page allows you to create a new shift context. Here, you
-can enter information about the shift context. The only required field is the
-name, but no other shift context can have the same name.
+The add shift context page allows you to create a new shift context. The fields
+include:
 
-Clicking the "Save" button will save the shift context and return you to the
-shift context list page if the data you enter is valid. Otherwise, the form will
-show error messages and allow you to change your data.
+- Name
+- Age group
+- Location
+- Description
 
-Clicking the "Cancel" button will discard your data and return you to the shift
-context list page.
+Only the name is required. Every shift context must have a unique name.
 
-## Shift context edit
+Clicking "Save" with valid information will save the shift context and return
+you to the [shift context list page](#shift-context-list). If the information is
+invalid, the form will display errors you can correct. You can then attempt to
+save again.
+
+Clicking "Cancel" will discard the information and return you to the
+[shift context list page](#shift-context-list).
+
+## Shift Context Edit
 
 ![The shift context edit page](images/shift_context_edit.png)
 
 The edit shift context page allows you to edit an existing shift context. It
-works very similarly to the add shift context page, allowing you to enter
-updated values.
+works similarly to the [shift context add page](#shift-context-add).
 
-Clicking "Save" will save your changes and return you to the shift context list
-page if your data is valid. Otherwise, the form will display errors and allow
-you to change what you entered.
+Clicking "Save" with valid information will save your changes and return you to
+the [shift context list page](#shift-context-list). If the information is
+invalid, the form will display errors you can correct. You can then attempt to
+save again.
 
-Clicking the "Cancel" button will return you to the shift context list page.
+Clicking "Cancel" will discard your changes and return you to the
+[shift context list page](#shift-context-list).
 
-## Shift context delete
+## Shift Context Delete
 
 ![The shift context delete page](images/shift_context_delete.png)
 
 The shift context delete page allows you to confirm the deletion of a shift
-context. Clicking "Yes" will delete the shift context and return you to the
-shift context list page. Clicking "No" will cancel the deletion and return you
-to the shift context list page.
+context.
+
+Clicking "Yes" will delete the shift context and return you to the
+[shift context list page](#shift-context-list). Clicking "No" will cancel the
+deletion and return you to the [shift context list page](#shift-context-list).
 
 Warning: If you delete a shift context, all time slots and notes associated with
-it will be deleted.
+it will also be deleted.

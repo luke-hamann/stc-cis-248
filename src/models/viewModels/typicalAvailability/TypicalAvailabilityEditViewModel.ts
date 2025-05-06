@@ -41,21 +41,11 @@ export default class TypicalAvailabilityEditViewModel extends FormViewModel {
 
     const teamMemberId = formData.getInt("teamMemberId") ?? 0;
     let dayOfWeek = formData.getInt("dayOfWeek");
-    const startTimeString = formData.getTime("startTime");
-    const endTimeString = formData.getTime("endTime");
+    const startTime = formData.getTime("startTime");
+    const endTime = formData.getTime("endTime");
     const isPreference = formData.getBool("isPreference");
 
     if (!isDayOfWeek(dayOfWeek)) dayOfWeek = null;
-
-    let startTime: Date | null = null;
-    if (startTimeString != "") {
-      startTime = new Date(`1970-01-01T${startTimeString}`);
-    }
-
-    let endTime: Date | null = null;
-    if (endTimeString != "") {
-      endTime = new Date(`1970-01-01T${endTimeString}`);
-    }
 
     const typicalAvailability = new TypicalAvailability(
       0,

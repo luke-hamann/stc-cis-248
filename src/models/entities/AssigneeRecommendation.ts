@@ -11,7 +11,7 @@ export default class AssigneeRecommendations {
   /** Whether the team member is typically available during the time of the time slot */
   public isTypicallyAvailable: "positive" | "negative" | "unknown";
 
-  /** Wheter the team member is not marked as unavailable during the time of the time slot */
+  /** Whether the team member is not marked as unavailable during the time of the time slot */
   public isNotUnavailable: "positive" | "negative" | "unknown";
 
   /** Whether the team member prefers the shift context of the time slot */

@@ -22,7 +22,7 @@ Table TeamMemberAvailability {
   isPreference bool [ not null ]
 }
 
-Table TeamMememberTypicalAvailability {
+Table TeamMemberTypicalAvailability {
   id int [ pk ]
   teamMemberId int [ not null, ref: > TeamMembers.id ]
   dayOfWeek int [ not null ]
@@ -39,7 +39,7 @@ Table Substitutes {
 Table TeamMemberShiftContextPreferences {
   teamMemberId int [ pk, ref: > TeamMembers.id ]
   shiftContextId int [ pk, ref: > ShiftContexts.id ]
-  isPreferable bool [ not null ]
+  isPreference bool [ not null ]
 }
 
 Table ShiftContexts {

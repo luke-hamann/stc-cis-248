@@ -1,24 +1,25 @@
 import Context from "./Context.ts";
 import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
-import nunjucks from "npm:nunjucks";
+import nunjucks from "npm:nunjucks@^3.2.4";
 import ViewModel from "../models/viewModels/_shared/_ViewModel.ts";
 import Route from "./Route.ts";
 import MapWrapper from "./MapWrapper.ts";
 
-/** Controls routing to action methods based on HTTP method and url patterns */
+/** A class to control routing to action methods based on the HTTP method and url patterns */
 export default class Controller {
   /** Maps HTTP methods and URL patterns to action methods */
   protected routes: Route[] = [];
 
   /** Executes the controller
    *
-   * Interates over each route and calls matching action methods.
-   * If an action method returns a response wrapper, that response wrapper is returned.
-   * If an action method returns void, the next route and action method are checked.
+   * Iterates over each route and calls matching action methods.
+   * If an action method returns a response wrapper, the response wrapper is returned.
+   * If an action method returns void, the next route and action method are executed.
+   * This allows action methods to function as middleware.
    *
    * @param context The application context
-   * @returns A promise of a response wrapper or void
+   * @returns A response wrapper or void
    */
   public async execute(context: Context): Promise<ResponseWrapper | void> {
     for (const route of this.routes) {
@@ -55,7 +56,6 @@ export default class Controller {
     model: ViewModel,
   ): ResponseWrapper {
     model.csrf_token = context.csrf_token;
-
     context.response.body = nunjucks.render(view, { model });
     context.response.headers.set("Content-Type", "text/html");
     return context.response;
@@ -73,12 +73,12 @@ export default class Controller {
     return context.response;
   }
 
-  /** Returns an response wrapper for a generic error
+  /** Returns a response wrapper for a generic error page
    * @param context The application context
    * @param status The status code
-   * @param view The view to render
-   * @param model The view model to render in the view
-   * @returns A response wrapper for the error
+   * @param view The path to the view to render
+   * @param model The view model
+   * @returns A response wrapper
    */
   protected ErrorResponse(
     context: Context,
@@ -87,15 +87,14 @@ export default class Controller {
     model: ViewModel,
   ) {
     model.csrf_token = context.csrf_token;
-
     context.response.status = status;
     context.response = this.HTMLResponse(context, view, model);
     return context.response;
   }
 
-  /** Returns a response wrapper for a 404 not found page
+  /** Returns a response wrapper for a 404 Not Found page
    * @param context The current application context
-   * @returns The response wrapper object
+   * @returns The response wrapper
    */
   protected NotFoundResponse(context: Context): ResponseWrapper {
     return this.ErrorResponse(

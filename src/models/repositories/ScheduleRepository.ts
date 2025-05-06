@@ -625,7 +625,7 @@ export default class ScheduleRepository implements IScheduleRepository {
 
   /** Converts database rows containing a time slot and team member into a list of time slots
    *
-   * The resulting time slots contain their cooresponding team member.
+   * The resulting time slots contain their corresponding team member.
    *
    * @param rows The database rows
    * @returns The time slots

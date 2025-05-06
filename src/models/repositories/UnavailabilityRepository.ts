@@ -26,7 +26,7 @@ export interface IUnavailabilityRepository {
    * @param teamMemberId
    * @param start
    * @param end
-   * @returns An array of dates with their cooresponding unavailabilities
+   * @returns An array of dates with their corresponding unavailabilities
    */
   list(
     teamMemberId: number,
@@ -193,7 +193,7 @@ export default class UnavailabilityRepository extends Repository {
    * @param teamMemberId
    * @param start
    * @param end
-   * @returns An array of dates with their cooresponding unavailabilities
+   * @returns An array of dates with their corresponding unavailabilities
    */
   public async list(
     teamMemberId: number,

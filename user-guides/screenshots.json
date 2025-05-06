@@ -5,29 +5,29 @@
 
   ["colors/", 450, 490, "color_list"],
   ["colors/add/", 511, 340, "color_add"],
-  ["color/4/", 500, 500, "color_edit"],
+  ["color/4/", 500, 340, "color_edit"],
   ["color/4/delete/", 460, 350, "color_delete"],
 
   ["team-members/", 634, 540, "team_member_list"],
   ["team-members/add/", 500, 700, "team_member_add"],
   ["team-member/1/", 500, 700, "team_member_profile"],
   ["team-member/4/edit/", 500, 700, "team_member_edit"],
-  ["team-member/4/delete/", 500, 500, "team_member_delete"],
+  ["team-member/4/delete/", 500, 440, "team_member_delete"],
 
-  ["contexts/", 630, 750, "shift_context_list"],
+  ["contexts/", 630, 500, "shift_context_list"],
   ["context/add/", 500, 550, "shift_context_add"],
   ["context/1/", 500, 550, "shift_context_edit"],
-  ["context/1/delete/", 500, 500, "shift_context_delete"],
+  ["context/1/delete/", 500, 380, "shift_context_delete"],
 
   ["team-member/1/preferences/", 525, 525, "preferences"],
 
-  ["team-member/1/availability/", 575, 750, "availability_list"],
-  ["team-member/1/availability/add/", 500, 425, "availability_add"],
-  ["team-member/1/availability/1/", 500, 425, "availability_edit"],
+  ["team-member/1/availability/", 600, 750, "availability_list"],
+  ["team-member/1/availability/add/", 500, 600, "availability_add"],
+  ["team-member/1/availability/1/", 500, 600, "availability_edit"],
   ["team-member/1/availability/1/delete/", 500, 325, "availability_delete"],
 
   ["team-member/1/unavailability/2025/", 1090, 700, "unavailability_year"],
-  ["team-member/1/unavailability/2025/03/02/", 700, 700, "unavailability_week"],
+  ["team-member/1/unavailability/2025/03/02/", 625, 700, "unavailability_week"],
   [
     "team-member/1/unavailability/add/2025/03/02/",
     500,
@@ -49,7 +49,7 @@
 
   ["substitutes/2025/03/01/", 400, 450, "substitutes"],
 
-  ["shift-context/2/note/2025/03/05/", 500, 600, "shift_context_note"],
+  ["shift-context/2/note/2025/03/05/", 500, 630, "shift_context_note"],
 
   ["schedule/2025/", 1090, 700, "schedule_year"],
 
@@ -59,6 +59,6 @@
     825,
     "schedule_copy"
   ],
-  ["schedule/clear/2025/03/02/through/2025/03/08/", 600, 600, "schedule_clear"],
+  ["schedule/clear/2025/03/02/through/2025/03/08/", 575, 470, "schedule_clear"],
   ["schedule/export/2025/03/02/to/2025/03/08/", 600, 450, "schedule_export"]
 ]

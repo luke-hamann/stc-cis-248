@@ -71,7 +71,7 @@ export interface ITimeSlotRepository {
    * @param sourceEnd The end of the time range to copy
    * @param destinationStart The beginning of the time range to copy to
    * @param destinationEnd The end of the time range to copy to
-   * @param repeatCopy Wheather the source range should be repeated to fill the destination range
+   * @param repeatCopy Whether the source range should be repeated to fill the destination range
    * @param includeAssignees Whether the copied time slots should include team member ids
    * @param includeNotes Whether the copied time slots should include their notes
    * @returns The list of time slots, ordered by start date time
@@ -90,7 +90,7 @@ export interface ITimeSlotRepository {
    * @param shiftContextId The shift context
    * @param start The starting date
    * @param end The ending date
-   * @returns An array of time slot groups with their cooresponsponding time slots broken down by day
+   * @returns An array of time slot groups with their corresponding time slots broken down by day
    */
   getByGroups(
     shiftContextId: number,
@@ -476,7 +476,7 @@ export default class TimeSlotRepository extends Repository {
    * @param sourceEnd The end of the time range to copy
    * @param destinationStart The beginning of the time range to copy to
    * @param destinationEnd The end of the time range to copy to
-   * @param repeatCopy Wheather the source range should be repeated to fill the destination range
+   * @param repeatCopy Whether the source range should be repeated to fill the destination range
    * @param includeAssignees Whether the copied time slots should include team member ids
    * @param includeNotes Whether the copied time slots should include their notes
    * @returns The list of time slots, ordered by start date time
@@ -555,7 +555,7 @@ export default class TimeSlotRepository extends Repository {
    * @param shiftContextId The shift context
    * @param start The starting date
    * @param end The ending date
-   * @returns An array of time slot groups with their cooresponsponding time slots broken down by day
+   * @returns An array of time slot groups with their corresponding time slots broken down by day
    */
   public async getByGroups(
     shiftContextId: number,

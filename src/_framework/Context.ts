@@ -1,7 +1,7 @@
 import MapWrapper from "./MapWrapper.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 
-/** A class for representing an application state context */
+/** A class for representing a web application state context */
 export default class Context {
   /** The incoming HTTP request */
   public readonly request: Request;
@@ -12,16 +12,18 @@ export default class Context {
   /** The outgoing HTTP response */
   public response: ResponseWrapper;
 
-  /** The regex match results for the incoming request URL */
+  /** The regex match results for the incoming request URL
+   * @deprecated
+   */
   public match: string[] = [];
 
   /** The url path route data */
   public routeData: MapWrapper = MapWrapper.empty();
 
-  /** A wrapper for the request form data */
+  /** The request form data */
   public formData: MapWrapper = MapWrapper.empty();
 
-  /** The anti-cross-site-request-forgery token from the session */
+  /** The anti-cross-site request forgery token from the session */
   public csrf_token: string = "";
 
   /** Constructs the application state context
@@ -53,8 +55,8 @@ export default class Context {
 
   /** Initializes the form data of the application context
    *
-   * Form data must be fetched asyncronously.
-   * Constructors cannot be asyncronous.
+   * Form data must be fetched asynchronously.
+   * Constructors cannot be asynchronous.
    */
   public async initializeFormData(): Promise<void> {
     if (this.request.method == "POST") {

@@ -31,6 +31,12 @@ digraph data_flow_diagram {
         "Team member add\n(GET, POST)"
         "Team member edit\n(GET, POST)"
         "Team member delete\n(GET, POST)"
-        Database [ shape = folder ]
+        Database [
+            label = <
+                <TABLE BORDER="1" SIDES="TB" CELLBORDER="0" CELLPADDING="6" CELLSPACING="0">
+                    <TR><TD>Database</TD></TR>
+                </TABLE>
+            >,
+            shape = none ]
     } -> "Team member\nrepository"
 }

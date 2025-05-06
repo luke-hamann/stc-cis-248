@@ -7,7 +7,7 @@ Scheduler App is a program for managing team member schedules.
 The features include, but are not limited to:
 
 - Managing team members, shift contexts, preferences, and time slots
-- Recieving rich schedule warnings and recommendations
+- Receiving rich schedule warnings and recommendations
 - Annotating schedules with color-coded notes
 - Exporting schedules as spreadsheets
 

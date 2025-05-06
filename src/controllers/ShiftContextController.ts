@@ -11,14 +11,14 @@ import ShiftContextReorderViewModel from "../models/viewModels/shiftContext/Shif
 /** Controls the shift context pages */
 export default class ShiftContextController extends Controller {
   /** The shift context repository */
-  private shiftContextRepository: IShiftContextRepository;
+  private _shiftContexts: IShiftContextRepository;
 
   /** Constructs the shift context controller using a shift context repository
-   * @param shiftContextRepository The shift context repository
+   * @param shiftContexts The shift context repository
    */
-  constructor(shiftContextRepository: IShiftContextRepository) {
+  constructor(shiftContexts: IShiftContextRepository) {
     super();
-    this.shiftContextRepository = shiftContextRepository;
+    this._shiftContexts = shiftContexts;
     this.routes = [
       { method: "GET", pattern: "/contexts/", action: this.list },
       {
@@ -28,16 +28,28 @@ export default class ShiftContextController extends Controller {
       },
       { method: "GET", pattern: "/context/add/", action: this.addGet },
       { method: "POST", pattern: "/context/add/", action: this.addPost },
-      { method: "GET", pattern: "/context/(\\d+)/", action: this.editGet },
-      { method: "POST", pattern: "/context/(\\d+)/", action: this.editPost },
+      {
+        method: "GET",
+        pattern: "/context/(\\d+)/",
+        mappings: [[1, "id"]],
+        action: this.editGet,
+      },
+      {
+        method: "POST",
+        pattern: "/context/(\\d+)/",
+        mappings: [[1, "id"]],
+        action: this.editPost,
+      },
       {
         method: "GET",
         pattern: "/context/(\\d+)/delete/",
+        mappings: [[1, "id"]],
         action: this.deleteGet,
       },
       {
         method: "POST",
         pattern: "/context/(\\d+)/delete/",
+        mappings: [[1, "id"]],
         action: this.deletePost,
       },
     ];
@@ -48,30 +60,34 @@ export default class ShiftContextController extends Controller {
    * @returns The response
    */
   public async list(context: Context): Promise<ResponseWrapper> {
-    const shiftContexts = await this.shiftContextRepository.list();
+    const shiftContexts = await this._shiftContexts.list();
     const model = new ShiftContextsViewModel(shiftContexts);
     return this.HTMLResponse(context, "./views/shiftContext/list.html", model);
   }
 
   /** Changes the sort priority of a given shift context
    * @param context The application context
-   * @returns A shift context list partial view with the updated ordering
+   * @returns A shift context list partial view response with the updated ordering
    */
   public async changeSortPriority(context: Context): Promise<ResponseWrapper> {
     const model = ShiftContextReorderViewModel.fromFormData(context.formData);
 
     if (model.isValid()) {
-      await this.shiftContextRepository.changeSortPriority(
+      await this._shiftContexts.changeSortPriority(
         model.shiftContextId,
         model.delta,
       );
     }
 
-    return this.HTMLResponse(
-      context,
-      "./views/shiftContext/listPartial.html",
-      new ShiftContextsViewModel(await this.shiftContextRepository.list()),
-    );
+    if (context.request.headers.has("X-Refresh")) {
+      return this.HTMLResponse(
+        context,
+        "./views/shiftContext/listPartial.html",
+        new ShiftContextsViewModel(await this._shiftContexts.list()),
+      );
+    }
+
+    return this.RedirectResponse(context, "/contexts/");
   }
 
   /** Gets the shift context add form
@@ -87,14 +103,14 @@ export default class ShiftContextController extends Controller {
     return this.HTMLResponse(context, "./views/shiftContext/edit.html", model);
   }
 
-  /** Accepts requests to add a shift context
+  /** Accepts a request to add a shift context
    * @param context The application context
    * @returns The response
    */
   public async addPost(context: Context): Promise<ResponseWrapper> {
     const model = await ShiftContextEditViewModel.fromRequest(context.request);
 
-    model.errors = await this.shiftContextRepository.validate(
+    model.errors = await this._shiftContexts.validate(
       model.shiftContext,
     );
     if (!model.isValid()) {
@@ -105,7 +121,7 @@ export default class ShiftContextController extends Controller {
       );
     }
 
-    await this.shiftContextRepository.add(model.shiftContext);
+    await this._shiftContexts.add(model.shiftContext);
     return this.RedirectResponse(context, "/contexts/");
   }
 
@@ -114,10 +130,12 @@ export default class ShiftContextController extends Controller {
    * @returns The response
    */
   public async editGet(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) return this.NotFoundResponse(context);
+    const id = context.routeData.getInt("id");
+    if (id == null) {
+      return this.NotFoundResponse(context);
+    }
 
-    const shiftContext = await this.shiftContextRepository.get(id);
+    const shiftContext = await this._shiftContexts.get(id);
     if (shiftContext == null) return this.NotFoundResponse(context);
 
     const model = new ShiftContextEditViewModel(
@@ -128,14 +146,14 @@ export default class ShiftContextController extends Controller {
     return this.HTMLResponse(context, "./views/shiftContext/edit.html", model);
   }
 
-  /** Accepts requests to edit a shift context
+  /** Accepts a request to edit a shift context
    * @param context The application context
    * @returns The response
    */
   public async editPost(context: Context): Promise<ResponseWrapper> {
     const model = await ShiftContextEditViewModel.fromRequest(context.request);
 
-    model.errors = await this.shiftContextRepository.validate(
+    model.errors = await this._shiftContexts.validate(
       model.shiftContext,
     );
     if (!model.isValid()) {
@@ -147,7 +165,7 @@ export default class ShiftContextController extends Controller {
       );
     }
 
-    await this.shiftContextRepository.update(model.shiftContext);
+    await this._shiftContexts.update(model.shiftContext);
     return this.RedirectResponse(context, "/contexts/");
   }
 
@@ -156,10 +174,12 @@ export default class ShiftContextController extends Controller {
    * @returns The response
    */
   public async deleteGet(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) return this.NotFoundResponse(context);
+    const id = context.routeData.getInt("id");
+    if (id == null) {
+      return this.NotFoundResponse(context);
+    }
 
-    const shiftContext = await this.shiftContextRepository.get(id);
+    const shiftContext = await this._shiftContexts.get(id);
     if (shiftContext == null) return this.NotFoundResponse(context);
 
     const model = new DeleteViewModel(
@@ -173,22 +193,22 @@ export default class ShiftContextController extends Controller {
     return this.HTMLResponse(context, "./views/_shared/delete.html", model);
   }
 
-  /** Accepts requests to delete a shift context
+  /** Accepts a request to delete a shift context
    * @param context The application context
    * @returns The response
    */
   public async deletePost(context: Context): Promise<ResponseWrapper> {
-    const id = parseInt(context.match[1]);
-    if (isNaN(id)) {
+    const id = context.routeData.getInt("id");
+    if (id == null) {
       return this.NotFoundResponse(context);
     }
 
-    const shiftContext = await this.shiftContextRepository.get(id);
+    const shiftContext = await this._shiftContexts.get(id);
     if (shiftContext == null) {
       return this.NotFoundResponse(context);
     }
 
-    await this.shiftContextRepository.delete(id);
+    await this._shiftContexts.delete(id);
     return this.RedirectResponse(context, "/contexts/");
   }
 }

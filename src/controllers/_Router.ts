@@ -3,19 +3,35 @@ import Controller from "../_framework/Controller.ts";
 import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 import ErrorViewModel from "../models/viewModels/_shared/ErrorViewModel.ts";
 
-/** Routes requests through a given list of controllers
+/** A class for routing requests through an array of controllers
  *
  * Note:
- *
- * All controllers are executed in order as provided.
+ * Controllers are executed in the order they are provided.
  * If a controller does not produce a response, the pipeline continues through the next controller.
- * As such, the controllers also function as middleware.
+ * As such, the controllers function as middleware.
  */
 export default class Router extends Controller {
-  /** The controllers to route through */
+  /** The controllers */
   private _controllers: Controller[];
 
-  /** Construct the router given controllers
+  /** Sets the Content Security Policy header of a response
+   *
+   * Prevents [clickjacking](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors).
+   *
+   * @param response The original response
+   * @returns The new response
+   */
+  private _setContentSecurityPolicy(
+    response: ResponseWrapper,
+  ): ResponseWrapper {
+    response.headers.set(
+      "Content-Security-Policy",
+      "frame-ancestors 'none';",
+    );
+    return response;
+  }
+
+  /** Constructs the router given an array of controllers
    * @param controllers
    */
   constructor(
@@ -25,14 +41,13 @@ export default class Router extends Controller {
     this._controllers = controllers;
   }
 
-  /** Route a given request through the controllers to deliver a response
+  /** Routes a request through the controllers to deliver a response
    *
-   * Returns a 500 Internal Server Error response if a controller throws an exception
+   * * Returns a 500 Internal Server Error response if a controller throws an exception
+   * * Returns a 404 Not Found response if no controller returns a response
    *
-   * Returns a 404 Not Found response if no controller returns a response
-   *
-   * @param request The HTTP request
-   * @returns Promise of an HTTP response
+   * @param request An HTTP request
+   * @returns An HTTP response
    */
   public async route(request: Request): Promise<Response> {
     let response: ResponseWrapper | void;
@@ -63,10 +78,13 @@ export default class Router extends Controller {
       }
 
       if (response) {
+        this._setContentSecurityPolicy(response);
         return response.toResponse();
       }
     }
 
-    return this.NotFoundResponse(context).toResponse();
+    response = this.NotFoundResponse(context);
+    this._setContentSecurityPolicy(response);
+    return response.toResponse();
   }
 }
