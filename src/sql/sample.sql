@@ -210,6 +210,30 @@ INSERT INTO TeamMemberTypicalAvailability
 	(1, 6, "2025-03-09 08:00:00", "2025-03-09 23:59:59", true);
 
 
+INSERT INTO TeamMemberTypicalAvailability
+	(teamMemberId, dayOfWeek, startTime, endTime, isPreference)
+VALUES
+	-- John Stag
+	(1, 1, "06:00", "18:00", TRUE),
+	(1, 2, "06:00", "18:00", TRUE),
+	(1, 3, "06:00", "18:00", TRUE),
+	(1, 4, "06:00", "18:00", TRUE),
+	(1, 5, "06:00", "18:00", TRUE),
+
+	-- Michael Smith
+	(3, 1, "06:00", "18:00", TRUE),
+	(3, 2, "06:00", "18:00", TRUE),
+	(3, 3, "06:00", "18:00", TRUE),
+	(3, 4, "06:00", "18:00", TRUE),
+	(3, 5, "06:00", "18:00", TRUE),
+
+	-- Samantha Pierce
+	(4, 1, "06:00", "18:00", TRUE),
+	(4, 2, "06:00", "18:00", TRUE),
+	(4, 3, "06:00", "18:00", TRUE),
+	(4, 4, "06:00", "18:00", TRUE),
+	(4, 5, "06:00", "18:00", TRUE);
+
 
 -- TEAM MEMBER CONTEXT PREFERENCES
 INSERT INTO TeamMemberShiftContextPreferences
