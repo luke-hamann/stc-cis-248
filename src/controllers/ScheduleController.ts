@@ -107,7 +107,7 @@ export default class ScheduleController extends Controller {
     return this.HTMLResponse(context, "./views/schedule/week.html", model);
   }
 
-  /** Gets the scedule export form
+  /** Gets the schedule export form
    * @param context The application context
    * @returns The response
    */
