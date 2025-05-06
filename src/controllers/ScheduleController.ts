@@ -13,7 +13,7 @@ import ResponseWrapper from "../_framework/ResponseWrapper.ts";
 /** Handles the schedule year, week, and export pages */
 export default class ScheduleController extends Controller {
   /** The schedule repository */
-  private schedules: IScheduleRepository;
+  private _schedules: IScheduleRepository;
 
   /** Constructs the controller using the schedule repository
    * @param schedules The schedule repository
@@ -22,25 +22,47 @@ export default class ScheduleController extends Controller {
     schedules: IScheduleRepository,
   ) {
     super();
-    this.schedules = schedules;
+    this._schedules = schedules;
     this.routes = [
       { method: "GET", pattern: "/(schedule\/)?", action: this.index },
-      { method: "GET", pattern: "/schedule/(\\d{4})/", action: this.year },
+      {
+        method: "GET",
+        pattern: "/schedule/(\\d{4})/",
+        mappings: [[1, "year"]],
+        action: this.year,
+      },
       {
         method: "GET",
         pattern: "/schedule/(\\d{4})/(\\d{2})/(\\d{2})/",
+        mappings: [[1, "year"], [2, "month"], [3, "date"]],
         action: this.week,
       },
       {
         method: "GET",
         pattern:
           "/schedule/export/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+        mappings: [
+          [1, "startYear"],
+          [2, "startMonth"],
+          [3, "startDate"],
+          [4, "endYear"],
+          [5, "endMonth"],
+          [6, "endDate"],
+        ],
         action: this.exportGet,
       },
       {
         method: "POST",
         pattern:
           "/schedule/export/(\\d{4})/(\\d{2})/(\\d{2})/to/(\\d{4})/(\\d{2})/(\\d{2})/",
+        mappings: [
+          [1, "startYear"],
+          [2, "startMonth"],
+          [3, "startDate"],
+          [4, "endYear"],
+          [5, "endMonth"],
+          [6, "endDate"],
+        ],
         action: this.exportPost,
       },
     ];
@@ -60,8 +82,8 @@ export default class ScheduleController extends Controller {
    * @returns The response
    */
   public year(context: Context): ResponseWrapper {
-    const year = parseInt(context.match[1]);
-    if (isNaN(year)) {
+    const year = context.routeData.getInt("year");
+    if (year == null) {
       return this.NotFoundResponse(context);
     }
 
@@ -77,13 +99,8 @@ export default class ScheduleController extends Controller {
    * @returns The response
    */
   public async week(context: Context): Promise<ResponseWrapper> {
-    const [_, year, month, day] = context.match;
-    const startDate = new Date(
-      parseInt(year),
-      parseInt(month) - 1,
-      parseInt(day),
-    );
-    if (isNaN(startDate.getTime())) {
+    const startDate = context.routeData.getDateMulti("year", "month", "date");
+    if (startDate == null) {
       return this.NotFoundResponse(context);
     }
 
@@ -99,8 +116,8 @@ export default class ScheduleController extends Controller {
 
     const endDate = DateLib.addDays(startDate, 6);
 
-    const schedule = await this.schedules.getSchedule(startDate, endDate);
-    const warnings = await this.schedules.getWarnings(startDate, endDate);
+    const schedule = await this._schedules.getSchedule(startDate, endDate);
+    const warnings = await this._schedules.getWarnings(startDate, endDate);
 
     const model = new ScheduleWeekViewModel(startDate, schedule, warnings);
 
@@ -112,10 +129,17 @@ export default class ScheduleController extends Controller {
    * @returns The response
    */
   public exportGet(context: Context): ResponseWrapper {
-    const [_, y1, m1, d1, y2, m2, d2] = context.match;
-    const start = new Date(parseInt(y1), parseInt(m1) - 1, parseInt(d1));
-    const end = new Date(parseInt(y2), parseInt(m2) - 1, parseInt(d2));
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    const start = context.routeData.getDateMulti(
+      "startYear",
+      "startMonth",
+      "startDate",
+    );
+    const end = context.routeData.getDateMulti(
+      "endYear",
+      "endMonth",
+      "endDate",
+    );
+    if (start == null || end == null) {
       return this.NotFoundResponse(context);
     }
 
@@ -134,12 +158,12 @@ export default class ScheduleController extends Controller {
     return this.HTMLResponse(context, "./views/schedule/export.html", model);
   }
 
-  /** Converts a schedule cell object to a plain text string based on its type
+  /** Converts a schedule cell object to a string based on its type
    *
-   * Helper method
+   * (This is a helper method.)
    *
    * @param cell The schedule cell
-   * @returns The schedule cell's plain text string representation
+   * @returns The schedule cell's string representation
    */
   public cellToString(cell: ScheduleCell): string {
     let value = "";
@@ -178,7 +202,7 @@ export default class ScheduleController extends Controller {
     return value;
   }
 
-  /** Accepts requests to export the schedule to a file
+  /** Accepts requests to export a schedule to a file
    * @param context The application context
    * @returns The response
    */
@@ -193,7 +217,7 @@ export default class ScheduleController extends Controller {
       return this.HTMLResponse(context, "./views/schedule/export.html", model);
     }
 
-    const schedule = await this.schedules.getSchedule(
+    const schedule = await this._schedules.getSchedule(
       model.startDate!.toDate(),
       model.endDate!.toDate(),
     );
