@@ -14,10 +14,9 @@
     {{ title }}
   </h1>
 
-  {{ formErrors(model.errors ) }}
-
   <form method="post" action="{% if model.isEdit %}/context/{{ model.shiftContext.id }}/{% else %}/context/add/{% endif %}" class="max-w-md">
-    <div class="flex gap-4">
+    {{ formErrors(model.errors) }}
+    <div class="flex gap-4 mt-8">
       <label class="flex-1">Name</label>
       <input type="text" name="name" value="{{ model.shiftContext.name }}" class="flex-2 border rounded p-1" />
     </div>
