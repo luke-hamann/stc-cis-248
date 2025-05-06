@@ -1,17 +1,16 @@
-/** A wrapper class for Date objects that makes common date operations available
- */
+/** A wrapper class for Date objects that makes common date operations available */
 export default class BetterDate {
   /** The date object being wrapped */
   private _date: Date;
 
-  /** Constructs the BetterDate
-   * @param timestamp The Unix time
+  /** Constructs a BetterDate object based on a Unix Epoch
+   * @param timestamp The Unix Epoch
    */
   public constructor(timestamp: number = new Date().getTime()) {
     this._date = new Date(timestamp);
   }
 
-  /** Creates a BetterDate object based on a Date object
+  /** Constructs a BetterDate object based on a Date object
    * @param date A Date object
    * @returns A BetterDate object
    */
@@ -34,7 +33,7 @@ export default class BetterDate {
     const year = this._date.getFullYear();
     const month = (this._date.getMonth() + 1).toString().padStart(2, "0");
     const day = (this._date.getDate()).toString().padStart(2, "0");
-    return `${year}${sep}${month}${sep}${day}`;
+    return [year, month, day].join(sep);
   }
 
   /** Formats the date as a time string in HH:MM format
@@ -49,13 +48,14 @@ export default class BetterDate {
   /** Converts the date and time to a string representation
    *
    * Formatted as "yyyy-mm-ddThh:ii"
+   *
    * @returns The string
    */
   public toString(): string {
     return `${this.toDateString()}T${this.toTimeString()}`;
   }
 
-  /** Returns a new date with the number of days added to it
+  /** Returns a new BetterDate after adding days to the current BetterDate
    * @param days The number of days to add
    * @returns The new date
    */
@@ -65,7 +65,7 @@ export default class BetterDate {
     return new BetterDate(newDate.getTime());
   }
 
-  /** Returns a new date floored to the most recent past Sunday
+  /** Returns a new BetterDate after flooring the current BetterDate to the most recent past Sunday
    * @returns The new date
    */
   public floorToSunday(): BetterDate {

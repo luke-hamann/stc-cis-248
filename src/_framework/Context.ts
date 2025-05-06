@@ -1,7 +1,7 @@
 import MapWrapper from "./MapWrapper.ts";
 import ResponseWrapper from "./ResponseWrapper.ts";
 
-/** A class for representing an application state context */
+/** A class for representing a web application state context */
 export default class Context {
   /** The incoming HTTP request */
   public readonly request: Request;
@@ -18,10 +18,10 @@ export default class Context {
   /** The url path route data */
   public routeData: MapWrapper = MapWrapper.empty();
 
-  /** A wrapper for the request form data */
+  /** The request form data */
   public formData: MapWrapper = MapWrapper.empty();
 
-  /** The anti-cross-site-request-forgery token from the session */
+  /** The anti-cross-site request forgery token from the session */
   public csrf_token: string = "";
 
   /** Constructs the application state context
