@@ -49,7 +49,7 @@ export default class BetterDate {
   /** Converts the date and time to a string representation
    *
    * Formatted as "yyyy-mm-ddThh:ii"
-   * @returns
+   * @returns The string
    */
   public toString(): string {
     return `${this.toDateString()}T${this.toTimeString()}`;
