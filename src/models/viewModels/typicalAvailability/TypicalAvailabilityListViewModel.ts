@@ -9,7 +9,7 @@ export default class TypicalAvailabilityListViewModel extends ViewModel {
 
   /** A table of typical availability
    *
-   * Each row cooresponds to a day of the week, starting with Sunday and ending with Saturday
+   * Each row corresponds to a day of the week, starting with Sunday and ending with Saturday
    */
   public typicalAvailabilityTable: TypicalAvailability[][];
 

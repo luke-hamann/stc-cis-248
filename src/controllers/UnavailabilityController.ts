@@ -155,7 +155,7 @@ export default class UnavailabilityController extends Controller {
     return this.RedirectResponse(context, url);
   }
 
-  /** Gets the unavailality calendar for a given year and team member
+  /** Gets the unavailability calendar for a given year and team member
    * @param context The application context
    * @returns The response
    */

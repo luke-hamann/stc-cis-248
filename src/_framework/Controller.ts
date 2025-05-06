@@ -13,7 +13,7 @@ export default class Controller {
 
   /** Executes the controller
    *
-   * Interates over each route and calls matching action methods.
+   * Iterates over each route and calls matching action methods.
    * If an action method returns a response wrapper, that response wrapper is returned.
    * If an action method returns void, the next route and action method are checked.
    *

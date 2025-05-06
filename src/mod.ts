@@ -51,7 +51,7 @@
  *    2. Create a database user with the DATABASE_USERNAME and DATABASE_PASSWORD credentials specified above.
  *    3. Import `./src/sql/build.sql`.
  *    4. (Optional) Import `./src/sql/build.sql` (if you want sample data).
- *    5. Grant SELECT, INSERT, UPDATE, and DELETE privleges on the database to the user you created.
+ *    5. Grant SELECT, INSERT, UPDATE, and DELETE privileges on the database to the user you created.
  * 7. Return to Visual Studio Code.
  * 8. Press `F5`. The Tailwind CSS build should spin up.
  * 9. Press `F5` again. The application server should spin up.
@@ -146,7 +146,7 @@
  * * TimeSlots
  * * Substitutes
  *
- * Note: The TeamMemberAvailability table lists special times the team member is *unavailabile*.
+ * Note: The TeamMemberAvailability table lists special times the team member is *unavailable*.
  * The TeamMemberTypicalAvailability table lists days of the week and times the team member is typically available.
  *
  * ### Columns
@@ -181,7 +181,7 @@
  *    * date (date) - Date
  *    * note (varchar) - Note content
  *    * colorId (int) - Note color id
- * * TeamMememberAvailability
+ * * TeamMemberAvailability
  *    * id (int) - Id
  *    * teamMemberId (int) - Team member id
  *    * startDateTime (datetime) - Start date time
@@ -198,7 +198,7 @@
  *    * teamMemberId (int) - Team member id
  *    * shiftContextId (int) - Shift context id
  *    * isPreference (bool) - Whether the team member prefers the shift context
- *      (Note: The absense of an entry for a given combination of a team member and shift context indicates no preference.)
+ *      (Note: The absence of an entry for a given combination of a team member and shift context indicates no preference.)
  * * TimeSlots
  *    * id (int) - Id
  *    * shiftContextId (int) - Shift context id
@@ -225,7 +225,7 @@
  * * {@link TypicalAvailability Typical Availability}
  * * {@link Unavailability Unavailability}
  *
- * ### Helper entites
+ * ### Helper entities
  *
  * * {@link AssigneeRecommendations Assignee Recommendations}
  * * {@link Schedule Schedule}
@@ -396,7 +396,7 @@ export { default as Route } from "./_framework/Route.ts";
 
 export { default as Router } from "./controllers/_Router.ts";
 export { default as ColorController } from "./controllers/ColorController.ts";
-export { default as SheduleController } from "./controllers/ScheduleController.ts";
+export { default as ScheduleController } from "./controllers/ScheduleController.ts";
 export { default as ShiftContextController } from "./controllers/ShiftContextController.ts";
 export { default as ShiftContextNoteController } from "./controllers/ShiftContextNoteController.ts";
 export { default as ShiftContextPreferenceController } from "./controllers/ShiftContextPreferenceController.ts";

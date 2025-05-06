@@ -15,7 +15,7 @@ export default class ShiftContextPreferencesEditViewModel
    *
    * * "preferable" is a list of ids for preferable shift contexts
    * * "unpreferable" is a list of ids for unpreferable shift contexts
-   * * Unlisted shift context ids are neither preferred or unpreferred
+   * * Unlisted shift context ids are neither liked nor disliked
    */
   shiftContextPreferences: { preferable: number[]; unpreferable: number[] };
 

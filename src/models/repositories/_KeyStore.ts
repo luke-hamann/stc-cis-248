@@ -26,7 +26,7 @@ export interface IKeyValue {
   /** When the key should expire if it is not accessed again */
   softExpiration: Date | null;
 
-  /** How many milliseconds the soft expiration should be pushed out to everytime the key is accessed */
+  /** How many milliseconds the soft expiration should be pushed out every time the key is accessed */
   softExpirationIncrement: number | null;
 
   /** When the key MUST expire, regardless of when it is accessed */

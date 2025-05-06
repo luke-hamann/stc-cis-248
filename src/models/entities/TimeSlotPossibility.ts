@@ -1,8 +1,8 @@
 /** Represents settings for the possible creation of a time slot
  *
  * These are created when a time slot in a unique grouping exists on a different date during the week
- * but a cooresponding time slot in that grouping does not exist on the current day being inspected.
- * This allows for schedule cells without time slots to be populated with a button for autofilling the time slot add form.
+ * but a corresponding time slot in that grouping does not exist on the current day being inspected.
+ * This allows for schedule cells without time slots to be populated with a button for auto-filling the time slot add form.
  */
 export default class TimeSlotPossibility {
   /** The id of the associated shift context */

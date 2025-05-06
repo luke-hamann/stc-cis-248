@@ -53,8 +53,8 @@ export default class Context {
 
   /** Initializes the form data of the application context
    *
-   * Form data must be fetched asyncronously.
-   * Constructors cannot be asyncronous.
+   * Form data must be fetched asynchronously.
+   * Constructors cannot be asynchronous.
    */
   public async initializeFormData(): Promise<void> {
     if (this.request.method == "POST") {

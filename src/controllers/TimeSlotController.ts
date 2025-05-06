@@ -41,7 +41,7 @@ export default class TimeSlotController extends Controller {
   /** The time slots repository */
   private _timeSlots: ITimeSlotRepository;
 
-  /** Constucts the controller using the necessary repositories
+  /** Constructs the controller using the necessary repositories
    * @param shiftContexts The shift context repository
    * @param teamMembers The team members repository
    * @param colors The colors repository
@@ -252,7 +252,7 @@ export default class TimeSlotController extends Controller {
   public async addGet(context: Context): Promise<ResponseWrapper> {
     const timeSlot = TimeSlot.empty();
 
-    // If we are attempting to prepopulate the form using route data
+    // If we are attempting to pre-populate the form using route data
     if (context.routeData.getBool("hasRouteData")) {
       const shiftContextId = context.routeData.getInt("shiftContextId");
       if (
@@ -642,7 +642,7 @@ export default class TimeSlotController extends Controller {
 
   /** Accepts requests to render a time slot assignees recommendation HTML fragment
    * @param context The application context
-   * @returns The resonse
+   * @returns The response
    */
   public async previewRecommendations(
     context: Context,
