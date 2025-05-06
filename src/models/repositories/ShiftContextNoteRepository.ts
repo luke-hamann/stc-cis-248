@@ -227,7 +227,7 @@ export default class ShiftContextNoteRepository extends Repository
 
     const result = await this._database.execute(
       query,
-      [start, end, shiftContextId],
+      [start, end, shiftContextId ?? null],
     );
 
     if (!result.rows) return [];
