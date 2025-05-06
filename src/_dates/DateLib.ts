@@ -1,4 +1,6 @@
-/** A static class for performing date calculations */
+/** A static class for performing date calculations
+ * @deprecated
+ */
 export default class DateLib {
   /** Adds a number of days to a date and returns the new date
    * @param date The original date

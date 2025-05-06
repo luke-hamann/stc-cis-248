@@ -12,7 +12,9 @@ export default class Context {
   /** The outgoing HTTP response */
   public response: ResponseWrapper;
 
-  /** The regex match results for the incoming request URL */
+  /** The regex match results for the incoming request URL
+   * @deprecated
+   */
   public match: string[] = [];
 
   /** The url path route data */
