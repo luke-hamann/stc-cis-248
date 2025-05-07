@@ -160,14 +160,14 @@
               {% endif %}
 
               {% if type == "SubstituteList" %}
-                {% if data.teamMembers %}
+                {% if data.teamMembers.length > 0 %}
                   <ul class="list-disc ms-8 mb-4">
                     {% for teamMember in data.teamMembers %}
                       <li>{{ teamMember.fullName }}</li>
                     {% endfor %}
                   </ul>
                 {% endif %}
-                <p class="flex justify-center">
+                <p class="flex justify-center my-4">
                   <a href="/substitutes/{{ formatDate(data.date, '/') }}/" class="block p-1 w-fit border rounded  bg-blue-400 text-white hover:bg-sky-800">
                     Edit
                   </a>
