@@ -260,7 +260,11 @@ export default class ScheduleController extends Controller {
         );
 
         row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-          cell.alignment = { wrapText: true };
+          cell.alignment = {
+            vertical: "top",
+            horizontal: "left",
+            wrapText: true,
+          };
 
           const sourceCell =
             schedule.table[parseInt(cell.row) - 1][colNumber - 1];
@@ -270,7 +274,10 @@ export default class ScheduleController extends Controller {
           ) {
             cell.font = { bold: true };
           } else if (
-            sourceCell.type == "ShiftContextNote" &&
+            (
+              sourceCell.type == "TimeSlot" ||
+              sourceCell.type == "ShiftContextNote"
+            ) &&
             sourceCell.content.color != null
           ) {
             cell.fill = {

@@ -261,7 +261,7 @@ export default class ShiftContextNoteRepository extends Repository
       [shiftContextNote.shiftContextId, shiftContextNote.date],
     );
 
-    if (shiftContextNote.note.length > 0) {
+    if (shiftContextNote.colorId != null || shiftContextNote.note.length > 0) {
       await this._database.execute(
         `
           INSERT INTO ShiftContextNotes (shiftContextId, date, note, colorId)
