@@ -10,6 +10,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-2 pb-2 mt-3">
+  <div class="m-auto w-max">
   <h1 class="text-4xl mt-8 font-bold">
     {{ title }}
   </h1>
@@ -26,8 +28,10 @@
     <div class="flex gap-4 justify-center mt-4">
       <input type="hidden" name="id" value="{{ model.color.id }}"/>
       {{ csrf(model) }}
-      <button type="submit" class="bg-blue-200 p-4 rounded">Save</button>
-      <a href="/colors/" class="bg-red-400 text-white p-4 rounded">Cancel</a>
+      <button type="submit" class="bg-green-800 hover:bg-green-600 text-white p-4 rounded">Save</button>
+      <a href="/colors/" class="bg-red-800 hover:bg-red-500 text-white p-4 rounded">Cancel</a>
     </div>
   </form>
+  </div>
+</div>
 {% endblock %}

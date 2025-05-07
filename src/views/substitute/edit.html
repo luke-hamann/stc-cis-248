@@ -5,6 +5,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-2 pb-2 mt-3">
+<div class="m-auto w-max">
   <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
   <form method="post" class="max-w-md">
     <div class="flex mt-8 mb-4">
@@ -20,8 +22,10 @@
     {% endfor %}
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <input type="submit" value="Save" class="block p-4 bg-green-300 rounded"/>
-      <a href="/schedule/{{ formatDate(model.substituteList.date, '/') }}/" class="block p-4 bg-gray-300 rounded">Cancel</a>
+      <input type="submit" value="Save" class="block p-4  bg-green-800 text-white hover:bg-green-600 rounded"/>
+      <a href="/schedule/{{ formatDate(model.substituteList.date, '/') }}/" class="block p-4  bg-red-800 text-white hover:bg-red-500 rounded">Cancel</a>
     </div>
   </form>
+</div>
+</div>
 {% endblock %}

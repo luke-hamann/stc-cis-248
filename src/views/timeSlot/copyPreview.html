@@ -5,6 +5,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-2 pb-2 mt-3">
+  <div class="m-auto w-max">
   <h1 class="mt-8 text-4xl font-bold">{{ title }}</h1>
   <div class="max-w-lg mt-8">
     <div>
@@ -47,11 +49,11 @@
         <input type="hidden" name="includeTimeSlotNotes" />
       {% endif %}
       <div class="flex justify-center gap-4">
-        <input type="submit" value="Confirm" class="block p-2 bg-blue-300 rounded" />
-        <a href="/schedule/copy/from/{{ formatDate(model.fromStartDate, '/') }}/through/{{ formatDate(model.fromEndDate, '/') }}/to/{{ formatDate(model.toStartDate, '/') }}/through/{{ formatDate(model.toEndDate, '/') }}/{{ 'no-repeat/' if not model.repeatCopy }}{{ 'include-assignees/' if model.includeAssignees }}{{ 'include-shift-context-notes/' if model.includeShiftContextNotes }}{{ 'include-time-slot-notes/' if model.includeTimeSlotNotes }}" class="block p-2 bg-yellow-200 rounded">
+        <input type="submit" value="Confirm" class="block p-2 rounded bg-sky-800 text-white hover:bg-sky-400" />
+        <a href="/schedule/copy/from/{{ formatDate(model.fromStartDate, '/') }}/through/{{ formatDate(model.fromEndDate, '/') }}/to/{{ formatDate(model.toStartDate, '/') }}/through/{{ formatDate(model.toEndDate, '/') }}/{{ 'no-repeat/' if not model.repeatCopy }}{{ 'include-assignees/' if model.includeAssignees }}{{ 'include-shift-context-notes/' if model.includeShiftContextNotes }}{{ 'include-time-slot-notes/' if model.includeTimeSlotNotes }}" class="block p-2  bg-amber-200 hover:text-black hover:bg-white hover:border-1 hover:border-amber-600 rounded">
           Edit
         </a>
-        <a href="/schedule/{{ formatDate(model.fromStartDate, '/') }}/" class="block p-2 bg-gray-300 rounded">
+        <a href="/schedule/{{ formatDate(model.fromStartDate, '/') }}/" class="block p-2 bg-red-800 text-white hover:bg-red-500 rounded">
           Cancel
         </a>
       </div>
@@ -66,7 +68,7 @@
       {% endif %}
     </p>
     {% for timeSlot in model.newTimeSlots %}
-      <div class="mt-4 p-2 border rounded">
+      <div class="mt-4 p-2 border bg-amber-50 box-shadow-lg rounded">
         <div>
           <b>{{ timeSlot.shiftContext.name }}</b>
         </div>
@@ -91,4 +93,7 @@
       {% endfor %}
     {% endif %}
   </div>
+  </div>
+</div>
+
 {% endblock %}

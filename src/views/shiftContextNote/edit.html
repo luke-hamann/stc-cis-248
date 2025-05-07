@@ -7,6 +7,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-2 pb-2 mt-3">
+  <div class="m-auto w-max">
   <h1 class="text-4xl mt-8 font-bold">
     {{ title }}
   </h1>
@@ -46,8 +48,10 @@
     </div>
     <div class="mt-4 flex justify-center gap-4">
       {{ csrf(model) }}
-      <button type="submit" class="p-4 rounded bg-blue-300">Save</button>
-      <a href="/schedule/{{ formatDate(model.shiftContextNote.date, '/') }}/" class="p-4 rounded bg-gray-200">Cancel</a>
+      <button type="submit" class="p-4 bg-green-800 text-white hover:bg-green-600 rounded">Save</button>
+      <a href="/schedule/{{ formatDate(model.shiftContextNote.date, '/') }}/" class="p-4 bg-red-800 text-white hover:bg-red-500 rounded">Cancel</a>
     </div>
   </form>
+  </div>
+</div>
 {% endblock %}

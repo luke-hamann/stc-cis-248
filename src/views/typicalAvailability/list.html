@@ -32,12 +32,12 @@
             {{ "🙂" if typicalAvailability.isPreference else "☹️" }}
           </div>
           <div class="flex gap-4">
-            <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/" class="block p-2 bg-amber-300 rounded">
+            <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/" class="block p-2  bg-yellow-300 hover:bg-white hover:border-amber-600 hover:border-1 rounded">
               ✏️
             </a>
-            <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/delete/" class="block p-2 bg-red-400 rounded">
+            <a href="/team-member/{{ model.teamMember.id }}/availability/{{ typicalAvailability.id }}/delete/" class="block p-2  bg-red-300 hover:bg-white hover:border-red-600 hover:border-1  rounded">
               ❌
-            </a>
+            </a> 
           </div>
         </div>
       {% else %}
