@@ -34,14 +34,14 @@ export default class ShiftContextPreferenceController extends Controller {
     this.routes = [
       {
         method: "GET",
-        pattern: "/team-member/(\\d+)/preferences/",
-        mappings: [[1, "teamMemberId"]],
+        pattern: "/team-member/(\\d+)/preferences/(saved/)?",
+        mappings: [[1, "teamMemberId"], [2, "isSaved"]],
         action: this.listGet,
       },
       {
         method: "POST",
-        pattern: "/team-member/(\\d+)/preferences/",
-        mappings: [[1, "teamMemberId"]],
+        pattern: "/team-member/(\\d+)/preferences/(saved/)?",
+        mappings: [[1, "teamMemberId"], [2, "isSaved"]],
         action: this.listPost,
       },
     ];
@@ -66,10 +66,13 @@ export default class ShiftContextPreferenceController extends Controller {
     const shiftContextPreferences = await this._shiftContextPreferences
       .get(teamMemberId);
 
+    const updatedDateTime = context.routeData.getBool("isSaved") ? new Date() : null;
+
     const model = new ShiftContextPreferencesEditViewModel(
       teamMember,
       shiftContexts,
       shiftContextPreferences,
+      updatedDateTime,
     );
 
     return this.HTMLResponse(
@@ -114,6 +117,6 @@ export default class ShiftContextPreferenceController extends Controller {
       teamMemberId,
       model.shiftContextPreferences,
     );
-    return this.RedirectResponse(context, `/team-member/${teamMemberId}/`);
+    return this.RedirectResponse(context, `/team-member/${teamMemberId}/preferences/saved/`);
   }
 }

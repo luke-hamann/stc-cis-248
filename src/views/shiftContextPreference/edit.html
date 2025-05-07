@@ -9,7 +9,20 @@
   <div class="bg-white drop-shadow-lg mt-3 px-2 pb-2">
     <div class="m-auto w-max">
   {{ teamMemberTabs(model.teamMember, "preferences") }}
-  <form method="post" class="ms-4 mt-6 max-w-md">
+  {% if model.updatedDateTime %}
+    <div class="mt-6 has-checked:hidden">
+      <div class="border border-green-300 rounded p-2 flex justify-between items-center">
+        <span>
+          ✅ Saved {{ model.updatedDateTime.toLocaleTimeString() }}
+        </span>
+        <input type="checkbox" id="save-message-dismiss" class="hidden">
+        <label for="save-message-dismiss" class="block size-5 bg-red-500 hover:bg-red-600 text-base/5 text-white text-center rounded">
+          &times;
+        </label>
+      </div>
+    </div>
+  {% endif %}
+  <form method="post" class="mt-6 max-w-md">
     <table>
       <thead>
         <tr>

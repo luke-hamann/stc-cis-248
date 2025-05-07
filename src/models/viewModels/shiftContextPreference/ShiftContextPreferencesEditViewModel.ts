@@ -19,6 +19,9 @@ export default class ShiftContextPreferencesEditViewModel
    */
   shiftContextPreferences: { preferable: number[]; unpreferable: number[] };
 
+  /** The date and time the preferences were updated */
+  updatedDateTime: Date | null;
+
   /** Constructs the view model
    * @param teamMember
    * @param shiftContexts
@@ -28,11 +31,13 @@ export default class ShiftContextPreferencesEditViewModel
     teamMember: TeamMember | null,
     shiftContexts: ShiftContext[],
     shiftContextPreferences: { preferable: number[]; unpreferable: number[] },
+    updatedDateTime: Date | null,
   ) {
     super(true, []);
     this.teamMember = teamMember;
     this.shiftContexts = shiftContexts;
     this.shiftContextPreferences = shiftContextPreferences;
+    this.updatedDateTime = updatedDateTime;
   }
 
   /** Constructs the view model using incoming form data
@@ -64,6 +69,7 @@ export default class ShiftContextPreferencesEditViewModel
       null,
       [],
       shiftContextPreferences,
+      null,
     );
   }
 }
