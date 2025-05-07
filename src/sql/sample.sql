@@ -252,54 +252,54 @@ INSERT INTO TeamMemberShiftContextPreferences
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(1, "2025-03-03 08:00:00", "2025-03-03 14:00:00", true, 1, "test note", 1)
+	(1, "2025-03-03 08:00:00", "2025-03-03 14:00:00", true, 1, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(1, "2025-03-04 08:00:00", "2025-03-04 14:00:00", true, 1, "test note", 1)
+	(1, "2025-03-04 08:00:00", "2025-03-04 14:00:00", true, 1, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(1, "2025-03-05 08:00:00", "2025-03-05 14:00:00", true, 1, "test note", 1)
+	(1, "2025-03-05 08:00:00", "2025-03-05 14:00:00", true, 1, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(1, "2025-03-06 08:00:00", "2025-03-06 14:00:00", true, 1, "test note", 1)
+	(1, "2025-03-06 08:00:00", "2025-03-06 14:00:00", true, 1, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(1, "2025-03-07 08:00:00", "2025-03-07 14:00:00", true, 1, "test note", 1)
+	(1, "2025-03-07 08:00:00", "2025-03-07 14:00:00", true, 1, "test note", null)
 	;
 
 		-- null team member, 1st context
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(1, "2025-03-03 08:00:00", "2025-03-03 14:00:00", true, null, "test note", 1)
+	(1, "2025-03-03 08:00:00", "2025-03-03 14:00:00", true, null, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(1, "2025-03-04 08:00:00", "2025-03-04 14:00:00", true, null, "test note", 1)
+	(1, "2025-03-04 08:00:00", "2025-03-04 14:00:00", true, null, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(1, "2025-03-05 08:00:00", "2025-03-05 14:00:00", true, null, "test note", 1)
+	(1, "2025-03-05 08:00:00", "2025-03-05 14:00:00", true, null, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(1, "2025-03-06 08:00:00", "2025-03-06 14:00:00", true, null, "test note", 1)
+	(1, "2025-03-06 08:00:00", "2025-03-06 14:00:00", true, null, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(1, "2025-03-07 08:00:00", "2025-03-07 14:00:00", true, null, "test note", 1)
+	(1, "2025-03-07 08:00:00", "2025-03-07 14:00:00", true, null, "test note", null)
 	;
 	
 
@@ -307,7 +307,7 @@ INSERT INTO TimeSlots
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(2, "2025-03-03 08:00:00", "2025-03-03 14:00:00", true, 3, "test note", 1)
+	(2, "2025-03-03 08:00:00", "2025-03-03 14:00:00", true, 3, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
@@ -317,44 +317,44 @@ INSERT INTO TimeSlots
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(2, "2025-03-05 08:00:00", "2025-03-05 14:00:00", true, 3, "test note", 1)
+	(2, "2025-03-05 08:00:00", "2025-03-05 14:00:00", true, 3, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(2, "2025-03-06 08:00:00", "2025-03-06 14:00:00", true, 3, "test note", 1)
+	(2, "2025-03-06 08:00:00", "2025-03-06 14:00:00", true, 3, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(2, "2025-03-07 08:00:00", "2025-03-07 14:00:00", true, 3, "test note", 1)
+	(2, "2025-03-07 08:00:00", "2025-03-07 14:00:00", true, 3, "test note", null)
 	;
 
 		-- 4th team member, second center
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(2, "2025-03-03 08:00:00", "2025-03-03 14:00:00", true, 4, "test note", 1)
+	(2, "2025-03-03 08:00:00", "2025-03-03 14:00:00", true, 4, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(2, "2025-03-04 08:00:00", "2025-03-04 14:00:00", true, 4, "test note", 1)
+	(2, "2025-03-04 08:00:00", "2025-03-04 14:00:00", true, 4, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(2, "2025-03-05 08:00:00", "2025-03-05 14:00:00", true, 4, "test note", 1)
+	(2, "2025-03-05 08:00:00", "2025-03-05 14:00:00", true, 4, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(2, "2025-03-06 08:00:00", "2025-03-06 14:00:00", true, 4, "test note", 1)
+	(2, "2025-03-06 08:00:00", "2025-03-06 14:00:00", true, 4, "test note", null)
 	;
 INSERT INTO TimeSlots
 	(shiftcontextid, startdatetime, endDateTime, requiresadult,teammemberID,note, colorid)
 	VALUES
-	(2, "2025-03-07 08:00:00", "2025-03-07 14:00:00", true, 4, "test note", 1)
+	(2, "2025-03-07 08:00:00", "2025-03-07 14:00:00", true, 4, "test note", null)
 	;
 
 
