@@ -26,7 +26,7 @@ for (const target of targets) {
 
 // Copy preview
 
-await page.setViewport({ width: 500, height: 700 });
+await page.setViewport({ width: 700, height: 725 });
 await page.goto(baseUrl + "schedule/copy/from/2025/03/02/through/2025/03/08/");
 await page.type("#toStartDate", "03092025");
 await page.type("#toEndDate", "03152025");
@@ -38,7 +38,7 @@ console.log(path);
 
 // Schedule week editor table
 
-await page.setViewport({ width: 1400, height: 1230 });
+await page.setViewport({ width: 1400, height: 1120 });
 await page.goto(baseUrl + "schedule/2025/03/02/");
 await page.$$eval(
   "summary",

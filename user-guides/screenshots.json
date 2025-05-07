@@ -3,38 +3,38 @@
 
   ["schedule/2025/", 800, 60, "navigation"],
 
-  ["colors/", 450, 490, "color_list"],
+  ["colors/", 475, 490, "color_list"],
   ["colors/add/", 511, 340, "color_add"],
   ["color/4/", 500, 340, "color_edit"],
-  ["color/4/delete/", 460, 350, "color_delete"],
+  ["color/4/delete/", 475, 350, "color_delete"],
 
   ["team-members/", 634, 540, "team_member_list"],
   ["team-members/add/", 500, 700, "team_member_add"],
-  ["team-member/1/", 500, 700, "team_member_profile"],
+  ["team-member/1/", 525, 700, "team_member_profile"],
   ["team-member/4/edit/", 500, 700, "team_member_edit"],
-  ["team-member/4/delete/", 500, 440, "team_member_delete"],
+  ["team-member/4/delete/", 550, 440, "team_member_delete"],
 
-  ["contexts/", 630, 500, "shift_context_list"],
+  ["contexts/", 780, 500, "shift_context_list"],
   ["context/add/", 500, 550, "shift_context_add"],
   ["context/1/", 500, 550, "shift_context_edit"],
-  ["context/1/delete/", 500, 380, "shift_context_delete"],
+  ["context/1/delete/", 550, 380, "shift_context_delete"],
 
-  ["team-member/1/preferences/", 525, 525, "preferences"],
+  ["team-member/1/preferences/", 525, 550, "preferences"],
 
   ["team-member/1/availability/", 600, 750, "availability_list"],
-  ["team-member/1/availability/add/", 500, 600, "availability_add"],
-  ["team-member/1/availability/1/", 500, 600, "availability_edit"],
-  ["team-member/1/availability/1/delete/", 500, 325, "availability_delete"],
+  ["team-member/1/availability/add/", 550, 600, "availability_add"],
+  ["team-member/1/availability/1/", 550, 600, "availability_edit"],
+  ["team-member/1/availability/1/delete/", 575, 325, "availability_delete"],
 
   ["team-member/1/unavailability/2025/", 1090, 700, "unavailability_year"],
   ["team-member/1/unavailability/2025/03/02/", 625, 700, "unavailability_week"],
   [
     "team-member/1/unavailability/add/2025/03/02/",
-    500,
+    525,
     600,
     "unavailability_add"
   ],
-  ["team-member/1/unavailability/1/edit/", 500, 600, "unavailability_edit"],
+  ["team-member/1/unavailability/1/edit/", 525, 600, "unavailability_edit"],
   ["team-member/1/unavailability/1/delete/", 500, 350, "unavailability_delete"],
   [
     "team-member/1/unavailability/2025/03/02/clear/",
@@ -43,8 +43,8 @@
     "unavailability_clear"
   ],
 
-  ["schedule/time-slot/add/", 880, 1200, "time_slot_add"],
-  ["schedule/time-slot/11/", 880, 1200, "time_slot_edit"],
+  ["schedule/time-slot/add/", 890, 1200, "time_slot_add"],
+  ["schedule/time-slot/11/", 890, 1200, "time_slot_edit"],
   ["schedule/time-slot/11/delete/", 450, 325, "time_slot_delete"],
 
   ["substitutes/2025/03/01/", 400, 450, "substitutes"],
@@ -56,9 +56,9 @@
   [
     "schedule/copy/from/2025/03/02/through/2025/03/08/",
     550,
-    825,
+    850,
     "schedule_copy"
   ],
-  ["schedule/clear/2025/03/02/through/2025/03/08/", 575, 470, "schedule_clear"],
+  ["schedule/clear/2025/03/02/through/2025/03/08/", 575, 525, "schedule_clear"],
   ["schedule/export/2025/03/02/to/2025/03/08/", 600, 450, "schedule_export"]
 ]
