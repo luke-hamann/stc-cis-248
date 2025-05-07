@@ -17,7 +17,7 @@
 {% block content %}
   {# Navigation Header #}
   <div class="w-full sm:w-xl mx-auto flex justify-between gap-8 px-4 py-8">
-    <a href="/schedule/{{ model.previousWeekString }}/" class="self-center select-none hover:underline">
+    <a href="/schedule/{{ model.previousWeekString }}/" class="self-center select-none text-2x1 font-bold hover:underline">
       &lt;
     </a>
     <h1 class="text-center font-bold text-3xl select-none">
@@ -25,15 +25,15 @@
         {{ model.title }}
       </a>
     </h1>
-    <a href="/schedule/{{ model.nextWeekString }}/" class="self-center select-none hover:underline">
+    <a href="/schedule/{{ model.nextWeekString }}/" class="self-center select-none hover:underline text-2xl font-bold">
       &gt;
     </a>
   </div>
 
   <div class="w-full flex justify-center gap-4">
-    <a class="block p-1 border rounded bg-sky-500 text-white hover:bg-sky-800" href="{{ model.copyLink }}">Copy</a>
-    <a class="block p-1 border rounded bg-sky-500 text-white hover:bg-sky-800" href="{{ model.clearLink }}">Clear</a>
-    <a class="block p-1 border rounded bg-sky-500 text-white hover:bg-sky-800" href="{{ model.exportLink }}">Export</a>
+    <a class="block p-2 border rounded bg-sky-500 text-white hover:bg-sky-800" href="{{ model.copyLink }}">Copy</a>
+    <a class="block p-2 border rounded bg-sky-500 text-white hover:bg-sky-800" href="{{ model.clearLink }}">Clear</a>
+    <a class="block p-2 border rounded bg-sky-500 text-white hover:bg-sky-800" href="{{ model.exportLink }}">Export</a>
   </div>
 
   <div class="mt-8 overflow-auto">
@@ -45,7 +45,7 @@
             {% set data = col.content %}
             <td class=" w-[10rem] border has-target:border-4">
               {% if type == "origin" %}
-                <a href="/schedule/time-slot/add/week-of/{{ formatDate(model.currentWeek, '/') }}/" class="block p-1 py-9 text-center pe-1 w-max h-max border rounded bg-blue-400 text-white hover:bg-sky-800">
+                <a href="/schedule/time-slot/add/week-of/{{ formatDate(model.currentWeek, '/') }}/" class="block pl-5 pr-7 py-9 text-center pe-1 w-max h-max border rounded bg-blue-400 text-white hover:bg-sky-800">
                   &plus; Add time slot
                 </a>
               {% endif %}
@@ -60,10 +60,10 @@
                   <div class="text-center">{{ data.toLocaleDateString(undefined) }}</div>
                 </h2>
                 <div class="mt-4 flex justify-start gap-4">
-                  <a href="/schedule/copy/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block px-3 py-1 border rounded bg-blue-400 text-white hover:bg-sky-800">
+                  <a href="/schedule/copy/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block px-3 py-1 m-auto border rounded bg-blue-400 text-white hover:bg-sky-800">
                     Copy
-                  </a> <!--Maybe Let the buttons fill out their placements more. Current whitespace is akward-->
-                  <a href="/schedule/clear/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block px-3 py-1 border rounded bg-red-500 text-white hover:bg-red-800">
+                  </a> 
+                  <a href="/schedule/clear/{{ formatDate(data, '/') }}/through/{{ formatDate(data, '/') }}/" class="block px-3 py-1 m-auto  border rounded bg-red-500 text-white hover:bg-red-800">
                     Clear
                   </a>
                 </div>
@@ -93,8 +93,8 @@
               {% endif %}
 
               {% if type == "TimeSlotGroup" %}
-                <p>{{ data.startTime }} to {{ data.endTime }}</p>
-                <p>{{ "18+" if data.requiresAdult }}</p>
+                <p class="text-center">{{ data.startTime }} to {{ data.endTime }}</p>
+                <p class="text-center">{{ "18+" if data.requiresAdult }}</p>
               {% endif %}
 
               {% if type == "TimeSlotPossibility" %}
@@ -111,7 +111,7 @@
                 </div>
 
                 <div class="flex">
-                  <div class="flex-1">
+                  <div class="flex-1 text-center">
                     {{ data.teamMember.fullName if data.teamMember else "(unassigned)" }}
                   </div>
                   {% if timeSlotWarnings.hasWarning() %}
@@ -154,7 +154,7 @@
                 {% endif %}
 
                 <div class="flex justify-center gap-4 mt-4">
-                  <a href="/schedule/time-slot/{{ data.id }}/" class="block p-1 border rounded  bg-blue-400 text-white hover:bg-sky-800">Edit</a>
+                  <a href="/schedule/time-slot/{{ data.id }}/" class="block p-1 px-3 border rounded  bg-blue-400 text-white hover:bg-sky-800">Edit</a>
                   <a href="/schedule/time-slot/{{ data.id }}/delete/" class="block p-1 border rounded  bg-red-500 text-white hover:bg-red-800">Delete</a>
                 </div>
               {% endif %}
@@ -179,7 +179,7 @@
       {% endfor %}
     </table>
   </div>
-
+<div class="bg-white p-2 drop-shadow-lg mt-6">
   {# Schedule warnings #}
 
   {% macro warningBadge(count) %}
@@ -339,4 +339,5 @@
       </details>
     {% endif %}
   </div>
+</div>
 {% endblock %}

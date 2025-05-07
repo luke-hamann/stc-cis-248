@@ -7,6 +7,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-2 pb-2 mt-3">
+  <div class="m-auto w-max">
   <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
   {{ formErrors(model.errors) }}
   <form method="post" class="mt-8 max-w-lg">
@@ -17,8 +19,10 @@
     {{ field("deleteSubstitutes", "", "checkbox", "Delete substitutes", model.deleteSubstitutes) }}
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <input type="submit" value="Clear" class="block p-2 bg-red-500 text-white rounded" />
-      <a href="{{ model.cancelLink }}" class="block p-2 bg-gray-300 rounded">Cancel</a>
+      <input type="submit" value="Clear" class="block p-2 bg-red-800 text-white hover:bg-red-500 rounded" />
+      <a href="{{ model.cancelLink }}" class="block p-2 bg-sky-800 text-white hover:bg-sky-400 rounded">Cancel</a>
     </div>
   </form>
+  </div>
+</div>
 {% endblock %}

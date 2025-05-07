@@ -16,16 +16,16 @@
               {{ csrf(model) }}
               <input type="hidden" name="shiftContextId" value="{{ shiftContext.id }}" />
               <input type="hidden" name="direction" value="-1" />
-              <input type="submit" value="&uparrow;" class="block size-12 {% if loop.first %}bg-gray-300{% else %}bg-blue-300{% endif %} rounded" {{ 'disabled' if loop.first }} />
+              <input type="submit" value="&uparrow;" class="block text-2xl size-12 {% if loop.first %}bg-gray-300{% else %}bg-blue-300 hover:bg-white hover:border-1 hover:border-black{% endif %} rounded" {{ 'disabled' if loop.first }} />
             </form>
             <form method="post">
               {{ csrf(model) }}
               <input type="hidden" name="shiftContextId" value="{{ shiftContext.id }}" />
               <input type="hidden" name="direction" value="1" />
-              <input type="submit" value="&downarrow;" class="block size-12 {% if loop.last %}bg-gray-300{% else %}bg-blue-300{% endif %} rounded" {{ 'disabled' if loop.last }} />
+              <input type="submit" value="&downarrow;" class="block text-2xl size-12 {% if loop.last %}bg-gray-300{% else %}bg-blue-300 hover:bg-white hover:border-1 hover:border-black{% endif %} rounded" {{ 'disabled' if loop.last }} />
             </form>
-            <a href="/context/{{ shiftContext.id }}/" class="block size-12 rounded bg-amber-200 text-center align-middle leading-10">✏️</a>
-            <a href="/context/{{ shiftContext.id }}/delete/" class="block size-12 rounded bg-red-500 text-white text-center align-middle leading-10 text-3xl">&times;</a>
+            <a href="/context/{{ shiftContext.id }}/" class="block size-12 rounded bg-amber-200 hover:text-black hover:bg-white hover:border-1 hover:border-amber-600 text-center align-middle leading-10">✏️</a>
+            <a href="/context/{{ shiftContext.id }}/delete/" class="block size-12 rounded bg-red-500 text-white hover:text-black hover:bg-white hover:border-1 hover:border-red-600 text-center align-middle leading-10 text-3xl">&times;</a>
           </div>
         </div>
         {#

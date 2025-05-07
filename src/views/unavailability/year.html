@@ -7,6 +7,10 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-2 pb-2 mt-3">
+  <div class="m-auto w-max">
   {{ teamMemberTabs(model.teamMember, "unavailability") }}
+  </div>
   {{ calendar(model.calendar) }}
+</div>
 {% endblock %}

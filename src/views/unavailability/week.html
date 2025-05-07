@@ -7,7 +7,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="bg-white drop-shadow-lg pb-2 mt-4" ></div>
+<div class="bg-white drop-shadow-lg pb-2 mt-4" >
+  <div class="m-auto w-max">
   {{ teamMemberTabs(model.teamMember, "unavailability") }}
   <div class="ms-4 p-8 flex gap-4">
     <a href="/team-member/{{ model.teamMember.id }}/unavailability/{{ model.previousWeekString }}/" class="block py-2 px-4 border rounded bg-sky-800 hover:bg-sky-400 text-white">
@@ -33,12 +34,12 @@
         <span>
           {{ row.date.toLocaleDateString(undefined, { dateStyle: "full" }) }}
         </span>
-        <a class="w-fit p-0.5 bg-blue-300 rounded" href="/team-member/{{ model.teamMember.id }}/unavailability/add/{{ formatDate(row.date, '/') }}/">
+        <a class="w-fit bg-sky-500 rounded hover:bg-blue-300" href="/team-member/{{ model.teamMember.id }}/unavailability/add/{{ formatDate(row.date, '/') }}/">
           ➕
         </a>
       </h2>
       {% for unavailability in row.unavailabilities %}
-        <div class="mt-4 p-2 flex justify-between border rounded">
+        <div class="bg-amber-100 drop-shadow-lg mt-4 p-2 flex justify-between border rounded">
           <div>
             {{ unavailability.startDateTime.toLocaleTimeString() }} - {{ unavailability.endDateTime.toLocaleTimeString() }}
           </div>
@@ -46,10 +47,10 @@
             {{ "🙂" if unavailability.isPreference else "☹️" }}
           </div>
           <div class="flex gap-4">
-            <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/edit/" class="block p-2 bg-yellow-300 rounded">
+            <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/edit/" class="block p-2 bg-yellow-300 hover:bg-white hover:border-amber-600 hover:border-1 rounded">
               ✏️
             </a>
-            <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/delete/" class="block p-2 bg-red-400 rounded">
+            <a href="/team-member/{{ unavailability.teamMemberId }}/unavailability/{{ unavailability.id }}/delete/" class="block p-2 bg-red-300 hover:bg-white hover:border-red-600 hover:border-1 rounded">
               ❌
             </a>
           </div>
@@ -59,4 +60,5 @@
       {% endfor %}
     {% endfor %}
   </div>
+</div>
 {% endblock %}

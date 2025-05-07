@@ -7,6 +7,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-2 pb-2 mt-3">
+  <div class="m-auto w-max">
   <h1 class="text-4xl mt-8 font-bold">{{ title }}</h1>
   <form method="post" class="mt-8 max-w-lg">
     {{ formErrors(model.errors) }}
@@ -29,8 +31,10 @@
     </fieldset>
     <div class="mt-10 flex justify-center gap-4">
       {{ csrf(model) }}
-      <input type="submit" value="Preview" class="block p-2 bg-blue-300 rounded" />
-      <a href="{{ model.cancelLink }}" class="block p-2 bg-gray-300 rounded">Cancel</a>
-    </div>
+      <input type="submit" value="Preview" class="block p-2 bg-sky-800 hover:bg-sky-600 text-white rounded" />
+      <a href="{{ model.cancelLink }}" class="block p-2 bg-red-800 text-white hover:bg-red-500 rounded">Cancel</a>
+    </div> 
   </form>
+  </div>
+</div>
 {% endblock %}

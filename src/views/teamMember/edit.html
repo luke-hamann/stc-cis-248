@@ -17,7 +17,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="bg-white box-shadow-lg px-1 pb-2"></div>
+<div class="bg-white box-shadow-lg px-2 pb-2 mt-3">
+<div class="m-auto w-max">
   <h1 class="text-4xl font-bold mt-8">{{ title }}</h1>
   {{ formErrors(model.errors) }}
   <form action="{{ action }}" method="post" class="max-w-lg mt-8">
@@ -32,9 +33,10 @@
     {{ field("maxWeeklyDays", model.teamMember.maxWeeklyDays, "number", "Max weekly days") }}
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <button type="submit" class="block bg-blue-800 text-white hover:bg-sky-400 rounded">Save</button>
-      <a href="{{ cancel }}" class="block bg-red-800 text-white hover:bg-red-500 rounded">Cancel</a>
+      <button type="submit" class="block py-3 px-10 bg-green-800 text-white hover:bg-green-600 rounded">Save</button>
+      <a href="{{ cancel }}" class="block py-3 px-10 bg-red-800 text-white hover:bg-red-500 rounded">Cancel</a>
     </div>
   </form>
+</div>
 </div>
 {% endblock %}
