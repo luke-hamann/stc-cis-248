@@ -10,7 +10,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="bg-white drop-shadow-lg mt-6 pb-4">
+<div class="bg-white drop-shadow-lg mt-3 px-2 pb-2">
+  <div class="m-auto w-max">
   {{ teamMemberTabs(model.teamMember, "availability") }}
   <div class="max-w-lg ms-4">
     {% for row in model.typicalAvailabilityTable %}
@@ -18,12 +19,12 @@
         <span>
           {{ dayNames[loop.index0] }}
         </span>
-        <a href="/team-member/{{ model.teamMember.id }}/availability/add/{{ loop.index0 }}/">
-          &plus;
+        <a class="w-fit bg-sky-500 rounded hover:bg-blue-300" href="/team-member/{{ model.teamMember.id }}/availability/add/{{ loop.index0 }}/">
+          ➕
         </a>
       </h2>
       {% for typicalAvailability in row %}
-        <div class="mt-4 p-2 flex border rounded justify-between">
+        <div class="bg-amber-100 drop-shadow-lg mt-4 p-2 flex border rounded justify-between">
           <div>
             {{ typicalAvailability.startTime }} - {{ typicalAvailability.endTime }}
           </div>
@@ -43,6 +44,7 @@
         <div>(none)</div>
       {% endfor %}
     {% endfor %}
+  </div>
   </div>
   </div>
 {% endblock %}

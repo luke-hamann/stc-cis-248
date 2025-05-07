@@ -3,6 +3,10 @@
 {% block title %}Confirm Deletion{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-2 pb-2 mt-3">
+  <div class="m-auto w-max">
+
+
   <h1 class="mt-8 text-4xl font-bold">Confirm Deletion</h1>
   <form method="post" action="{{ model.action }}" class="max-w-lg">
     <p class="mt-8">
@@ -23,8 +27,10 @@
     {% endif %}
     <div class="mt-8 flex justify-center gap-4">
       {{ csrf(model) }}
-      <button type="submit" class="block p-2 bg-red-400 rounded">Yes</button>
-      <a href="{{ model.cancel }}" class="block p-2 bg-gray-300 rounded">No</a>
+      <button type="submit" class="block p-2 px-3 bg-red-800 hover:bg-red-500 text-white rounded">Yes</button>
+      <a href="{{ model.cancel }}" class="block p-2 px-3 bg-gray-300 hover:bg-white hover:outline-gray-500 hover:outline-1 rounded">No</a>
     </div>
   </form>
+</div>
+</div>
 {% endblock %}

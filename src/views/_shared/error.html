@@ -3,6 +3,7 @@
 {% block title %}{{ model.title }}{% endblock %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-2 pb-2 mt-3">
   <h1 class="mt-8 text-4xl font-bold">{{ model.title }}</h1>
   <div class="mt-8">
     {% if model.isBodyPreformatted %}
@@ -11,4 +12,5 @@
       <p>{{ model.body }}</p>
     {% endif %}
   </div>
+</div>
 {% endblock %}

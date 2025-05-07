@@ -3,6 +3,8 @@
 {% block title %}Team Members{% endblock title %}
 
 {% block content %}
+<div class="bg-white drop-shadow-lg px-2 pb-2 mt-3">
+  <div class="m-auto w-max">
   <h1 class="mt-8 text-3xl font-bold">Team Members</h1>
   <div clas="box-shadow-lg bg-white pl-2 pt-0.5">
   <p class="mt-4">
@@ -15,16 +17,18 @@
       {% set isExternalFlat = true %}
     {% endif %}
     <div class="mt-4 flex max-w-xl">
-      <div class="flex-1 py-2">
+      <div class="flex-1 py-2 mr-2">
         {{ teamMember.fullName }}
       </div>
       <div class="flex gap-4">
-        <a href="/team-member/{{ teamMember.id }}/" class="block p-2 border rounded  bg-blue-400 text-white hover:bg-sky-800">Profile</a>
-        <a href="/team-member/{{ teamMember.id }}/preferences/" class="block p-2 border  bg-blue-400 text-white hover:bg-sky-800 rounded">Preferences</a>
-        <a href="/team-member/{{ teamMember.id }}/availability/" class="block p-2 border  bg-blue-400 text-white hover:bg-sky-800 rounded">Availability</a>
-        <a href="/team-member/{{ teamMember.id }}/unavailability/" class="block p-2 border  bg-blue-400 text-white hover:bg-sky-800 rounded  ">Unavailability</a>
+        <a href="/team-member/{{ teamMember.id }}/" class="block p-2 rounded bg-blue-400 text-white hover:bg-sky-800">Profile</a>
+        <a href="/team-member/{{ teamMember.id }}/preferences/" class="block p-2 bg-blue-400 text-white hover:bg-sky-800 rounded">Preferences</a>
+        <a href="/team-member/{{ teamMember.id }}/availability/" class="block p-2 bg-blue-400 text-white hover:bg-sky-800 rounded">Availability</a>
+        <a href="/team-member/{{ teamMember.id }}/unavailability/" class="block p-2 bg-blue-400 text-white hover:bg-sky-800 rounded  ">Unavailability</a>
       </div>
     </div>
   {% endfor %}
 {% endblock %}
+</div>
+</div>
 </div>
