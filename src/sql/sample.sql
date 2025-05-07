@@ -33,21 +33,13 @@ INSERT INTO TeamMembers
 	);
 
 
-
-
-
 -- SHIFT CONTEXTS 
 INSERT INTO ShiftContexts
-	(name, agegroup, location, description, sortPriority)
-	VALUES
-	("Jacobson Center, Toddlers room", "2-3", "123 N philips st", "test description", 2)
-	;
-INSERT INTO ShiftContexts
-	(name, agegroup, location, description, sortPriority)
-	VALUES
-	("Jacobson Center", "2-3", "123 N philips st", "test description", 1)
-	;
-
+	(name, ageGroup, location, description, sortPriority)
+VALUES
+	("Jacobson Center, Toddlers room", "2-3", "123 N Philips St", "test description", 2),
+	("Jacobson Center", "2-3", "123 N Philips St", "test description", 1),
+	("Smith Area", "5-7", "123 N Philips St", "test description", 3);
 
 
 -- Colors
