@@ -21,21 +21,23 @@
 
 {% block content %}
   <div class="bg-white box-shadow-lg mt-3 p-2">
-  {{ teamMemberTabs(model.teamMember, "unavailability") }}
-  <h1 class="text-3xl font-bold mt-8">
-    {{ "Edit" if model.isEdit else "Add" }} unavailability
-  </h1>
-  {{ formErrors(model.errors) }}
-  <form action="{{ action }}" method="post" class="mt-8 max-w-lg">
-    {{ field("date", startDate, "date", "Date") }}
-    {{ field("startTime", model.unavailability.startTimeString, "time", "Start time") }}
-    {{ field("endTime", model.unavailability.endTimeString, "time", "End time") }}
-    {{ field("isPreference", "", "checkbox", "Preferable", model.unavailability.isPreference) }}
-    <div class="mt-8 flex justify-center gap-4">
-      {{ csrf(model) }}
-      <input type="submit" value="Save" class="block py-3 px-10 bg-sky-800 hover:bg-sky-400 text-white rounded" />
-      <a href="{{ model.cancelLink }}" class="block py-3 px-10 bg-red-800 hover:bg-red-500 text-white rounded">Cancel</a>
+    <div class="w-max m-auto">
+      {{ teamMemberTabs(model.teamMember, "unavailability") }}
+      <h1 class="text-3xl font-bold mt-8">
+        {{ "Edit" if model.isEdit else "Add" }} unavailability
+      </h1>
+      {{ formErrors(model.errors) }}
+      <form action="{{ action }}" method="post" class="mt-8 max-w-lg">
+        {{ field("date", startDate, "date", "Date") }}
+        {{ field("startTime", model.unavailability.startTimeString, "time", "Start time") }}
+        {{ field("endTime", model.unavailability.endTimeString, "time", "End time") }}
+        {{ field("isPreference", "", "checkbox", "Preferable", model.unavailability.isPreference) }}
+        <div class="mt-8 flex justify-center gap-4">
+          {{ csrf(model) }}
+          <input type="submit" value="Save" class="block py-3 px-10 bg-sky-800 hover:bg-sky-400 text-white rounded" />
+          <a href="{{ model.cancelLink }}" class="block py-3 px-10 bg-red-800 hover:bg-red-500 text-white rounded">Cancel</a>
+        </div>
+      </form>
     </div>
-  </form>
 </div>
 {% endblock %}
