@@ -66,7 +66,9 @@ export default class ShiftContextPreferenceController extends Controller {
     const shiftContextPreferences = await this._shiftContextPreferences
       .get(teamMemberId);
 
-    const updatedDateTime = context.routeData.getBool("isSaved") ? new Date() : null;
+    const updatedDateTime = context.routeData.getBool("isSaved")
+      ? new Date()
+      : null;
 
     const model = new ShiftContextPreferencesEditViewModel(
       teamMember,
@@ -117,6 +119,9 @@ export default class ShiftContextPreferenceController extends Controller {
       teamMemberId,
       model.shiftContextPreferences,
     );
-    return this.RedirectResponse(context, `/team-member/${teamMemberId}/preferences/saved/`);
+    return this.RedirectResponse(
+      context,
+      `/team-member/${teamMemberId}/preferences/saved/`,
+    );
   }
 }
