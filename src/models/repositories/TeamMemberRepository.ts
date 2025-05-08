@@ -214,8 +214,8 @@ export default class TeamMemberRepository extends Repository
       `
       INSERT INTO TeamMembers
       (firstName, middleName, lastName, birthDate, email, phone, isExternal,
-       maxWeeklyHours, maxWeeklyDays)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+       maxWeeklyHours, maxWeeklyDays, isAdmin)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       [
         teamMember.firstName,
@@ -227,6 +227,7 @@ export default class TeamMemberRepository extends Repository
         teamMember.isExternal,
         teamMember.maxWeeklyHours,
         teamMember.maxWeeklyDays,
+        teamMember.isAdmin ?? null
       ],
     );
 
